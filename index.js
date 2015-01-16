@@ -3,17 +3,15 @@
 
 "use strict";
 
-var di = require('di');
-var core = require('renasar-core')(di);
+var di = require('di'),
+    _ = require('lodash'),
+    core = require('renasar-core')(di);
 
 module.exports = {
-    injectables: [
+    injectables: _.flatten([
         require('./lib/task'),
-        require('./lib/jobs'),
-        require('./lib/utils'),
-    ],
+        core.helper.requireGlob(__dirname + '/lib/jobs/*.js'),
+        core.helper.requireGlob(__dirname + '/lib/utils/*.js'),
+    ]),
     taskData: core.helper.requireGlob(__dirname + '/lib/task-data/**/*.js')
 };
-
-var m = module.exports();
-debugger;
