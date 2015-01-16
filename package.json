@@ -1,0 +1,24 @@
+{
+  "name": "renasar-tasks",
+  "version": "0.0.1",
+  "description": "Tasks repository (meant as a library of tasks) to be loaded and run by task graphs as needed.",
+  "main": "index.js",
+  "scripts": {
+    "doc": "jsdoc lib -r -d docs",
+    "test": "mocha $(find spec -name '*-spec.js') -R spec --require spec/helper.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/renasar/renasar-tasks"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/renasar/renasar-tasks/issues"
+  },
+  "homepage": "https://github.com/renasar/renasar-tasks",
+  "dependencies": {
+    "renasar-core": "git+ssh://git@github.com/renasar/renasar-core.git",
+    "di": "git+ssh://git@github.com/renasar/di.js.git"
+  }
+}
