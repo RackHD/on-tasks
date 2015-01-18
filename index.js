@@ -12,6 +12,7 @@ module.exports = {
         require('./lib/task'),
         core.helper.requireGlob(__dirname + '/lib/jobs/*.js'),
         core.helper.requireGlob(__dirname + '/lib/utils/*.js'),
+        core.helper.requireGlob(__dirname + '/lib/services/*.js')
     ]),
     taskData: core.helper.requireGlob(__dirname + '/lib/task-data/**/*.js')
 };
