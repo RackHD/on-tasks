@@ -15,11 +15,12 @@ describe(__filename, function () {
         var logger = Logger.initialize(mockChildProcessFactory);
         function MockChildProcess() {}
         MockChildProcess.prototype.run = function run (command, args, env, code) {
-            //logger.info("CHILD PROCESS MOCK!");
-            //logger.info("command: "+command);
-            //logger.info("args: "+args);
-            //logger.info("env: "+env);
-            //logger.info("code: "+code);
+            debugger;
+            logger.info("CHILD PROCESS MOCK!");
+            logger.info("command: "+command);
+            logger.info("args: "+args);
+            logger.info("env: "+env);
+            logger.info("code: "+code);
             if ((command === 'ipmitool') && _.contains(args, 'status')) {
                 // power status call, return a "success"
                 return Q.resolve({
@@ -64,10 +65,10 @@ describe(__filename, function () {
             mockChildProcessFactory,
             mockWaterlineFactory,
             helper.requireGlob('/lib/services/*.js'),
-            helper.require('/lib/jobs/poweron-node-job.js')
+            helper.require('/lib/jobs/obm-control.js')
         ]));
 
-        context.Jobclass = injector.get('Job.node.poweron');
+        context.Jobclass = injector.get('Job.Obm.Node');
     });
 
     describe('Base', function () {
@@ -77,11 +78,12 @@ describe(__filename, function () {
     describe("poweron-node-job", function() {
         it('invoke a run function', function() {
             //this.timeout(60000);
-            var job = this.Jobclass.create({ nodeId: '123456' });
+            var job = this.Jobclass.create({ action: 'powerOn' }, { target: '123456' });
+            debugger;
             return job.run().should.eventually.be.fulfilled;
         });
         it('invoke a cancel function', function() {
-            var job = this.Jobclass.create({ nodeId: '123456' });
+            var job = this.Jobclass.create({ action: 'powerOn' }, { target: '123456' });
             return job.cancel().should.eventually.be.rejected;
         });
     });

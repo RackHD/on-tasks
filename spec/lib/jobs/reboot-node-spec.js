@@ -14,10 +14,10 @@ describe(__filename, function () {
         injector = helper.baseInjector.createChild(_.flatten([
             helper.require('/spec/mocks/logger.js'),
             helper.requireGlob('/lib/services/*.js'),
-            helper.require('/lib/jobs/reboot-node-job.js')
+            helper.require('/lib/jobs/obm-control.js')
         ]));
 
-        context.Jobclass = injector.get('Job.node.reboot');
+        context.Jobclass = injector.get('Job.Obm.Node');
     });
 
     describe('Base', function () {
