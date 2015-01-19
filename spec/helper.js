@@ -1,3 +1,5 @@
+// Copyright 2014-2015, Renasar Technologies Inc.
+/* jshint: node:true */
 'use strict';
 
 var path = require('path');
@@ -60,7 +62,7 @@ global.helper = {
     * with child injector
     */
     baseInjector: new di.Injector(_.flatten([ // jshint ignore:line
-        core.injectables,
+        core.injectables
         ])),
 
     initializeWaterline: function (injector) {
