@@ -17,28 +17,33 @@ describe(__filename, function () {
     describe("noop-job", function() {
 
         it('retrievable from injector', function() {
-            var job = injector.get('Job.noop');
-            expect(job).to.be.ok;
-            expect(job).to.be.an.Object;
+            var Job = injector.get('Job.noop');
+            expect(Job).to.be.ok;
+            expect(Job).to.be.an.function;
         });
 
-        it('should have a run function', function() {
-            var job = injector.get('Job.noop');
-            expect(job.run).to.be.a.function;
+        it('members should have a run function', function() {
+            var Job = injector.get('Job.noop');
+            expect(Job).to.respondTo('run');
         });
 
-        it('should have a cancel function', function() {
-            var job = injector.get('Job.noop');
-            expect(job.run).to.be.a.function;
+        it('members should have a cancel function', function() {
+            var Job = injector.get('Job.noop');
+            expect(Job).to.respondTo('cancel');
+        });
+
+        it('should ', function() {
+            var Job = injector.get('Job.noop');
+            expect(Job).itself.to.respondTo('create');
         });
 
         it('invoke a cancel function', function() {
-            var job = injector.get('Job.noop');
+            var job = injector.get('Job.noop').create();
             return job.cancel().should.eventually.be.fulfilled;
         });
 
         it('invoke a run function', function() {
-            var job = injector.get('Job.noop');
+            var job = injector.get('Job.noop').create();
             return job.run().should.eventually.be.fulfilled;
         });
 
