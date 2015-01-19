@@ -39,6 +39,11 @@ global.dihelper = core.helper;
 global.helper = {
 
     /**
+     * instance of di module for the tests to use
+     */
+    di: di,
+
+    /**
     * Helper for requiring files based on the cwd which is the root of the project.
     */
     require: function (file) {

@@ -16,7 +16,7 @@ module.exports = {
         });
 
         describe('Instance Methods', function() {
-            
+
             it('members should have a run function', function() {
                 expect(this.Jobclass).to.respondTo('run');
             });
