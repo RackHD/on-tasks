@@ -4,5 +4,14 @@
 'use strict';
 
 describe(__filename, function () {
-    it('needs specs');
+    var base = require('./base-tasks-spec');
+
+    base.before(function (context) {
+        context.taskdefinition = helper.require('/lib/task-data/tasks/noop-task.js');
+    });
+
+    describe('task-data', function () {
+        base.examples();
+    });
+
 });

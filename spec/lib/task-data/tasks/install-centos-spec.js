@@ -4,10 +4,10 @@
 'use strict';
 
 describe(__filename, function () {
-    var base = require('./base-task-data-spec');
+    var base = require('./base-tasks-spec');
 
     base.before(function (context) {
-        context.taskdefinition = helper.require('/lib/task-data/base-tasks/linux-bootstrapper.js');
+        context.taskdefinition = helper.require('/lib/task-data/tasks/install-centos.js');
     });
 
     describe('task-data', function () {
