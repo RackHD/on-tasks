@@ -7,7 +7,7 @@ describe(__filename, function () {
     var base = require('./base-task-data-spec');
 
     base.before(function (context) {
-        context.taskdefinition = helper.require('/lib/task-data/base-tasks/linux-bootstrapper.js');
+        context.taskdefinition = helper.require('/lib/task-data/base-tasks/install-os.js');
     });
 
     describe('task-data', function () {
