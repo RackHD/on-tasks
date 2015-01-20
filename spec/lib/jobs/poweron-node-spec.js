@@ -8,6 +8,7 @@ describe(__filename, function () {
     var injector;
     var base = require('./base-spec');
     var Q = helper.baseInjector.get('Q');
+    var uuid = helper.baseInjector.get('uuid');
     var _ = helper.baseInjector.get('_');
 
     // mock up the ChildProcess injectable to capture calls before they go to a local shell
@@ -15,12 +16,11 @@ describe(__filename, function () {
         var logger = Logger.initialize(mockChildProcessFactory);
         function MockChildProcess() {}
         MockChildProcess.prototype.run = function run (command, args, env, code) {
-            debugger;
-            logger.info("CHILD PROCESS MOCK!");
-            logger.info("command: "+command);
-            logger.info("args: "+args);
-            logger.info("env: "+env);
-            logger.info("code: "+code);
+            // logger.info("CHILD PROCESS MOCK!");
+            // logger.info("command: "+command);
+            // logger.info("args: "+args);
+            // logger.info("env: "+env);
+            // logger.info("code: "+code);
             if ((command === 'ipmitool') && _.contains(args, 'status')) {
                 // power status call, return a "success"
                 return Q.resolve({
@@ -78,13 +78,14 @@ describe(__filename, function () {
     describe("poweron-node-job", function() {
         it('invoke a run function', function() {
             //this.timeout(60000);
-            var job = this.Jobclass.create({ action: 'powerOn' }, { target: '123456' });
-            debugger;
+            var job = this.Jobclass.create({ action: 'powerOn' },
+                                            { target: '123456' }, uuid.v4());
             return job.run().should.eventually.be.fulfilled;
         });
         it('invoke a cancel function', function() {
-            var job = this.Jobclass.create({ action: 'powerOn' }, { target: '123456' });
-            return job.cancel().should.eventually.be.rejected;
+            var job = this.Jobclass.create({ action: 'powerOn' },
+                                            { target: '123456' }, uuid.v4());
+            return job.cancel().should.eventually.be.fulfilled;
         });
     });
 
