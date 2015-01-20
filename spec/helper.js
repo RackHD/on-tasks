@@ -1,3 +1,5 @@
+// Copyright 2014-2015, Renasar Technologies Inc.
+/* jshint: node:true */
 'use strict';
 
 var path = require('path');
@@ -37,6 +39,11 @@ global.dihelper = core.helper;
 global.helper = {
 
     /**
+     * instance of di module for the tests to use
+     */
+    di: di,
+
+    /**
     * Helper for requiring files based on the cwd which is the root of the project.
     */
     require: function (file) {
@@ -60,7 +67,7 @@ global.helper = {
     * with child injector
     */
     baseInjector: new di.Injector(_.flatten([ // jshint ignore:line
-        core.injectables,
+        core.injectables
         ])),
 
     initializeWaterline: function (injector) {
