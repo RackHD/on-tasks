@@ -1,0 +1,2829 @@
+<?xml version="1.0"?>
+<SES_STAT name="encl">
+  <pg_code type="enum" value="0x02" offbit="0x0" size="0x8">ENCL</pg_code>
+  <unrecov value="0x0" offbit="0x8" size="0x1">0</unrecov>
+  <crit value="0x1" offbit="0x9" size="0x1">1</crit>
+  <non_crit value="0x0" offbit="0xA" size="0x1">0</non_crit>
+  <info value="0x0" offbit="0xB" size="0x1">0</info>
+  <invop value="0x0" offbit="0xC" size="0x1">0</invop>
+  <PAD offbit="0xD" size="0x3"/>
+  <pg_len value="0x021C" offbit="0x10" size="0x10">540</pg_len>
+  <gen_code value="0x00000002" offbit="0x20" size="0x20">2</gen_code>
+  <stat_elem offbit="0x40" size="0x10C0" offset="0x018">
+    <ARRAY_DEV_SLOT offbit="0x40" size="0x3E0" offset="0x018">
+      <Array_Device_Overall offbit="0x40" size="0x20" offset="0x018">
+        <cmn_stat offbit="0x40" size="0x8" offset="0x018">
+          <elem_stat_code type="enum" value="0x5" offbit="0x40" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x44" size="0x1">0</swap>
+          <PAD offbit="0x45" size="0x1"/>
+          <prdfail value="0x0" offbit="0x46" size="0x1">0</prdfail>
+          <PAD offbit="0x47" size="0x1"/>
+        </cmn_stat>
+        <r_r_abort value="0x0" offbit="0x48" size="0x1">0</r_r_abort>
+        <rebuild_remap value="0x0" offbit="0x49" size="0x1">0</rebuild_remap>
+        <in_failed_array value="0x0" offbit="0x4A" size="0x1">0</in_failed_array>
+        <in_crit_array value="0x0" offbit="0x4B" size="0x1">0</in_crit_array>
+        <cons_check value="0x0" offbit="0x4C" size="0x1">0</cons_check>
+        <hot_spare value="0x0" offbit="0x4D" size="0x1">0</hot_spare>
+        <rsvd_dev value="0x0" offbit="0x4E" size="0x1">0</rsvd_dev>
+        <ok value="0x0" offbit="0x4F" size="0x1">0</ok>
+        <report value="0x0" offbit="0x50" size="0x1">0</report>
+        <ident value="0x0" offbit="0x51" size="0x1">0</ident>
+        <rmv value="0x0" offbit="0x52" size="0x1">0</rmv>
+        <rdy_to_insert value="0x0" offbit="0x53" size="0x1">0</rdy_to_insert>
+        <encl_bypassed_b value="0x0" offbit="0x54" size="0x1">0</encl_bypassed_b>
+        <encl_bypassed_a value="0x0" offbit="0x55" size="0x1">0</encl_bypassed_a>
+        <do_not_remove value="0x0" offbit="0x56" size="0x1">0</do_not_remove>
+        <app_client_bypassed_a value="0x0" offbit="0x57" size="0x1">0</app_client_bypassed_a>
+        <dev_bypassed_b value="0x0" offbit="0x58" size="0x1">0</dev_bypassed_b>
+        <dev_bypassed_a value="0x0" offbit="0x59" size="0x1">0</dev_bypassed_a>
+        <bypassed_b value="0x0" offbit="0x5A" size="0x1">0</bypassed_b>
+        <bypassed_a value="0x0" offbit="0x5B" size="0x1">0</bypassed_a>
+        <dev_off value="0x0" offbit="0x5C" size="0x1">0</dev_off>
+        <fault_requested value="0x0" offbit="0x5D" size="0x1">0</fault_requested>
+        <fault_sensed value="0x0" offbit="0x5E" size="0x1">0</fault_sensed>
+        <app_client_bypassed_b value="0x0" offbit="0x5F" size="0x1">0</app_client_bypassed_b>
+      </Array_Device_Overall>
+      <Array_Device offbit="0x60" size="0x20" offset="0x01C">
+        <cmn_stat offbit="0x60" size="0x8" offset="0x01C">
+          <elem_stat_code type="enum" value="0x5" offbit="0x60" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x64" size="0x1">0</swap>
+          <PAD offbit="0x65" size="0x1"/>
+          <prdfail value="0x0" offbit="0x66" size="0x1">0</prdfail>
+          <PAD offbit="0x67" size="0x1"/>
+        </cmn_stat>
+        <r_r_abort value="0x0" offbit="0x68" size="0x1">0</r_r_abort>
+        <rebuild_remap value="0x0" offbit="0x69" size="0x1">0</rebuild_remap>
+        <in_failed_array value="0x0" offbit="0x6A" size="0x1">0</in_failed_array>
+        <in_crit_array value="0x0" offbit="0x6B" size="0x1">0</in_crit_array>
+        <cons_check value="0x0" offbit="0x6C" size="0x1">0</cons_check>
+        <hot_spare value="0x0" offbit="0x6D" size="0x1">0</hot_spare>
+        <rsvd_dev value="0x0" offbit="0x6E" size="0x1">0</rsvd_dev>
+        <ok value="0x0" offbit="0x6F" size="0x1">0</ok>
+        <report value="0x0" offbit="0x70" size="0x1">0</report>
+        <ident value="0x0" offbit="0x71" size="0x1">0</ident>
+        <rmv value="0x0" offbit="0x72" size="0x1">0</rmv>
+        <rdy_to_insert value="0x0" offbit="0x73" size="0x1">0</rdy_to_insert>
+        <encl_bypassed_b value="0x0" offbit="0x74" size="0x1">0</encl_bypassed_b>
+        <encl_bypassed_a value="0x0" offbit="0x75" size="0x1">0</encl_bypassed_a>
+        <do_not_remove value="0x0" offbit="0x76" size="0x1">0</do_not_remove>
+        <app_client_bypassed_a value="0x0" offbit="0x77" size="0x1">0</app_client_bypassed_a>
+        <dev_bypassed_b value="0x0" offbit="0x78" size="0x1">0</dev_bypassed_b>
+        <dev_bypassed_a value="0x0" offbit="0x79" size="0x1">0</dev_bypassed_a>
+        <bypassed_b value="0x0" offbit="0x7A" size="0x1">0</bypassed_b>
+        <bypassed_a value="0x0" offbit="0x7B" size="0x1">0</bypassed_a>
+        <dev_off value="0x0" offbit="0x7C" size="0x1">0</dev_off>
+        <fault_requested value="0x0" offbit="0x7D" size="0x1">0</fault_requested>
+        <fault_sensed value="0x0" offbit="0x7E" size="0x1">0</fault_sensed>
+        <app_client_bypassed_b value="0x0" offbit="0x7F" size="0x1">0</app_client_bypassed_b>
+      </Array_Device>
+      <Array_Device offbit="0x80" size="0x20" offset="0x020">
+        <cmn_stat offbit="0x80" size="0x8" offset="0x020">
+          <elem_stat_code type="enum" value="0x5" offbit="0x80" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x84" size="0x1">0</swap>
+          <PAD offbit="0x85" size="0x1"/>
+          <prdfail value="0x0" offbit="0x86" size="0x1">0</prdfail>
+          <PAD offbit="0x87" size="0x1"/>
+        </cmn_stat>
+        <r_r_abort value="0x0" offbit="0x88" size="0x1">0</r_r_abort>
+        <rebuild_remap value="0x0" offbit="0x89" size="0x1">0</rebuild_remap>
+        <in_failed_array value="0x0" offbit="0x8A" size="0x1">0</in_failed_array>
+        <in_crit_array value="0x0" offbit="0x8B" size="0x1">0</in_crit_array>
+        <cons_check value="0x0" offbit="0x8C" size="0x1">0</cons_check>
+        <hot_spare value="0x0" offbit="0x8D" size="0x1">0</hot_spare>
+        <rsvd_dev value="0x0" offbit="0x8E" size="0x1">0</rsvd_dev>
+        <ok value="0x0" offbit="0x8F" size="0x1">0</ok>
+        <report value="0x0" offbit="0x90" size="0x1">0</report>
+        <ident value="0x0" offbit="0x91" size="0x1">0</ident>
+        <rmv value="0x0" offbit="0x92" size="0x1">0</rmv>
+        <rdy_to_insert value="0x0" offbit="0x93" size="0x1">0</rdy_to_insert>
+        <encl_bypassed_b value="0x0" offbit="0x94" size="0x1">0</encl_bypassed_b>
+        <encl_bypassed_a value="0x0" offbit="0x95" size="0x1">0</encl_bypassed_a>
+        <do_not_remove value="0x0" offbit="0x96" size="0x1">0</do_not_remove>
+        <app_client_bypassed_a value="0x0" offbit="0x97" size="0x1">0</app_client_bypassed_a>
+        <dev_bypassed_b value="0x0" offbit="0x98" size="0x1">0</dev_bypassed_b>
+        <dev_bypassed_a value="0x0" offbit="0x99" size="0x1">0</dev_bypassed_a>
+        <bypassed_b value="0x0" offbit="0x9A" size="0x1">0</bypassed_b>
+        <bypassed_a value="0x0" offbit="0x9B" size="0x1">0</bypassed_a>
+        <dev_off value="0x0" offbit="0x9C" size="0x1">0</dev_off>
+        <fault_requested value="0x0" offbit="0x9D" size="0x1">0</fault_requested>
+        <fault_sensed value="0x0" offbit="0x9E" size="0x1">0</fault_sensed>
+        <app_client_bypassed_b value="0x0" offbit="0x9F" size="0x1">0</app_client_bypassed_b>
+      </Array_Device>
+      <Array_Device offbit="0xA0" size="0x20" offset="0x024">
+        <cmn_stat offbit="0xA0" size="0x8" offset="0x024">
+          <elem_stat_code type="enum" value="0x5" offbit="0xA0" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0xA4" size="0x1">0</swap>
+          <PAD offbit="0xA5" size="0x1"/>
+          <prdfail value="0x0" offbit="0xA6" size="0x1">0</prdfail>
+          <PAD offbit="0xA7" size="0x1"/>
+        </cmn_stat>
+        <r_r_abort value="0x0" offbit="0xA8" size="0x1">0</r_r_abort>
+        <rebuild_remap value="0x0" offbit="0xA9" size="0x1">0</rebuild_remap>
+        <in_failed_array value="0x0" offbit="0xAA" size="0x1">0</in_failed_array>
+        <in_crit_array value="0x0" offbit="0xAB" size="0x1">0</in_crit_array>
+        <cons_check value="0x0" offbit="0xAC" size="0x1">0</cons_check>
+        <hot_spare value="0x0" offbit="0xAD" size="0x1">0</hot_spare>
+        <rsvd_dev value="0x0" offbit="0xAE" size="0x1">0</rsvd_dev>
+        <ok value="0x0" offbit="0xAF" size="0x1">0</ok>
+        <report value="0x0" offbit="0xB0" size="0x1">0</report>
+        <ident value="0x0" offbit="0xB1" size="0x1">0</ident>
+        <rmv value="0x0" offbit="0xB2" size="0x1">0</rmv>
+        <rdy_to_insert value="0x0" offbit="0xB3" size="0x1">0</rdy_to_insert>
+        <encl_bypassed_b value="0x0" offbit="0xB4" size="0x1">0</encl_bypassed_b>
+        <encl_bypassed_a value="0x0" offbit="0xB5" size="0x1">0</encl_bypassed_a>
+        <do_not_remove value="0x0" offbit="0xB6" size="0x1">0</do_not_remove>
+        <app_client_bypassed_a value="0x0" offbit="0xB7" size="0x1">0</app_client_bypassed_a>
+        <dev_bypassed_b value="0x0" offbit="0xB8" size="0x1">0</dev_bypassed_b>
+        <dev_bypassed_a value="0x0" offbit="0xB9" size="0x1">0</dev_bypassed_a>
+        <bypassed_b value="0x0" offbit="0xBA" size="0x1">0</bypassed_b>
+        <bypassed_a value="0x0" offbit="0xBB" size="0x1">0</bypassed_a>
+        <dev_off value="0x0" offbit="0xBC" size="0x1">0</dev_off>
+        <fault_requested value="0x0" offbit="0xBD" size="0x1">0</fault_requested>
+        <fault_sensed value="0x0" offbit="0xBE" size="0x1">0</fault_sensed>
+        <app_client_bypassed_b value="0x0" offbit="0xBF" size="0x1">0</app_client_bypassed_b>
+      </Array_Device>
+      <Array_Device offbit="0xC0" size="0x20" offset="0x028">
+        <cmn_stat offbit="0xC0" size="0x8" offset="0x028">
+          <elem_stat_code type="enum" value="0x5" offbit="0xC0" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0xC4" size="0x1">0</swap>
+          <PAD offbit="0xC5" size="0x1"/>
+          <prdfail value="0x0" offbit="0xC6" size="0x1">0</prdfail>
+          <PAD offbit="0xC7" size="0x1"/>
+        </cmn_stat>
+        <r_r_abort value="0x0" offbit="0xC8" size="0x1">0</r_r_abort>
+        <rebuild_remap value="0x0" offbit="0xC9" size="0x1">0</rebuild_remap>
+        <in_failed_array value="0x0" offbit="0xCA" size="0x1">0</in_failed_array>
+        <in_crit_array value="0x0" offbit="0xCB" size="0x1">0</in_crit_array>
+        <cons_check value="0x0" offbit="0xCC" size="0x1">0</cons_check>
+        <hot_spare value="0x0" offbit="0xCD" size="0x1">0</hot_spare>
+        <rsvd_dev value="0x0" offbit="0xCE" size="0x1">0</rsvd_dev>
+        <ok value="0x0" offbit="0xCF" size="0x1">0</ok>
+        <report value="0x0" offbit="0xD0" size="0x1">0</report>
+        <ident value="0x0" offbit="0xD1" size="0x1">0</ident>
+        <rmv value="0x0" offbit="0xD2" size="0x1">0</rmv>
+        <rdy_to_insert value="0x0" offbit="0xD3" size="0x1">0</rdy_to_insert>
+        <encl_bypassed_b value="0x0" offbit="0xD4" size="0x1">0</encl_bypassed_b>
+        <encl_bypassed_a value="0x0" offbit="0xD5" size="0x1">0</encl_bypassed_a>
+        <do_not_remove value="0x0" offbit="0xD6" size="0x1">0</do_not_remove>
+        <app_client_bypassed_a value="0x0" offbit="0xD7" size="0x1">0</app_client_bypassed_a>
+        <dev_bypassed_b value="0x0" offbit="0xD8" size="0x1">0</dev_bypassed_b>
+        <dev_bypassed_a value="0x0" offbit="0xD9" size="0x1">0</dev_bypassed_a>
+        <bypassed_b value="0x0" offbit="0xDA" size="0x1">0</bypassed_b>
+        <bypassed_a value="0x0" offbit="0xDB" size="0x1">0</bypassed_a>
+        <dev_off value="0x0" offbit="0xDC" size="0x1">0</dev_off>
+        <fault_requested value="0x0" offbit="0xDD" size="0x1">0</fault_requested>
+        <fault_sensed value="0x0" offbit="0xDE" size="0x1">0</fault_sensed>
+        <app_client_bypassed_b value="0x0" offbit="0xDF" size="0x1">0</app_client_bypassed_b>
+      </Array_Device>
+      <Array_Device offbit="0xE0" size="0x20" offset="0x02C">
+        <cmn_stat offbit="0xE0" size="0x8" offset="0x02C">
+          <elem_stat_code type="enum" value="0x5" offbit="0xE0" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0xE4" size="0x1">0</swap>
+          <PAD offbit="0xE5" size="0x1"/>
+          <prdfail value="0x0" offbit="0xE6" size="0x1">0</prdfail>
+          <PAD offbit="0xE7" size="0x1"/>
+        </cmn_stat>
+        <r_r_abort value="0x0" offbit="0xE8" size="0x1">0</r_r_abort>
+        <rebuild_remap value="0x0" offbit="0xE9" size="0x1">0</rebuild_remap>
+        <in_failed_array value="0x0" offbit="0xEA" size="0x1">0</in_failed_array>
+        <in_crit_array value="0x0" offbit="0xEB" size="0x1">0</in_crit_array>
+        <cons_check value="0x0" offbit="0xEC" size="0x1">0</cons_check>
+        <hot_spare value="0x0" offbit="0xED" size="0x1">0</hot_spare>
+        <rsvd_dev value="0x0" offbit="0xEE" size="0x1">0</rsvd_dev>
+        <ok value="0x0" offbit="0xEF" size="0x1">0</ok>
+        <report value="0x0" offbit="0xF0" size="0x1">0</report>
+        <ident value="0x0" offbit="0xF1" size="0x1">0</ident>
+        <rmv value="0x0" offbit="0xF2" size="0x1">0</rmv>
+        <rdy_to_insert value="0x0" offbit="0xF3" size="0x1">0</rdy_to_insert>
+        <encl_bypassed_b value="0x0" offbit="0xF4" size="0x1">0</encl_bypassed_b>
+        <encl_bypassed_a value="0x0" offbit="0xF5" size="0x1">0</encl_bypassed_a>
+        <do_not_remove value="0x0" offbit="0xF6" size="0x1">0</do_not_remove>
+        <app_client_bypassed_a value="0x0" offbit="0xF7" size="0x1">0</app_client_bypassed_a>
+        <dev_bypassed_b value="0x0" offbit="0xF8" size="0x1">0</dev_bypassed_b>
+        <dev_bypassed_a value="0x0" offbit="0xF9" size="0x1">0</dev_bypassed_a>
+        <bypassed_b value="0x0" offbit="0xFA" size="0x1">0</bypassed_b>
+        <bypassed_a value="0x0" offbit="0xFB" size="0x1">0</bypassed_a>
+        <dev_off value="0x0" offbit="0xFC" size="0x1">0</dev_off>
+        <fault_requested value="0x0" offbit="0xFD" size="0x1">0</fault_requested>
+        <fault_sensed value="0x0" offbit="0xFE" size="0x1">0</fault_sensed>
+        <app_client_bypassed_b value="0x0" offbit="0xFF" size="0x1">0</app_client_bypassed_b>
+      </Array_Device>
+      <Array_Device offbit="0x100" size="0x20" offset="0x030">
+        <cmn_stat offbit="0x100" size="0x8" offset="0x030">
+          <elem_stat_code type="enum" value="0x5" offbit="0x100" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x104" size="0x1">0</swap>
+          <PAD offbit="0x105" size="0x1"/>
+          <prdfail value="0x0" offbit="0x106" size="0x1">0</prdfail>
+          <PAD offbit="0x107" size="0x1"/>
+        </cmn_stat>
+        <r_r_abort value="0x0" offbit="0x108" size="0x1">0</r_r_abort>
+        <rebuild_remap value="0x0" offbit="0x109" size="0x1">0</rebuild_remap>
+        <in_failed_array value="0x0" offbit="0x10A" size="0x1">0</in_failed_array>
+        <in_crit_array value="0x0" offbit="0x10B" size="0x1">0</in_crit_array>
+        <cons_check value="0x0" offbit="0x10C" size="0x1">0</cons_check>
+        <hot_spare value="0x0" offbit="0x10D" size="0x1">0</hot_spare>
+        <rsvd_dev value="0x0" offbit="0x10E" size="0x1">0</rsvd_dev>
+        <ok value="0x0" offbit="0x10F" size="0x1">0</ok>
+        <report value="0x0" offbit="0x110" size="0x1">0</report>
+        <ident value="0x0" offbit="0x111" size="0x1">0</ident>
+        <rmv value="0x0" offbit="0x112" size="0x1">0</rmv>
+        <rdy_to_insert value="0x0" offbit="0x113" size="0x1">0</rdy_to_insert>
+        <encl_bypassed_b value="0x0" offbit="0x114" size="0x1">0</encl_bypassed_b>
+        <encl_bypassed_a value="0x0" offbit="0x115" size="0x1">0</encl_bypassed_a>
+        <do_not_remove value="0x0" offbit="0x116" size="0x1">0</do_not_remove>
+        <app_client_bypassed_a value="0x0" offbit="0x117" size="0x1">0</app_client_bypassed_a>
+        <dev_bypassed_b value="0x0" offbit="0x118" size="0x1">0</dev_bypassed_b>
+        <dev_bypassed_a value="0x0" offbit="0x119" size="0x1">0</dev_bypassed_a>
+        <bypassed_b value="0x0" offbit="0x11A" size="0x1">0</bypassed_b>
+        <bypassed_a value="0x0" offbit="0x11B" size="0x1">0</bypassed_a>
+        <dev_off value="0x0" offbit="0x11C" size="0x1">0</dev_off>
+        <fault_requested value="0x0" offbit="0x11D" size="0x1">0</fault_requested>
+        <fault_sensed value="0x0" offbit="0x11E" size="0x1">0</fault_sensed>
+        <app_client_bypassed_b value="0x0" offbit="0x11F" size="0x1">0</app_client_bypassed_b>
+      </Array_Device>
+      <Array_Device offbit="0x120" size="0x20" offset="0x034">
+        <cmn_stat offbit="0x120" size="0x8" offset="0x034">
+          <elem_stat_code type="enum" value="0x5" offbit="0x120" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x124" size="0x1">0</swap>
+          <PAD offbit="0x125" size="0x1"/>
+          <prdfail value="0x0" offbit="0x126" size="0x1">0</prdfail>
+          <PAD offbit="0x127" size="0x1"/>
+        </cmn_stat>
+        <r_r_abort value="0x0" offbit="0x128" size="0x1">0</r_r_abort>
+        <rebuild_remap value="0x0" offbit="0x129" size="0x1">0</rebuild_remap>
+        <in_failed_array value="0x0" offbit="0x12A" size="0x1">0</in_failed_array>
+        <in_crit_array value="0x0" offbit="0x12B" size="0x1">0</in_crit_array>
+        <cons_check value="0x0" offbit="0x12C" size="0x1">0</cons_check>
+        <hot_spare value="0x0" offbit="0x12D" size="0x1">0</hot_spare>
+        <rsvd_dev value="0x0" offbit="0x12E" size="0x1">0</rsvd_dev>
+        <ok value="0x0" offbit="0x12F" size="0x1">0</ok>
+        <report value="0x0" offbit="0x130" size="0x1">0</report>
+        <ident value="0x0" offbit="0x131" size="0x1">0</ident>
+        <rmv value="0x0" offbit="0x132" size="0x1">0</rmv>
+        <rdy_to_insert value="0x0" offbit="0x133" size="0x1">0</rdy_to_insert>
+        <encl_bypassed_b value="0x0" offbit="0x134" size="0x1">0</encl_bypassed_b>
+        <encl_bypassed_a value="0x0" offbit="0x135" size="0x1">0</encl_bypassed_a>
+        <do_not_remove value="0x0" offbit="0x136" size="0x1">0</do_not_remove>
+        <app_client_bypassed_a value="0x0" offbit="0x137" size="0x1">0</app_client_bypassed_a>
+        <dev_bypassed_b value="0x0" offbit="0x138" size="0x1">0</dev_bypassed_b>
+        <dev_bypassed_a value="0x0" offbit="0x139" size="0x1">0</dev_bypassed_a>
+        <bypassed_b value="0x0" offbit="0x13A" size="0x1">0</bypassed_b>
+        <bypassed_a value="0x0" offbit="0x13B" size="0x1">0</bypassed_a>
+        <dev_off value="0x0" offbit="0x13C" size="0x1">0</dev_off>
+        <fault_requested value="0x0" offbit="0x13D" size="0x1">0</fault_requested>
+        <fault_sensed value="0x0" offbit="0x13E" size="0x1">0</fault_sensed>
+        <app_client_bypassed_b value="0x0" offbit="0x13F" size="0x1">0</app_client_bypassed_b>
+      </Array_Device>
+      <Array_Device offbit="0x140" size="0x20" offset="0x038">
+        <cmn_stat offbit="0x140" size="0x8" offset="0x038">
+          <elem_stat_code type="enum" value="0x5" offbit="0x140" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x144" size="0x1">0</swap>
+          <PAD offbit="0x145" size="0x1"/>
+          <prdfail value="0x0" offbit="0x146" size="0x1">0</prdfail>
+          <PAD offbit="0x147" size="0x1"/>
+        </cmn_stat>
+        <r_r_abort value="0x0" offbit="0x148" size="0x1">0</r_r_abort>
+        <rebuild_remap value="0x0" offbit="0x149" size="0x1">0</rebuild_remap>
+        <in_failed_array value="0x0" offbit="0x14A" size="0x1">0</in_failed_array>
+        <in_crit_array value="0x0" offbit="0x14B" size="0x1">0</in_crit_array>
+        <cons_check value="0x0" offbit="0x14C" size="0x1">0</cons_check>
+        <hot_spare value="0x0" offbit="0x14D" size="0x1">0</hot_spare>
+        <rsvd_dev value="0x0" offbit="0x14E" size="0x1">0</rsvd_dev>
+        <ok value="0x0" offbit="0x14F" size="0x1">0</ok>
+        <report value="0x0" offbit="0x150" size="0x1">0</report>
+        <ident value="0x0" offbit="0x151" size="0x1">0</ident>
+        <rmv value="0x0" offbit="0x152" size="0x1">0</rmv>
+        <rdy_to_insert value="0x0" offbit="0x153" size="0x1">0</rdy_to_insert>
+        <encl_bypassed_b value="0x0" offbit="0x154" size="0x1">0</encl_bypassed_b>
+        <encl_bypassed_a value="0x0" offbit="0x155" size="0x1">0</encl_bypassed_a>
+        <do_not_remove value="0x0" offbit="0x156" size="0x1">0</do_not_remove>
+        <app_client_bypassed_a value="0x0" offbit="0x157" size="0x1">0</app_client_bypassed_a>
+        <dev_bypassed_b value="0x0" offbit="0x158" size="0x1">0</dev_bypassed_b>
+        <dev_bypassed_a value="0x0" offbit="0x159" size="0x1">0</dev_bypassed_a>
+        <bypassed_b value="0x0" offbit="0x15A" size="0x1">0</bypassed_b>
+        <bypassed_a value="0x0" offbit="0x15B" size="0x1">0</bypassed_a>
+        <dev_off value="0x0" offbit="0x15C" size="0x1">0</dev_off>
+        <fault_requested value="0x0" offbit="0x15D" size="0x1">0</fault_requested>
+        <fault_sensed value="0x0" offbit="0x15E" size="0x1">0</fault_sensed>
+        <app_client_bypassed_b value="0x0" offbit="0x15F" size="0x1">0</app_client_bypassed_b>
+      </Array_Device>
+      <Array_Device offbit="0x160" size="0x20" offset="0x03C">
+        <cmn_stat offbit="0x160" size="0x8" offset="0x03C">
+          <elem_stat_code type="enum" value="0x5" offbit="0x160" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x164" size="0x1">0</swap>
+          <PAD offbit="0x165" size="0x1"/>
+          <prdfail value="0x0" offbit="0x166" size="0x1">0</prdfail>
+          <PAD offbit="0x167" size="0x1"/>
+        </cmn_stat>
+        <r_r_abort value="0x0" offbit="0x168" size="0x1">0</r_r_abort>
+        <rebuild_remap value="0x0" offbit="0x169" size="0x1">0</rebuild_remap>
+        <in_failed_array value="0x0" offbit="0x16A" size="0x1">0</in_failed_array>
+        <in_crit_array value="0x0" offbit="0x16B" size="0x1">0</in_crit_array>
+        <cons_check value="0x0" offbit="0x16C" size="0x1">0</cons_check>
+        <hot_spare value="0x0" offbit="0x16D" size="0x1">0</hot_spare>
+        <rsvd_dev value="0x0" offbit="0x16E" size="0x1">0</rsvd_dev>
+        <ok value="0x0" offbit="0x16F" size="0x1">0</ok>
+        <report value="0x0" offbit="0x170" size="0x1">0</report>
+        <ident value="0x0" offbit="0x171" size="0x1">0</ident>
+        <rmv value="0x0" offbit="0x172" size="0x1">0</rmv>
+        <rdy_to_insert value="0x0" offbit="0x173" size="0x1">0</rdy_to_insert>
+        <encl_bypassed_b value="0x0" offbit="0x174" size="0x1">0</encl_bypassed_b>
+        <encl_bypassed_a value="0x0" offbit="0x175" size="0x1">0</encl_bypassed_a>
+        <do_not_remove value="0x0" offbit="0x176" size="0x1">0</do_not_remove>
+        <app_client_bypassed_a value="0x0" offbit="0x177" size="0x1">0</app_client_bypassed_a>
+        <dev_bypassed_b value="0x0" offbit="0x178" size="0x1">0</dev_bypassed_b>
+        <dev_bypassed_a value="0x0" offbit="0x179" size="0x1">0</dev_bypassed_a>
+        <bypassed_b value="0x0" offbit="0x17A" size="0x1">0</bypassed_b>
+        <bypassed_a value="0x0" offbit="0x17B" size="0x1">0</bypassed_a>
+        <dev_off value="0x0" offbit="0x17C" size="0x1">0</dev_off>
+        <fault_requested value="0x0" offbit="0x17D" size="0x1">0</fault_requested>
+        <fault_sensed value="0x0" offbit="0x17E" size="0x1">0</fault_sensed>
+        <app_client_bypassed_b value="0x0" offbit="0x17F" size="0x1">0</app_client_bypassed_b>
+      </Array_Device>
+      <Array_Device offbit="0x180" size="0x20" offset="0x040">
+        <cmn_stat offbit="0x180" size="0x8" offset="0x040">
+          <elem_stat_code type="enum" value="0x5" offbit="0x180" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x184" size="0x1">0</swap>
+          <PAD offbit="0x185" size="0x1"/>
+          <prdfail value="0x0" offbit="0x186" size="0x1">0</prdfail>
+          <PAD offbit="0x187" size="0x1"/>
+        </cmn_stat>
+        <r_r_abort value="0x0" offbit="0x188" size="0x1">0</r_r_abort>
+        <rebuild_remap value="0x0" offbit="0x189" size="0x1">0</rebuild_remap>
+        <in_failed_array value="0x0" offbit="0x18A" size="0x1">0</in_failed_array>
+        <in_crit_array value="0x0" offbit="0x18B" size="0x1">0</in_crit_array>
+        <cons_check value="0x0" offbit="0x18C" size="0x1">0</cons_check>
+        <hot_spare value="0x0" offbit="0x18D" size="0x1">0</hot_spare>
+        <rsvd_dev value="0x0" offbit="0x18E" size="0x1">0</rsvd_dev>
+        <ok value="0x0" offbit="0x18F" size="0x1">0</ok>
+        <report value="0x0" offbit="0x190" size="0x1">0</report>
+        <ident value="0x0" offbit="0x191" size="0x1">0</ident>
+        <rmv value="0x0" offbit="0x192" size="0x1">0</rmv>
+        <rdy_to_insert value="0x0" offbit="0x193" size="0x1">0</rdy_to_insert>
+        <encl_bypassed_b value="0x0" offbit="0x194" size="0x1">0</encl_bypassed_b>
+        <encl_bypassed_a value="0x0" offbit="0x195" size="0x1">0</encl_bypassed_a>
+        <do_not_remove value="0x0" offbit="0x196" size="0x1">0</do_not_remove>
+        <app_client_bypassed_a value="0x0" offbit="0x197" size="0x1">0</app_client_bypassed_a>
+        <dev_bypassed_b value="0x0" offbit="0x198" size="0x1">0</dev_bypassed_b>
+        <dev_bypassed_a value="0x0" offbit="0x199" size="0x1">0</dev_bypassed_a>
+        <bypassed_b value="0x0" offbit="0x19A" size="0x1">0</bypassed_b>
+        <bypassed_a value="0x0" offbit="0x19B" size="0x1">0</bypassed_a>
+        <dev_off value="0x0" offbit="0x19C" size="0x1">0</dev_off>
+        <fault_requested value="0x0" offbit="0x19D" size="0x1">0</fault_requested>
+        <fault_sensed value="0x0" offbit="0x19E" size="0x1">0</fault_sensed>
+        <app_client_bypassed_b value="0x0" offbit="0x19F" size="0x1">0</app_client_bypassed_b>
+      </Array_Device>
+      <Array_Device offbit="0x1A0" size="0x20" offset="0x044">
+        <cmn_stat offbit="0x1A0" size="0x8" offset="0x044">
+          <elem_stat_code type="enum" value="0x5" offbit="0x1A0" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x1A4" size="0x1">0</swap>
+          <PAD offbit="0x1A5" size="0x1"/>
+          <prdfail value="0x0" offbit="0x1A6" size="0x1">0</prdfail>
+          <PAD offbit="0x1A7" size="0x1"/>
+        </cmn_stat>
+        <r_r_abort value="0x0" offbit="0x1A8" size="0x1">0</r_r_abort>
+        <rebuild_remap value="0x0" offbit="0x1A9" size="0x1">0</rebuild_remap>
+        <in_failed_array value="0x0" offbit="0x1AA" size="0x1">0</in_failed_array>
+        <in_crit_array value="0x0" offbit="0x1AB" size="0x1">0</in_crit_array>
+        <cons_check value="0x0" offbit="0x1AC" size="0x1">0</cons_check>
+        <hot_spare value="0x0" offbit="0x1AD" size="0x1">0</hot_spare>
+        <rsvd_dev value="0x0" offbit="0x1AE" size="0x1">0</rsvd_dev>
+        <ok value="0x0" offbit="0x1AF" size="0x1">0</ok>
+        <report value="0x0" offbit="0x1B0" size="0x1">0</report>
+        <ident value="0x0" offbit="0x1B1" size="0x1">0</ident>
+        <rmv value="0x0" offbit="0x1B2" size="0x1">0</rmv>
+        <rdy_to_insert value="0x0" offbit="0x1B3" size="0x1">0</rdy_to_insert>
+        <encl_bypassed_b value="0x0" offbit="0x1B4" size="0x1">0</encl_bypassed_b>
+        <encl_bypassed_a value="0x0" offbit="0x1B5" size="0x1">0</encl_bypassed_a>
+        <do_not_remove value="0x0" offbit="0x1B6" size="0x1">0</do_not_remove>
+        <app_client_bypassed_a value="0x0" offbit="0x1B7" size="0x1">0</app_client_bypassed_a>
+        <dev_bypassed_b value="0x0" offbit="0x1B8" size="0x1">0</dev_bypassed_b>
+        <dev_bypassed_a value="0x0" offbit="0x1B9" size="0x1">0</dev_bypassed_a>
+        <bypassed_b value="0x0" offbit="0x1BA" size="0x1">0</bypassed_b>
+        <bypassed_a value="0x0" offbit="0x1BB" size="0x1">0</bypassed_a>
+        <dev_off value="0x0" offbit="0x1BC" size="0x1">0</dev_off>
+        <fault_requested value="0x0" offbit="0x1BD" size="0x1">0</fault_requested>
+        <fault_sensed value="0x0" offbit="0x1BE" size="0x1">0</fault_sensed>
+        <app_client_bypassed_b value="0x0" offbit="0x1BF" size="0x1">0</app_client_bypassed_b>
+      </Array_Device>
+      <Array_Device offbit="0x1C0" size="0x20" offset="0x048">
+        <cmn_stat offbit="0x1C0" size="0x8" offset="0x048">
+          <elem_stat_code type="enum" value="0x5" offbit="0x1C0" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x1C4" size="0x1">0</swap>
+          <PAD offbit="0x1C5" size="0x1"/>
+          <prdfail value="0x0" offbit="0x1C6" size="0x1">0</prdfail>
+          <PAD offbit="0x1C7" size="0x1"/>
+        </cmn_stat>
+        <r_r_abort value="0x0" offbit="0x1C8" size="0x1">0</r_r_abort>
+        <rebuild_remap value="0x0" offbit="0x1C9" size="0x1">0</rebuild_remap>
+        <in_failed_array value="0x0" offbit="0x1CA" size="0x1">0</in_failed_array>
+        <in_crit_array value="0x0" offbit="0x1CB" size="0x1">0</in_crit_array>
+        <cons_check value="0x0" offbit="0x1CC" size="0x1">0</cons_check>
+        <hot_spare value="0x0" offbit="0x1CD" size="0x1">0</hot_spare>
+        <rsvd_dev value="0x0" offbit="0x1CE" size="0x1">0</rsvd_dev>
+        <ok value="0x0" offbit="0x1CF" size="0x1">0</ok>
+        <report value="0x0" offbit="0x1D0" size="0x1">0</report>
+        <ident value="0x0" offbit="0x1D1" size="0x1">0</ident>
+        <rmv value="0x0" offbit="0x1D2" size="0x1">0</rmv>
+        <rdy_to_insert value="0x0" offbit="0x1D3" size="0x1">0</rdy_to_insert>
+        <encl_bypassed_b value="0x0" offbit="0x1D4" size="0x1">0</encl_bypassed_b>
+        <encl_bypassed_a value="0x0" offbit="0x1D5" size="0x1">0</encl_bypassed_a>
+        <do_not_remove value="0x0" offbit="0x1D6" size="0x1">0</do_not_remove>
+        <app_client_bypassed_a value="0x0" offbit="0x1D7" size="0x1">0</app_client_bypassed_a>
+        <dev_bypassed_b value="0x0" offbit="0x1D8" size="0x1">0</dev_bypassed_b>
+        <dev_bypassed_a value="0x0" offbit="0x1D9" size="0x1">0</dev_bypassed_a>
+        <bypassed_b value="0x0" offbit="0x1DA" size="0x1">0</bypassed_b>
+        <bypassed_a value="0x0" offbit="0x1DB" size="0x1">0</bypassed_a>
+        <dev_off value="0x0" offbit="0x1DC" size="0x1">0</dev_off>
+        <fault_requested value="0x0" offbit="0x1DD" size="0x1">0</fault_requested>
+        <fault_sensed value="0x0" offbit="0x1DE" size="0x1">0</fault_sensed>
+        <app_client_bypassed_b value="0x0" offbit="0x1DF" size="0x1">0</app_client_bypassed_b>
+      </Array_Device>
+      <Array_Device offbit="0x1E0" size="0x20" offset="0x04C">
+        <cmn_stat offbit="0x1E0" size="0x8" offset="0x04C">
+          <elem_stat_code type="enum" value="0x5" offbit="0x1E0" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x1E4" size="0x1">0</swap>
+          <PAD offbit="0x1E5" size="0x1"/>
+          <prdfail value="0x0" offbit="0x1E6" size="0x1">0</prdfail>
+          <PAD offbit="0x1E7" size="0x1"/>
+        </cmn_stat>
+        <r_r_abort value="0x0" offbit="0x1E8" size="0x1">0</r_r_abort>
+        <rebuild_remap value="0x0" offbit="0x1E9" size="0x1">0</rebuild_remap>
+        <in_failed_array value="0x0" offbit="0x1EA" size="0x1">0</in_failed_array>
+        <in_crit_array value="0x0" offbit="0x1EB" size="0x1">0</in_crit_array>
+        <cons_check value="0x0" offbit="0x1EC" size="0x1">0</cons_check>
+        <hot_spare value="0x0" offbit="0x1ED" size="0x1">0</hot_spare>
+        <rsvd_dev value="0x0" offbit="0x1EE" size="0x1">0</rsvd_dev>
+        <ok value="0x0" offbit="0x1EF" size="0x1">0</ok>
+        <report value="0x0" offbit="0x1F0" size="0x1">0</report>
+        <ident value="0x0" offbit="0x1F1" size="0x1">0</ident>
+        <rmv value="0x0" offbit="0x1F2" size="0x1">0</rmv>
+        <rdy_to_insert value="0x0" offbit="0x1F3" size="0x1">0</rdy_to_insert>
+        <encl_bypassed_b value="0x0" offbit="0x1F4" size="0x1">0</encl_bypassed_b>
+        <encl_bypassed_a value="0x0" offbit="0x1F5" size="0x1">0</encl_bypassed_a>
+        <do_not_remove value="0x0" offbit="0x1F6" size="0x1">0</do_not_remove>
+        <app_client_bypassed_a value="0x0" offbit="0x1F7" size="0x1">0</app_client_bypassed_a>
+        <dev_bypassed_b value="0x0" offbit="0x1F8" size="0x1">0</dev_bypassed_b>
+        <dev_bypassed_a value="0x0" offbit="0x1F9" size="0x1">0</dev_bypassed_a>
+        <bypassed_b value="0x0" offbit="0x1FA" size="0x1">0</bypassed_b>
+        <bypassed_a value="0x0" offbit="0x1FB" size="0x1">0</bypassed_a>
+        <dev_off value="0x0" offbit="0x1FC" size="0x1">0</dev_off>
+        <fault_requested value="0x0" offbit="0x1FD" size="0x1">0</fault_requested>
+        <fault_sensed value="0x0" offbit="0x1FE" size="0x1">0</fault_sensed>
+        <app_client_bypassed_b value="0x0" offbit="0x1FF" size="0x1">0</app_client_bypassed_b>
+      </Array_Device>
+      <Array_Device offbit="0x200" size="0x20" offset="0x050">
+        <cmn_stat offbit="0x200" size="0x8" offset="0x050">
+          <elem_stat_code type="enum" value="0x5" offbit="0x200" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x204" size="0x1">0</swap>
+          <PAD offbit="0x205" size="0x1"/>
+          <prdfail value="0x0" offbit="0x206" size="0x1">0</prdfail>
+          <PAD offbit="0x207" size="0x1"/>
+        </cmn_stat>
+        <r_r_abort value="0x0" offbit="0x208" size="0x1">0</r_r_abort>
+        <rebuild_remap value="0x0" offbit="0x209" size="0x1">0</rebuild_remap>
+        <in_failed_array value="0x0" offbit="0x20A" size="0x1">0</in_failed_array>
+        <in_crit_array value="0x0" offbit="0x20B" size="0x1">0</in_crit_array>
+        <cons_check value="0x0" offbit="0x20C" size="0x1">0</cons_check>
+        <hot_spare value="0x0" offbit="0x20D" size="0x1">0</hot_spare>
+        <rsvd_dev value="0x0" offbit="0x20E" size="0x1">0</rsvd_dev>
+        <ok value="0x0" offbit="0x20F" size="0x1">0</ok>
+        <report value="0x0" offbit="0x210" size="0x1">0</report>
+        <ident value="0x0" offbit="0x211" size="0x1">0</ident>
+        <rmv value="0x0" offbit="0x212" size="0x1">0</rmv>
+        <rdy_to_insert value="0x0" offbit="0x213" size="0x1">0</rdy_to_insert>
+        <encl_bypassed_b value="0x0" offbit="0x214" size="0x1">0</encl_bypassed_b>
+        <encl_bypassed_a value="0x0" offbit="0x215" size="0x1">0</encl_bypassed_a>
+        <do_not_remove value="0x0" offbit="0x216" size="0x1">0</do_not_remove>
+        <app_client_bypassed_a value="0x0" offbit="0x217" size="0x1">0</app_client_bypassed_a>
+        <dev_bypassed_b value="0x0" offbit="0x218" size="0x1">0</dev_bypassed_b>
+        <dev_bypassed_a value="0x0" offbit="0x219" size="0x1">0</dev_bypassed_a>
+        <bypassed_b value="0x0" offbit="0x21A" size="0x1">0</bypassed_b>
+        <bypassed_a value="0x0" offbit="0x21B" size="0x1">0</bypassed_a>
+        <dev_off value="0x0" offbit="0x21C" size="0x1">0</dev_off>
+        <fault_requested value="0x0" offbit="0x21D" size="0x1">0</fault_requested>
+        <fault_sensed value="0x0" offbit="0x21E" size="0x1">0</fault_sensed>
+        <app_client_bypassed_b value="0x0" offbit="0x21F" size="0x1">0</app_client_bypassed_b>
+      </Array_Device>
+      <Array_Device offbit="0x220" size="0x20" offset="0x054">
+        <cmn_stat offbit="0x220" size="0x8" offset="0x054">
+          <elem_stat_code type="enum" value="0x5" offbit="0x220" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x224" size="0x1">0</swap>
+          <PAD offbit="0x225" size="0x1"/>
+          <prdfail value="0x0" offbit="0x226" size="0x1">0</prdfail>
+          <PAD offbit="0x227" size="0x1"/>
+        </cmn_stat>
+        <r_r_abort value="0x0" offbit="0x228" size="0x1">0</r_r_abort>
+        <rebuild_remap value="0x0" offbit="0x229" size="0x1">0</rebuild_remap>
+        <in_failed_array value="0x0" offbit="0x22A" size="0x1">0</in_failed_array>
+        <in_crit_array value="0x0" offbit="0x22B" size="0x1">0</in_crit_array>
+        <cons_check value="0x0" offbit="0x22C" size="0x1">0</cons_check>
+        <hot_spare value="0x0" offbit="0x22D" size="0x1">0</hot_spare>
+        <rsvd_dev value="0x0" offbit="0x22E" size="0x1">0</rsvd_dev>
+        <ok value="0x0" offbit="0x22F" size="0x1">0</ok>
+        <report value="0x0" offbit="0x230" size="0x1">0</report>
+        <ident value="0x0" offbit="0x231" size="0x1">0</ident>
+        <rmv value="0x0" offbit="0x232" size="0x1">0</rmv>
+        <rdy_to_insert value="0x0" offbit="0x233" size="0x1">0</rdy_to_insert>
+        <encl_bypassed_b value="0x0" offbit="0x234" size="0x1">0</encl_bypassed_b>
+        <encl_bypassed_a value="0x0" offbit="0x235" size="0x1">0</encl_bypassed_a>
+        <do_not_remove value="0x0" offbit="0x236" size="0x1">0</do_not_remove>
+        <app_client_bypassed_a value="0x0" offbit="0x237" size="0x1">0</app_client_bypassed_a>
+        <dev_bypassed_b value="0x0" offbit="0x238" size="0x1">0</dev_bypassed_b>
+        <dev_bypassed_a value="0x0" offbit="0x239" size="0x1">0</dev_bypassed_a>
+        <bypassed_b value="0x0" offbit="0x23A" size="0x1">0</bypassed_b>
+        <bypassed_a value="0x0" offbit="0x23B" size="0x1">0</bypassed_a>
+        <dev_off value="0x0" offbit="0x23C" size="0x1">0</dev_off>
+        <fault_requested value="0x0" offbit="0x23D" size="0x1">0</fault_requested>
+        <fault_sensed value="0x0" offbit="0x23E" size="0x1">0</fault_sensed>
+        <app_client_bypassed_b value="0x0" offbit="0x23F" size="0x1">0</app_client_bypassed_b>
+      </Array_Device>
+      <Array_Device offbit="0x240" size="0x20" offset="0x058">
+        <cmn_stat offbit="0x240" size="0x8" offset="0x058">
+          <elem_stat_code type="enum" value="0x5" offbit="0x240" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x244" size="0x1">0</swap>
+          <PAD offbit="0x245" size="0x1"/>
+          <prdfail value="0x0" offbit="0x246" size="0x1">0</prdfail>
+          <PAD offbit="0x247" size="0x1"/>
+        </cmn_stat>
+        <r_r_abort value="0x0" offbit="0x248" size="0x1">0</r_r_abort>
+        <rebuild_remap value="0x0" offbit="0x249" size="0x1">0</rebuild_remap>
+        <in_failed_array value="0x0" offbit="0x24A" size="0x1">0</in_failed_array>
+        <in_crit_array value="0x0" offbit="0x24B" size="0x1">0</in_crit_array>
+        <cons_check value="0x0" offbit="0x24C" size="0x1">0</cons_check>
+        <hot_spare value="0x0" offbit="0x24D" size="0x1">0</hot_spare>
+        <rsvd_dev value="0x0" offbit="0x24E" size="0x1">0</rsvd_dev>
+        <ok value="0x0" offbit="0x24F" size="0x1">0</ok>
+        <report value="0x0" offbit="0x250" size="0x1">0</report>
+        <ident value="0x0" offbit="0x251" size="0x1">0</ident>
+        <rmv value="0x0" offbit="0x252" size="0x1">0</rmv>
+        <rdy_to_insert value="0x0" offbit="0x253" size="0x1">0</rdy_to_insert>
+        <encl_bypassed_b value="0x0" offbit="0x254" size="0x1">0</encl_bypassed_b>
+        <encl_bypassed_a value="0x0" offbit="0x255" size="0x1">0</encl_bypassed_a>
+        <do_not_remove value="0x0" offbit="0x256" size="0x1">0</do_not_remove>
+        <app_client_bypassed_a value="0x0" offbit="0x257" size="0x1">0</app_client_bypassed_a>
+        <dev_bypassed_b value="0x0" offbit="0x258" size="0x1">0</dev_bypassed_b>
+        <dev_bypassed_a value="0x0" offbit="0x259" size="0x1">0</dev_bypassed_a>
+        <bypassed_b value="0x0" offbit="0x25A" size="0x1">0</bypassed_b>
+        <bypassed_a value="0x0" offbit="0x25B" size="0x1">0</bypassed_a>
+        <dev_off value="0x0" offbit="0x25C" size="0x1">0</dev_off>
+        <fault_requested value="0x0" offbit="0x25D" size="0x1">0</fault_requested>
+        <fault_sensed value="0x0" offbit="0x25E" size="0x1">0</fault_sensed>
+        <app_client_bypassed_b value="0x0" offbit="0x25F" size="0x1">0</app_client_bypassed_b>
+      </Array_Device>
+      <Array_Device offbit="0x260" size="0x20" offset="0x05C">
+        <cmn_stat offbit="0x260" size="0x8" offset="0x05C">
+          <elem_stat_code type="enum" value="0x5" offbit="0x260" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x264" size="0x1">0</swap>
+          <PAD offbit="0x265" size="0x1"/>
+          <prdfail value="0x0" offbit="0x266" size="0x1">0</prdfail>
+          <PAD offbit="0x267" size="0x1"/>
+        </cmn_stat>
+        <r_r_abort value="0x0" offbit="0x268" size="0x1">0</r_r_abort>
+        <rebuild_remap value="0x0" offbit="0x269" size="0x1">0</rebuild_remap>
+        <in_failed_array value="0x0" offbit="0x26A" size="0x1">0</in_failed_array>
+        <in_crit_array value="0x0" offbit="0x26B" size="0x1">0</in_crit_array>
+        <cons_check value="0x0" offbit="0x26C" size="0x1">0</cons_check>
+        <hot_spare value="0x0" offbit="0x26D" size="0x1">0</hot_spare>
+        <rsvd_dev value="0x0" offbit="0x26E" size="0x1">0</rsvd_dev>
+        <ok value="0x0" offbit="0x26F" size="0x1">0</ok>
+        <report value="0x0" offbit="0x270" size="0x1">0</report>
+        <ident value="0x0" offbit="0x271" size="0x1">0</ident>
+        <rmv value="0x0" offbit="0x272" size="0x1">0</rmv>
+        <rdy_to_insert value="0x0" offbit="0x273" size="0x1">0</rdy_to_insert>
+        <encl_bypassed_b value="0x0" offbit="0x274" size="0x1">0</encl_bypassed_b>
+        <encl_bypassed_a value="0x0" offbit="0x275" size="0x1">0</encl_bypassed_a>
+        <do_not_remove value="0x0" offbit="0x276" size="0x1">0</do_not_remove>
+        <app_client_bypassed_a value="0x0" offbit="0x277" size="0x1">0</app_client_bypassed_a>
+        <dev_bypassed_b value="0x0" offbit="0x278" size="0x1">0</dev_bypassed_b>
+        <dev_bypassed_a value="0x0" offbit="0x279" size="0x1">0</dev_bypassed_a>
+        <bypassed_b value="0x0" offbit="0x27A" size="0x1">0</bypassed_b>
+        <bypassed_a value="0x0" offbit="0x27B" size="0x1">0</bypassed_a>
+        <dev_off value="0x0" offbit="0x27C" size="0x1">0</dev_off>
+        <fault_requested value="0x0" offbit="0x27D" size="0x1">0</fault_requested>
+        <fault_sensed value="0x0" offbit="0x27E" size="0x1">0</fault_sensed>
+        <app_client_bypassed_b value="0x0" offbit="0x27F" size="0x1">0</app_client_bypassed_b>
+      </Array_Device>
+      <Array_Device offbit="0x280" size="0x20" offset="0x060">
+        <cmn_stat offbit="0x280" size="0x8" offset="0x060">
+          <elem_stat_code type="enum" value="0x5" offbit="0x280" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x284" size="0x1">0</swap>
+          <PAD offbit="0x285" size="0x1"/>
+          <prdfail value="0x0" offbit="0x286" size="0x1">0</prdfail>
+          <PAD offbit="0x287" size="0x1"/>
+        </cmn_stat>
+        <r_r_abort value="0x0" offbit="0x288" size="0x1">0</r_r_abort>
+        <rebuild_remap value="0x0" offbit="0x289" size="0x1">0</rebuild_remap>
+        <in_failed_array value="0x0" offbit="0x28A" size="0x1">0</in_failed_array>
+        <in_crit_array value="0x0" offbit="0x28B" size="0x1">0</in_crit_array>
+        <cons_check value="0x0" offbit="0x28C" size="0x1">0</cons_check>
+        <hot_spare value="0x0" offbit="0x28D" size="0x1">0</hot_spare>
+        <rsvd_dev value="0x0" offbit="0x28E" size="0x1">0</rsvd_dev>
+        <ok value="0x0" offbit="0x28F" size="0x1">0</ok>
+        <report value="0x0" offbit="0x290" size="0x1">0</report>
+        <ident value="0x0" offbit="0x291" size="0x1">0</ident>
+        <rmv value="0x0" offbit="0x292" size="0x1">0</rmv>
+        <rdy_to_insert value="0x0" offbit="0x293" size="0x1">0</rdy_to_insert>
+        <encl_bypassed_b value="0x0" offbit="0x294" size="0x1">0</encl_bypassed_b>
+        <encl_bypassed_a value="0x0" offbit="0x295" size="0x1">0</encl_bypassed_a>
+        <do_not_remove value="0x0" offbit="0x296" size="0x1">0</do_not_remove>
+        <app_client_bypassed_a value="0x0" offbit="0x297" size="0x1">0</app_client_bypassed_a>
+        <dev_bypassed_b value="0x0" offbit="0x298" size="0x1">0</dev_bypassed_b>
+        <dev_bypassed_a value="0x0" offbit="0x299" size="0x1">0</dev_bypassed_a>
+        <bypassed_b value="0x0" offbit="0x29A" size="0x1">0</bypassed_b>
+        <bypassed_a value="0x0" offbit="0x29B" size="0x1">0</bypassed_a>
+        <dev_off value="0x0" offbit="0x29C" size="0x1">0</dev_off>
+        <fault_requested value="0x0" offbit="0x29D" size="0x1">0</fault_requested>
+        <fault_sensed value="0x0" offbit="0x29E" size="0x1">0</fault_sensed>
+        <app_client_bypassed_b value="0x0" offbit="0x29F" size="0x1">0</app_client_bypassed_b>
+      </Array_Device>
+      <Array_Device offbit="0x2A0" size="0x20" offset="0x064">
+        <cmn_stat offbit="0x2A0" size="0x8" offset="0x064">
+          <elem_stat_code type="enum" value="0x5" offbit="0x2A0" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x2A4" size="0x1">0</swap>
+          <PAD offbit="0x2A5" size="0x1"/>
+          <prdfail value="0x0" offbit="0x2A6" size="0x1">0</prdfail>
+          <PAD offbit="0x2A7" size="0x1"/>
+        </cmn_stat>
+        <r_r_abort value="0x0" offbit="0x2A8" size="0x1">0</r_r_abort>
+        <rebuild_remap value="0x0" offbit="0x2A9" size="0x1">0</rebuild_remap>
+        <in_failed_array value="0x0" offbit="0x2AA" size="0x1">0</in_failed_array>
+        <in_crit_array value="0x0" offbit="0x2AB" size="0x1">0</in_crit_array>
+        <cons_check value="0x0" offbit="0x2AC" size="0x1">0</cons_check>
+        <hot_spare value="0x0" offbit="0x2AD" size="0x1">0</hot_spare>
+        <rsvd_dev value="0x0" offbit="0x2AE" size="0x1">0</rsvd_dev>
+        <ok value="0x0" offbit="0x2AF" size="0x1">0</ok>
+        <report value="0x0" offbit="0x2B0" size="0x1">0</report>
+        <ident value="0x0" offbit="0x2B1" size="0x1">0</ident>
+        <rmv value="0x0" offbit="0x2B2" size="0x1">0</rmv>
+        <rdy_to_insert value="0x0" offbit="0x2B3" size="0x1">0</rdy_to_insert>
+        <encl_bypassed_b value="0x0" offbit="0x2B4" size="0x1">0</encl_bypassed_b>
+        <encl_bypassed_a value="0x0" offbit="0x2B5" size="0x1">0</encl_bypassed_a>
+        <do_not_remove value="0x0" offbit="0x2B6" size="0x1">0</do_not_remove>
+        <app_client_bypassed_a value="0x0" offbit="0x2B7" size="0x1">0</app_client_bypassed_a>
+        <dev_bypassed_b value="0x0" offbit="0x2B8" size="0x1">0</dev_bypassed_b>
+        <dev_bypassed_a value="0x0" offbit="0x2B9" size="0x1">0</dev_bypassed_a>
+        <bypassed_b value="0x0" offbit="0x2BA" size="0x1">0</bypassed_b>
+        <bypassed_a value="0x0" offbit="0x2BB" size="0x1">0</bypassed_a>
+        <dev_off value="0x0" offbit="0x2BC" size="0x1">0</dev_off>
+        <fault_requested value="0x0" offbit="0x2BD" size="0x1">0</fault_requested>
+        <fault_sensed value="0x0" offbit="0x2BE" size="0x1">0</fault_sensed>
+        <app_client_bypassed_b value="0x0" offbit="0x2BF" size="0x1">0</app_client_bypassed_b>
+      </Array_Device>
+      <Array_Device offbit="0x2C0" size="0x20" offset="0x068">
+        <cmn_stat offbit="0x2C0" size="0x8" offset="0x068">
+          <elem_stat_code type="enum" value="0x5" offbit="0x2C0" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x2C4" size="0x1">0</swap>
+          <PAD offbit="0x2C5" size="0x1"/>
+          <prdfail value="0x0" offbit="0x2C6" size="0x1">0</prdfail>
+          <PAD offbit="0x2C7" size="0x1"/>
+        </cmn_stat>
+        <r_r_abort value="0x0" offbit="0x2C8" size="0x1">0</r_r_abort>
+        <rebuild_remap value="0x0" offbit="0x2C9" size="0x1">0</rebuild_remap>
+        <in_failed_array value="0x0" offbit="0x2CA" size="0x1">0</in_failed_array>
+        <in_crit_array value="0x0" offbit="0x2CB" size="0x1">0</in_crit_array>
+        <cons_check value="0x0" offbit="0x2CC" size="0x1">0</cons_check>
+        <hot_spare value="0x0" offbit="0x2CD" size="0x1">0</hot_spare>
+        <rsvd_dev value="0x0" offbit="0x2CE" size="0x1">0</rsvd_dev>
+        <ok value="0x0" offbit="0x2CF" size="0x1">0</ok>
+        <report value="0x0" offbit="0x2D0" size="0x1">0</report>
+        <ident value="0x0" offbit="0x2D1" size="0x1">0</ident>
+        <rmv value="0x0" offbit="0x2D2" size="0x1">0</rmv>
+        <rdy_to_insert value="0x0" offbit="0x2D3" size="0x1">0</rdy_to_insert>
+        <encl_bypassed_b value="0x0" offbit="0x2D4" size="0x1">0</encl_bypassed_b>
+        <encl_bypassed_a value="0x0" offbit="0x2D5" size="0x1">0</encl_bypassed_a>
+        <do_not_remove value="0x0" offbit="0x2D6" size="0x1">0</do_not_remove>
+        <app_client_bypassed_a value="0x0" offbit="0x2D7" size="0x1">0</app_client_bypassed_a>
+        <dev_bypassed_b value="0x0" offbit="0x2D8" size="0x1">0</dev_bypassed_b>
+        <dev_bypassed_a value="0x0" offbit="0x2D9" size="0x1">0</dev_bypassed_a>
+        <bypassed_b value="0x0" offbit="0x2DA" size="0x1">0</bypassed_b>
+        <bypassed_a value="0x0" offbit="0x2DB" size="0x1">0</bypassed_a>
+        <dev_off value="0x0" offbit="0x2DC" size="0x1">0</dev_off>
+        <fault_requested value="0x0" offbit="0x2DD" size="0x1">0</fault_requested>
+        <fault_sensed value="0x0" offbit="0x2DE" size="0x1">0</fault_sensed>
+        <app_client_bypassed_b value="0x0" offbit="0x2DF" size="0x1">0</app_client_bypassed_b>
+      </Array_Device>
+      <Array_Device offbit="0x2E0" size="0x20" offset="0x06C">
+        <cmn_stat offbit="0x2E0" size="0x8" offset="0x06C">
+          <elem_stat_code type="enum" value="0x5" offbit="0x2E0" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x2E4" size="0x1">0</swap>
+          <PAD offbit="0x2E5" size="0x1"/>
+          <prdfail value="0x0" offbit="0x2E6" size="0x1">0</prdfail>
+          <PAD offbit="0x2E7" size="0x1"/>
+        </cmn_stat>
+        <r_r_abort value="0x0" offbit="0x2E8" size="0x1">0</r_r_abort>
+        <rebuild_remap value="0x0" offbit="0x2E9" size="0x1">0</rebuild_remap>
+        <in_failed_array value="0x0" offbit="0x2EA" size="0x1">0</in_failed_array>
+        <in_crit_array value="0x0" offbit="0x2EB" size="0x1">0</in_crit_array>
+        <cons_check value="0x0" offbit="0x2EC" size="0x1">0</cons_check>
+        <hot_spare value="0x0" offbit="0x2ED" size="0x1">0</hot_spare>
+        <rsvd_dev value="0x0" offbit="0x2EE" size="0x1">0</rsvd_dev>
+        <ok value="0x0" offbit="0x2EF" size="0x1">0</ok>
+        <report value="0x0" offbit="0x2F0" size="0x1">0</report>
+        <ident value="0x0" offbit="0x2F1" size="0x1">0</ident>
+        <rmv value="0x0" offbit="0x2F2" size="0x1">0</rmv>
+        <rdy_to_insert value="0x0" offbit="0x2F3" size="0x1">0</rdy_to_insert>
+        <encl_bypassed_b value="0x0" offbit="0x2F4" size="0x1">0</encl_bypassed_b>
+        <encl_bypassed_a value="0x0" offbit="0x2F5" size="0x1">0</encl_bypassed_a>
+        <do_not_remove value="0x0" offbit="0x2F6" size="0x1">0</do_not_remove>
+        <app_client_bypassed_a value="0x0" offbit="0x2F7" size="0x1">0</app_client_bypassed_a>
+        <dev_bypassed_b value="0x0" offbit="0x2F8" size="0x1">0</dev_bypassed_b>
+        <dev_bypassed_a value="0x0" offbit="0x2F9" size="0x1">0</dev_bypassed_a>
+        <bypassed_b value="0x0" offbit="0x2FA" size="0x1">0</bypassed_b>
+        <bypassed_a value="0x0" offbit="0x2FB" size="0x1">0</bypassed_a>
+        <dev_off value="0x0" offbit="0x2FC" size="0x1">0</dev_off>
+        <fault_requested value="0x0" offbit="0x2FD" size="0x1">0</fault_requested>
+        <fault_sensed value="0x0" offbit="0x2FE" size="0x1">0</fault_sensed>
+        <app_client_bypassed_b value="0x0" offbit="0x2FF" size="0x1">0</app_client_bypassed_b>
+      </Array_Device>
+      <Array_Device offbit="0x300" size="0x20" offset="0x070">
+        <cmn_stat offbit="0x300" size="0x8" offset="0x070">
+          <elem_stat_code type="enum" value="0x5" offbit="0x300" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x304" size="0x1">0</swap>
+          <PAD offbit="0x305" size="0x1"/>
+          <prdfail value="0x0" offbit="0x306" size="0x1">0</prdfail>
+          <PAD offbit="0x307" size="0x1"/>
+        </cmn_stat>
+        <r_r_abort value="0x0" offbit="0x308" size="0x1">0</r_r_abort>
+        <rebuild_remap value="0x0" offbit="0x309" size="0x1">0</rebuild_remap>
+        <in_failed_array value="0x0" offbit="0x30A" size="0x1">0</in_failed_array>
+        <in_crit_array value="0x0" offbit="0x30B" size="0x1">0</in_crit_array>
+        <cons_check value="0x0" offbit="0x30C" size="0x1">0</cons_check>
+        <hot_spare value="0x0" offbit="0x30D" size="0x1">0</hot_spare>
+        <rsvd_dev value="0x0" offbit="0x30E" size="0x1">0</rsvd_dev>
+        <ok value="0x0" offbit="0x30F" size="0x1">0</ok>
+        <report value="0x0" offbit="0x310" size="0x1">0</report>
+        <ident value="0x0" offbit="0x311" size="0x1">0</ident>
+        <rmv value="0x0" offbit="0x312" size="0x1">0</rmv>
+        <rdy_to_insert value="0x0" offbit="0x313" size="0x1">0</rdy_to_insert>
+        <encl_bypassed_b value="0x0" offbit="0x314" size="0x1">0</encl_bypassed_b>
+        <encl_bypassed_a value="0x0" offbit="0x315" size="0x1">0</encl_bypassed_a>
+        <do_not_remove value="0x0" offbit="0x316" size="0x1">0</do_not_remove>
+        <app_client_bypassed_a value="0x0" offbit="0x317" size="0x1">0</app_client_bypassed_a>
+        <dev_bypassed_b value="0x0" offbit="0x318" size="0x1">0</dev_bypassed_b>
+        <dev_bypassed_a value="0x0" offbit="0x319" size="0x1">0</dev_bypassed_a>
+        <bypassed_b value="0x0" offbit="0x31A" size="0x1">0</bypassed_b>
+        <bypassed_a value="0x0" offbit="0x31B" size="0x1">0</bypassed_a>
+        <dev_off value="0x0" offbit="0x31C" size="0x1">0</dev_off>
+        <fault_requested value="0x0" offbit="0x31D" size="0x1">0</fault_requested>
+        <fault_sensed value="0x0" offbit="0x31E" size="0x1">0</fault_sensed>
+        <app_client_bypassed_b value="0x0" offbit="0x31F" size="0x1">0</app_client_bypassed_b>
+      </Array_Device>
+      <Array_Device offbit="0x320" size="0x20" offset="0x074">
+        <cmn_stat offbit="0x320" size="0x8" offset="0x074">
+          <elem_stat_code type="enum" value="0x5" offbit="0x320" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x324" size="0x1">0</swap>
+          <PAD offbit="0x325" size="0x1"/>
+          <prdfail value="0x0" offbit="0x326" size="0x1">0</prdfail>
+          <PAD offbit="0x327" size="0x1"/>
+        </cmn_stat>
+        <r_r_abort value="0x0" offbit="0x328" size="0x1">0</r_r_abort>
+        <rebuild_remap value="0x0" offbit="0x329" size="0x1">0</rebuild_remap>
+        <in_failed_array value="0x0" offbit="0x32A" size="0x1">0</in_failed_array>
+        <in_crit_array value="0x0" offbit="0x32B" size="0x1">0</in_crit_array>
+        <cons_check value="0x0" offbit="0x32C" size="0x1">0</cons_check>
+        <hot_spare value="0x0" offbit="0x32D" size="0x1">0</hot_spare>
+        <rsvd_dev value="0x0" offbit="0x32E" size="0x1">0</rsvd_dev>
+        <ok value="0x0" offbit="0x32F" size="0x1">0</ok>
+        <report value="0x0" offbit="0x330" size="0x1">0</report>
+        <ident value="0x0" offbit="0x331" size="0x1">0</ident>
+        <rmv value="0x0" offbit="0x332" size="0x1">0</rmv>
+        <rdy_to_insert value="0x0" offbit="0x333" size="0x1">0</rdy_to_insert>
+        <encl_bypassed_b value="0x0" offbit="0x334" size="0x1">0</encl_bypassed_b>
+        <encl_bypassed_a value="0x0" offbit="0x335" size="0x1">0</encl_bypassed_a>
+        <do_not_remove value="0x0" offbit="0x336" size="0x1">0</do_not_remove>
+        <app_client_bypassed_a value="0x0" offbit="0x337" size="0x1">0</app_client_bypassed_a>
+        <dev_bypassed_b value="0x0" offbit="0x338" size="0x1">0</dev_bypassed_b>
+        <dev_bypassed_a value="0x0" offbit="0x339" size="0x1">0</dev_bypassed_a>
+        <bypassed_b value="0x0" offbit="0x33A" size="0x1">0</bypassed_b>
+        <bypassed_a value="0x0" offbit="0x33B" size="0x1">0</bypassed_a>
+        <dev_off value="0x0" offbit="0x33C" size="0x1">0</dev_off>
+        <fault_requested value="0x0" offbit="0x33D" size="0x1">0</fault_requested>
+        <fault_sensed value="0x0" offbit="0x33E" size="0x1">0</fault_sensed>
+        <app_client_bypassed_b value="0x0" offbit="0x33F" size="0x1">0</app_client_bypassed_b>
+      </Array_Device>
+      <Array_Device offbit="0x340" size="0x20" offset="0x078">
+        <cmn_stat offbit="0x340" size="0x8" offset="0x078">
+          <elem_stat_code type="enum" value="0x5" offbit="0x340" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x344" size="0x1">0</swap>
+          <PAD offbit="0x345" size="0x1"/>
+          <prdfail value="0x0" offbit="0x346" size="0x1">0</prdfail>
+          <PAD offbit="0x347" size="0x1"/>
+        </cmn_stat>
+        <r_r_abort value="0x0" offbit="0x348" size="0x1">0</r_r_abort>
+        <rebuild_remap value="0x0" offbit="0x349" size="0x1">0</rebuild_remap>
+        <in_failed_array value="0x0" offbit="0x34A" size="0x1">0</in_failed_array>
+        <in_crit_array value="0x0" offbit="0x34B" size="0x1">0</in_crit_array>
+        <cons_check value="0x0" offbit="0x34C" size="0x1">0</cons_check>
+        <hot_spare value="0x0" offbit="0x34D" size="0x1">0</hot_spare>
+        <rsvd_dev value="0x0" offbit="0x34E" size="0x1">0</rsvd_dev>
+        <ok value="0x0" offbit="0x34F" size="0x1">0</ok>
+        <report value="0x0" offbit="0x350" size="0x1">0</report>
+        <ident value="0x0" offbit="0x351" size="0x1">0</ident>
+        <rmv value="0x0" offbit="0x352" size="0x1">0</rmv>
+        <rdy_to_insert value="0x0" offbit="0x353" size="0x1">0</rdy_to_insert>
+        <encl_bypassed_b value="0x0" offbit="0x354" size="0x1">0</encl_bypassed_b>
+        <encl_bypassed_a value="0x0" offbit="0x355" size="0x1">0</encl_bypassed_a>
+        <do_not_remove value="0x0" offbit="0x356" size="0x1">0</do_not_remove>
+        <app_client_bypassed_a value="0x0" offbit="0x357" size="0x1">0</app_client_bypassed_a>
+        <dev_bypassed_b value="0x0" offbit="0x358" size="0x1">0</dev_bypassed_b>
+        <dev_bypassed_a value="0x0" offbit="0x359" size="0x1">0</dev_bypassed_a>
+        <bypassed_b value="0x0" offbit="0x35A" size="0x1">0</bypassed_b>
+        <bypassed_a value="0x0" offbit="0x35B" size="0x1">0</bypassed_a>
+        <dev_off value="0x0" offbit="0x35C" size="0x1">0</dev_off>
+        <fault_requested value="0x0" offbit="0x35D" size="0x1">0</fault_requested>
+        <fault_sensed value="0x0" offbit="0x35E" size="0x1">0</fault_sensed>
+        <app_client_bypassed_b value="0x0" offbit="0x35F" size="0x1">0</app_client_bypassed_b>
+      </Array_Device>
+      <Array_Device offbit="0x360" size="0x20" offset="0x07C">
+        <cmn_stat offbit="0x360" size="0x8" offset="0x07C">
+          <elem_stat_code type="enum" value="0x5" offbit="0x360" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x364" size="0x1">0</swap>
+          <PAD offbit="0x365" size="0x1"/>
+          <prdfail value="0x0" offbit="0x366" size="0x1">0</prdfail>
+          <PAD offbit="0x367" size="0x1"/>
+        </cmn_stat>
+        <r_r_abort value="0x0" offbit="0x368" size="0x1">0</r_r_abort>
+        <rebuild_remap value="0x0" offbit="0x369" size="0x1">0</rebuild_remap>
+        <in_failed_array value="0x0" offbit="0x36A" size="0x1">0</in_failed_array>
+        <in_crit_array value="0x0" offbit="0x36B" size="0x1">0</in_crit_array>
+        <cons_check value="0x0" offbit="0x36C" size="0x1">0</cons_check>
+        <hot_spare value="0x0" offbit="0x36D" size="0x1">0</hot_spare>
+        <rsvd_dev value="0x0" offbit="0x36E" size="0x1">0</rsvd_dev>
+        <ok value="0x0" offbit="0x36F" size="0x1">0</ok>
+        <report value="0x0" offbit="0x370" size="0x1">0</report>
+        <ident value="0x0" offbit="0x371" size="0x1">0</ident>
+        <rmv value="0x0" offbit="0x372" size="0x1">0</rmv>
+        <rdy_to_insert value="0x0" offbit="0x373" size="0x1">0</rdy_to_insert>
+        <encl_bypassed_b value="0x0" offbit="0x374" size="0x1">0</encl_bypassed_b>
+        <encl_bypassed_a value="0x0" offbit="0x375" size="0x1">0</encl_bypassed_a>
+        <do_not_remove value="0x0" offbit="0x376" size="0x1">0</do_not_remove>
+        <app_client_bypassed_a value="0x0" offbit="0x377" size="0x1">0</app_client_bypassed_a>
+        <dev_bypassed_b value="0x0" offbit="0x378" size="0x1">0</dev_bypassed_b>
+        <dev_bypassed_a value="0x0" offbit="0x379" size="0x1">0</dev_bypassed_a>
+        <bypassed_b value="0x0" offbit="0x37A" size="0x1">0</bypassed_b>
+        <bypassed_a value="0x0" offbit="0x37B" size="0x1">0</bypassed_a>
+        <dev_off value="0x0" offbit="0x37C" size="0x1">0</dev_off>
+        <fault_requested value="0x0" offbit="0x37D" size="0x1">0</fault_requested>
+        <fault_sensed value="0x0" offbit="0x37E" size="0x1">0</fault_sensed>
+        <app_client_bypassed_b value="0x0" offbit="0x37F" size="0x1">0</app_client_bypassed_b>
+      </Array_Device>
+      <Array_Device offbit="0x380" size="0x20" offset="0x080">
+        <cmn_stat offbit="0x380" size="0x8" offset="0x080">
+          <elem_stat_code type="enum" value="0x5" offbit="0x380" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x384" size="0x1">0</swap>
+          <PAD offbit="0x385" size="0x1"/>
+          <prdfail value="0x0" offbit="0x386" size="0x1">0</prdfail>
+          <PAD offbit="0x387" size="0x1"/>
+        </cmn_stat>
+        <r_r_abort value="0x0" offbit="0x388" size="0x1">0</r_r_abort>
+        <rebuild_remap value="0x0" offbit="0x389" size="0x1">0</rebuild_remap>
+        <in_failed_array value="0x0" offbit="0x38A" size="0x1">0</in_failed_array>
+        <in_crit_array value="0x0" offbit="0x38B" size="0x1">0</in_crit_array>
+        <cons_check value="0x0" offbit="0x38C" size="0x1">0</cons_check>
+        <hot_spare value="0x0" offbit="0x38D" size="0x1">0</hot_spare>
+        <rsvd_dev value="0x0" offbit="0x38E" size="0x1">0</rsvd_dev>
+        <ok value="0x0" offbit="0x38F" size="0x1">0</ok>
+        <report value="0x0" offbit="0x390" size="0x1">0</report>
+        <ident value="0x0" offbit="0x391" size="0x1">0</ident>
+        <rmv value="0x0" offbit="0x392" size="0x1">0</rmv>
+        <rdy_to_insert value="0x0" offbit="0x393" size="0x1">0</rdy_to_insert>
+        <encl_bypassed_b value="0x0" offbit="0x394" size="0x1">0</encl_bypassed_b>
+        <encl_bypassed_a value="0x0" offbit="0x395" size="0x1">0</encl_bypassed_a>
+        <do_not_remove value="0x0" offbit="0x396" size="0x1">0</do_not_remove>
+        <app_client_bypassed_a value="0x0" offbit="0x397" size="0x1">0</app_client_bypassed_a>
+        <dev_bypassed_b value="0x0" offbit="0x398" size="0x1">0</dev_bypassed_b>
+        <dev_bypassed_a value="0x0" offbit="0x399" size="0x1">0</dev_bypassed_a>
+        <bypassed_b value="0x0" offbit="0x39A" size="0x1">0</bypassed_b>
+        <bypassed_a value="0x0" offbit="0x39B" size="0x1">0</bypassed_a>
+        <dev_off value="0x0" offbit="0x39C" size="0x1">0</dev_off>
+        <fault_requested value="0x0" offbit="0x39D" size="0x1">0</fault_requested>
+        <fault_sensed value="0x0" offbit="0x39E" size="0x1">0</fault_sensed>
+        <app_client_bypassed_b value="0x0" offbit="0x39F" size="0x1">0</app_client_bypassed_b>
+      </Array_Device>
+      <Array_Device offbit="0x3A0" size="0x20" offset="0x084">
+        <cmn_stat offbit="0x3A0" size="0x8" offset="0x084">
+          <elem_stat_code type="enum" value="0x5" offbit="0x3A0" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x3A4" size="0x1">0</swap>
+          <PAD offbit="0x3A5" size="0x1"/>
+          <prdfail value="0x0" offbit="0x3A6" size="0x1">0</prdfail>
+          <PAD offbit="0x3A7" size="0x1"/>
+        </cmn_stat>
+        <r_r_abort value="0x0" offbit="0x3A8" size="0x1">0</r_r_abort>
+        <rebuild_remap value="0x0" offbit="0x3A9" size="0x1">0</rebuild_remap>
+        <in_failed_array value="0x0" offbit="0x3AA" size="0x1">0</in_failed_array>
+        <in_crit_array value="0x0" offbit="0x3AB" size="0x1">0</in_crit_array>
+        <cons_check value="0x0" offbit="0x3AC" size="0x1">0</cons_check>
+        <hot_spare value="0x0" offbit="0x3AD" size="0x1">0</hot_spare>
+        <rsvd_dev value="0x0" offbit="0x3AE" size="0x1">0</rsvd_dev>
+        <ok value="0x0" offbit="0x3AF" size="0x1">0</ok>
+        <report value="0x0" offbit="0x3B0" size="0x1">0</report>
+        <ident value="0x0" offbit="0x3B1" size="0x1">0</ident>
+        <rmv value="0x0" offbit="0x3B2" size="0x1">0</rmv>
+        <rdy_to_insert value="0x0" offbit="0x3B3" size="0x1">0</rdy_to_insert>
+        <encl_bypassed_b value="0x0" offbit="0x3B4" size="0x1">0</encl_bypassed_b>
+        <encl_bypassed_a value="0x0" offbit="0x3B5" size="0x1">0</encl_bypassed_a>
+        <do_not_remove value="0x0" offbit="0x3B6" size="0x1">0</do_not_remove>
+        <app_client_bypassed_a value="0x0" offbit="0x3B7" size="0x1">0</app_client_bypassed_a>
+        <dev_bypassed_b value="0x0" offbit="0x3B8" size="0x1">0</dev_bypassed_b>
+        <dev_bypassed_a value="0x0" offbit="0x3B9" size="0x1">0</dev_bypassed_a>
+        <bypassed_b value="0x0" offbit="0x3BA" size="0x1">0</bypassed_b>
+        <bypassed_a value="0x0" offbit="0x3BB" size="0x1">0</bypassed_a>
+        <dev_off value="0x0" offbit="0x3BC" size="0x1">0</dev_off>
+        <fault_requested value="0x0" offbit="0x3BD" size="0x1">0</fault_requested>
+        <fault_sensed value="0x0" offbit="0x3BE" size="0x1">0</fault_sensed>
+        <app_client_bypassed_b value="0x0" offbit="0x3BF" size="0x1">0</app_client_bypassed_b>
+      </Array_Device>
+      <Array_Device offbit="0x3C0" size="0x20" offset="0x088">
+        <cmn_stat offbit="0x3C0" size="0x8" offset="0x088">
+          <elem_stat_code type="enum" value="0x5" offbit="0x3C0" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x3C4" size="0x1">0</swap>
+          <PAD offbit="0x3C5" size="0x1"/>
+          <prdfail value="0x0" offbit="0x3C6" size="0x1">0</prdfail>
+          <PAD offbit="0x3C7" size="0x1"/>
+        </cmn_stat>
+        <r_r_abort value="0x0" offbit="0x3C8" size="0x1">0</r_r_abort>
+        <rebuild_remap value="0x0" offbit="0x3C9" size="0x1">0</rebuild_remap>
+        <in_failed_array value="0x0" offbit="0x3CA" size="0x1">0</in_failed_array>
+        <in_crit_array value="0x0" offbit="0x3CB" size="0x1">0</in_crit_array>
+        <cons_check value="0x0" offbit="0x3CC" size="0x1">0</cons_check>
+        <hot_spare value="0x0" offbit="0x3CD" size="0x1">0</hot_spare>
+        <rsvd_dev value="0x0" offbit="0x3CE" size="0x1">0</rsvd_dev>
+        <ok value="0x0" offbit="0x3CF" size="0x1">0</ok>
+        <report value="0x0" offbit="0x3D0" size="0x1">0</report>
+        <ident value="0x0" offbit="0x3D1" size="0x1">0</ident>
+        <rmv value="0x0" offbit="0x3D2" size="0x1">0</rmv>
+        <rdy_to_insert value="0x0" offbit="0x3D3" size="0x1">0</rdy_to_insert>
+        <encl_bypassed_b value="0x0" offbit="0x3D4" size="0x1">0</encl_bypassed_b>
+        <encl_bypassed_a value="0x0" offbit="0x3D5" size="0x1">0</encl_bypassed_a>
+        <do_not_remove value="0x0" offbit="0x3D6" size="0x1">0</do_not_remove>
+        <app_client_bypassed_a value="0x0" offbit="0x3D7" size="0x1">0</app_client_bypassed_a>
+        <dev_bypassed_b value="0x0" offbit="0x3D8" size="0x1">0</dev_bypassed_b>
+        <dev_bypassed_a value="0x0" offbit="0x3D9" size="0x1">0</dev_bypassed_a>
+        <bypassed_b value="0x0" offbit="0x3DA" size="0x1">0</bypassed_b>
+        <bypassed_a value="0x0" offbit="0x3DB" size="0x1">0</bypassed_a>
+        <dev_off value="0x0" offbit="0x3DC" size="0x1">0</dev_off>
+        <fault_requested value="0x0" offbit="0x3DD" size="0x1">0</fault_requested>
+        <fault_sensed value="0x0" offbit="0x3DE" size="0x1">0</fault_sensed>
+        <app_client_bypassed_b value="0x0" offbit="0x3DF" size="0x1">0</app_client_bypassed_b>
+      </Array_Device>
+      <Array_Device offbit="0x3E0" size="0x20" offset="0x08C">
+        <cmn_stat offbit="0x3E0" size="0x8" offset="0x08C">
+          <elem_stat_code type="enum" value="0x5" offbit="0x3E0" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x3E4" size="0x1">0</swap>
+          <PAD offbit="0x3E5" size="0x1"/>
+          <prdfail value="0x0" offbit="0x3E6" size="0x1">0</prdfail>
+          <PAD offbit="0x3E7" size="0x1"/>
+        </cmn_stat>
+        <r_r_abort value="0x0" offbit="0x3E8" size="0x1">0</r_r_abort>
+        <rebuild_remap value="0x0" offbit="0x3E9" size="0x1">0</rebuild_remap>
+        <in_failed_array value="0x0" offbit="0x3EA" size="0x1">0</in_failed_array>
+        <in_crit_array value="0x0" offbit="0x3EB" size="0x1">0</in_crit_array>
+        <cons_check value="0x0" offbit="0x3EC" size="0x1">0</cons_check>
+        <hot_spare value="0x0" offbit="0x3ED" size="0x1">0</hot_spare>
+        <rsvd_dev value="0x0" offbit="0x3EE" size="0x1">0</rsvd_dev>
+        <ok value="0x0" offbit="0x3EF" size="0x1">0</ok>
+        <report value="0x0" offbit="0x3F0" size="0x1">0</report>
+        <ident value="0x0" offbit="0x3F1" size="0x1">0</ident>
+        <rmv value="0x0" offbit="0x3F2" size="0x1">0</rmv>
+        <rdy_to_insert value="0x0" offbit="0x3F3" size="0x1">0</rdy_to_insert>
+        <encl_bypassed_b value="0x0" offbit="0x3F4" size="0x1">0</encl_bypassed_b>
+        <encl_bypassed_a value="0x0" offbit="0x3F5" size="0x1">0</encl_bypassed_a>
+        <do_not_remove value="0x0" offbit="0x3F6" size="0x1">0</do_not_remove>
+        <app_client_bypassed_a value="0x0" offbit="0x3F7" size="0x1">0</app_client_bypassed_a>
+        <dev_bypassed_b value="0x0" offbit="0x3F8" size="0x1">0</dev_bypassed_b>
+        <dev_bypassed_a value="0x0" offbit="0x3F9" size="0x1">0</dev_bypassed_a>
+        <bypassed_b value="0x0" offbit="0x3FA" size="0x1">0</bypassed_b>
+        <bypassed_a value="0x0" offbit="0x3FB" size="0x1">0</bypassed_a>
+        <dev_off value="0x0" offbit="0x3FC" size="0x1">0</dev_off>
+        <fault_requested value="0x0" offbit="0x3FD" size="0x1">0</fault_requested>
+        <fault_sensed value="0x0" offbit="0x3FE" size="0x1">0</fault_sensed>
+        <app_client_bypassed_b value="0x0" offbit="0x3FF" size="0x1">0</app_client_bypassed_b>
+      </Array_Device>
+      <Array_Device offbit="0x400" size="0x20" offset="0x090">
+        <cmn_stat offbit="0x400" size="0x8" offset="0x090">
+          <elem_stat_code type="enum" value="0x5" offbit="0x400" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x404" size="0x1">0</swap>
+          <PAD offbit="0x405" size="0x1"/>
+          <prdfail value="0x0" offbit="0x406" size="0x1">0</prdfail>
+          <PAD offbit="0x407" size="0x1"/>
+        </cmn_stat>
+        <r_r_abort value="0x0" offbit="0x408" size="0x1">0</r_r_abort>
+        <rebuild_remap value="0x0" offbit="0x409" size="0x1">0</rebuild_remap>
+        <in_failed_array value="0x0" offbit="0x40A" size="0x1">0</in_failed_array>
+        <in_crit_array value="0x0" offbit="0x40B" size="0x1">0</in_crit_array>
+        <cons_check value="0x0" offbit="0x40C" size="0x1">0</cons_check>
+        <hot_spare value="0x0" offbit="0x40D" size="0x1">0</hot_spare>
+        <rsvd_dev value="0x0" offbit="0x40E" size="0x1">0</rsvd_dev>
+        <ok value="0x0" offbit="0x40F" size="0x1">0</ok>
+        <report value="0x0" offbit="0x410" size="0x1">0</report>
+        <ident value="0x0" offbit="0x411" size="0x1">0</ident>
+        <rmv value="0x0" offbit="0x412" size="0x1">0</rmv>
+        <rdy_to_insert value="0x0" offbit="0x413" size="0x1">0</rdy_to_insert>
+        <encl_bypassed_b value="0x0" offbit="0x414" size="0x1">0</encl_bypassed_b>
+        <encl_bypassed_a value="0x0" offbit="0x415" size="0x1">0</encl_bypassed_a>
+        <do_not_remove value="0x0" offbit="0x416" size="0x1">0</do_not_remove>
+        <app_client_bypassed_a value="0x0" offbit="0x417" size="0x1">0</app_client_bypassed_a>
+        <dev_bypassed_b value="0x0" offbit="0x418" size="0x1">0</dev_bypassed_b>
+        <dev_bypassed_a value="0x0" offbit="0x419" size="0x1">0</dev_bypassed_a>
+        <bypassed_b value="0x0" offbit="0x41A" size="0x1">0</bypassed_b>
+        <bypassed_a value="0x0" offbit="0x41B" size="0x1">0</bypassed_a>
+        <dev_off value="0x0" offbit="0x41C" size="0x1">0</dev_off>
+        <fault_requested value="0x0" offbit="0x41D" size="0x1">0</fault_requested>
+        <fault_sensed value="0x0" offbit="0x41E" size="0x1">0</fault_sensed>
+        <app_client_bypassed_b value="0x0" offbit="0x41F" size="0x1">0</app_client_bypassed_b>
+      </Array_Device>
+    </ARRAY_DEV_SLOT>
+    <ENCL offbit="0x420" size="0x40" offset="0x094">
+      <LCC_D_Overall offbit="0x420" size="0x20" offset="0x094">
+        <cmn_stat offbit="0x420" size="0x8" offset="0x094">
+          <elem_stat_code type="enum" value="0x1" offbit="0x420" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x424" size="0x1">0</swap>
+          <PAD offbit="0x425" size="0x1"/>
+          <prdfail value="0x0" offbit="0x426" size="0x1">0</prdfail>
+          <PAD offbit="0x427" size="0x1"/>
+        </cmn_stat>
+        <PAD offbit="0x428" size="0x7"/>
+        <ident value="0x0" offbit="0x42F" size="0x1">0</ident>
+        <warn_ind value="0x0" offbit="0x430" size="0x1">0</warn_ind>
+        <fail_ind value="0x0" offbit="0x431" size="0x1">0</fail_ind>
+        <time_until_pwr_cycle value="0x00" offbit="0x432" size="0x6">0</time_until_pwr_cycle>
+        <warn_req value="0x0" offbit="0x438" size="0x1">0</warn_req>
+        <fail_req value="0x0" offbit="0x439" size="0x1">0</fail_req>
+        <pwr_cycle_duration value="0x00" offbit="0x43A" size="0x6">0</pwr_cycle_duration>
+      </LCC_D_Overall>
+      <LCC_D offbit="0x440" size="0x20" offset="0x098">
+        <cmn_stat offbit="0x440" size="0x8" offset="0x098">
+          <elem_stat_code type="enum" value="0x1" offbit="0x440" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x444" size="0x1">0</swap>
+          <PAD offbit="0x445" size="0x1"/>
+          <prdfail value="0x0" offbit="0x446" size="0x1">0</prdfail>
+          <PAD offbit="0x447" size="0x1"/>
+        </cmn_stat>
+        <PAD offbit="0x448" size="0x7"/>
+        <ident value="0x0" offbit="0x44F" size="0x1">0</ident>
+        <warn_ind value="0x0" offbit="0x450" size="0x1">0</warn_ind>
+        <fail_ind value="0x0" offbit="0x451" size="0x1">0</fail_ind>
+        <time_until_pwr_cycle value="0x00" offbit="0x452" size="0x6">0</time_until_pwr_cycle>
+        <warn_req value="0x0" offbit="0x458" size="0x1">0</warn_req>
+        <fail_req value="0x0" offbit="0x459" size="0x1">0</fail_req>
+        <pwr_cycle_duration value="0x00" offbit="0x45A" size="0x6">0</pwr_cycle_duration>
+      </LCC_D>
+    </ENCL>
+    <EXP_PHY offbit="0x460" size="0x4C0" offset="0x09C">
+      <Expander_Phy_Overall offbit="0x460" size="0x20" offset="0x09C">
+        <cmn_stat offbit="0x460" size="0x8" offset="0x09C">
+          <elem_stat_code type="enum" value="0x7" offbit="0x460" size="0x4">NOT_AVAILABLE</elem_stat_code>
+          <swap value="0x0" offbit="0x464" size="0x1">0</swap>
+          <PAD offbit="0x465" size="0x1"/>
+          <prdfail value="0x0" offbit="0x466" size="0x1">0</prdfail>
+          <PAD offbit="0x467" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x00" offbit="0x468" size="0x8">0</exp_index>
+        <phy_id value="0x00" offbit="0x470" size="0x7">0</phy_id>
+        <force_disabled value="0x0" offbit="0x477" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x478" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x479" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x47A" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x47B" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x47C" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x47D" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x1" offbit="0x47E" size="0x1">1</link_rdy>
+        <phy_rdy value="0x1" offbit="0x47F" size="0x1">1</phy_rdy>
+      </Expander_Phy_Overall>
+      <Expander_Phy offbit="0x480" size="0x20" offset="0x0A0">
+        <cmn_stat offbit="0x480" size="0x8" offset="0x0A0">
+          <elem_stat_code type="enum" value="0x1" offbit="0x480" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x484" size="0x1">0</swap>
+          <PAD offbit="0x485" size="0x1"/>
+          <prdfail value="0x0" offbit="0x486" size="0x1">0</prdfail>
+          <PAD offbit="0x487" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x488" size="0x8">68</exp_index>
+        <phy_id value="0x00" offbit="0x490" size="0x7">0</phy_id>
+        <force_disabled value="0x0" offbit="0x497" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x498" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x499" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x49A" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x49B" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x49C" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x49D" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x49E" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x49F" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x4A0" size="0x20" offset="0x0A4">
+        <cmn_stat offbit="0x4A0" size="0x8" offset="0x0A4">
+          <elem_stat_code type="enum" value="0x1" offbit="0x4A0" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x4A4" size="0x1">0</swap>
+          <PAD offbit="0x4A5" size="0x1"/>
+          <prdfail value="0x0" offbit="0x4A6" size="0x1">0</prdfail>
+          <PAD offbit="0x4A7" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x4A8" size="0x8">68</exp_index>
+        <phy_id value="0x01" offbit="0x4B0" size="0x7">1</phy_id>
+        <force_disabled value="0x0" offbit="0x4B7" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x4B8" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x4B9" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x4BA" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x4BB" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x4BC" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x4BD" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x4BE" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x4BF" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x4C0" size="0x20" offset="0x0A8">
+        <cmn_stat offbit="0x4C0" size="0x8" offset="0x0A8">
+          <elem_stat_code type="enum" value="0x1" offbit="0x4C0" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x4C4" size="0x1">0</swap>
+          <PAD offbit="0x4C5" size="0x1"/>
+          <prdfail value="0x0" offbit="0x4C6" size="0x1">0</prdfail>
+          <PAD offbit="0x4C7" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x4C8" size="0x8">68</exp_index>
+        <phy_id value="0x02" offbit="0x4D0" size="0x7">2</phy_id>
+        <force_disabled value="0x0" offbit="0x4D7" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x4D8" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x4D9" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x4DA" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x4DB" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x4DC" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x4DD" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x4DE" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x4DF" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x4E0" size="0x20" offset="0x0AC">
+        <cmn_stat offbit="0x4E0" size="0x8" offset="0x0AC">
+          <elem_stat_code type="enum" value="0x1" offbit="0x4E0" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x4E4" size="0x1">0</swap>
+          <PAD offbit="0x4E5" size="0x1"/>
+          <prdfail value="0x0" offbit="0x4E6" size="0x1">0</prdfail>
+          <PAD offbit="0x4E7" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x4E8" size="0x8">68</exp_index>
+        <phy_id value="0x03" offbit="0x4F0" size="0x7">3</phy_id>
+        <force_disabled value="0x0" offbit="0x4F7" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x4F8" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x4F9" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x4FA" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x4FB" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x4FC" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x4FD" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x4FE" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x4FF" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x500" size="0x20" offset="0x0B0">
+        <cmn_stat offbit="0x500" size="0x8" offset="0x0B0">
+          <elem_stat_code type="enum" value="0x1" offbit="0x500" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x504" size="0x1">0</swap>
+          <PAD offbit="0x505" size="0x1"/>
+          <prdfail value="0x0" offbit="0x506" size="0x1">0</prdfail>
+          <PAD offbit="0x507" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x508" size="0x8">68</exp_index>
+        <phy_id value="0x04" offbit="0x510" size="0x7">4</phy_id>
+        <force_disabled value="0x0" offbit="0x517" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x518" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x519" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x51A" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x51B" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x51C" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x51D" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x51E" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x51F" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x520" size="0x20" offset="0x0B4">
+        <cmn_stat offbit="0x520" size="0x8" offset="0x0B4">
+          <elem_stat_code type="enum" value="0x1" offbit="0x520" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x524" size="0x1">0</swap>
+          <PAD offbit="0x525" size="0x1"/>
+          <prdfail value="0x0" offbit="0x526" size="0x1">0</prdfail>
+          <PAD offbit="0x527" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x528" size="0x8">68</exp_index>
+        <phy_id value="0x05" offbit="0x530" size="0x7">5</phy_id>
+        <force_disabled value="0x0" offbit="0x537" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x538" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x539" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x53A" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x53B" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x53C" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x53D" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x53E" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x53F" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x540" size="0x20" offset="0x0B8">
+        <cmn_stat offbit="0x540" size="0x8" offset="0x0B8">
+          <elem_stat_code type="enum" value="0x1" offbit="0x540" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x544" size="0x1">0</swap>
+          <PAD offbit="0x545" size="0x1"/>
+          <prdfail value="0x0" offbit="0x546" size="0x1">0</prdfail>
+          <PAD offbit="0x547" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x548" size="0x8">68</exp_index>
+        <phy_id value="0x06" offbit="0x550" size="0x7">6</phy_id>
+        <force_disabled value="0x0" offbit="0x557" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x558" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x559" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x55A" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x55B" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x55C" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x55D" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x55E" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x55F" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x560" size="0x20" offset="0x0BC">
+        <cmn_stat offbit="0x560" size="0x8" offset="0x0BC">
+          <elem_stat_code type="enum" value="0x1" offbit="0x560" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x564" size="0x1">0</swap>
+          <PAD offbit="0x565" size="0x1"/>
+          <prdfail value="0x0" offbit="0x566" size="0x1">0</prdfail>
+          <PAD offbit="0x567" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x568" size="0x8">68</exp_index>
+        <phy_id value="0x07" offbit="0x570" size="0x7">7</phy_id>
+        <force_disabled value="0x0" offbit="0x577" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x578" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x579" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x57A" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x57B" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x57C" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x57D" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x57E" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x57F" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x580" size="0x20" offset="0x0C0">
+        <cmn_stat offbit="0x580" size="0x8" offset="0x0C0">
+          <elem_stat_code type="enum" value="0x1" offbit="0x580" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x584" size="0x1">0</swap>
+          <PAD offbit="0x585" size="0x1"/>
+          <prdfail value="0x0" offbit="0x586" size="0x1">0</prdfail>
+          <PAD offbit="0x587" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x588" size="0x8">68</exp_index>
+        <phy_id value="0x08" offbit="0x590" size="0x7">8</phy_id>
+        <force_disabled value="0x0" offbit="0x597" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x598" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x599" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x59A" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x59B" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x59C" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x59D" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x59E" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x59F" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x5A0" size="0x20" offset="0x0C4">
+        <cmn_stat offbit="0x5A0" size="0x8" offset="0x0C4">
+          <elem_stat_code type="enum" value="0x1" offbit="0x5A0" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x5A4" size="0x1">0</swap>
+          <PAD offbit="0x5A5" size="0x1"/>
+          <prdfail value="0x0" offbit="0x5A6" size="0x1">0</prdfail>
+          <PAD offbit="0x5A7" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x5A8" size="0x8">68</exp_index>
+        <phy_id value="0x09" offbit="0x5B0" size="0x7">9</phy_id>
+        <force_disabled value="0x0" offbit="0x5B7" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x5B8" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x5B9" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x5BA" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x5BB" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x5BC" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x5BD" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x5BE" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x5BF" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x5C0" size="0x20" offset="0x0C8">
+        <cmn_stat offbit="0x5C0" size="0x8" offset="0x0C8">
+          <elem_stat_code type="enum" value="0x1" offbit="0x5C0" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x5C4" size="0x1">0</swap>
+          <PAD offbit="0x5C5" size="0x1"/>
+          <prdfail value="0x0" offbit="0x5C6" size="0x1">0</prdfail>
+          <PAD offbit="0x5C7" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x5C8" size="0x8">68</exp_index>
+        <phy_id value="0x0A" offbit="0x5D0" size="0x7">10</phy_id>
+        <force_disabled value="0x0" offbit="0x5D7" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x5D8" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x5D9" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x5DA" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x5DB" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x5DC" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x5DD" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x5DE" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x5DF" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x5E0" size="0x20" offset="0x0CC">
+        <cmn_stat offbit="0x5E0" size="0x8" offset="0x0CC">
+          <elem_stat_code type="enum" value="0x1" offbit="0x5E0" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x5E4" size="0x1">0</swap>
+          <PAD offbit="0x5E5" size="0x1"/>
+          <prdfail value="0x0" offbit="0x5E6" size="0x1">0</prdfail>
+          <PAD offbit="0x5E7" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x5E8" size="0x8">68</exp_index>
+        <phy_id value="0x0B" offbit="0x5F0" size="0x7">11</phy_id>
+        <force_disabled value="0x0" offbit="0x5F7" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x5F8" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x5F9" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x5FA" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x5FB" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x5FC" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x5FD" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x5FE" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x5FF" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x600" size="0x20" offset="0x0D0">
+        <cmn_stat offbit="0x600" size="0x8" offset="0x0D0">
+          <elem_stat_code type="enum" value="0x1" offbit="0x600" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x604" size="0x1">0</swap>
+          <PAD offbit="0x605" size="0x1"/>
+          <prdfail value="0x0" offbit="0x606" size="0x1">0</prdfail>
+          <PAD offbit="0x607" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x608" size="0x8">68</exp_index>
+        <phy_id value="0x0C" offbit="0x610" size="0x7">12</phy_id>
+        <force_disabled value="0x0" offbit="0x617" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x618" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x619" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x61A" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x61B" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x61C" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x61D" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x61E" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x61F" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x620" size="0x20" offset="0x0D4">
+        <cmn_stat offbit="0x620" size="0x8" offset="0x0D4">
+          <elem_stat_code type="enum" value="0x1" offbit="0x620" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x624" size="0x1">0</swap>
+          <PAD offbit="0x625" size="0x1"/>
+          <prdfail value="0x0" offbit="0x626" size="0x1">0</prdfail>
+          <PAD offbit="0x627" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x628" size="0x8">68</exp_index>
+        <phy_id value="0x0D" offbit="0x630" size="0x7">13</phy_id>
+        <force_disabled value="0x0" offbit="0x637" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x638" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x639" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x63A" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x63B" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x63C" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x63D" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x63E" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x63F" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x640" size="0x20" offset="0x0D8">
+        <cmn_stat offbit="0x640" size="0x8" offset="0x0D8">
+          <elem_stat_code type="enum" value="0x1" offbit="0x640" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x644" size="0x1">0</swap>
+          <PAD offbit="0x645" size="0x1"/>
+          <prdfail value="0x0" offbit="0x646" size="0x1">0</prdfail>
+          <PAD offbit="0x647" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x648" size="0x8">68</exp_index>
+        <phy_id value="0x0E" offbit="0x650" size="0x7">14</phy_id>
+        <force_disabled value="0x0" offbit="0x657" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x658" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x659" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x65A" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x65B" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x65C" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x65D" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x65E" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x65F" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x660" size="0x20" offset="0x0DC">
+        <cmn_stat offbit="0x660" size="0x8" offset="0x0DC">
+          <elem_stat_code type="enum" value="0x1" offbit="0x660" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x664" size="0x1">0</swap>
+          <PAD offbit="0x665" size="0x1"/>
+          <prdfail value="0x0" offbit="0x666" size="0x1">0</prdfail>
+          <PAD offbit="0x667" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x668" size="0x8">68</exp_index>
+        <phy_id value="0x0F" offbit="0x670" size="0x7">15</phy_id>
+        <force_disabled value="0x0" offbit="0x677" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x678" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x679" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x67A" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x67B" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x67C" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x67D" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x67E" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x67F" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x680" size="0x20" offset="0x0E0">
+        <cmn_stat offbit="0x680" size="0x8" offset="0x0E0">
+          <elem_stat_code type="enum" value="0x1" offbit="0x680" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x684" size="0x1">0</swap>
+          <PAD offbit="0x685" size="0x1"/>
+          <prdfail value="0x0" offbit="0x686" size="0x1">0</prdfail>
+          <PAD offbit="0x687" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x688" size="0x8">68</exp_index>
+        <phy_id value="0x10" offbit="0x690" size="0x7">16</phy_id>
+        <force_disabled value="0x0" offbit="0x697" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x698" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x699" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x69A" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x69B" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x69C" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x69D" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x69E" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x69F" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x6A0" size="0x20" offset="0x0E4">
+        <cmn_stat offbit="0x6A0" size="0x8" offset="0x0E4">
+          <elem_stat_code type="enum" value="0x1" offbit="0x6A0" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x6A4" size="0x1">0</swap>
+          <PAD offbit="0x6A5" size="0x1"/>
+          <prdfail value="0x0" offbit="0x6A6" size="0x1">0</prdfail>
+          <PAD offbit="0x6A7" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x6A8" size="0x8">68</exp_index>
+        <phy_id value="0x11" offbit="0x6B0" size="0x7">17</phy_id>
+        <force_disabled value="0x0" offbit="0x6B7" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x6B8" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x6B9" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x6BA" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x6BB" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x6BC" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x6BD" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x6BE" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x6BF" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x6C0" size="0x20" offset="0x0E8">
+        <cmn_stat offbit="0x6C0" size="0x8" offset="0x0E8">
+          <elem_stat_code type="enum" value="0x1" offbit="0x6C0" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x6C4" size="0x1">0</swap>
+          <PAD offbit="0x6C5" size="0x1"/>
+          <prdfail value="0x0" offbit="0x6C6" size="0x1">0</prdfail>
+          <PAD offbit="0x6C7" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x6C8" size="0x8">68</exp_index>
+        <phy_id value="0x12" offbit="0x6D0" size="0x7">18</phy_id>
+        <force_disabled value="0x0" offbit="0x6D7" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x6D8" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x6D9" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x6DA" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x6DB" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x6DC" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x6DD" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x6DE" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x6DF" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x6E0" size="0x20" offset="0x0EC">
+        <cmn_stat offbit="0x6E0" size="0x8" offset="0x0EC">
+          <elem_stat_code type="enum" value="0x1" offbit="0x6E0" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x6E4" size="0x1">0</swap>
+          <PAD offbit="0x6E5" size="0x1"/>
+          <prdfail value="0x0" offbit="0x6E6" size="0x1">0</prdfail>
+          <PAD offbit="0x6E7" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x6E8" size="0x8">68</exp_index>
+        <phy_id value="0x13" offbit="0x6F0" size="0x7">19</phy_id>
+        <force_disabled value="0x0" offbit="0x6F7" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x6F8" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x6F9" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x6FA" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x6FB" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x6FC" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x6FD" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x6FE" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x6FF" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x700" size="0x20" offset="0x0F0">
+        <cmn_stat offbit="0x700" size="0x8" offset="0x0F0">
+          <elem_stat_code type="enum" value="0x1" offbit="0x700" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x704" size="0x1">0</swap>
+          <PAD offbit="0x705" size="0x1"/>
+          <prdfail value="0x0" offbit="0x706" size="0x1">0</prdfail>
+          <PAD offbit="0x707" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x708" size="0x8">68</exp_index>
+        <phy_id value="0x14" offbit="0x710" size="0x7">20</phy_id>
+        <force_disabled value="0x0" offbit="0x717" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x718" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x719" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x71A" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x71B" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x71C" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x71D" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x71E" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x71F" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x720" size="0x20" offset="0x0F4">
+        <cmn_stat offbit="0x720" size="0x8" offset="0x0F4">
+          <elem_stat_code type="enum" value="0x1" offbit="0x720" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x724" size="0x1">0</swap>
+          <PAD offbit="0x725" size="0x1"/>
+          <prdfail value="0x0" offbit="0x726" size="0x1">0</prdfail>
+          <PAD offbit="0x727" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x728" size="0x8">68</exp_index>
+        <phy_id value="0x15" offbit="0x730" size="0x7">21</phy_id>
+        <force_disabled value="0x0" offbit="0x737" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x738" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x739" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x73A" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x73B" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x73C" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x73D" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x73E" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x73F" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x740" size="0x20" offset="0x0F8">
+        <cmn_stat offbit="0x740" size="0x8" offset="0x0F8">
+          <elem_stat_code type="enum" value="0x1" offbit="0x740" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x744" size="0x1">0</swap>
+          <PAD offbit="0x745" size="0x1"/>
+          <prdfail value="0x0" offbit="0x746" size="0x1">0</prdfail>
+          <PAD offbit="0x747" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x748" size="0x8">68</exp_index>
+        <phy_id value="0x16" offbit="0x750" size="0x7">22</phy_id>
+        <force_disabled value="0x0" offbit="0x757" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x758" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x759" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x75A" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x75B" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x75C" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x75D" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x75E" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x75F" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x760" size="0x20" offset="0x0FC">
+        <cmn_stat offbit="0x760" size="0x8" offset="0x0FC">
+          <elem_stat_code type="enum" value="0x1" offbit="0x760" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x764" size="0x1">0</swap>
+          <PAD offbit="0x765" size="0x1"/>
+          <prdfail value="0x0" offbit="0x766" size="0x1">0</prdfail>
+          <PAD offbit="0x767" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x768" size="0x8">68</exp_index>
+        <phy_id value="0x17" offbit="0x770" size="0x7">23</phy_id>
+        <force_disabled value="0x0" offbit="0x777" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x778" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x779" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x77A" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x77B" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x77C" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x77D" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x77E" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x77F" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x780" size="0x20" offset="0x100">
+        <cmn_stat offbit="0x780" size="0x8" offset="0x100">
+          <elem_stat_code type="enum" value="0x1" offbit="0x780" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x784" size="0x1">0</swap>
+          <PAD offbit="0x785" size="0x1"/>
+          <prdfail value="0x0" offbit="0x786" size="0x1">0</prdfail>
+          <PAD offbit="0x787" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x788" size="0x8">68</exp_index>
+        <phy_id value="0x18" offbit="0x790" size="0x7">24</phy_id>
+        <force_disabled value="0x0" offbit="0x797" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x798" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x799" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x79A" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x79B" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x79C" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x79D" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x79E" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x79F" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x7A0" size="0x20" offset="0x104">
+        <cmn_stat offbit="0x7A0" size="0x8" offset="0x104">
+          <elem_stat_code type="enum" value="0x1" offbit="0x7A0" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x7A4" size="0x1">0</swap>
+          <PAD offbit="0x7A5" size="0x1"/>
+          <prdfail value="0x0" offbit="0x7A6" size="0x1">0</prdfail>
+          <PAD offbit="0x7A7" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x7A8" size="0x8">68</exp_index>
+        <phy_id value="0x19" offbit="0x7B0" size="0x7">25</phy_id>
+        <force_disabled value="0x0" offbit="0x7B7" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x7B8" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x7B9" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x7BA" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x7BB" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x7BC" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x7BD" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x7BE" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x7BF" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x7C0" size="0x20" offset="0x108">
+        <cmn_stat offbit="0x7C0" size="0x8" offset="0x108">
+          <elem_stat_code type="enum" value="0x1" offbit="0x7C0" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x7C4" size="0x1">0</swap>
+          <PAD offbit="0x7C5" size="0x1"/>
+          <prdfail value="0x0" offbit="0x7C6" size="0x1">0</prdfail>
+          <PAD offbit="0x7C7" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x7C8" size="0x8">68</exp_index>
+        <phy_id value="0x1A" offbit="0x7D0" size="0x7">26</phy_id>
+        <force_disabled value="0x0" offbit="0x7D7" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x7D8" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x7D9" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x7DA" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x7DB" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x7DC" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x7DD" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x7DE" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x7DF" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x7E0" size="0x20" offset="0x10C">
+        <cmn_stat offbit="0x7E0" size="0x8" offset="0x10C">
+          <elem_stat_code type="enum" value="0x1" offbit="0x7E0" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x7E4" size="0x1">0</swap>
+          <PAD offbit="0x7E5" size="0x1"/>
+          <prdfail value="0x0" offbit="0x7E6" size="0x1">0</prdfail>
+          <PAD offbit="0x7E7" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x7E8" size="0x8">68</exp_index>
+        <phy_id value="0x1B" offbit="0x7F0" size="0x7">27</phy_id>
+        <force_disabled value="0x0" offbit="0x7F7" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x7F8" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x7F9" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x7FA" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x7FB" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x7FC" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x7FD" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x7FE" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x7FF" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x800" size="0x20" offset="0x110">
+        <cmn_stat offbit="0x800" size="0x8" offset="0x110">
+          <elem_stat_code type="enum" value="0x1" offbit="0x800" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x804" size="0x1">0</swap>
+          <PAD offbit="0x805" size="0x1"/>
+          <prdfail value="0x0" offbit="0x806" size="0x1">0</prdfail>
+          <PAD offbit="0x807" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x808" size="0x8">68</exp_index>
+        <phy_id value="0x1C" offbit="0x810" size="0x7">28</phy_id>
+        <force_disabled value="0x0" offbit="0x817" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x818" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x819" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x81A" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x81B" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x81C" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x81D" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x81E" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x81F" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x820" size="0x20" offset="0x114">
+        <cmn_stat offbit="0x820" size="0x8" offset="0x114">
+          <elem_stat_code type="enum" value="0x1" offbit="0x820" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x824" size="0x1">0</swap>
+          <PAD offbit="0x825" size="0x1"/>
+          <prdfail value="0x0" offbit="0x826" size="0x1">0</prdfail>
+          <PAD offbit="0x827" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x828" size="0x8">68</exp_index>
+        <phy_id value="0x1D" offbit="0x830" size="0x7">29</phy_id>
+        <force_disabled value="0x0" offbit="0x837" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x838" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x839" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x83A" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x83B" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x83C" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x83D" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x1" offbit="0x83E" size="0x1">1</link_rdy>
+        <phy_rdy value="0x1" offbit="0x83F" size="0x1">1</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x840" size="0x20" offset="0x118">
+        <cmn_stat offbit="0x840" size="0x8" offset="0x118">
+          <elem_stat_code type="enum" value="0x1" offbit="0x840" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x844" size="0x1">0</swap>
+          <PAD offbit="0x845" size="0x1"/>
+          <prdfail value="0x0" offbit="0x846" size="0x1">0</prdfail>
+          <PAD offbit="0x847" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x848" size="0x8">68</exp_index>
+        <phy_id value="0x1E" offbit="0x850" size="0x7">30</phy_id>
+        <force_disabled value="0x0" offbit="0x857" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x858" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x859" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x85A" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x85B" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x85C" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x85D" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x85E" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x85F" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x860" size="0x20" offset="0x11C">
+        <cmn_stat offbit="0x860" size="0x8" offset="0x11C">
+          <elem_stat_code type="enum" value="0x1" offbit="0x860" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x864" size="0x1">0</swap>
+          <PAD offbit="0x865" size="0x1"/>
+          <prdfail value="0x0" offbit="0x866" size="0x1">0</prdfail>
+          <PAD offbit="0x867" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x868" size="0x8">68</exp_index>
+        <phy_id value="0x1F" offbit="0x870" size="0x7">31</phy_id>
+        <force_disabled value="0x0" offbit="0x877" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x878" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x879" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x87A" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x87B" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x87C" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x87D" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x1" offbit="0x87E" size="0x1">1</link_rdy>
+        <phy_rdy value="0x1" offbit="0x87F" size="0x1">1</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x880" size="0x20" offset="0x120">
+        <cmn_stat offbit="0x880" size="0x8" offset="0x120">
+          <elem_stat_code type="enum" value="0x1" offbit="0x880" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x884" size="0x1">0</swap>
+          <PAD offbit="0x885" size="0x1"/>
+          <prdfail value="0x0" offbit="0x886" size="0x1">0</prdfail>
+          <PAD offbit="0x887" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x888" size="0x8">68</exp_index>
+        <phy_id value="0x20" offbit="0x890" size="0x7">32</phy_id>
+        <force_disabled value="0x0" offbit="0x897" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x898" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x899" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x89A" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x89B" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x89C" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x89D" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x1" offbit="0x89E" size="0x1">1</link_rdy>
+        <phy_rdy value="0x1" offbit="0x89F" size="0x1">1</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x8A0" size="0x20" offset="0x124">
+        <cmn_stat offbit="0x8A0" size="0x8" offset="0x124">
+          <elem_stat_code type="enum" value="0x1" offbit="0x8A0" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x8A4" size="0x1">0</swap>
+          <PAD offbit="0x8A5" size="0x1"/>
+          <prdfail value="0x0" offbit="0x8A6" size="0x1">0</prdfail>
+          <PAD offbit="0x8A7" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x8A8" size="0x8">68</exp_index>
+        <phy_id value="0x21" offbit="0x8B0" size="0x7">33</phy_id>
+        <force_disabled value="0x0" offbit="0x8B7" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x8B8" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x8B9" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x8BA" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x8BB" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x8BC" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x8BD" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x1" offbit="0x8BE" size="0x1">1</link_rdy>
+        <phy_rdy value="0x1" offbit="0x8BF" size="0x1">1</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x8C0" size="0x20" offset="0x128">
+        <cmn_stat offbit="0x8C0" size="0x8" offset="0x128">
+          <elem_stat_code type="enum" value="0x7" offbit="0x8C0" size="0x4">NOT_AVAILABLE</elem_stat_code>
+          <swap value="0x0" offbit="0x8C4" size="0x1">0</swap>
+          <PAD offbit="0x8C5" size="0x1"/>
+          <prdfail value="0x0" offbit="0x8C6" size="0x1">0</prdfail>
+          <PAD offbit="0x8C7" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x8C8" size="0x8">68</exp_index>
+        <phy_id value="0x22" offbit="0x8D0" size="0x7">34</phy_id>
+        <force_disabled value="0x0" offbit="0x8D7" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x8D8" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x8D9" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x8DA" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x8DB" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x8DC" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x8DD" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x8DE" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x8DF" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x8E0" size="0x20" offset="0x12C">
+        <cmn_stat offbit="0x8E0" size="0x8" offset="0x12C">
+          <elem_stat_code type="enum" value="0x7" offbit="0x8E0" size="0x4">NOT_AVAILABLE</elem_stat_code>
+          <swap value="0x0" offbit="0x8E4" size="0x1">0</swap>
+          <PAD offbit="0x8E5" size="0x1"/>
+          <prdfail value="0x0" offbit="0x8E6" size="0x1">0</prdfail>
+          <PAD offbit="0x8E7" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x8E8" size="0x8">68</exp_index>
+        <phy_id value="0x23" offbit="0x8F0" size="0x7">35</phy_id>
+        <force_disabled value="0x0" offbit="0x8F7" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x8F8" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x8F9" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x8FA" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x8FB" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x8FC" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x8FD" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x0" offbit="0x8FE" size="0x1">0</link_rdy>
+        <phy_rdy value="0x0" offbit="0x8FF" size="0x1">0</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0x900" size="0x20" offset="0x130">
+        <cmn_stat offbit="0x900" size="0x8" offset="0x130">
+          <elem_stat_code type="enum" value="0x1" offbit="0x900" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x904" size="0x1">0</swap>
+          <PAD offbit="0x905" size="0x1"/>
+          <prdfail value="0x0" offbit="0x906" size="0x1">0</prdfail>
+          <PAD offbit="0x907" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x44" offbit="0x908" size="0x8">68</exp_index>
+        <phy_id value="0x24" offbit="0x910" size="0x7">36</phy_id>
+        <force_disabled value="0x0" offbit="0x917" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0x918" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0x919" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0x91A" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0x91B" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0x91C" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0x91D" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x1" offbit="0x91E" size="0x1">1</link_rdy>
+        <phy_rdy value="0x1" offbit="0x91F" size="0x1">1</phy_rdy>
+      </Expander_Phy>
+    </EXP_PHY>
+    <SAS_EXP offbit="0x920" size="0x40" offset="0x134">
+      <Expander_D_Overall offbit="0x920" size="0x20" offset="0x134">
+        <cmn_stat offbit="0x920" size="0x8" offset="0x134">
+          <elem_stat_code type="enum" value="0x1" offbit="0x920" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x924" size="0x1">0</swap>
+          <PAD offbit="0x925" size="0x1"/>
+          <prdfail value="0x0" offbit="0x926" size="0x1">0</prdfail>
+          <PAD offbit="0x927" size="0x1"/>
+        </cmn_stat>
+        <PAD offbit="0x928" size="0x6"/>
+        <fail value="0x0" offbit="0x92E" size="0x1">0</fail>
+        <ident value="0x0" offbit="0x92F" size="0x1">0</ident>
+        <PAD offbit="0x930" size="0x8"/>
+        <PAD offbit="0x938" size="0x8"/>
+      </Expander_D_Overall>
+      <Expander_D offbit="0x940" size="0x20" offset="0x138">
+        <cmn_stat offbit="0x940" size="0x8" offset="0x138">
+          <elem_stat_code type="enum" value="0x1" offbit="0x940" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x944" size="0x1">0</swap>
+          <PAD offbit="0x945" size="0x1"/>
+          <prdfail value="0x0" offbit="0x946" size="0x1">0</prdfail>
+          <PAD offbit="0x947" size="0x1"/>
+        </cmn_stat>
+        <PAD offbit="0x948" size="0x6"/>
+        <fail value="0x0" offbit="0x94E" size="0x1">0</fail>
+        <ident value="0x0" offbit="0x94F" size="0x1">0</ident>
+        <PAD offbit="0x950" size="0x8"/>
+        <PAD offbit="0x958" size="0x8"/>
+      </Expander_D>
+    </SAS_EXP>
+    <ESC_ELEC offbit="0x960" size="0x40" offset="0x13C">
+      <Controller_D_Overall offbit="0x960" size="0x20" offset="0x13C">
+        <cmn_stat offbit="0x960" size="0x8" offset="0x13C">
+          <elem_stat_code type="enum" value="0x1" offbit="0x960" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x964" size="0x1">0</swap>
+          <PAD offbit="0x965" size="0x1"/>
+          <prdfail value="0x0" offbit="0x966" size="0x1">0</prdfail>
+          <PAD offbit="0x967" size="0x1"/>
+        </cmn_stat>
+        <PAD offbit="0x968" size="0x6"/>
+        <fail value="0x0" offbit="0x96E" size="0x1">0</fail>
+        <ident value="0x0" offbit="0x96F" size="0x1">0</ident>
+        <report value="0x1" offbit="0x970" size="0x1">1</report>
+        <PAD offbit="0x971" size="0x7"/>
+        <PAD offbit="0x978" size="0x7"/>
+        <hot_swap value="0x1" offbit="0x97F" size="0x1">1</hot_swap>
+      </Controller_D_Overall>
+      <Controller_D offbit="0x980" size="0x20" offset="0x140">
+        <cmn_stat offbit="0x980" size="0x8" offset="0x140">
+          <elem_stat_code type="enum" value="0x1" offbit="0x980" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x984" size="0x1">0</swap>
+          <PAD offbit="0x985" size="0x1"/>
+          <prdfail value="0x0" offbit="0x986" size="0x1">0</prdfail>
+          <PAD offbit="0x987" size="0x1"/>
+        </cmn_stat>
+        <PAD offbit="0x988" size="0x6"/>
+        <fail value="0x0" offbit="0x98E" size="0x1">0</fail>
+        <ident value="0x0" offbit="0x98F" size="0x1">0</ident>
+        <report value="0x1" offbit="0x990" size="0x1">1</report>
+        <PAD offbit="0x991" size="0x7"/>
+        <PAD offbit="0x998" size="0x7"/>
+        <hot_swap value="0x1" offbit="0x99F" size="0x1">1</hot_swap>
+      </Controller_D>
+    </ESC_ELEC>
+    <SAS_CONN offbit="0x9A0" size="0xC0" offset="0x144">
+      <SAS_Connector_D_Overall offbit="0x9A0" size="0x20" offset="0x144">
+        <cmn_stat offbit="0x9A0" size="0x8" offset="0x144">
+          <elem_stat_code type="enum" value="0x1" offbit="0x9A0" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x9A4" size="0x1">0</swap>
+          <PAD offbit="0x9A5" size="0x1"/>
+          <prdfail value="0x0" offbit="0x9A6" size="0x1">0</prdfail>
+          <PAD offbit="0x9A7" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x00" offbit="0x9A8" size="0x7">UNKNOWN</conn_type>
+        <ident value="0x0" offbit="0x9AF" size="0x1">0</ident>
+        <conn_phys_link value="0x00" offbit="0x9B0" size="0x8">0</conn_phys_link>
+        <PAD offbit="0x9B8" size="0x6"/>
+        <fail value="0x0" offbit="0x9BE" size="0x1">0</fail>
+        <PAD offbit="0x9BF" size="0x1"/>
+      </SAS_Connector_D_Overall>
+      <SAS_Connector_D offbit="0x9C0" size="0x20" offset="0x148">
+        <cmn_stat offbit="0x9C0" size="0x8" offset="0x148">
+          <elem_stat_code type="enum" value="0x1" offbit="0x9C0" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x9C4" size="0x1">0</swap>
+          <PAD offbit="0x9C5" size="0x1"/>
+          <prdfail value="0x0" offbit="0x9C6" size="0x1">0</prdfail>
+          <PAD offbit="0x9C7" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x3F" offbit="0x9C8" size="0x7">TYPE_INTERNAL_CONN</conn_type>
+        <ident value="0x0" offbit="0x9CF" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0x9D0" size="0x8">255</conn_phys_link>
+        <PAD offbit="0x9D8" size="0x6"/>
+        <fail value="0x0" offbit="0x9DE" size="0x1">0</fail>
+        <PAD offbit="0x9DF" size="0x1"/>
+      </SAS_Connector_D>
+      <SAS_Connector_D offbit="0x9E0" size="0x20" offset="0x14C">
+        <cmn_stat offbit="0x9E0" size="0x8" offset="0x14C">
+          <elem_stat_code type="enum" value="0x1" offbit="0x9E0" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x9E4" size="0x1">0</swap>
+          <PAD offbit="0x9E5" size="0x1"/>
+          <prdfail value="0x0" offbit="0x9E6" size="0x1">0</prdfail>
+          <PAD offbit="0x9E7" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x3F" offbit="0x9E8" size="0x7">TYPE_INTERNAL_CONN</conn_type>
+        <ident value="0x0" offbit="0x9EF" size="0x1">0</ident>
+        <conn_phys_link value="0x00" offbit="0x9F0" size="0x8">0</conn_phys_link>
+        <PAD offbit="0x9F8" size="0x6"/>
+        <fail value="0x0" offbit="0x9FE" size="0x1">0</fail>
+        <PAD offbit="0x9FF" size="0x1"/>
+      </SAS_Connector_D>
+      <SAS_Connector_D offbit="0xA00" size="0x20" offset="0x150">
+        <cmn_stat offbit="0xA00" size="0x8" offset="0x150">
+          <elem_stat_code type="enum" value="0x1" offbit="0xA00" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0xA04" size="0x1">0</swap>
+          <PAD offbit="0xA05" size="0x1"/>
+          <prdfail value="0x0" offbit="0xA06" size="0x1">0</prdfail>
+          <PAD offbit="0xA07" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x3F" offbit="0xA08" size="0x7">TYPE_INTERNAL_CONN</conn_type>
+        <ident value="0x0" offbit="0xA0F" size="0x1">0</ident>
+        <conn_phys_link value="0x01" offbit="0xA10" size="0x8">1</conn_phys_link>
+        <PAD offbit="0xA18" size="0x6"/>
+        <fail value="0x0" offbit="0xA1E" size="0x1">0</fail>
+        <PAD offbit="0xA1F" size="0x1"/>
+      </SAS_Connector_D>
+      <SAS_Connector_D offbit="0xA20" size="0x20" offset="0x154">
+        <cmn_stat offbit="0xA20" size="0x8" offset="0x154">
+          <elem_stat_code type="enum" value="0x1" offbit="0xA20" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0xA24" size="0x1">0</swap>
+          <PAD offbit="0xA25" size="0x1"/>
+          <prdfail value="0x0" offbit="0xA26" size="0x1">0</prdfail>
+          <PAD offbit="0xA27" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x3F" offbit="0xA28" size="0x7">TYPE_INTERNAL_CONN</conn_type>
+        <ident value="0x0" offbit="0xA2F" size="0x1">0</ident>
+        <conn_phys_link value="0x02" offbit="0xA30" size="0x8">2</conn_phys_link>
+        <PAD offbit="0xA38" size="0x6"/>
+        <fail value="0x0" offbit="0xA3E" size="0x1">0</fail>
+        <PAD offbit="0xA3F" size="0x1"/>
+      </SAS_Connector_D>
+      <SAS_Connector_D offbit="0xA40" size="0x20" offset="0x158">
+        <cmn_stat offbit="0xA40" size="0x8" offset="0x158">
+          <elem_stat_code type="enum" value="0x1" offbit="0xA40" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0xA44" size="0x1">0</swap>
+          <PAD offbit="0xA45" size="0x1"/>
+          <prdfail value="0x0" offbit="0xA46" size="0x1">0</prdfail>
+          <PAD offbit="0xA47" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x3F" offbit="0xA48" size="0x7">TYPE_INTERNAL_CONN</conn_type>
+        <ident value="0x0" offbit="0xA4F" size="0x1">0</ident>
+        <conn_phys_link value="0x03" offbit="0xA50" size="0x8">3</conn_phys_link>
+        <PAD offbit="0xA58" size="0x6"/>
+        <fail value="0x0" offbit="0xA5E" size="0x1">0</fail>
+        <PAD offbit="0xA5F" size="0x1"/>
+      </SAS_Connector_D>
+    </SAS_CONN>
+    <LANG offbit="0xA60" size="0x40" offset="0x15C">
+      <Language_Overall offbit="0xA60" size="0x20" offset="0x15C">
+        <cmn_stat offbit="0xA60" size="0x8" offset="0x15C">
+          <elem_stat_code type="enum" value="0x1" offbit="0xA60" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0xA64" size="0x1">0</swap>
+          <PAD offbit="0xA65" size="0x1"/>
+          <prdfail value="0x0" offbit="0xA66" size="0x1">0</prdfail>
+          <PAD offbit="0xA67" size="0x1"/>
+        </cmn_stat>
+        <PAD offbit="0xA68" size="0x8"/>
+        <lang_code value="0x0000" offbit="0xA70" size="0x10">0</lang_code>
+      </Language_Overall>
+      <Language offbit="0xA80" size="0x20" offset="0x160">
+        <cmn_stat offbit="0xA80" size="0x8" offset="0x160">
+          <elem_stat_code type="enum" value="0x1" offbit="0xA80" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0xA84" size="0x1">0</swap>
+          <PAD offbit="0xA85" size="0x1"/>
+          <prdfail value="0x0" offbit="0xA86" size="0x1">0</prdfail>
+          <PAD offbit="0xA87" size="0x1"/>
+        </cmn_stat>
+        <PAD offbit="0xA88" size="0x8"/>
+        <lang_code value="0x0000" offbit="0xA90" size="0x10">0</lang_code>
+      </Language>
+    </LANG>
+    <ENCL offbit="0xAA0" size="0x40" offset="0x164">
+      <LCC_C_Overall offbit="0xAA0" size="0x20" offset="0x164">
+        <cmn_stat offbit="0xAA0" size="0x8" offset="0x164">
+          <elem_stat_code type="enum" value="0x1" offbit="0xAA0" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0xAA4" size="0x1">0</swap>
+          <PAD offbit="0xAA5" size="0x1"/>
+          <prdfail value="0x0" offbit="0xAA6" size="0x1">0</prdfail>
+          <PAD offbit="0xAA7" size="0x1"/>
+        </cmn_stat>
+        <PAD offbit="0xAA8" size="0x7"/>
+        <ident value="0x0" offbit="0xAAF" size="0x1">0</ident>
+        <warn_ind value="0x0" offbit="0xAB0" size="0x1">0</warn_ind>
+        <fail_ind value="0x0" offbit="0xAB1" size="0x1">0</fail_ind>
+        <time_until_pwr_cycle value="0x00" offbit="0xAB2" size="0x6">0</time_until_pwr_cycle>
+        <warn_req value="0x0" offbit="0xAB8" size="0x1">0</warn_req>
+        <fail_req value="0x0" offbit="0xAB9" size="0x1">0</fail_req>
+        <pwr_cycle_duration value="0x00" offbit="0xABA" size="0x6">0</pwr_cycle_duration>
+      </LCC_C_Overall>
+      <LCC_C offbit="0xAC0" size="0x20" offset="0x168">
+        <cmn_stat offbit="0xAC0" size="0x8" offset="0x168">
+          <elem_stat_code type="enum" value="0x1" offbit="0xAC0" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0xAC4" size="0x1">0</swap>
+          <PAD offbit="0xAC5" size="0x1"/>
+          <prdfail value="0x0" offbit="0xAC6" size="0x1">0</prdfail>
+          <PAD offbit="0xAC7" size="0x1"/>
+        </cmn_stat>
+        <PAD offbit="0xAC8" size="0x7"/>
+        <ident value="0x0" offbit="0xACF" size="0x1">0</ident>
+        <warn_ind value="0x0" offbit="0xAD0" size="0x1">0</warn_ind>
+        <fail_ind value="0x0" offbit="0xAD1" size="0x1">0</fail_ind>
+        <time_until_pwr_cycle value="0x00" offbit="0xAD2" size="0x6">0</time_until_pwr_cycle>
+        <warn_req value="0x0" offbit="0xAD8" size="0x1">0</warn_req>
+        <fail_req value="0x0" offbit="0xAD9" size="0x1">0</fail_req>
+        <pwr_cycle_duration value="0x00" offbit="0xADA" size="0x6">0</pwr_cycle_duration>
+      </LCC_C>
+    </ENCL>
+    <EXP_PHY offbit="0xAE0" size="0xA0" offset="0x16C">
+      <Expander_Phy_Overall offbit="0xAE0" size="0x20" offset="0x16C">
+        <cmn_stat offbit="0xAE0" size="0x8" offset="0x16C">
+          <elem_stat_code type="enum" value="0x1" offbit="0xAE0" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0xAE4" size="0x1">0</swap>
+          <PAD offbit="0xAE5" size="0x1"/>
+          <prdfail value="0x0" offbit="0xAE6" size="0x1">0</prdfail>
+          <PAD offbit="0xAE7" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x00" offbit="0xAE8" size="0x8">0</exp_index>
+        <phy_id value="0x00" offbit="0xAF0" size="0x7">0</phy_id>
+        <force_disabled value="0x0" offbit="0xAF7" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0xAF8" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0xAF9" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0xAFA" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0xAFB" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0xAFC" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0xAFD" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x1" offbit="0xAFE" size="0x1">1</link_rdy>
+        <phy_rdy value="0x1" offbit="0xAFF" size="0x1">1</phy_rdy>
+      </Expander_Phy_Overall>
+      <Expander_Phy offbit="0xB00" size="0x20" offset="0x170">
+        <cmn_stat offbit="0xB00" size="0x8" offset="0x170">
+          <elem_stat_code type="enum" value="0x1" offbit="0xB00" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0xB04" size="0x1">0</swap>
+          <PAD offbit="0xB05" size="0x1"/>
+          <prdfail value="0x0" offbit="0xB06" size="0x1">0</prdfail>
+          <PAD offbit="0xB07" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x51" offbit="0xB08" size="0x8">81</exp_index>
+        <phy_id value="0x00" offbit="0xB10" size="0x7">0</phy_id>
+        <force_disabled value="0x0" offbit="0xB17" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0xB18" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0xB19" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0xB1A" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0xB1B" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0xB1C" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0xB1D" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x1" offbit="0xB1E" size="0x1">1</link_rdy>
+        <phy_rdy value="0x1" offbit="0xB1F" size="0x1">1</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0xB20" size="0x20" offset="0x174">
+        <cmn_stat offbit="0xB20" size="0x8" offset="0x174">
+          <elem_stat_code type="enum" value="0x1" offbit="0xB20" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0xB24" size="0x1">0</swap>
+          <PAD offbit="0xB25" size="0x1"/>
+          <prdfail value="0x0" offbit="0xB26" size="0x1">0</prdfail>
+          <PAD offbit="0xB27" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x51" offbit="0xB28" size="0x8">81</exp_index>
+        <phy_id value="0x01" offbit="0xB30" size="0x7">1</phy_id>
+        <force_disabled value="0x0" offbit="0xB37" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0xB38" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0xB39" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0xB3A" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0xB3B" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0xB3C" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0xB3D" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x1" offbit="0xB3E" size="0x1">1</link_rdy>
+        <phy_rdy value="0x1" offbit="0xB3F" size="0x1">1</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0xB40" size="0x20" offset="0x178">
+        <cmn_stat offbit="0xB40" size="0x8" offset="0x178">
+          <elem_stat_code type="enum" value="0x1" offbit="0xB40" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0xB44" size="0x1">0</swap>
+          <PAD offbit="0xB45" size="0x1"/>
+          <prdfail value="0x0" offbit="0xB46" size="0x1">0</prdfail>
+          <PAD offbit="0xB47" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x51" offbit="0xB48" size="0x8">81</exp_index>
+        <phy_id value="0x02" offbit="0xB50" size="0x7">2</phy_id>
+        <force_disabled value="0x0" offbit="0xB57" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0xB58" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0xB59" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0xB5A" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0xB5B" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0xB5C" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0xB5D" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x1" offbit="0xB5E" size="0x1">1</link_rdy>
+        <phy_rdy value="0x1" offbit="0xB5F" size="0x1">1</phy_rdy>
+      </Expander_Phy>
+      <Expander_Phy offbit="0xB60" size="0x20" offset="0x17C">
+        <cmn_stat offbit="0xB60" size="0x8" offset="0x17C">
+          <elem_stat_code type="enum" value="0x1" offbit="0xB60" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0xB64" size="0x1">0</swap>
+          <PAD offbit="0xB65" size="0x1"/>
+          <prdfail value="0x0" offbit="0xB66" size="0x1">0</prdfail>
+          <PAD offbit="0xB67" size="0x1"/>
+        </cmn_stat>
+        <exp_index value="0x51" offbit="0xB68" size="0x8">81</exp_index>
+        <phy_id value="0x03" offbit="0xB70" size="0x7">3</phy_id>
+        <force_disabled value="0x0" offbit="0xB77" size="0x1">0</force_disabled>
+        <phy_mon_disabled value="0x0" offbit="0xB78" size="0x1">0</phy_mon_disabled>
+        <clr_err_cntrs value="0x0" offbit="0xB79" size="0x1">0</clr_err_cntrs>
+        <fb_active value="0x0" offbit="0xB7A" size="0x1">0</fb_active>
+        <carrier_detect value="0x0" offbit="0xB7B" size="0x1">0</carrier_detect>
+        <sata_spinup_hold value="0x0" offbit="0xB7C" size="0x1">0</sata_spinup_hold>
+        <spinup_enabled value="0x1" offbit="0xB7D" size="0x1">1</spinup_enabled>
+        <link_rdy value="0x1" offbit="0xB7E" size="0x1">1</link_rdy>
+        <phy_rdy value="0x1" offbit="0xB7F" size="0x1">1</phy_rdy>
+      </Expander_Phy>
+    </EXP_PHY>
+    <SAS_EXP offbit="0xB80" size="0x40" offset="0x180">
+      <Expander_C_Overall offbit="0xB80" size="0x20" offset="0x180">
+        <cmn_stat offbit="0xB80" size="0x8" offset="0x180">
+          <elem_stat_code type="enum" value="0x1" offbit="0xB80" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0xB84" size="0x1">0</swap>
+          <PAD offbit="0xB85" size="0x1"/>
+          <prdfail value="0x0" offbit="0xB86" size="0x1">0</prdfail>
+          <PAD offbit="0xB87" size="0x1"/>
+        </cmn_stat>
+        <PAD offbit="0xB88" size="0x6"/>
+        <fail value="0x0" offbit="0xB8E" size="0x1">0</fail>
+        <ident value="0x0" offbit="0xB8F" size="0x1">0</ident>
+        <PAD offbit="0xB90" size="0x8"/>
+        <PAD offbit="0xB98" size="0x8"/>
+      </Expander_C_Overall>
+      <Expander_C offbit="0xBA0" size="0x20" offset="0x184">
+        <cmn_stat offbit="0xBA0" size="0x8" offset="0x184">
+          <elem_stat_code type="enum" value="0x1" offbit="0xBA0" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0xBA4" size="0x1">0</swap>
+          <PAD offbit="0xBA5" size="0x1"/>
+          <prdfail value="0x0" offbit="0xBA6" size="0x1">0</prdfail>
+          <PAD offbit="0xBA7" size="0x1"/>
+        </cmn_stat>
+        <PAD offbit="0xBA8" size="0x6"/>
+        <fail value="0x0" offbit="0xBAE" size="0x1">0</fail>
+        <ident value="0x0" offbit="0xBAF" size="0x1">0</ident>
+        <PAD offbit="0xBB0" size="0x8"/>
+        <PAD offbit="0xBB8" size="0x8"/>
+      </Expander_C>
+    </SAS_EXP>
+    <ESC_ELEC offbit="0xBC0" size="0x40" offset="0x188">
+      <Controller_C_Overall offbit="0xBC0" size="0x20" offset="0x188">
+        <cmn_stat offbit="0xBC0" size="0x8" offset="0x188">
+          <elem_stat_code type="enum" value="0x1" offbit="0xBC0" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0xBC4" size="0x1">0</swap>
+          <PAD offbit="0xBC5" size="0x1"/>
+          <prdfail value="0x0" offbit="0xBC6" size="0x1">0</prdfail>
+          <PAD offbit="0xBC7" size="0x1"/>
+        </cmn_stat>
+        <PAD offbit="0xBC8" size="0x6"/>
+        <fail value="0x0" offbit="0xBCE" size="0x1">0</fail>
+        <ident value="0x0" offbit="0xBCF" size="0x1">0</ident>
+        <report value="0x0" offbit="0xBD0" size="0x1">0</report>
+        <PAD offbit="0xBD1" size="0x7"/>
+        <PAD offbit="0xBD8" size="0x7"/>
+        <hot_swap value="0x1" offbit="0xBDF" size="0x1">1</hot_swap>
+      </Controller_C_Overall>
+      <Controller_C offbit="0xBE0" size="0x20" offset="0x18C">
+        <cmn_stat offbit="0xBE0" size="0x8" offset="0x18C">
+          <elem_stat_code type="enum" value="0x1" offbit="0xBE0" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0xBE4" size="0x1">0</swap>
+          <PAD offbit="0xBE5" size="0x1"/>
+          <prdfail value="0x0" offbit="0xBE6" size="0x1">0</prdfail>
+          <PAD offbit="0xBE7" size="0x1"/>
+        </cmn_stat>
+        <PAD offbit="0xBE8" size="0x6"/>
+        <fail value="0x0" offbit="0xBEE" size="0x1">0</fail>
+        <ident value="0x0" offbit="0xBEF" size="0x1">0</ident>
+        <report value="0x0" offbit="0xBF0" size="0x1">0</report>
+        <PAD offbit="0xBF1" size="0x7"/>
+        <PAD offbit="0xBF8" size="0x7"/>
+        <hot_swap value="0x1" offbit="0xBFF" size="0x1">1</hot_swap>
+      </Controller_C>
+    </ESC_ELEC>
+    <SAS_CONN offbit="0xC00" size="0xC0" offset="0x190">
+      <SAS_Connector_C_Overall offbit="0xC00" size="0x20" offset="0x190">
+        <cmn_stat offbit="0xC00" size="0x8" offset="0x190">
+          <elem_stat_code type="enum" value="0x1" offbit="0xC00" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0xC04" size="0x1">0</swap>
+          <PAD offbit="0xC05" size="0x1"/>
+          <prdfail value="0x0" offbit="0xC06" size="0x1">0</prdfail>
+          <PAD offbit="0xC07" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x00" offbit="0xC08" size="0x7">UNKNOWN</conn_type>
+        <ident value="0x0" offbit="0xC0F" size="0x1">0</ident>
+        <conn_phys_link value="0x00" offbit="0xC10" size="0x8">0</conn_phys_link>
+        <PAD offbit="0xC18" size="0x6"/>
+        <fail value="0x0" offbit="0xC1E" size="0x1">0</fail>
+        <PAD offbit="0xC1F" size="0x1"/>
+      </SAS_Connector_C_Overall>
+      <SAS_Connector_C offbit="0xC20" size="0x20" offset="0x194">
+        <cmn_stat offbit="0xC20" size="0x8" offset="0x194">
+          <elem_stat_code type="enum" value="0x1" offbit="0xC20" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0xC24" size="0x1">0</swap>
+          <PAD offbit="0xC25" size="0x1"/>
+          <prdfail value="0x0" offbit="0xC26" size="0x1">0</prdfail>
+          <PAD offbit="0xC27" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x3F" offbit="0xC28" size="0x7">TYPE_INTERNAL_CONN</conn_type>
+        <ident value="0x0" offbit="0xC2F" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0xC30" size="0x8">255</conn_phys_link>
+        <PAD offbit="0xC38" size="0x6"/>
+        <fail value="0x0" offbit="0xC3E" size="0x1">0</fail>
+        <PAD offbit="0xC3F" size="0x1"/>
+      </SAS_Connector_C>
+      <SAS_Connector_C offbit="0xC40" size="0x20" offset="0x198">
+        <cmn_stat offbit="0xC40" size="0x8" offset="0x198">
+          <elem_stat_code type="enum" value="0x1" offbit="0xC40" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0xC44" size="0x1">0</swap>
+          <PAD offbit="0xC45" size="0x1"/>
+          <prdfail value="0x0" offbit="0xC46" size="0x1">0</prdfail>
+          <PAD offbit="0xC47" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x3F" offbit="0xC48" size="0x7">TYPE_INTERNAL_CONN</conn_type>
+        <ident value="0x0" offbit="0xC4F" size="0x1">0</ident>
+        <conn_phys_link value="0x00" offbit="0xC50" size="0x8">0</conn_phys_link>
+        <PAD offbit="0xC58" size="0x6"/>
+        <fail value="0x0" offbit="0xC5E" size="0x1">0</fail>
+        <PAD offbit="0xC5F" size="0x1"/>
+      </SAS_Connector_C>
+      <SAS_Connector_C offbit="0xC60" size="0x20" offset="0x19C">
+        <cmn_stat offbit="0xC60" size="0x8" offset="0x19C">
+          <elem_stat_code type="enum" value="0x1" offbit="0xC60" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0xC64" size="0x1">0</swap>
+          <PAD offbit="0xC65" size="0x1"/>
+          <prdfail value="0x0" offbit="0xC66" size="0x1">0</prdfail>
+          <PAD offbit="0xC67" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x3F" offbit="0xC68" size="0x7">TYPE_INTERNAL_CONN</conn_type>
+        <ident value="0x0" offbit="0xC6F" size="0x1">0</ident>
+        <conn_phys_link value="0x01" offbit="0xC70" size="0x8">1</conn_phys_link>
+        <PAD offbit="0xC78" size="0x6"/>
+        <fail value="0x0" offbit="0xC7E" size="0x1">0</fail>
+        <PAD offbit="0xC7F" size="0x1"/>
+      </SAS_Connector_C>
+      <SAS_Connector_C offbit="0xC80" size="0x20" offset="0x1A0">
+        <cmn_stat offbit="0xC80" size="0x8" offset="0x1A0">
+          <elem_stat_code type="enum" value="0x1" offbit="0xC80" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0xC84" size="0x1">0</swap>
+          <PAD offbit="0xC85" size="0x1"/>
+          <prdfail value="0x0" offbit="0xC86" size="0x1">0</prdfail>
+          <PAD offbit="0xC87" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x3F" offbit="0xC88" size="0x7">TYPE_INTERNAL_CONN</conn_type>
+        <ident value="0x0" offbit="0xC8F" size="0x1">0</ident>
+        <conn_phys_link value="0x02" offbit="0xC90" size="0x8">2</conn_phys_link>
+        <PAD offbit="0xC98" size="0x6"/>
+        <fail value="0x0" offbit="0xC9E" size="0x1">0</fail>
+        <PAD offbit="0xC9F" size="0x1"/>
+      </SAS_Connector_C>
+      <SAS_Connector_C offbit="0xCA0" size="0x20" offset="0x1A4">
+        <cmn_stat offbit="0xCA0" size="0x8" offset="0x1A4">
+          <elem_stat_code type="enum" value="0x1" offbit="0xCA0" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0xCA4" size="0x1">0</swap>
+          <PAD offbit="0xCA5" size="0x1"/>
+          <prdfail value="0x0" offbit="0xCA6" size="0x1">0</prdfail>
+          <PAD offbit="0xCA7" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x3F" offbit="0xCA8" size="0x7">TYPE_INTERNAL_CONN</conn_type>
+        <ident value="0x0" offbit="0xCAF" size="0x1">0</ident>
+        <conn_phys_link value="0x03" offbit="0xCB0" size="0x8">3</conn_phys_link>
+        <PAD offbit="0xCB8" size="0x6"/>
+        <fail value="0x0" offbit="0xCBE" size="0x1">0</fail>
+        <PAD offbit="0xCBF" size="0x1"/>
+      </SAS_Connector_C>
+    </SAS_CONN>
+    <ENCL offbit="0xCC0" size="0x40" offset="0x1A8">
+      <Enclosure_Overall offbit="0xCC0" size="0x20" offset="0x1A8">
+        <cmn_stat offbit="0xCC0" size="0x8" offset="0x1A8">
+          <elem_stat_code type="enum" value="0x2" offbit="0xCC0" size="0x4">CRITICAL</elem_stat_code>
+          <swap value="0x0" offbit="0xCC4" size="0x1">0</swap>
+          <PAD offbit="0xCC5" size="0x1"/>
+          <prdfail value="0x0" offbit="0xCC6" size="0x1">0</prdfail>
+          <PAD offbit="0xCC7" size="0x1"/>
+        </cmn_stat>
+        <PAD offbit="0xCC8" size="0x7"/>
+        <ident value="0x0" offbit="0xCCF" size="0x1">0</ident>
+        <warn_ind value="0x0" offbit="0xCD0" size="0x1">0</warn_ind>
+        <fail_ind value="0x0" offbit="0xCD1" size="0x1">0</fail_ind>
+        <time_until_pwr_cycle value="0x00" offbit="0xCD2" size="0x6">0</time_until_pwr_cycle>
+        <warn_req value="0x0" offbit="0xCD8" size="0x1">0</warn_req>
+        <fail_req value="0x0" offbit="0xCD9" size="0x1">0</fail_req>
+        <pwr_cycle_duration value="0x00" offbit="0xCDA" size="0x6">0</pwr_cycle_duration>
+      </Enclosure_Overall>
+      <Enclosure offbit="0xCE0" size="0x20" offset="0x1AC">
+        <cmn_stat offbit="0xCE0" size="0x8" offset="0x1AC">
+          <elem_stat_code type="enum" value="0x2" offbit="0xCE0" size="0x4">CRITICAL</elem_stat_code>
+          <swap value="0x0" offbit="0xCE4" size="0x1">0</swap>
+          <PAD offbit="0xCE5" size="0x1"/>
+          <prdfail value="0x0" offbit="0xCE6" size="0x1">0</prdfail>
+          <PAD offbit="0xCE7" size="0x1"/>
+        </cmn_stat>
+        <PAD offbit="0xCE8" size="0x7"/>
+        <ident value="0x0" offbit="0xCEF" size="0x1">0</ident>
+        <warn_ind value="0x0" offbit="0xCF0" size="0x1">0</warn_ind>
+        <fail_ind value="0x0" offbit="0xCF1" size="0x1">0</fail_ind>
+        <time_until_pwr_cycle value="0x00" offbit="0xCF2" size="0x6">0</time_until_pwr_cycle>
+        <warn_req value="0x0" offbit="0xCF8" size="0x1">0</warn_req>
+        <fail_req value="0x0" offbit="0xCF9" size="0x1">0</fail_req>
+        <pwr_cycle_duration value="0x00" offbit="0xCFA" size="0x6">0</pwr_cycle_duration>
+      </Enclosure>
+    </ENCL>
+    <SAS_CONN offbit="0xD00" size="0x400" offset="0x1B0">
+      <SAS_Connector_M_Overall offbit="0xD00" size="0x20" offset="0x1B0">
+        <cmn_stat offbit="0xD00" size="0x8" offset="0x1B0">
+          <elem_stat_code type="enum" value="0x5" offbit="0xD00" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0xD04" size="0x1">0</swap>
+          <PAD offbit="0xD05" size="0x1"/>
+          <prdfail value="0x0" offbit="0xD06" size="0x1">0</prdfail>
+          <PAD offbit="0xD07" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x00" offbit="0xD08" size="0x7">UNKNOWN</conn_type>
+        <ident value="0x0" offbit="0xD0F" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0xD10" size="0x8">255</conn_phys_link>
+        <PAD offbit="0xD18" size="0x6"/>
+        <fail value="0x0" offbit="0xD1E" size="0x1">0</fail>
+        <PAD offbit="0xD1F" size="0x1"/>
+      </SAS_Connector_M_Overall>
+      <SAS_Connector_M offbit="0xD20" size="0x20" offset="0x1B4">
+        <cmn_stat offbit="0xD20" size="0x8" offset="0x1B4">
+          <elem_stat_code type="enum" value="0x5" offbit="0xD20" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0xD24" size="0x1">0</swap>
+          <PAD offbit="0xD25" size="0x1"/>
+          <prdfail value="0x0" offbit="0xD26" size="0x1">0</prdfail>
+          <PAD offbit="0xD27" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x20" offbit="0xD28" size="0x7">DRIVE</conn_type>
+        <ident value="0x0" offbit="0xD2F" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0xD30" size="0x8">255</conn_phys_link>
+        <PAD offbit="0xD38" size="0x6"/>
+        <fail value="0x0" offbit="0xD3E" size="0x1">0</fail>
+        <PAD offbit="0xD3F" size="0x1"/>
+      </SAS_Connector_M>
+      <SAS_Connector_M offbit="0xD40" size="0x20" offset="0x1B8">
+        <cmn_stat offbit="0xD40" size="0x8" offset="0x1B8">
+          <elem_stat_code type="enum" value="0x5" offbit="0xD40" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0xD44" size="0x1">0</swap>
+          <PAD offbit="0xD45" size="0x1"/>
+          <prdfail value="0x0" offbit="0xD46" size="0x1">0</prdfail>
+          <PAD offbit="0xD47" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x20" offbit="0xD48" size="0x7">DRIVE</conn_type>
+        <ident value="0x0" offbit="0xD4F" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0xD50" size="0x8">255</conn_phys_link>
+        <PAD offbit="0xD58" size="0x6"/>
+        <fail value="0x0" offbit="0xD5E" size="0x1">0</fail>
+        <PAD offbit="0xD5F" size="0x1"/>
+      </SAS_Connector_M>
+      <SAS_Connector_M offbit="0xD60" size="0x20" offset="0x1BC">
+        <cmn_stat offbit="0xD60" size="0x8" offset="0x1BC">
+          <elem_stat_code type="enum" value="0x5" offbit="0xD60" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0xD64" size="0x1">0</swap>
+          <PAD offbit="0xD65" size="0x1"/>
+          <prdfail value="0x0" offbit="0xD66" size="0x1">0</prdfail>
+          <PAD offbit="0xD67" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x20" offbit="0xD68" size="0x7">DRIVE</conn_type>
+        <ident value="0x0" offbit="0xD6F" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0xD70" size="0x8">255</conn_phys_link>
+        <PAD offbit="0xD78" size="0x6"/>
+        <fail value="0x0" offbit="0xD7E" size="0x1">0</fail>
+        <PAD offbit="0xD7F" size="0x1"/>
+      </SAS_Connector_M>
+      <SAS_Connector_M offbit="0xD80" size="0x20" offset="0x1C0">
+        <cmn_stat offbit="0xD80" size="0x8" offset="0x1C0">
+          <elem_stat_code type="enum" value="0x5" offbit="0xD80" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0xD84" size="0x1">0</swap>
+          <PAD offbit="0xD85" size="0x1"/>
+          <prdfail value="0x0" offbit="0xD86" size="0x1">0</prdfail>
+          <PAD offbit="0xD87" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x20" offbit="0xD88" size="0x7">DRIVE</conn_type>
+        <ident value="0x0" offbit="0xD8F" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0xD90" size="0x8">255</conn_phys_link>
+        <PAD offbit="0xD98" size="0x6"/>
+        <fail value="0x0" offbit="0xD9E" size="0x1">0</fail>
+        <PAD offbit="0xD9F" size="0x1"/>
+      </SAS_Connector_M>
+      <SAS_Connector_M offbit="0xDA0" size="0x20" offset="0x1C4">
+        <cmn_stat offbit="0xDA0" size="0x8" offset="0x1C4">
+          <elem_stat_code type="enum" value="0x5" offbit="0xDA0" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0xDA4" size="0x1">0</swap>
+          <PAD offbit="0xDA5" size="0x1"/>
+          <prdfail value="0x0" offbit="0xDA6" size="0x1">0</prdfail>
+          <PAD offbit="0xDA7" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x20" offbit="0xDA8" size="0x7">DRIVE</conn_type>
+        <ident value="0x0" offbit="0xDAF" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0xDB0" size="0x8">255</conn_phys_link>
+        <PAD offbit="0xDB8" size="0x6"/>
+        <fail value="0x0" offbit="0xDBE" size="0x1">0</fail>
+        <PAD offbit="0xDBF" size="0x1"/>
+      </SAS_Connector_M>
+      <SAS_Connector_M offbit="0xDC0" size="0x20" offset="0x1C8">
+        <cmn_stat offbit="0xDC0" size="0x8" offset="0x1C8">
+          <elem_stat_code type="enum" value="0x5" offbit="0xDC0" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0xDC4" size="0x1">0</swap>
+          <PAD offbit="0xDC5" size="0x1"/>
+          <prdfail value="0x0" offbit="0xDC6" size="0x1">0</prdfail>
+          <PAD offbit="0xDC7" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x20" offbit="0xDC8" size="0x7">DRIVE</conn_type>
+        <ident value="0x0" offbit="0xDCF" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0xDD0" size="0x8">255</conn_phys_link>
+        <PAD offbit="0xDD8" size="0x6"/>
+        <fail value="0x0" offbit="0xDDE" size="0x1">0</fail>
+        <PAD offbit="0xDDF" size="0x1"/>
+      </SAS_Connector_M>
+      <SAS_Connector_M offbit="0xDE0" size="0x20" offset="0x1CC">
+        <cmn_stat offbit="0xDE0" size="0x8" offset="0x1CC">
+          <elem_stat_code type="enum" value="0x5" offbit="0xDE0" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0xDE4" size="0x1">0</swap>
+          <PAD offbit="0xDE5" size="0x1"/>
+          <prdfail value="0x0" offbit="0xDE6" size="0x1">0</prdfail>
+          <PAD offbit="0xDE7" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x20" offbit="0xDE8" size="0x7">DRIVE</conn_type>
+        <ident value="0x0" offbit="0xDEF" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0xDF0" size="0x8">255</conn_phys_link>
+        <PAD offbit="0xDF8" size="0x6"/>
+        <fail value="0x0" offbit="0xDFE" size="0x1">0</fail>
+        <PAD offbit="0xDFF" size="0x1"/>
+      </SAS_Connector_M>
+      <SAS_Connector_M offbit="0xE00" size="0x20" offset="0x1D0">
+        <cmn_stat offbit="0xE00" size="0x8" offset="0x1D0">
+          <elem_stat_code type="enum" value="0x5" offbit="0xE00" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0xE04" size="0x1">0</swap>
+          <PAD offbit="0xE05" size="0x1"/>
+          <prdfail value="0x0" offbit="0xE06" size="0x1">0</prdfail>
+          <PAD offbit="0xE07" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x20" offbit="0xE08" size="0x7">DRIVE</conn_type>
+        <ident value="0x0" offbit="0xE0F" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0xE10" size="0x8">255</conn_phys_link>
+        <PAD offbit="0xE18" size="0x6"/>
+        <fail value="0x0" offbit="0xE1E" size="0x1">0</fail>
+        <PAD offbit="0xE1F" size="0x1"/>
+      </SAS_Connector_M>
+      <SAS_Connector_M offbit="0xE20" size="0x20" offset="0x1D4">
+        <cmn_stat offbit="0xE20" size="0x8" offset="0x1D4">
+          <elem_stat_code type="enum" value="0x5" offbit="0xE20" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0xE24" size="0x1">0</swap>
+          <PAD offbit="0xE25" size="0x1"/>
+          <prdfail value="0x0" offbit="0xE26" size="0x1">0</prdfail>
+          <PAD offbit="0xE27" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x20" offbit="0xE28" size="0x7">DRIVE</conn_type>
+        <ident value="0x0" offbit="0xE2F" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0xE30" size="0x8">255</conn_phys_link>
+        <PAD offbit="0xE38" size="0x6"/>
+        <fail value="0x0" offbit="0xE3E" size="0x1">0</fail>
+        <PAD offbit="0xE3F" size="0x1"/>
+      </SAS_Connector_M>
+      <SAS_Connector_M offbit="0xE40" size="0x20" offset="0x1D8">
+        <cmn_stat offbit="0xE40" size="0x8" offset="0x1D8">
+          <elem_stat_code type="enum" value="0x5" offbit="0xE40" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0xE44" size="0x1">0</swap>
+          <PAD offbit="0xE45" size="0x1"/>
+          <prdfail value="0x0" offbit="0xE46" size="0x1">0</prdfail>
+          <PAD offbit="0xE47" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x20" offbit="0xE48" size="0x7">DRIVE</conn_type>
+        <ident value="0x0" offbit="0xE4F" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0xE50" size="0x8">255</conn_phys_link>
+        <PAD offbit="0xE58" size="0x6"/>
+        <fail value="0x0" offbit="0xE5E" size="0x1">0</fail>
+        <PAD offbit="0xE5F" size="0x1"/>
+      </SAS_Connector_M>
+      <SAS_Connector_M offbit="0xE60" size="0x20" offset="0x1DC">
+        <cmn_stat offbit="0xE60" size="0x8" offset="0x1DC">
+          <elem_stat_code type="enum" value="0x5" offbit="0xE60" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0xE64" size="0x1">0</swap>
+          <PAD offbit="0xE65" size="0x1"/>
+          <prdfail value="0x0" offbit="0xE66" size="0x1">0</prdfail>
+          <PAD offbit="0xE67" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x20" offbit="0xE68" size="0x7">DRIVE</conn_type>
+        <ident value="0x0" offbit="0xE6F" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0xE70" size="0x8">255</conn_phys_link>
+        <PAD offbit="0xE78" size="0x6"/>
+        <fail value="0x0" offbit="0xE7E" size="0x1">0</fail>
+        <PAD offbit="0xE7F" size="0x1"/>
+      </SAS_Connector_M>
+      <SAS_Connector_M offbit="0xE80" size="0x20" offset="0x1E0">
+        <cmn_stat offbit="0xE80" size="0x8" offset="0x1E0">
+          <elem_stat_code type="enum" value="0x5" offbit="0xE80" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0xE84" size="0x1">0</swap>
+          <PAD offbit="0xE85" size="0x1"/>
+          <prdfail value="0x0" offbit="0xE86" size="0x1">0</prdfail>
+          <PAD offbit="0xE87" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x20" offbit="0xE88" size="0x7">DRIVE</conn_type>
+        <ident value="0x0" offbit="0xE8F" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0xE90" size="0x8">255</conn_phys_link>
+        <PAD offbit="0xE98" size="0x6"/>
+        <fail value="0x0" offbit="0xE9E" size="0x1">0</fail>
+        <PAD offbit="0xE9F" size="0x1"/>
+      </SAS_Connector_M>
+      <SAS_Connector_M offbit="0xEA0" size="0x20" offset="0x1E4">
+        <cmn_stat offbit="0xEA0" size="0x8" offset="0x1E4">
+          <elem_stat_code type="enum" value="0x5" offbit="0xEA0" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0xEA4" size="0x1">0</swap>
+          <PAD offbit="0xEA5" size="0x1"/>
+          <prdfail value="0x0" offbit="0xEA6" size="0x1">0</prdfail>
+          <PAD offbit="0xEA7" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x20" offbit="0xEA8" size="0x7">DRIVE</conn_type>
+        <ident value="0x0" offbit="0xEAF" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0xEB0" size="0x8">255</conn_phys_link>
+        <PAD offbit="0xEB8" size="0x6"/>
+        <fail value="0x0" offbit="0xEBE" size="0x1">0</fail>
+        <PAD offbit="0xEBF" size="0x1"/>
+      </SAS_Connector_M>
+      <SAS_Connector_M offbit="0xEC0" size="0x20" offset="0x1E8">
+        <cmn_stat offbit="0xEC0" size="0x8" offset="0x1E8">
+          <elem_stat_code type="enum" value="0x5" offbit="0xEC0" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0xEC4" size="0x1">0</swap>
+          <PAD offbit="0xEC5" size="0x1"/>
+          <prdfail value="0x0" offbit="0xEC6" size="0x1">0</prdfail>
+          <PAD offbit="0xEC7" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x20" offbit="0xEC8" size="0x7">DRIVE</conn_type>
+        <ident value="0x0" offbit="0xECF" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0xED0" size="0x8">255</conn_phys_link>
+        <PAD offbit="0xED8" size="0x6"/>
+        <fail value="0x0" offbit="0xEDE" size="0x1">0</fail>
+        <PAD offbit="0xEDF" size="0x1"/>
+      </SAS_Connector_M>
+      <SAS_Connector_M offbit="0xEE0" size="0x20" offset="0x1EC">
+        <cmn_stat offbit="0xEE0" size="0x8" offset="0x1EC">
+          <elem_stat_code type="enum" value="0x5" offbit="0xEE0" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0xEE4" size="0x1">0</swap>
+          <PAD offbit="0xEE5" size="0x1"/>
+          <prdfail value="0x0" offbit="0xEE6" size="0x1">0</prdfail>
+          <PAD offbit="0xEE7" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x20" offbit="0xEE8" size="0x7">DRIVE</conn_type>
+        <ident value="0x0" offbit="0xEEF" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0xEF0" size="0x8">255</conn_phys_link>
+        <PAD offbit="0xEF8" size="0x6"/>
+        <fail value="0x0" offbit="0xEFE" size="0x1">0</fail>
+        <PAD offbit="0xEFF" size="0x1"/>
+      </SAS_Connector_M>
+      <SAS_Connector_M offbit="0xF00" size="0x20" offset="0x1F0">
+        <cmn_stat offbit="0xF00" size="0x8" offset="0x1F0">
+          <elem_stat_code type="enum" value="0x5" offbit="0xF00" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0xF04" size="0x1">0</swap>
+          <PAD offbit="0xF05" size="0x1"/>
+          <prdfail value="0x0" offbit="0xF06" size="0x1">0</prdfail>
+          <PAD offbit="0xF07" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x20" offbit="0xF08" size="0x7">DRIVE</conn_type>
+        <ident value="0x0" offbit="0xF0F" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0xF10" size="0x8">255</conn_phys_link>
+        <PAD offbit="0xF18" size="0x6"/>
+        <fail value="0x0" offbit="0xF1E" size="0x1">0</fail>
+        <PAD offbit="0xF1F" size="0x1"/>
+      </SAS_Connector_M>
+      <SAS_Connector_M offbit="0xF20" size="0x20" offset="0x1F4">
+        <cmn_stat offbit="0xF20" size="0x8" offset="0x1F4">
+          <elem_stat_code type="enum" value="0x5" offbit="0xF20" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0xF24" size="0x1">0</swap>
+          <PAD offbit="0xF25" size="0x1"/>
+          <prdfail value="0x0" offbit="0xF26" size="0x1">0</prdfail>
+          <PAD offbit="0xF27" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x20" offbit="0xF28" size="0x7">DRIVE</conn_type>
+        <ident value="0x0" offbit="0xF2F" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0xF30" size="0x8">255</conn_phys_link>
+        <PAD offbit="0xF38" size="0x6"/>
+        <fail value="0x0" offbit="0xF3E" size="0x1">0</fail>
+        <PAD offbit="0xF3F" size="0x1"/>
+      </SAS_Connector_M>
+      <SAS_Connector_M offbit="0xF40" size="0x20" offset="0x1F8">
+        <cmn_stat offbit="0xF40" size="0x8" offset="0x1F8">
+          <elem_stat_code type="enum" value="0x5" offbit="0xF40" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0xF44" size="0x1">0</swap>
+          <PAD offbit="0xF45" size="0x1"/>
+          <prdfail value="0x0" offbit="0xF46" size="0x1">0</prdfail>
+          <PAD offbit="0xF47" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x20" offbit="0xF48" size="0x7">DRIVE</conn_type>
+        <ident value="0x0" offbit="0xF4F" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0xF50" size="0x8">255</conn_phys_link>
+        <PAD offbit="0xF58" size="0x6"/>
+        <fail value="0x0" offbit="0xF5E" size="0x1">0</fail>
+        <PAD offbit="0xF5F" size="0x1"/>
+      </SAS_Connector_M>
+      <SAS_Connector_M offbit="0xF60" size="0x20" offset="0x1FC">
+        <cmn_stat offbit="0xF60" size="0x8" offset="0x1FC">
+          <elem_stat_code type="enum" value="0x5" offbit="0xF60" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0xF64" size="0x1">0</swap>
+          <PAD offbit="0xF65" size="0x1"/>
+          <prdfail value="0x0" offbit="0xF66" size="0x1">0</prdfail>
+          <PAD offbit="0xF67" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x20" offbit="0xF68" size="0x7">DRIVE</conn_type>
+        <ident value="0x0" offbit="0xF6F" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0xF70" size="0x8">255</conn_phys_link>
+        <PAD offbit="0xF78" size="0x6"/>
+        <fail value="0x0" offbit="0xF7E" size="0x1">0</fail>
+        <PAD offbit="0xF7F" size="0x1"/>
+      </SAS_Connector_M>
+      <SAS_Connector_M offbit="0xF80" size="0x20" offset="0x200">
+        <cmn_stat offbit="0xF80" size="0x8" offset="0x200">
+          <elem_stat_code type="enum" value="0x5" offbit="0xF80" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0xF84" size="0x1">0</swap>
+          <PAD offbit="0xF85" size="0x1"/>
+          <prdfail value="0x0" offbit="0xF86" size="0x1">0</prdfail>
+          <PAD offbit="0xF87" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x20" offbit="0xF88" size="0x7">DRIVE</conn_type>
+        <ident value="0x0" offbit="0xF8F" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0xF90" size="0x8">255</conn_phys_link>
+        <PAD offbit="0xF98" size="0x6"/>
+        <fail value="0x0" offbit="0xF9E" size="0x1">0</fail>
+        <PAD offbit="0xF9F" size="0x1"/>
+      </SAS_Connector_M>
+      <SAS_Connector_M offbit="0xFA0" size="0x20" offset="0x204">
+        <cmn_stat offbit="0xFA0" size="0x8" offset="0x204">
+          <elem_stat_code type="enum" value="0x5" offbit="0xFA0" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0xFA4" size="0x1">0</swap>
+          <PAD offbit="0xFA5" size="0x1"/>
+          <prdfail value="0x0" offbit="0xFA6" size="0x1">0</prdfail>
+          <PAD offbit="0xFA7" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x20" offbit="0xFA8" size="0x7">DRIVE</conn_type>
+        <ident value="0x0" offbit="0xFAF" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0xFB0" size="0x8">255</conn_phys_link>
+        <PAD offbit="0xFB8" size="0x6"/>
+        <fail value="0x0" offbit="0xFBE" size="0x1">0</fail>
+        <PAD offbit="0xFBF" size="0x1"/>
+      </SAS_Connector_M>
+      <SAS_Connector_M offbit="0xFC0" size="0x20" offset="0x208">
+        <cmn_stat offbit="0xFC0" size="0x8" offset="0x208">
+          <elem_stat_code type="enum" value="0x5" offbit="0xFC0" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0xFC4" size="0x1">0</swap>
+          <PAD offbit="0xFC5" size="0x1"/>
+          <prdfail value="0x0" offbit="0xFC6" size="0x1">0</prdfail>
+          <PAD offbit="0xFC7" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x20" offbit="0xFC8" size="0x7">DRIVE</conn_type>
+        <ident value="0x0" offbit="0xFCF" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0xFD0" size="0x8">255</conn_phys_link>
+        <PAD offbit="0xFD8" size="0x6"/>
+        <fail value="0x0" offbit="0xFDE" size="0x1">0</fail>
+        <PAD offbit="0xFDF" size="0x1"/>
+      </SAS_Connector_M>
+      <SAS_Connector_M offbit="0xFE0" size="0x20" offset="0x20C">
+        <cmn_stat offbit="0xFE0" size="0x8" offset="0x20C">
+          <elem_stat_code type="enum" value="0x5" offbit="0xFE0" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0xFE4" size="0x1">0</swap>
+          <PAD offbit="0xFE5" size="0x1"/>
+          <prdfail value="0x0" offbit="0xFE6" size="0x1">0</prdfail>
+          <PAD offbit="0xFE7" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x20" offbit="0xFE8" size="0x7">DRIVE</conn_type>
+        <ident value="0x0" offbit="0xFEF" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0xFF0" size="0x8">255</conn_phys_link>
+        <PAD offbit="0xFF8" size="0x6"/>
+        <fail value="0x0" offbit="0xFFE" size="0x1">0</fail>
+        <PAD offbit="0xFFF" size="0x1"/>
+      </SAS_Connector_M>
+      <SAS_Connector_M offbit="0x1000" size="0x20" offset="0x210">
+        <cmn_stat offbit="0x1000" size="0x8" offset="0x210">
+          <elem_stat_code type="enum" value="0x5" offbit="0x1000" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x1004" size="0x1">0</swap>
+          <PAD offbit="0x1005" size="0x1"/>
+          <prdfail value="0x0" offbit="0x1006" size="0x1">0</prdfail>
+          <PAD offbit="0x1007" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x20" offbit="0x1008" size="0x7">DRIVE</conn_type>
+        <ident value="0x0" offbit="0x100F" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0x1010" size="0x8">255</conn_phys_link>
+        <PAD offbit="0x1018" size="0x6"/>
+        <fail value="0x0" offbit="0x101E" size="0x1">0</fail>
+        <PAD offbit="0x101F" size="0x1"/>
+      </SAS_Connector_M>
+      <SAS_Connector_M offbit="0x1020" size="0x20" offset="0x214">
+        <cmn_stat offbit="0x1020" size="0x8" offset="0x214">
+          <elem_stat_code type="enum" value="0x5" offbit="0x1020" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x1024" size="0x1">0</swap>
+          <PAD offbit="0x1025" size="0x1"/>
+          <prdfail value="0x0" offbit="0x1026" size="0x1">0</prdfail>
+          <PAD offbit="0x1027" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x20" offbit="0x1028" size="0x7">DRIVE</conn_type>
+        <ident value="0x0" offbit="0x102F" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0x1030" size="0x8">255</conn_phys_link>
+        <PAD offbit="0x1038" size="0x6"/>
+        <fail value="0x0" offbit="0x103E" size="0x1">0</fail>
+        <PAD offbit="0x103F" size="0x1"/>
+      </SAS_Connector_M>
+      <SAS_Connector_M offbit="0x1040" size="0x20" offset="0x218">
+        <cmn_stat offbit="0x1040" size="0x8" offset="0x218">
+          <elem_stat_code type="enum" value="0x5" offbit="0x1040" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x1044" size="0x1">0</swap>
+          <PAD offbit="0x1045" size="0x1"/>
+          <prdfail value="0x0" offbit="0x1046" size="0x1">0</prdfail>
+          <PAD offbit="0x1047" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x20" offbit="0x1048" size="0x7">DRIVE</conn_type>
+        <ident value="0x0" offbit="0x104F" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0x1050" size="0x8">255</conn_phys_link>
+        <PAD offbit="0x1058" size="0x6"/>
+        <fail value="0x0" offbit="0x105E" size="0x1">0</fail>
+        <PAD offbit="0x105F" size="0x1"/>
+      </SAS_Connector_M>
+      <SAS_Connector_M offbit="0x1060" size="0x20" offset="0x21C">
+        <cmn_stat offbit="0x1060" size="0x8" offset="0x21C">
+          <elem_stat_code type="enum" value="0x5" offbit="0x1060" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x1064" size="0x1">0</swap>
+          <PAD offbit="0x1065" size="0x1"/>
+          <prdfail value="0x0" offbit="0x1066" size="0x1">0</prdfail>
+          <PAD offbit="0x1067" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x20" offbit="0x1068" size="0x7">DRIVE</conn_type>
+        <ident value="0x0" offbit="0x106F" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0x1070" size="0x8">255</conn_phys_link>
+        <PAD offbit="0x1078" size="0x6"/>
+        <fail value="0x0" offbit="0x107E" size="0x1">0</fail>
+        <PAD offbit="0x107F" size="0x1"/>
+      </SAS_Connector_M>
+      <SAS_Connector_M offbit="0x1080" size="0x20" offset="0x220">
+        <cmn_stat offbit="0x1080" size="0x8" offset="0x220">
+          <elem_stat_code type="enum" value="0x5" offbit="0x1080" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x1084" size="0x1">0</swap>
+          <PAD offbit="0x1085" size="0x1"/>
+          <prdfail value="0x0" offbit="0x1086" size="0x1">0</prdfail>
+          <PAD offbit="0x1087" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x20" offbit="0x1088" size="0x7">DRIVE</conn_type>
+        <ident value="0x0" offbit="0x108F" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0x1090" size="0x8">255</conn_phys_link>
+        <PAD offbit="0x1098" size="0x6"/>
+        <fail value="0x0" offbit="0x109E" size="0x1">0</fail>
+        <PAD offbit="0x109F" size="0x1"/>
+      </SAS_Connector_M>
+      <SAS_Connector_M offbit="0x10A0" size="0x20" offset="0x224">
+        <cmn_stat offbit="0x10A0" size="0x8" offset="0x224">
+          <elem_stat_code type="enum" value="0x5" offbit="0x10A0" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x10A4" size="0x1">0</swap>
+          <PAD offbit="0x10A5" size="0x1"/>
+          <prdfail value="0x0" offbit="0x10A6" size="0x1">0</prdfail>
+          <PAD offbit="0x10A7" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x20" offbit="0x10A8" size="0x7">DRIVE</conn_type>
+        <ident value="0x0" offbit="0x10AF" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0x10B0" size="0x8">255</conn_phys_link>
+        <PAD offbit="0x10B8" size="0x6"/>
+        <fail value="0x0" offbit="0x10BE" size="0x1">0</fail>
+        <PAD offbit="0x10BF" size="0x1"/>
+      </SAS_Connector_M>
+      <SAS_Connector_M offbit="0x10C0" size="0x20" offset="0x228">
+        <cmn_stat offbit="0x10C0" size="0x8" offset="0x228">
+          <elem_stat_code type="enum" value="0x5" offbit="0x10C0" size="0x4">NOT_INSTALLED</elem_stat_code>
+          <swap value="0x0" offbit="0x10C4" size="0x1">0</swap>
+          <PAD offbit="0x10C5" size="0x1"/>
+          <prdfail value="0x0" offbit="0x10C6" size="0x1">0</prdfail>
+          <PAD offbit="0x10C7" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x20" offbit="0x10C8" size="0x7">DRIVE</conn_type>
+        <ident value="0x0" offbit="0x10CF" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0x10D0" size="0x8">255</conn_phys_link>
+        <PAD offbit="0x10D8" size="0x6"/>
+        <fail value="0x0" offbit="0x10DE" size="0x1">0</fail>
+        <PAD offbit="0x10DF" size="0x1"/>
+      </SAS_Connector_M>
+      <SAS_Connector_M offbit="0x10E0" size="0x20" offset="0x22C">
+        <cmn_stat offbit="0x10E0" size="0x8" offset="0x22C">
+          <elem_stat_code type="enum" value="0x1" offbit="0x10E0" size="0x4">OK</elem_stat_code>
+          <swap value="0x0" offbit="0x10E4" size="0x1">0</swap>
+          <PAD offbit="0x10E5" size="0x1"/>
+          <prdfail value="0x0" offbit="0x10E6" size="0x1">0</prdfail>
+          <PAD offbit="0x10E7" size="0x1"/>
+        </cmn_stat>
+        <conn_type type="enum" value="0x2F" offbit="0x10E8" size="0x7">VIRTUAL</conn_type>
+        <ident value="0x0" offbit="0x10EF" size="0x1">0</ident>
+        <conn_phys_link value="0xFF" offbit="0x10F0" size="0x8">255</conn_phys_link>
+        <PAD offbit="0x10F8" size="0x6"/>
+        <fail value="0x0" offbit="0x10FE" size="0x1">0</fail>
+        <PAD offbit="0x10FF" size="0x1"/>
+      </SAS_Connector_M>
+    </SAS_CONN>
+  </stat_elem>
+</SES_STAT>
