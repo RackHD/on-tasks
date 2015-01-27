@@ -29,14 +29,9 @@ describe("Base Job", function () {
         BaseJob = context.Jobclass;
 
         MockJob = function() {
-            // Properties the base constructor will assert exist on the subclass
-            this.logger = injector.get('Logger').initialize(MockJob);
-            this.taskId = uuid.v4();
-            this.options = {};
-            this.context = {};
+            var logger = injector.get('Logger').initialize(MockJob);
+            MockJob.super_.call(this, logger, {}, {}, uuid.v4());
             this.nodeId = "54c69f87c7100ec77bfde17c";
-
-            MockJob.super_.call(this);
         };
 
         util.inherits(MockJob, BaseJob);
