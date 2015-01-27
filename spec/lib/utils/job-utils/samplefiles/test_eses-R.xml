@@ -1,0 +1,634 @@
+<?xml version="1.0"?>
+<REVISION>
+  <PLATFORM value="0x01">PC</PLATFORM>
+  <exp>
+    <dev>
+      <seq_num value="0x00000000">0</seq_num>
+      <port_num value="0x00">0</port_num>
+      <path value="0x00">0</path>
+      <target value="0x0003">3</target>
+      <lun value="0x00">0</lun>
+      <portal value="0x00">0</portal>
+      <vendor_id>EMC     </vendor_id>
+      <product_id>ESES Enclosure  </product_id>
+      <product_revision_level>0001</product_revision_level>
+      <sas_address>50060480E03BF4BE</sas_address>
+      <backend_bus value="0x0000">0</backend_bus>
+      <is_expander value="0x01">1</is_expander>
+      <type value="0x00">UNKNOWN</type>
+    </dev>
+    <elem_prop>
+      <subencl_id>0</subencl_id>
+      <side_name>B</side_name>
+      <prod_id>VOYAGER ICM     </prod_id>
+    </elem_prop>
+    <elem_rev_num>
+      <ps_num>2</ps_num>
+      <sps_num>0</sps_num>
+      <cm_num>3</cm_num>
+    </elem_rev_num>
+    <rev type="EXPANDER_FW_EMA">
+      <MAJOR>8</MAJOR>
+      <MINOR>04</MINOR>
+      <DEBUG></DEBUG>
+      <REV_STR> 804            </REV_STR>
+    </rev>
+    <rev type="EXPANDER_BOOT_LOADER_FW">
+      <MAJOR>0</MAJOR>
+      <MINOR>01</MINOR>
+      <DEBUG></DEBUG>
+      <REV_STR> 001            </REV_STR>
+    </rev>
+    <rev type="INIT_STR">
+      <MAJOR>0</MAJOR>
+      <MINOR>04</MINOR>
+      <DEBUG></DEBUG>
+      <REV_STR> 004            </REV_STR>
+    </rev>
+    <rev type="FPGA_IMAGE">
+      <MAJOR>0</MAJOR>
+      <MINOR>23</MINOR>
+      <DEBUG></DEBUG>
+      <REV_STR> 023            </REV_STR>
+    </rev>
+    <rev type="PS_FW">
+      <REV_STR>                </REV_STR>
+    </rev>
+    <rev type="OTHER_EXPANDER">
+      <REV_STR>                </REV_STR>
+    </rev>
+    <rev type="LCC_MAIN">
+      <MAJOR>8</MAJOR>
+      <MINOR>04</MINOR>
+      <DEBUG></DEBUG>
+      <REV_STR> 804            </REV_STR>
+    </rev>
+    <rev type="SPS_PRIMARY_FW">
+      <REV_STR>                </REV_STR>
+    </rev>
+    <rev type="COOLING_FW">
+      <REV_STR>                </REV_STR>
+    </rev>
+    <rev type="BBU_FW">
+      <REV_STR>                </REV_STR>
+    </rev>
+    <rev type="SPS_SECONDARY_FW">
+      <REV_STR>                </REV_STR>
+    </rev>
+    <rev type="SPS_BATTERY_FW">
+      <REV_STR>                </REV_STR>
+    </rev>
+    <rev type="SPS_TRAY_BUNDLE_FW">
+      <REV_STR>                </REV_STR>
+    </rev>
+    <rev type="BOOTCFG_FW">
+      <REV_STR>                </REV_STR>
+    </rev>
+    <rev type="OTHER_HW_VER">
+      <REV_STR>                </REV_STR>
+    </rev>
+    <POWER_SUPPLY>
+      <ps_prop type="POWER_SUPPLY_A_0">
+        <subencl_id>6</subencl_id>
+        <side_name>A</side_name>
+        <prod_id>000B0020</prod_id>
+      </ps_prop>
+      <rev type="POWER_SUPPLY_A_0">
+        <MAJOR>4</MAJOR>
+        <MINOR>06</MINOR>
+        <DEBUG></DEBUG>
+        <REV_STR> 4.06           </REV_STR>
+      </rev>
+      <ps_prop type="POWER_SUPPLY_A_1">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </ps_prop>
+      <rev type="POWER_SUPPLY_A_1">
+        <REV_STR>                </REV_STR>
+      </rev>
+      <ps_prop type="POWER_SUPPLY_A_2">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </ps_prop>
+      <rev type="POWER_SUPPLY_A_2">
+        <REV_STR>                </REV_STR>
+      </rev>
+      <ps_prop type="POWER_SUPPLY_A_3">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </ps_prop>
+      <rev type="POWER_SUPPLY_A_3">
+        <REV_STR>                </REV_STR>
+      </rev>
+      <ps_prop type="POWER_SUPPLY_B_0">
+        <subencl_id>5</subencl_id>
+        <side_name>B</side_name>
+        <prod_id>000B0020</prod_id>
+      </ps_prop>
+      <rev type="POWER_SUPPLY_B_0">
+        <MAJOR>4</MAJOR>
+        <MINOR>06</MINOR>
+        <DEBUG></DEBUG>
+        <REV_STR> 4.06           </REV_STR>
+      </rev>
+      <ps_prop type="POWER_SUPPLY_B_1">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </ps_prop>
+      <rev type="POWER_SUPPLY_B_1">
+        <REV_STR>                </REV_STR>
+      </rev>
+      <ps_prop type="POWER_SUPPLY_B_2">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </ps_prop>
+      <rev type="POWER_SUPPLY_B_2">
+        <REV_STR>                </REV_STR>
+      </rev>
+      <ps_prop type="POWER_SUPPLY_B_3">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </ps_prop>
+      <rev type="POWER_SUPPLY_B_3">
+        <REV_STR>                </REV_STR>
+      </rev>
+    </POWER_SUPPLY>
+    <STANDBY_POWER_SUPPLY>
+      <sps_prop type="SPS_PRIMARY">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </sps_prop>
+      <rev type="SPS_PRIMARY">
+        <REV_STR>                </REV_STR>
+      </rev>
+      <sps_prop type="SPS_SECONDARY">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </sps_prop>
+      <rev type="SPS_SECONDARY">
+        <REV_STR>                </REV_STR>
+      </rev>
+      <sps_prop type="SPS_BATTERY">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </sps_prop>
+      <rev type="SPS_BATTERY">
+        <REV_STR>                </REV_STR>
+      </rev>
+    </STANDBY_POWER_SUPPLY>
+    <COOLING_MODULE>
+      <cm_prop type="COOLING_MODULE_A">
+        <subencl_id>7</subencl_id>
+        <side_name>A</side_name>
+        <prod_id>00110002</prod_id>
+      </cm_prop>
+      <rev type="COOLING_MODULE_A">
+        <MAJOR>0</MAJOR>
+        <MINOR>42</MINOR>
+        <DEBUG></DEBUG>
+        <REV_STR> 0.42           </REV_STR>
+      </rev>
+      <cm_prop type="COOLING_MODULE_B">
+        <subencl_id>8</subencl_id>
+        <side_name>B</side_name>
+        <prod_id>00110002</prod_id>
+      </cm_prop>
+      <rev type="COOLING_MODULE_B">
+        <MAJOR>0</MAJOR>
+        <MINOR>42</MINOR>
+        <DEBUG></DEBUG>
+        <REV_STR> 0.42           </REV_STR>
+      </rev>
+      <cm_prop type="COOLING_MODULE_C">
+        <subencl_id>9</subencl_id>
+        <side_name>C</side_name>
+        <prod_id>00110002</prod_id>
+      </cm_prop>
+      <rev type="COOLING_MODULE_C">
+        <MAJOR>0</MAJOR>
+        <MINOR>42</MINOR>
+        <DEBUG></DEBUG>
+        <REV_STR> 0.42           </REV_STR>
+      </rev>
+    </COOLING_MODULE>
+  </exp>
+  <exp>
+    <dev>
+      <seq_num value="0x00000001">1</seq_num>
+      <port_num value="0x00">0</port_num>
+      <path value="0x00">0</path>
+      <target value="0x0004">4</target>
+      <lun value="0x00">0</lun>
+      <portal value="0x00">0</portal>
+      <vendor_id>EMC     </vendor_id>
+      <product_id>ESES Enclosure  </product_id>
+      <product_revision_level>0001</product_revision_level>
+      <sas_address>5006048006FC2ABE</sas_address>
+      <backend_bus value="0x0000">0</backend_bus>
+      <is_expander value="0x01">1</is_expander>
+      <type value="0x00">UNKNOWN</type>
+    </dev>
+    <elem_prop>
+      <subencl_id>0</subencl_id>
+      <side_name>D</side_name>
+      <prod_id>VOYAGER LCC     </prod_id>
+    </elem_prop>
+    <elem_rev_num>
+      <ps_num>0</ps_num>
+      <sps_num>0</sps_num>
+      <cm_num>0</cm_num>
+    </elem_rev_num>
+    <rev type="EXPANDER_FW_EMA">
+      <MAJOR>8</MAJOR>
+      <MINOR>04</MINOR>
+      <DEBUG></DEBUG>
+      <REV_STR> 804            </REV_STR>
+    </rev>
+    <rev type="EXPANDER_BOOT_LOADER_FW">
+      <MAJOR>0</MAJOR>
+      <MINOR>01</MINOR>
+      <DEBUG></DEBUG>
+      <REV_STR> 001            </REV_STR>
+    </rev>
+    <rev type="INIT_STR">
+      <MAJOR>0</MAJOR>
+      <MINOR>04</MINOR>
+      <DEBUG></DEBUG>
+      <REV_STR> 004            </REV_STR>
+    </rev>
+    <rev type="FPGA_IMAGE">
+      <MAJOR>0</MAJOR>
+      <MINOR>23</MINOR>
+      <DEBUG></DEBUG>
+      <REV_STR> 023            </REV_STR>
+    </rev>
+    <rev type="PS_FW">
+      <REV_STR>                </REV_STR>
+    </rev>
+    <rev type="OTHER_EXPANDER">
+      <REV_STR>                </REV_STR>
+    </rev>
+    <rev type="LCC_MAIN">
+      <MAJOR>8</MAJOR>
+      <MINOR>04</MINOR>
+      <DEBUG></DEBUG>
+      <REV_STR> 804            </REV_STR>
+    </rev>
+    <rev type="SPS_PRIMARY_FW">
+      <REV_STR>                </REV_STR>
+    </rev>
+    <rev type="COOLING_FW">
+      <REV_STR>                </REV_STR>
+    </rev>
+    <rev type="BBU_FW">
+      <REV_STR>                </REV_STR>
+    </rev>
+    <rev type="SPS_SECONDARY_FW">
+      <REV_STR>                </REV_STR>
+    </rev>
+    <rev type="SPS_BATTERY_FW">
+      <REV_STR>                </REV_STR>
+    </rev>
+    <rev type="SPS_TRAY_BUNDLE_FW">
+      <REV_STR>                </REV_STR>
+    </rev>
+    <rev type="BOOTCFG_FW">
+      <REV_STR>                </REV_STR>
+    </rev>
+    <rev type="OTHER_HW_VER">
+      <REV_STR>                </REV_STR>
+    </rev>
+    <POWER_SUPPLY>
+      <ps_prop type="POWER_SUPPLY_A_0">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </ps_prop>
+      <rev type="POWER_SUPPLY_A_0">
+        <REV_STR>                </REV_STR>
+      </rev>
+      <ps_prop type="POWER_SUPPLY_A_1">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </ps_prop>
+      <rev type="POWER_SUPPLY_A_1">
+        <REV_STR>                </REV_STR>
+      </rev>
+      <ps_prop type="POWER_SUPPLY_A_2">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </ps_prop>
+      <rev type="POWER_SUPPLY_A_2">
+        <REV_STR>                </REV_STR>
+      </rev>
+      <ps_prop type="POWER_SUPPLY_A_3">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </ps_prop>
+      <rev type="POWER_SUPPLY_A_3">
+        <REV_STR>                </REV_STR>
+      </rev>
+      <ps_prop type="POWER_SUPPLY_B_0">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </ps_prop>
+      <rev type="POWER_SUPPLY_B_0">
+        <REV_STR>                </REV_STR>
+      </rev>
+      <ps_prop type="POWER_SUPPLY_B_1">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </ps_prop>
+      <rev type="POWER_SUPPLY_B_1">
+        <REV_STR>                </REV_STR>
+      </rev>
+      <ps_prop type="POWER_SUPPLY_B_2">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </ps_prop>
+      <rev type="POWER_SUPPLY_B_2">
+        <REV_STR>                </REV_STR>
+      </rev>
+      <ps_prop type="POWER_SUPPLY_B_3">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </ps_prop>
+      <rev type="POWER_SUPPLY_B_3">
+        <REV_STR>                </REV_STR>
+      </rev>
+    </POWER_SUPPLY>
+    <STANDBY_POWER_SUPPLY>
+      <sps_prop type="SPS_PRIMARY">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </sps_prop>
+      <rev type="SPS_PRIMARY">
+        <REV_STR>                </REV_STR>
+      </rev>
+      <sps_prop type="SPS_SECONDARY">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </sps_prop>
+      <rev type="SPS_SECONDARY">
+        <REV_STR>                </REV_STR>
+      </rev>
+      <sps_prop type="SPS_BATTERY">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </sps_prop>
+      <rev type="SPS_BATTERY">
+        <REV_STR>                </REV_STR>
+      </rev>
+    </STANDBY_POWER_SUPPLY>
+    <COOLING_MODULE>
+      <cm_prop type="COOLING_MODULE_A">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </cm_prop>
+      <rev type="COOLING_MODULE_A">
+        <REV_STR>                </REV_STR>
+      </rev>
+      <cm_prop type="COOLING_MODULE_B">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </cm_prop>
+      <rev type="COOLING_MODULE_B">
+        <REV_STR>                </REV_STR>
+      </rev>
+      <cm_prop type="COOLING_MODULE_C">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </cm_prop>
+      <rev type="COOLING_MODULE_C">
+        <REV_STR>                </REV_STR>
+      </rev>
+    </COOLING_MODULE>
+  </exp>
+  <exp>
+    <dev>
+      <seq_num value="0x00000002">2</seq_num>
+      <port_num value="0x00">0</port_num>
+      <path value="0x00">0</path>
+      <target value="0x0005">5</target>
+      <lun value="0x00">0</lun>
+      <portal value="0x00">0</portal>
+      <vendor_id>EMC     </vendor_id>
+      <product_id>ESES Enclosure  </product_id>
+      <product_revision_level>0001</product_revision_level>
+      <sas_address>5006048006FC2A3E</sas_address>
+      <backend_bus value="0x0000">0</backend_bus>
+      <is_expander value="0x01">1</is_expander>
+      <type value="0x00">UNKNOWN</type>
+    </dev>
+    <elem_prop>
+      <subencl_id>0</subencl_id>
+      <side_name>D</side_name>
+      <prod_id>VOYAGER LCC     </prod_id>
+    </elem_prop>
+    <elem_rev_num>
+      <ps_num>0</ps_num>
+      <sps_num>0</sps_num>
+      <cm_num>0</cm_num>
+    </elem_rev_num>
+    <rev type="EXPANDER_FW_EMA">
+      <MAJOR>8</MAJOR>
+      <MINOR>04</MINOR>
+      <DEBUG></DEBUG>
+      <REV_STR> 804            </REV_STR>
+    </rev>
+    <rev type="EXPANDER_BOOT_LOADER_FW">
+      <MAJOR>0</MAJOR>
+      <MINOR>01</MINOR>
+      <DEBUG></DEBUG>
+      <REV_STR> 001            </REV_STR>
+    </rev>
+    <rev type="INIT_STR">
+      <MAJOR>0</MAJOR>
+      <MINOR>04</MINOR>
+      <DEBUG></DEBUG>
+      <REV_STR> 004            </REV_STR>
+    </rev>
+    <rev type="FPGA_IMAGE">
+      <MAJOR>0</MAJOR>
+      <MINOR>23</MINOR>
+      <DEBUG></DEBUG>
+      <REV_STR> 023            </REV_STR>
+    </rev>
+    <rev type="PS_FW">
+      <REV_STR>                </REV_STR>
+    </rev>
+    <rev type="OTHER_EXPANDER">
+      <REV_STR>                </REV_STR>
+    </rev>
+    <rev type="LCC_MAIN">
+      <MAJOR>8</MAJOR>
+      <MINOR>04</MINOR>
+      <DEBUG></DEBUG>
+      <REV_STR> 804            </REV_STR>
+    </rev>
+    <rev type="SPS_PRIMARY_FW">
+      <REV_STR>                </REV_STR>
+    </rev>
+    <rev type="COOLING_FW">
+      <REV_STR>                </REV_STR>
+    </rev>
+    <rev type="BBU_FW">
+      <REV_STR>                </REV_STR>
+    </rev>
+    <rev type="SPS_SECONDARY_FW">
+      <REV_STR>                </REV_STR>
+    </rev>
+    <rev type="SPS_BATTERY_FW">
+      <REV_STR>                </REV_STR>
+    </rev>
+    <rev type="SPS_TRAY_BUNDLE_FW">
+      <REV_STR>                </REV_STR>
+    </rev>
+    <rev type="BOOTCFG_FW">
+      <REV_STR>                </REV_STR>
+    </rev>
+    <rev type="OTHER_HW_VER">
+      <REV_STR>                </REV_STR>
+    </rev>
+    <POWER_SUPPLY>
+      <ps_prop type="POWER_SUPPLY_A_0">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </ps_prop>
+      <rev type="POWER_SUPPLY_A_0">
+        <REV_STR>                </REV_STR>
+      </rev>
+      <ps_prop type="POWER_SUPPLY_A_1">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </ps_prop>
+      <rev type="POWER_SUPPLY_A_1">
+        <REV_STR>                </REV_STR>
+      </rev>
+      <ps_prop type="POWER_SUPPLY_A_2">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </ps_prop>
+      <rev type="POWER_SUPPLY_A_2">
+        <REV_STR>                </REV_STR>
+      </rev>
+      <ps_prop type="POWER_SUPPLY_A_3">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </ps_prop>
+      <rev type="POWER_SUPPLY_A_3">
+        <REV_STR>                </REV_STR>
+      </rev>
+      <ps_prop type="POWER_SUPPLY_B_0">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </ps_prop>
+      <rev type="POWER_SUPPLY_B_0">
+        <REV_STR>                </REV_STR>
+      </rev>
+      <ps_prop type="POWER_SUPPLY_B_1">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </ps_prop>
+      <rev type="POWER_SUPPLY_B_1">
+        <REV_STR>                </REV_STR>
+      </rev>
+      <ps_prop type="POWER_SUPPLY_B_2">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </ps_prop>
+      <rev type="POWER_SUPPLY_B_2">
+        <REV_STR>                </REV_STR>
+      </rev>
+      <ps_prop type="POWER_SUPPLY_B_3">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </ps_prop>
+      <rev type="POWER_SUPPLY_B_3">
+        <REV_STR>                </REV_STR>
+      </rev>
+    </POWER_SUPPLY>
+    <STANDBY_POWER_SUPPLY>
+      <sps_prop type="SPS_PRIMARY">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </sps_prop>
+      <rev type="SPS_PRIMARY">
+        <REV_STR>                </REV_STR>
+      </rev>
+      <sps_prop type="SPS_SECONDARY">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </sps_prop>
+      <rev type="SPS_SECONDARY">
+        <REV_STR>                </REV_STR>
+      </rev>
+      <sps_prop type="SPS_BATTERY">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </sps_prop>
+      <rev type="SPS_BATTERY">
+        <REV_STR>                </REV_STR>
+      </rev>
+    </STANDBY_POWER_SUPPLY>
+    <COOLING_MODULE>
+      <cm_prop type="COOLING_MODULE_A">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </cm_prop>
+      <rev type="COOLING_MODULE_A">
+        <REV_STR>                </REV_STR>
+      </rev>
+      <cm_prop type="COOLING_MODULE_B">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </cm_prop>
+      <rev type="COOLING_MODULE_B">
+        <REV_STR>                </REV_STR>
+      </rev>
+      <cm_prop type="COOLING_MODULE_C">
+        <subencl_id>0</subencl_id>
+        <side_name></side_name>
+        <prod_id></prod_id>
+      </cm_prop>
+      <rev type="COOLING_MODULE_C">
+        <REV_STR>                </REV_STR>
+      </rev>
+    </COOLING_MODULE>
+  </exp>
+</REVISION>

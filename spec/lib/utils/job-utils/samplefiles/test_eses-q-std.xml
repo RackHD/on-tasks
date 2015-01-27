@@ -1,0 +1,52 @@
+<?xml version="1.0"?>
+<VPD name="standard">
+  <peripheral_device_type value="0xD" offbit="0x0" size="0x4">13</peripheral_device_type>
+  <peripheral_qualifier value="0x0" offbit="0x4" size="0x4">0</peripheral_qualifier>
+  <PAD offbit="0x8" size="0x7"/>
+  <RMB value="0x0" offbit="0xF" size="0x1">0</RMB>
+  <version value="0x06" offbit="0x10" size="0x8">6</version>
+  <RDF value="0x2" offbit="0x18" size="0x4">2</RDF>
+  <HISUP value="0x1" offbit="0x1C" size="0x1">1</HISUP>
+  <NORMACA value="0x0" offbit="0x1D" size="0x1">0</NORMACA>
+  <PAD offbit="0x1E" size="0x2"/>
+  <additional_len value="0x83" offbit="0x20" size="0x8">131</additional_len>
+  <protect value="0x0" offbit="0x28" size="0x1">0</protect>
+  <PAD offbit="0x29" size="0x2"/>
+  <PC3 value="0x0" offbit="0x2B" size="0x1">0</PC3>
+  <TPGS value="0x0" offbit="0x2C" size="0x2">0</TPGS>
+  <ACC value="0x0" offbit="0x2E" size="0x1">0</ACC>
+  <SCCS value="0x0" offbit="0x2F" size="0x1">0</SCCS>
+  <PAD offbit="0x30" size="0x4"/>
+  <multi_p value="0x1" offbit="0x34" size="0x1">1</multi_p>
+  <VS value="0x0" offbit="0x35" size="0x1">0</VS>
+  <enc_serv value="0x1" offbit="0x36" size="0x1">1</enc_serv>
+  <b_que value="0x1" offbit="0x37" size="0x1">1</b_que>
+  <VS2 value="0x0" offbit="0x38" size="0x1">0</VS2>
+  <cmd_que value="0x1" offbit="0x39" size="0x1">1</cmd_que>
+  <PAD offbit="0x3A" size="0x6"/>
+  <vendor_id value="45,4D,43,20,20,20,20,20" offbit="0x40" size="0x40">EMC     </vendor_id>
+  <product_id value="45,53,45,53,20,45,6E,63,6C,6F,73,75,72,65,20,20" offbit="0x80" size="0x80">ESES Enclosure  </product_id>
+  <rev_level value="30,30,30,31" offbit="0x100" size="0x20">0001</rev_level>
+  <comp_vendor_id value="50,4D,43,53,49,45,52,41" offbit="0x120" size="0x40">PMCSIERA</comp_vendor_id>
+  <comp_id value="0x8004" offbit="0x160" size="0x10">32772</comp_id>
+  <comp_rev_level value="0x02" offbit="0x170" size="0x8">2</comp_rev_level>
+  <PAD offbit="0x178" size="0x40"/>
+  <PAD offbit="0x1B8" size="0x10"/>
+  <PAD offbit="0x1C8" size="0x8"/>
+  <SAM4_rev value="0x0075" offbit="0x1D0" size="0x10">117</SAM4_rev>
+  <SPC4_rev value="0x0C00" offbit="0x1E0" size="0x10">3072</SPC4_rev>
+  <SAS2_rev value="0x0301" offbit="0x1F0" size="0x10">769</SAS2_rev>
+  <SES2_rev value="0x03E0" offbit="0x200" size="0x10">992</SES2_rev>
+  <PAD offbit="0x210" size="0x40"/>
+  <PAD offbit="0x250" size="0x40"/>
+  <PAD offbit="0x290" size="0x40"/>
+  <PAD offbit="0x2D0" size="0x20"/>
+  <PAD offbit="0x2F0" size="0x10"/>
+  <PAD offbit="0x300" size="0x40"/>
+  <PAD offbit="0x340" size="0x40"/>
+  <encl_platform_type type="enum" value="0x000A" offbit="0x380" size="0x10">VOYAGER</encl_platform_type>
+  <encl_board_type type="enum" value="0x0008" offbit="0x390" size="0x10">VOYAGER_ICM</encl_board_type>
+  <PAD offbit="0x3A0" size="0x10"/>
+  <ESES_ver_des value="0x0001" offbit="0x3B0" size="0x10">1</ESES_ver_des>
+  <encl_unique_id value="4A,57,58,56,54,31,33,34,38,30,30,31,34,31,00,00" offbit="0x3C0" size="0x80">JWXVT134800141  </encl_unique_id>
+</VPD>
