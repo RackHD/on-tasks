@@ -18,19 +18,13 @@ module.exports = {
         describe('Instance Methods', function() {
 
             it('members should have a run function', function() {
-                expect(this.Jobclass).to.respondTo('run');
+                expect(this.Jobclass.prototype).to.have.property('run');
             });
 
             it('members should have a cancel function', function() {
-                expect(this.Jobclass).to.respondTo('cancel');
+                expect(this.Jobclass.prototype).to.have.property('cancel');
             });
 
-        });
-
-        describe('Class Methods', function () {
-            it('should have a create static method', function() {
-                expect(this.Jobclass).itself.to.respondTo('create');
-            });
         });
     }
 };

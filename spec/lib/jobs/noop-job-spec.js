@@ -13,6 +13,7 @@ describe(__filename, function () {
         // create a child injector with renasar-core and the base pieces we need to test this
         injector = helper.baseInjector.createChild(_.flatten([
             helper.require('/spec/mocks/logger.js'),
+            helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/noop-job.js')
         ]));
 
@@ -24,14 +25,20 @@ describe(__filename, function () {
     });
 
     describe("noop-job", function() {
-        it('invoke a cancel function', function() {
-            var job = this.Jobclass.create();
-            return job.cancel().should.eventually.be.fulfilled;
+        it('invoke a cancel function', function(done) {
+            var job = new this.Jobclass();
+            job.on('done', function() {
+                done();
+            });
+            job.cancel();
         });
 
-        it('invoke a run function', function() {
-            var job = this.Jobclass.create();
-            return job.run().should.eventually.be.fulfilled;
+        it('invoke a run function', function(done) {
+            var job = new this.Jobclass();
+            job.on('done', function() {
+                done();
+            });
+            job.run();
         });
 
     });
