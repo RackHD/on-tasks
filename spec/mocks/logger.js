@@ -11,7 +11,7 @@ di.annotate(mockLoggerFactory,
     new di.Inject(
         'Constants',
         'Assert',
-        'Protocol.Objects.LogEvent',
+        'LogEvent',
         '_'
     )
 );
