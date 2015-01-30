@@ -1,0 +1,28 @@
+FRU Device Description : Builtin FRU Device (ID 0)
+ Chassis Type          : Rack Mount Chassis
+ Chassis Serial        : QTFCEV4120280
+ Board Mfg Date        : Tue Apr  8 01:48:00 2014
+ Board Mfg             : Quanta
+ Board Product         : S210-X12RS V2
+ Board Serial          : QTF3EV41400432
+ Board Part Number     : 31S2RMB00H0
+ Product Manufacturer  : Quanta
+ Product Name          : S210-X12RS V2
+ Product Serial        : QTFCEV4120280
+
+FRU Device Description : AST2300
+ Chassis Type          : Rack Mount Chassis
+ Chassis Serial        : QTFCEV4120280
+ Board Mfg Date        : Tue Apr  8 01:48:00 2014
+ Board Mfg             : Quanta
+ Board Product         : S210-X12RS V2
+ Board Serial          : QTF3EV41400432
+ Board Part Number     : 31S2RMB00H0
+ Product Manufacturer  : Quanta
+ Product Name          : S210-X12RS V2
+ Product Serial        : QTFCEV4120280
+
+FRU Device Description : FP FRU (ID 1)
+ Chassis Type          : Rack Mount Chassis
+ Board Mfg Date        : Mon Jan 13 13:11:00 2014
+ Board Part Number     : 3AS99FB0030

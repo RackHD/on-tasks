@@ -3594,3 +3594,7 @@ module.exports.testesesR = fs
 module.exports.testesesE0 = fs
     .readFileSync(__dirname+'/samplefiles/test_eses-e0-gencl.xml')
     .toString();
+
+module.exports.ipmiFru = fs
+    .readFileSync(__dirname+"/samplefiles/quanta_fru.txt")
+    .toString();
