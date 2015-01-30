@@ -12,7 +12,7 @@ describe("ipmi fru Task Parser", function () {
 
     var taskParser;
 
-    before(function() {
+    before(function () {
         var _ = helper.baseInjector.get('_');
 
         // create a child injector with renasar-core and the base pieces we need to test this
@@ -25,7 +25,7 @@ describe("ipmi fru Task Parser", function () {
 
     });
 
-    it("should parse `ipmitool fru` output", function (done) {
+    it("should parse `ipmitool fru` output", function () {
         var esesCmd = 'sudo ipmitool fru';
 
         var tasks = [
@@ -37,27 +37,19 @@ describe("ipmi fru Task Parser", function () {
             }
         ];
 
-        xmlParser(stdoutMocks.testesesR, function (err, jsonOut) {
-            if (err) {
-                done(err);
-                return;
-            }
-            var parsePromises = taskParser.parseTasks(tasks);
-            parsePromises[0]
-                .then(function (result) {
-                    expect(result.error).to.be.undefined;
-                    expect(_.isEqual(result.data, jsonOut)).to.be.true;
-                    expect(result.source).to.equal('test_eses');
-                    // data specific format verification
-                    expect(result.data.REVISION.exp).to.be.an("Array");
-                    expect(result.data.REVISION.exp.length).to.equal(3);
-                    _.forEach(result.data.REVISION.exp, function(devicedata) {
-                        expect(devicedata).to.be.ok;
-                        expect(devicedata.dev).to.be.an('Array');
-                    });
-                    done();
-                });
-        });
+        var parsePromises = taskParser.parseTasks(tasks);
+
+        return parsePromises[0]
+            .then(function (result) {
+                expect(result.error).to.be.undefined;
+                expect(result.store).to.be.true;
+                expect(result.data).to.be.ok
+                //console.log(result.data);
+                expect(_.size(result.data)).to.equal(3);
+                expect(result.data['AST2300']).to.be.an.Object;
+                expect(result.data['AST2300']['Chassis Serial']).to.equal('QTFCEV4120280');
+                expect(result.source).to.equal('ipmi-fru');
+            });
     });
 
 });
