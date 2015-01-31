@@ -65,6 +65,7 @@ describe(__filename, function () {
             mockChildProcessFactory,
             mockWaterlineFactory,
             helper.requireGlob('/lib/services/*.js'),
+            helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/obm-control.js')
         ]));
 
@@ -75,17 +76,21 @@ describe(__filename, function () {
         base.examples();
     });
 
-    describe("poweron-node-job", function() {
+    describe("poweron-node-job", function(done) {
         it('invoke a run function', function() {
             //this.timeout(60000);
-            var job = this.Jobclass.create({ action: 'powerOn' },
-                                            { target: '123456' }, uuid.v4());
-            return job.run().should.eventually.be.fulfilled;
+            var job = new this.Jobclass({ action: 'powerOn' }, { target: '123456' }, uuid.v4());
+            job.on('done', function() {
+                done();
+            });
+            job.run();
         });
-        it('invoke a cancel function', function() {
-            var job = this.Jobclass.create({ action: 'powerOn' },
-                                            { target: '123456' }, uuid.v4());
-            return job.cancel().should.eventually.be.fulfilled;
+        it('invoke a cancel function', function(done) {
+            var job = new this.Jobclass({ action: 'powerOn' }, { target: '123456' }, uuid.v4());
+            job.on('done', function() {
+                done();
+            });
+            job.cancel();
         });
     });
 
