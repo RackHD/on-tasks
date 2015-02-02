@@ -39,6 +39,11 @@ module.exports = {
                 expect(this.taskdefinition.requiredOptions).to.be.instanceof(Array);
             });
 
+            it('should have required properties', function() {
+                expect(this.taskdefinition).to.have.property('requiredProperties');
+                expect(this.taskdefinition.properties).to.be.an('Object');
+            });
+
             it('should have properties', function() {
                 expect(this.taskdefinition).to.have.property('properties');
                 expect(this.taskdefinition.properties).to.be.an('Object');
