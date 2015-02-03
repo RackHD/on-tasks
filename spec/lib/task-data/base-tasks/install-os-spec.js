@@ -3,7 +3,7 @@
 
 'use strict';
 
-describe(__filename, function () {
+describe(require('path').basename(__filename), function () {
     var base = require('./base-task-data-spec');
 
     base.before(function (context) {
