@@ -9,9 +9,10 @@ describe("Job.Catalog.GenerateSku", function () {
     var waterline = {};
     var GenerateSku;
     var Q;
+    var uuid;
 
     var catalog1 = {
-        id: '12341234123412341234',
+        id: 'abf9d5a4ebf61b6715dbaef6',
         source: 'dmi',
         data: {
             dmi: {
@@ -24,7 +25,7 @@ describe("Job.Catalog.GenerateSku", function () {
     };
 
     var catalog2 = {
-        id: '12341234123412341234',
+        id: 'abf9d5a4ebf61b6715dbaef7',
         source: 'bmc',
         data: {
             'MAC Address' : '00:00:00:00:00:00',
@@ -38,12 +39,14 @@ describe("Job.Catalog.GenerateSku", function () {
         // create a child injector with renasar-core and the base pieces we need to test this
         injector = helper.baseInjector.createChild(_.flatten([
             helper.require('/spec/mocks/logger.js'),
+            helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/generate-sku.js'),
             dihelper.simpleWrapper(waterline, 'Services.Waterline')
         ]));
 
         GenerateSku = injector.get('Job.Catalog.GenerateSku');
         Q = injector.get('Q');
+        uuid = injector.get('uuid');
     });
 
     beforeEach(function () {
@@ -58,13 +61,16 @@ describe("Job.Catalog.GenerateSku", function () {
         };
     });
 
-    it('invoke a cancel function', function() {
-        var job = GenerateSku.create({}, { target: '1234' }, '1');
-        return job.cancel().should.eventually.be.fulfilled;
+    it('invoke a cancel function', function(done) {
+        var job = new GenerateSku({}, { target: 'bc7dab7e8fb7d6abf8e7d6ab' }, uuid.v4());
+        job.on('done', function() {
+            done();
+        });
+        job.cancel();
     });
 
-    it('assigns a matching sku', function() {
-        var job = GenerateSku.create({}, { target: '1234' }, '1');
+    it('assigns a matching sku', function(done) {
+        var job = new GenerateSku({}, { target: 'bc7dab7e8fb7d6abf8e7d6ab' }, uuid.v4());
         var sku = {
             id: '1',
             createdAt: new Date('Feb 01 2015 12:00:00'),
@@ -89,15 +95,17 @@ describe("Job.Catalog.GenerateSku", function () {
         };
         waterline.skus.find.returns(Q.resolve([sku, sku2]));
         waterline.catalogs.findMostRecent.returns(Q.resolve([catalog1]));
-        return job.run().then(function () {
+        job.on('done', function () {
             expect(waterline.nodes.updateByIdentifier).to.have.been.calledOnce;
             expect(waterline.nodes.updateByIdentifier.firstCall.args[1])
                 .to.have.property('sku', '1');
+            done();
         });
+        job.run();
     });
 
-    it('assigns null when no skus match', function() {
-        var job = GenerateSku.create({}, { target: '1234' }, '1');
+    it('assigns null when no skus match', function(done) {
+        var job = new GenerateSku({}, { target: 'bc7dab7e8fb7d6abf8e7d6ab' }, uuid.v4());
         var sku = {
             id: '1',
             createdAt: new Date('Feb 01 2015 12:00:00'),
@@ -111,15 +119,17 @@ describe("Job.Catalog.GenerateSku", function () {
         };
         waterline.skus.find.returns(Q.resolve([sku]));
         waterline.catalogs.findMostRecent.returns(Q.resolve([catalog1]));
-        return job.run().then(function () {
+        job.on('done', function () {
             expect(waterline.nodes.updateByIdentifier).to.have.been.calledOnce;
             expect(waterline.nodes.updateByIdentifier.firstCall.args[1])
                 .to.have.property('sku', null);
+            done();
         });
+        job.run();
     });
 
-    it('assigns the most specific sku when multiple match', function() {
-        var job = GenerateSku.create({}, { target: '1234' }, '1');
+    it('assigns the most specific sku when multiple match', function(done) {
+        var job = new GenerateSku({}, { target: 'bc7dab7e8fb7d6abf8e7d6ab' }, uuid.v4());
         var sku = {
             id: '1',
             createdAt: new Date('Feb 01 2015 12:00:00'),
@@ -148,15 +158,17 @@ describe("Job.Catalog.GenerateSku", function () {
         };
         waterline.skus.find.returns(Q.resolve([sku, sku2]));
         waterline.catalogs.findMostRecent.returns(Q.resolve([catalog1]));
-        return job.run().then(function () {
+        job.on('done', function () {
             expect(waterline.nodes.updateByIdentifier).to.have.been.calledOnce;
             expect(waterline.nodes.updateByIdentifier.firstCall.args[1])
                 .to.have.property('sku', '2');
+            done();
         });
+        job.run();
     });
 
-    it('assigns a matching sku against multiple catalogs', function() {
-        var job = GenerateSku.create({}, { target: '1234' }, '1');
+    it('assigns a matching sku against multiple catalogs', function(done) {
+        var job = new GenerateSku({}, { target: 'bc7dab7e8fb7d6abf8e7d6ab' }, uuid.v4());
         var sku = {
             id: '1',
             createdAt: new Date('Feb 01 2015 12:00:00'),
@@ -174,15 +186,17 @@ describe("Job.Catalog.GenerateSku", function () {
         };
         waterline.skus.find.returns(Q.resolve([sku]));
         waterline.catalogs.findMostRecent.returns(Q.resolve([catalog1, catalog2]));
-        return job.run().then(function () {
+        job.on('done', function () {
             expect(waterline.nodes.updateByIdentifier).to.have.been.calledOnce;
             expect(waterline.nodes.updateByIdentifier.firstCall.args[1])
                 .to.have.property('sku', '1');
+            done();
         });
+        job.run();
     });
 
-    it('assigns null when no skus match against multiple catalogs', function() {
-        var job = GenerateSku.create({}, { target: '1234' }, '1');
+    it('assigns null when no skus match against multiple catalogs', function(done) {
+        var job = new GenerateSku({}, { target: 'bc7dab7e8fb7d6abf8e7d6ab' }, uuid.v4());
         var sku = {
             id: '1',
             createdAt: new Date('Feb 01 2015 12:00:00'),
@@ -200,16 +214,18 @@ describe("Job.Catalog.GenerateSku", function () {
         };
         waterline.skus.find.returns(Q.resolve([sku]));
         waterline.catalogs.findMostRecent.returns(Q.resolve([catalog1, catalog2]));
-        return job.run().then(function () {
+        job.on('done', function () {
             expect(waterline.nodes.updateByIdentifier).to.have.been.calledOnce;
             expect(waterline.nodes.updateByIdentifier.firstCall.args[1])
                 .to.have.property('sku', null);
+            done();
         });
+        job.run();
     });
 
 
-    it('assigns null when no catalogs present', function() {
-        var job = GenerateSku.create({}, { target: '1234' }, '1');
+    it('assigns null when no catalogs present', function(done) {
+        var job = new GenerateSku({}, { target: 'bc7dab7e8fb7d6abf8e7d6ab' }, uuid.v4());
         var sku = {
             id: '1',
             createdAt: new Date('Feb 01 2015 12:00:00'),
@@ -227,11 +243,13 @@ describe("Job.Catalog.GenerateSku", function () {
         };
         waterline.skus.find.returns(Q.resolve([sku]));
         waterline.catalogs.findMostRecent.returns(Q.resolve([]));
-        return job.run().then(function () {
+        job.on('done', function () {
             expect(waterline.nodes.updateByIdentifier).to.have.been.calledOnce;
             expect(waterline.nodes.updateByIdentifier.firstCall.args[1])
                 .to.have.property('sku', null);
+            done();
         });
+        job.run();
     });
 
 });
