@@ -32,6 +32,8 @@ describe("Base Job", function () {
             var logger = injector.get('Logger').initialize(MockJob);
             MockJob.super_.call(this, logger, {}, {}, uuid.v4());
             this.nodeId = "54c69f87c7100ec77bfde17c";
+            this.snmpRoutingKey = uuid.v4();
+            this.ipmiSdrRoutingKey = uuid.v4();
             this.graphId = uuid.v4();
         };
 
