@@ -31,11 +31,15 @@ describe(require('path').basename(__filename), function () {
 
     describe("ipmi-sdr-job", function() {
         beforeEach(function() {
-            this.sdr = new this.Jobclass({}, {}, uuid.v4());
+            this.sdr = new this.Jobclass({ ipmiSdrRoutingKey: uuid.v4() }, {}, uuid.v4());
         });
 
         it("should have a _run() method", function() {
             expect(this.sdr).to.have.property('_run').with.length(0);
+        });
+
+        it("should have a sdr command subscribe method", function() {
+            expect(this.sdr).to.have.property('_subscribeRunIpmiSdrCommand').with.length(1);
         });
 
         it("should listen for ipmi sdr command requests", function(done) {
