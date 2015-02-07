@@ -20,6 +20,7 @@
   "dependencies": {
     "di": "git+ssh://git@github.com/renasar/di.js.git",
     "lodash": "^2.4.1",
+    "lru-cache": "^2.5.0",
     "renasar-core": "git+ssh://git@github.com/renasar/renasar-core.git",
     "xml2js": "^0.4.4"
   },
