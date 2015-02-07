@@ -10,7 +10,7 @@ describe(require('path').basename(__filename), function () {
         context.taskdefinition = helper.require('/lib/task-data/base-tasks/generate-sku.js');
     });
 
-    describe('task-data', function () {
+    describe('base-data', function () {
         base.examples();
     });
 
