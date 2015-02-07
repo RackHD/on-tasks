@@ -28,6 +28,34 @@ describe("Base Job", function () {
         context.Jobclass = injector.get('Job.Base');
         BaseJob = context.Jobclass;
 
+        var taskProtocol = injector.get('Protocol.Task');
+        var eventsProtocol = injector.get('Protocol.Events');
+
+        _.forEach(Object.getPrototypeOf(taskProtocol), function(f, funcName) {
+            var spy = sinon.spy(function() {
+                var deferred = Q.defer();
+                process.nextTick(function() {
+                    deferred.resolve(spy);
+                });
+                return deferred.promise;
+            });
+            spy.dispose = sinon.stub();
+            spy.dispose = sinon.stub();
+            taskProtocol[funcName] = spy;
+        });
+        _.forEach(Object.getPrototypeOf(eventsProtocol), function(f, funcName) {
+            var spy = sinon.spy(function() {
+                var deferred = Q.defer();
+                process.nextTick(function() {
+                    deferred.resolve(spy);
+                });
+                return deferred.promise;
+            });
+            spy.dispose = sinon.stub();
+            spy.dispose = sinon.stub();
+            eventsProtocol[funcName] = spy;
+        });
+
         MockJob = function() {
             var logger = injector.get('Logger').initialize(MockJob);
             MockJob.super_.call(this, logger, {}, {}, uuid.v4());
@@ -65,7 +93,14 @@ describe("Base Job", function () {
             var numSubscriberMethods = 0;
             _.forEach(BaseJob.prototype, function(func, funcName) {
                 if (funcName.indexOf('_subscribe') === 0) {
-                    job[funcName](sinon.stub());
+                    var stub = sinon.stub();
+                    stub.bind = sinon.stub();
+                    // Call all subscriber methods with appropriate arity, and
+                    // the callback as the last argument
+                    var args = _.range(job[funcName].length - 1);
+                    job[funcName].apply(job, args.concat([stub]));
+                    // Assert that we always bind the callback
+                    expect(stub.bind).to.have.been.calledOnce;
                     numSubscriberMethods += 1;
                 }
             });
@@ -75,7 +110,11 @@ describe("Base Job", function () {
 
             job.on('done', function() {
                 _.forEach(job.subscriptions, function(subscription) {
-                    expect(subscription.dispose).to.have.been.called.once;
+                    try {
+                        expect(subscription.dispose.calledOnce).to.equal(true);
+                    } catch (e) {
+                        done(e);
+                    }
                 });
                 process.nextTick(function() {
                     // assert removeAllListeners() called
@@ -88,10 +127,6 @@ describe("Base Job", function () {
             Q.all(job.subscriptionPromises)
             .then(function() {
                 expect(job.subscriptions).to.have.length(numSubscriberMethods);
-                _.forEach(job.subscriptions, function(subscription) {
-                    subscription.dispose = sinon.stub();
-                });
-
                 job._done();
             }).catch(function(error) {
                 done(error);
