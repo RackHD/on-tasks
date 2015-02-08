@@ -31,7 +31,9 @@ describe(require('path').basename(__filename), function () {
 
     describe("ipmi-job", function() {
         beforeEach(function() {
-            this.ipmi = new this.Jobclass({}, { graphId: uuid.v4() }, uuid.v4());
+            var graphId = uuid.v4();
+            this.ipmi = new this.Jobclass({}, { graphId: graphId }, uuid.v4());
+            expect(this.ipmi.routingKey).to.equal(graphId);
         });
 
         it("should have a _run() method", function() {

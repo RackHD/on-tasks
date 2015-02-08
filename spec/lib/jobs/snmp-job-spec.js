@@ -31,7 +31,9 @@ describe(require('path').basename(__filename), function () {
 
     describe("snmp-job", function() {
         beforeEach(function() {
-            this.snmp = new this.Jobclass({ snmpRoutingKey: uuid.v4() }, {}, uuid.v4());
+            var graphId = uuid.v4();
+            this.snmp = new this.Jobclass({}, { graphId: graphId }, uuid.v4());
+            expect(this.snmp.routingKey).to.equal(graphId);
         });
 
         it("should have a _run() method", function() {
@@ -39,16 +41,16 @@ describe(require('path').basename(__filename), function () {
         });
 
         it("should have a snmp command subscribe method", function() {
-            expect(this.snmp).to.have.property('_subscribeRunSnmpCommand').with.length(1);
+            expect(this.snmp).to.have.property('_subscribeRunSnmpCommand').with.length(2);
         });
 
         it("should listen for snmp command requests", function(done) {
             var self = this;
             self.snmp.collectHostSnmp = sinon.promise();
             self.snmp._publishSnmpResult = sinon.stub();
-            self.snmp._subscribeRunSnmpCommand = function(callback) {
-                self.snmp.on('test-subscribe-snmp-command', function(machine) {
-                    callback(machine);
+            self.snmp._subscribeRunSnmpCommand = function(routingKey, callback) {
+                self.snmp.on('test-subscribe-snmp-command', function(config) {
+                    callback(config);
                 });
             };
 
