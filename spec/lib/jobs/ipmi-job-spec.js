@@ -19,48 +19,50 @@ describe(require('path').basename(__filename), function () {
             helper.require('/lib/utils/job-utils/ipmitool.js'),
             helper.require('/lib/utils/job-utils/ipmi-parser.js'),
             helper.require('/lib/jobs/base-job.js'),
-            helper.require('/lib/jobs/ipmi-sdr-job.js')
+            helper.require('/lib/jobs/ipmi-job.js')
         ]));
 
-        context.Jobclass = injector.get('Job.Ipmi.Sdr');
+        context.Jobclass = injector.get('Job.Ipmi');
     });
 
     describe('Base', function () {
         base.examples();
     });
 
-    describe("ipmi-sdr-job", function() {
+    describe("ipmi-job", function() {
         beforeEach(function() {
-            this.sdr = new this.Jobclass({ ipmiSdrRoutingKey: uuid.v4() }, {}, uuid.v4());
+            this.ipmi = new this.Jobclass({}, { graphId: uuid.v4() }, uuid.v4());
         });
 
         it("should have a _run() method", function() {
-            expect(this.sdr).to.have.property('_run').with.length(0);
+            expect(this.ipmi).to.have.property('_run').with.length(0);
         });
 
         it("should have a sdr command subscribe method", function() {
-            expect(this.sdr).to.have.property('_subscribeRunIpmiSdrCommand').with.length(1);
+            expect(this.ipmi).to.have.property('_subscribeRunIpmiCommand').with.length(3);
         });
 
         it("should listen for ipmi sdr command requests", function(done) {
             var self = this;
-            self.sdr.collectIpmiSdr = sinon.promise();
-            self.sdr._publishIpmiSdrResult = sinon.stub();
-            self.sdr._subscribeRunIpmiSdrCommand = function(callback) {
-                self.sdr.on('test-subscribe-ipmi-sdr-command', function(machine) {
-                    callback(machine);
-                });
+            self.ipmi.collectIpmiSdr = sinon.promise();
+            self.ipmi._publishIpmiCommandResult = sinon.stub();
+            self.ipmi._subscribeRunIpmiCommand = function(routingKey, type, callback) {
+                if (type === 'sdr') {
+                    self.ipmi.on('test-subscribe-ipmi-sdr-command', function(config) {
+                        callback(config);
+                    });
+                }
             };
 
-            self.sdr._run();
+            self.ipmi._run();
 
             _.forEach(_.range(100), function() {
-                self.sdr.emit('test-subscribe-ipmi-sdr-command');
+                self.ipmi.emit('test-subscribe-ipmi-sdr-command');
             });
 
             process.nextTick(function() {
                 try {
-                    expect(self.sdr.collectIpmiSdr.callCount).to.equal(100);
+                    expect(self.ipmi.collectIpmiSdr.callCount).to.equal(100);
                     done();
                 } catch (e) {
                     done(e);
