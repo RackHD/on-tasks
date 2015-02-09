@@ -94,7 +94,7 @@ describe("Job.Catalog.GenerateSku", function () {
             ]
         };
         waterline.skus.find.returns(Q.resolve([sku, sku2]));
-        waterline.catalogs.findMostRecent.returns(Q.resolve([catalog1]));
+        waterline.catalogs.findMostRecent.returns(Q.resolve(catalog1));
         job.on('done', function () {
             expect(waterline.nodes.updateByIdentifier).to.have.been.calledOnce;
             expect(waterline.nodes.updateByIdentifier.firstCall.args[1])
@@ -118,7 +118,7 @@ describe("Job.Catalog.GenerateSku", function () {
             ]
         };
         waterline.skus.find.returns(Q.resolve([sku]));
-        waterline.catalogs.findMostRecent.returns(Q.resolve([catalog1]));
+        waterline.catalogs.findMostRecent.returns(Q.resolve(catalog1));
         job.on('done', function () {
             expect(waterline.nodes.updateByIdentifier).to.have.been.calledOnce;
             expect(waterline.nodes.updateByIdentifier.firstCall.args[1])
@@ -157,7 +157,7 @@ describe("Job.Catalog.GenerateSku", function () {
             ]
         };
         waterline.skus.find.returns(Q.resolve([sku, sku2]));
-        waterline.catalogs.findMostRecent.returns(Q.resolve([catalog1]));
+        waterline.catalogs.findMostRecent.returns(Q.resolve(catalog1));
         job.on('done', function () {
             expect(waterline.nodes.updateByIdentifier).to.have.been.calledOnce;
             expect(waterline.nodes.updateByIdentifier.firstCall.args[1])
@@ -185,7 +185,8 @@ describe("Job.Catalog.GenerateSku", function () {
             ]
         };
         waterline.skus.find.returns(Q.resolve([sku]));
-        waterline.catalogs.findMostRecent.returns(Q.resolve([catalog1, catalog2]));
+        waterline.catalogs.findMostRecent.onCall(0).returns(Q.resolve(catalog1));
+        waterline.catalogs.findMostRecent.onCall(1).returns(Q.resolve(catalog2));
         job.on('done', function () {
             expect(waterline.nodes.updateByIdentifier).to.have.been.calledOnce;
             expect(waterline.nodes.updateByIdentifier.firstCall.args[1])
@@ -213,7 +214,8 @@ describe("Job.Catalog.GenerateSku", function () {
             ]
         };
         waterline.skus.find.returns(Q.resolve([sku]));
-        waterline.catalogs.findMostRecent.returns(Q.resolve([catalog1, catalog2]));
+        waterline.catalogs.findMostRecent.onCall(0).returns(Q.resolve(catalog1));
+        waterline.catalogs.findMostRecent.onCall(1).returns(Q.resolve(catalog2));
         job.on('done', function () {
             expect(waterline.nodes.updateByIdentifier).to.have.been.calledOnce;
             expect(waterline.nodes.updateByIdentifier.firstCall.args[1])
@@ -242,7 +244,7 @@ describe("Job.Catalog.GenerateSku", function () {
             ]
         };
         waterline.skus.find.returns(Q.resolve([sku]));
-        waterline.catalogs.findMostRecent.returns(Q.resolve([]));
+        waterline.catalogs.findMostRecent.returns(Q.resolve());
         job.on('done', function () {
             expect(waterline.nodes.updateByIdentifier).to.have.been.calledOnce;
             expect(waterline.nodes.updateByIdentifier.firstCall.args[1])
