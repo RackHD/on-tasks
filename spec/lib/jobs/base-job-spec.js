@@ -60,8 +60,8 @@ describe("Base Job", function () {
             var logger = injector.get('Logger').initialize(MockJob);
             MockJob.super_.call(this, logger, {}, {}, uuid.v4());
             this.nodeId = "54c69f87c7100ec77bfde17c";
-            this.snmpRoutingKey = uuid.v4();
-            this.ipmiSdrRoutingKey = uuid.v4();
+            this.context = {};
+            this.context.target = 'testtarget';
             this.graphId = uuid.v4();
         };
 
@@ -80,11 +80,30 @@ describe("Base Job", function () {
     });
 
     describe('Subscriptions', function() {
+        it("should respond to activeTaskExists requests", function() {
+            var job = new MockJob();
+            var activeCallback;
+            job._subscribeActiveTaskExists = function(callback) {
+                activeCallback = callback;
+                return Q.resolve();
+            };
+            job._run = sinon.stub();
+
+            return job.run()
+            .then(function() {
+                expect(job._run.calledOnce).to.equal(true);
+                expect(activeCallback).to.be.a.function;
+                expect(activeCallback()).to.deep.equal(job.serialize());
+            });
+        });
+
         it("should call subclass _run()", function() {
             var job = new MockJob();
             job._run = sinon.stub();
-            job.run();
-            expect(job._run).to.have.been.called.once;
+            return job.run()
+            .then(function() {
+                expect(job._run.calledOnce).to.equal(true);
+            });
         });
 
         it("should clean up on done", function(done) {
