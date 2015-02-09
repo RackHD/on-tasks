@@ -46,6 +46,12 @@ describe(require('path').basename(__filename), function () {
 
         it("should listen for ipmi sdr command requests", function(done) {
             var self = this;
+            var config = {
+                host: '10.1.1.',
+                user: 'admin',
+                password: 'admin',
+                workItemId: 'testworkitemid'
+            };
             self.ipmi.collectIpmiSdr = sinon.promise();
             self.ipmi._publishIpmiCommandResult = sinon.stub();
             self.ipmi._subscribeRunIpmiCommand = function(routingKey, type, callback) {
@@ -58,8 +64,10 @@ describe(require('path').basename(__filename), function () {
 
             self.ipmi._run();
 
-            _.forEach(_.range(100), function() {
-                self.ipmi.emit('test-subscribe-ipmi-sdr-command');
+            _.forEach(_.range(100), function(i) {
+                var _config = _.cloneDeep(config);
+                _config.host += i;
+                self.ipmi.emit('test-subscribe-ipmi-sdr-command', _config);
             });
 
             process.nextTick(function() {
