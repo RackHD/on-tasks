@@ -3,14 +3,14 @@
 
 'use strict';
 
-describe(__filename, function () {
+describe(require('path').basename(__filename), function () {
     var base = require('./base-task-data-spec');
 
     base.before(function (context) {
         context.taskdefinition = helper.require('/lib/task-data/base-tasks/generate-sku.js');
     });
 
-    describe('task-data', function () {
+    describe('base-data', function () {
         base.examples();
     });
 
