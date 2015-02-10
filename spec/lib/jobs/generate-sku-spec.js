@@ -1,5 +1,6 @@
 // Copyright 2015, Renasar Technologies Inc.
 /* jshint node:true */
+/* global dihelper: true */
 
 'use strict';
 
@@ -7,6 +8,7 @@ describe("Job.Catalog.GenerateSku", function () {
 
     var injector;
     var waterline = {};
+    var taskProtocol = {};
     var GenerateSku;
     var Q;
     var uuid;
@@ -41,7 +43,8 @@ describe("Job.Catalog.GenerateSku", function () {
             helper.require('/spec/mocks/logger.js'),
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/generate-sku.js'),
-            dihelper.simpleWrapper(waterline, 'Services.Waterline')
+            dihelper.simpleWrapper(waterline, 'Services.Waterline'),
+            dihelper.simpleWrapper(taskProtocol, 'Protocol.Task')
         ]));
 
         GenerateSku = injector.get('Job.Catalog.GenerateSku');
@@ -59,6 +62,9 @@ describe("Job.Catalog.GenerateSku", function () {
         waterline.nodes = {
             updateByIdentifier: sinon.stub().returns(Q.resolve())
         };
+        taskProtocol.subscribeActiveTaskExists = sinon.stub().returns(Q.resolve({
+            dispose: sinon.stub()
+        }));
     });
 
     it('invoke a cancel function', function(done) {
