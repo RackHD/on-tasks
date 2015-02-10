@@ -1,5 +1,6 @@
 // Copyright 2015, Renasar Technologies Inc.
 /* jshint node:true */
+/* global dihelper: true */
 
 'use strict';
 
@@ -7,6 +8,7 @@ describe("Job.Pollers.CreateDefault", function () {
 
     var injector;
     var waterline = {};
+    var taskProtocol = {};
     var CleanWorkItems;
     var Q;
     var uuid;
@@ -18,7 +20,8 @@ describe("Job.Pollers.CreateDefault", function () {
             helper.require('/spec/mocks/logger.js'),
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/create-default-pollers.js'),
-            dihelper.simpleWrapper(waterline, 'Services.Waterline')
+            dihelper.simpleWrapper(waterline, 'Services.Waterline'),
+            dihelper.simpleWrapper(taskProtocol, 'Protocol.Task')
         ]));
 
         CleanWorkItems = injector.get('Job.Pollers.CreateDefault');
@@ -35,6 +38,9 @@ describe("Job.Pollers.CreateDefault", function () {
                 id: 'bc7dab7e8fb7d6abf8e7d6a1'
             }))
         };
+        taskProtocol.subscribeActiveTaskExists = sinon.stub().returns(Q.resolve({
+            dispose: sinon.stub()
+        }));
     });
 
     it('should create pollers for a job with options.nodeId', function (done) {
