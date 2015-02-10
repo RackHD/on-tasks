@@ -16,6 +16,27 @@ describe(require('path').basename(__filename), function () {
                   "5,10/26/2014,20:17:48,Power Unit #0x02,Non-Redundant: Sufficient from Redundant,Asserted\n" +  // jshint ignore:line
                   "6,10/26/2014,20:17:51,Power Supply #0x51,Presence detected,Deasserted\n";  // jshint ignore:line
 
+    var selDataAlt = "SEL Entry: 010002C5C157542000042AFF6FF2FFFF\n" +
+                     "0x0001,11/03/2014,09:56:21,Session Audit #0xFF,,Asserted\n" +
+                     "SEL Entry: 020002C5C157542000042AFF6FF2FFFF\n" +
+                     "0x0002,11/03/2014,09:56:21,Session Audit #0xFF,,Asserted\n" +
+                     "SEL Entry: 030002CCC157542000042AFF6FF2FFFF\n" +
+                     "0x0003,11/03/2014,09:56:28,Session Audit #0xFF,,Asserted\n" +
+                     "SEL Entry: 040002CDC157542000042AFF6FF2FFFF\n" +
+                     "0x0004,11/03/2014,09:56:29,Session Audit #0xFF,,Asserted\n" +
+                     "SEL Entry: 050002DAC157542000042AFF6FF2FFFF\n" +
+                     "0x0005,11/03/2014,09:56:42,Session Audit #0xFF,,Asserted\n" +
+                     "SEL Entry: 060002DAC157542000042AFF6FF2FFFF\n" +
+                     "0x0006,11/03/2014,09:56:42,Session Audit #0xFF,,Asserted\n" +
+                     "SEL Entry: 070002644075542000042AFF6FF2FFFF\n" +
+                     "0x0007,11/25/2014,18:52:20,Session Audit #0xFF,,Asserted\n" +
+                     "SEL Entry: 080002C9ED7C542000042AFF6FF2FFFF\n" +
+                     "0x0008,12/01/2014,14:38:01,Session Audit #0xFF,,Asserted\n" +
+                     "SEL Entry: 090002D3ED7C542000042AFF6FF2FFFF\n" +
+                     "0x0009,12/01/2014,14:38:11,Session Audit #0xFF,,Asserted\n" +
+                     "SEL Entry: 0A0002E7ED7C542000042AFF6FF2FFFF\n" +
+                     "0x000A,12/01/2014,14:38:31,Session Audit #0xFF,,Asserted\n";
+
     base.before(function (context) {
         var _ = helper.baseInjector.get('_');
         // create a child injector with renasar-core and the base pieces we need to test this
@@ -64,6 +85,33 @@ describe(require('path').basename(__filename), function () {
                    sensor: 'Power Unit #0x02',
                    event: 'Fully Redundant',
                    value: 'Deasserted'
+                });
+                expect(out.alerts[0]).to.have.property('matches');
+                expect(out.alerts[0].matches).to.deep.equal(data.alerts);
+            });
+        });
+
+        it("should alert on alternative sel data", function() {
+            var parsed = this.parser.parseSelData(selDataAlt);
+            var data = {
+                sel: parsed,
+                alerts: [
+                    {
+                        "time": "14:38:31",
+                        "sensor": "Session Audit #0xFF",
+                        "value": "Asserted"
+                    }
+                ]
+            };
+            return this.determineAlert(data).then(function(out) {
+                expect(out).to.have.property('alerts').with.length(1);
+                expect(out.alerts[0]).to.have.property('data');
+                expect(out.alerts[0].data).to.deep.equal({
+                   date: '12/01/2014',
+                   time: '14:38:31',
+                   sensor: 'Session Audit #0xFF',
+                   event: '',
+                   value: 'Asserted'
                 });
                 expect(out.alerts[0]).to.have.property('matches');
                 expect(out.alerts[0].matches).to.deep.equal(data.alerts);
