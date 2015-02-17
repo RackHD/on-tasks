@@ -46,7 +46,7 @@ describe(require('path').basename(__filename), function () {
 
         it("should listen for snmp command requests", function(done) {
             var self = this;
-            self.snmp.collectHostSnmp = sinon.promise();
+            self.snmp.collectHostSnmp = sinon.stub().resolves();
             self.snmp._publishSnmpResult = sinon.stub();
             self.snmp._subscribeRunSnmpCommand = function(routingKey, callback) {
                 self.snmp.on('test-subscribe-snmp-command', function(config) {

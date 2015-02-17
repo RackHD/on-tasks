@@ -52,7 +52,7 @@ describe(require('path').basename(__filename), function () {
                 password: 'admin',
                 workItemId: 'testworkitemid'
             };
-            self.ipmi.collectIpmiSdr = sinon.promise();
+            self.ipmi.collectIpmiSdr = sinon.stub().resolves();
             self.ipmi._publishIpmiCommandResult = sinon.stub();
             self.ipmi._subscribeRunIpmiCommand = function(routingKey, type, callback) {
                 if (type === 'sdr') {
