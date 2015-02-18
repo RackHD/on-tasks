@@ -1,0 +1,8 @@
+##Power supply pulled
+##renasar@kylin1:~$ ipmitool -I lanplus -H 10.1.1.246 -U root -P Passw0rd! sel list
+   1,10/26/2014,20:17:30,Event Logging Disabled #0x07,Log area reset/cleared,Asserted
+   2,10/26/2014,20:17:47,Power Supply #0x51,Power Supply AC lost,Asserted
+   3,10/26/2014,20:17:48,Power Unit #0x02,Fully Redundant,Deasserted
+   4,10/26/2014,20:17:48,Power Unit #0x02,Redundancy Lost,Asserted
+   5,10/26/2014,20:17:48,Power Unit #0x02,Non-Redundant: Sufficient from Redundant,Asserted
+   6,10/26/2014,20:17:51,Power Supply #0x51,Presence detected,Deasserted
