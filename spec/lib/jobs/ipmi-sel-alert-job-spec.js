@@ -4,6 +4,7 @@
 'use strict';
 
 var uuid = require('node-uuid');
+var _ = require('lodash');
 
 describe(require('path').basename(__filename), function () {
     var injector;
@@ -131,6 +132,26 @@ describe(require('path').basename(__filename), function () {
             };
             return this.determineAlert(data).then(function(out) {
                 expect(out).to.have.property('alerts').with.length(3);
+            });
+        });
+
+        it("should only alert if the most recent values for a sensor+event match", function() {
+            var _selData = _.cloneDeep(selData);
+            _selData += "7,10/26/2014,20:17:55,Power Supply #0x51,Fully Redundant,Deasserted\n";
+            _selData += "8,10/26/2014,20:17:59,Power Supply #0x51,Fully Redundant,Asserted\n";
+            var parsed = this.parser.parseSelData(_selData);
+            var data = {
+                sel: parsed,
+                alerts: [
+                    {
+                        "sensor": "Power Supply #0x51",
+                        "event": "Fully Redundant",
+                        "value": "Deasserted"
+                    }
+                ]
+            };
+            return this.determineAlert(data).then(function(out) {
+                expect(out).to.be.empty;
             });
         });
     });
