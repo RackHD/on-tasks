@@ -3,8 +3,6 @@
 
 'use strict';
 
-var _ = require('lodash');
-
 function literalCompare(objA, objB) {
     _.forEach(objA, function(v, k) {
         if (typeof v === 'object' && !(v instanceof Date)) {

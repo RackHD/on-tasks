@@ -4,7 +4,6 @@
 'use strict';
 
 var uuid = require('node-uuid');
-var _ = require('lodash');
 
 describe(require('path').basename(__filename), function () {
     var injector;

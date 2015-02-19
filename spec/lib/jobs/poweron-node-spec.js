@@ -12,10 +12,10 @@ describe(require('path').basename(__filename), function () {
     var _ = helper.baseInjector.get('_');
 
     // mock up the ChildProcess injectable to capture calls before they go to a local shell
-    var mockChildProcessFactory = function(Logger) {
-        var logger = Logger.initialize(mockChildProcessFactory);
+    var mockChildProcessFactory = function() {
+        //var logger = Logger.initialize(mockChildProcessFactory);
         function MockChildProcess() {}
-        MockChildProcess.prototype.run = function run (command, args, env, code) {
+        MockChildProcess.prototype.run = function run (command, args) {
             // logger.info("CHILD PROCESS MOCK!");
             // logger.info("command: "+command);
             // logger.info("args: "+args);
