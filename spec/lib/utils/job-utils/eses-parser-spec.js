@@ -90,8 +90,8 @@ describe("test_eses Task Parser", function () {
                     //console.log(util.inspect(result.data, {depth: null}));
                     expect(result.data.VPD).to.be.ok;
                     expect(result.data.VPD.version).to.be.ok;
-                    expect(result.data.VPD.vendor_id).to.be.ok;
-                    expect(result.data.VPD.product_id).to.be.ok;
+                    expect(result.data.VPD).to.have.property('vendor_id');
+                    expect(result.data.VPD).to.have.property('product_id');
                     done();
                 });
         });

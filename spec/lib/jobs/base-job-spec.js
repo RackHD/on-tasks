@@ -5,9 +5,7 @@
 
 var events = require('events'),
     uuid = require('node-uuid'),
-    util = require('util'),
-    _ = require('lodash'),
-    Q = require('q');
+    util = require('util');
 
 describe("Base Job", function () {
     var injector;
