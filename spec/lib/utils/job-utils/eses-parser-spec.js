@@ -88,10 +88,10 @@ describe("test_eses Task Parser", function () {
                     // data specific format verification
                     //var util = require('util');
                     //console.log(util.inspect(result.data, {depth: null}));
-                    expect(result.data.VPD).to.be.ok;
-                    expect(result.data.VPD.version).to.be.ok;
-                    expect(result.data.VPD).to.have.property('vendor_id');
-                    expect(result.data.VPD).to.have.property('product_id');
+                    expect(result.data).to.have.property('VPD').to.be.ok;
+                    expect(result.data.VPD).to.have.property('version').to.be.ok;
+                    expect(result.data.VPD).to.have.property('vendor_id').to.be.ok;
+                    expect(result.data.VPD).to.have.property('product_id').to.be.ok;
                     done();
                 });
         });
