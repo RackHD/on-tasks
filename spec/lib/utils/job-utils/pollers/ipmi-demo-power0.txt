@@ -1,0 +1,3 @@
+##Before (SEL Cleared)
+##renasar@kylin1:~$ ipmitool -I lanplus -H 10.1.1.246 -U root -P Passw0rd! sel list
+   1,10/26/2014,20:17:30,Event Logging Disabled #0x07,Log area reset/cleared,Asserted

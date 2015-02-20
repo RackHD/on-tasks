@@ -56,7 +56,9 @@ describe(require('path').basename(__filename), function () {
             self.ipmi._subscribeRunIpmiCommand = function(routingKey, type, callback) {
                 if (type === 'sdr') {
                     self.ipmi.on('test-subscribe-ipmi-sdr-command', function(config) {
-                        callback(config);
+                        // BaseJob normally binds this callback to its subclass instance,
+                        // so do the equivalent
+                        callback.call(self.ipmi, config);
                     });
                 }
             };

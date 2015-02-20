@@ -6,6 +6,7 @@
 var uuid = require('node-uuid');
 
 describe(require('path').basename(__filename), function () {
+    var _;
     var injector;
     var base = require('./base-spec');
 
@@ -38,13 +39,12 @@ describe(require('path').basename(__filename), function () {
                      "0x000A,12/01/2014,14:38:31,Session Audit #0xFF,,Asserted\n";
 
     base.before(function (context) {
-        var _ = helper.baseInjector.get('_');
+        _ = helper.baseInjector.get('_');
         // create a child injector with renasar-core and the base pieces we need to test this
         injector = helper.baseInjector.createChild(_.flatten([
             helper.require('/spec/mocks/logger.js'),
             helper.requireGlob('/lib/services/*.js'),
             helper.require('/lib/utils/job-utils/ipmi-parser.js'),
-            helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/ipmi-sel-alert-job.js'),
             helper.require('/lib/jobs/poller-alert-job.js')
@@ -131,6 +131,26 @@ describe(require('path').basename(__filename), function () {
             };
             return this.determineAlert(data).then(function(out) {
                 expect(out).to.have.property('alerts').with.length(3);
+            });
+        });
+
+        it("should only alert if the most recent values for a sensor+event match", function() {
+            var _selData = _.cloneDeep(selData);
+            _selData += "7,10/26/2014,20:17:55,Power Supply #0x51,Fully Redundant,Deasserted\n";
+            _selData += "8,10/26/2014,20:17:59,Power Supply #0x51,Fully Redundant,Asserted\n";
+            var parsed = this.parser.parseSelData(_selData);
+            var data = {
+                sel: parsed,
+                alerts: [
+                    {
+                        "sensor": "Power Supply #0x51",
+                        "event": "Fully Redundant",
+                        "value": "Deasserted"
+                    }
+                ]
+            };
+            return this.determineAlert(data).then(function(out) {
+                expect(out).to.be.empty;
             });
         });
     });
