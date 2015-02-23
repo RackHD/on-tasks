@@ -32,7 +32,7 @@ function deserializeJson(json) {
     });
 }
 
-before(function() {
+before('task-spec before', function() {
     this.timeout(5000);
     var taskModule = helper.require('/index');
     injector = helper.baseInjector.createChild(
@@ -106,13 +106,13 @@ describe("Task", function () {
         var subscriptionStub;
         var cancelSpy;
 
-        before(function() {
+        before('task-spec cancellation before', function() {
             eventsProtocol = injector.get('Protocol.Events');
             eventsProtocol.publishTaskFinished = sinon.stub().resolves();
             subscriptionStub = { dispose: sinon.stub().resolves() };
         });
 
-        beforeEach(function() {
+        beforeEach('task-spec-cancellation beforeEach', function() {
             subscriptionStub.dispose.reset();
             eventsProtocol.publishTaskFinished.reset();
 
@@ -149,7 +149,7 @@ describe("Task", function () {
         describe("of job", function() {
             var jobCancelStub = sinon.stub();
 
-            beforeEach(function() {
+            beforeEach('task-spec-job-cancellation beforeEach', function() {
                 jobCancelStub.reset();
 
                 task.job = new events.EventEmitter();
