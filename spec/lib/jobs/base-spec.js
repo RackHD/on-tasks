@@ -4,15 +4,24 @@
 'use strict';
 
 module.exports = {
-    before: function (callback) {
-        before(function () {
+    before: function (arg1, arg2) {
+        var description;
+        var callback;
+        if (typeof arg1 === 'string') {
+            description = arg1;
+            callback = arg2;
+        } else {
+            description = '';
+            callback = arg1;
+        }
+        before(description, function () {
             callback(this);
         });
     },
     examples: function () {
-        before(function () {
+        before("Base Job Examples before", function () {
             expect(this.Jobclass).to.be.ok;
-            expect(this.Jobclass).to.be.an.function;
+            expect(this.Jobclass).to.be.a.function;
         });
 
         describe('Instance Methods', function() {
