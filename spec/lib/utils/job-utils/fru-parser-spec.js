@@ -2,26 +2,20 @@
 // Created by heckj on 7/10/14.
 /* jshint node: true */
 
-
 'use strict';
 
-var injector;
-var stdoutMocks = require('./stdout-helper');
-
 describe("ipmi fru Task Parser", function () {
-
+    var stdoutMocks = require('./stdout-helper');
     var taskParser;
 
     before(function () {
-        var _ = helper.baseInjector.get('_');
-
         // create a child injector with renasar-core and the base pieces we need to test this
-        injector = helper.baseInjector.createChild(_.flatten([
+        helper.setupInjector([
             helper.require('/spec/mocks/logger.js'),
             helper.require('/lib/utils/job-utils/command-parser.js')
-        ]));
+        ]);
 
-        taskParser = injector.get('JobUtils.CommandParser');
+        taskParser = helper.injector.get('JobUtils.CommandParser');
 
     });
 
@@ -51,7 +45,6 @@ describe("ipmi fru Task Parser", function () {
                 expect(result.source).to.equal('ipmi-fru');
             });
     });
-
 });
 
 

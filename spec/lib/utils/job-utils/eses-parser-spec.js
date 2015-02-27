@@ -5,7 +5,6 @@
 
 'use strict';
 
-var injector;
 var stdoutMocks = require('./stdout-helper');
 var xmlParser = require('xml2js').parseString;
 
@@ -15,15 +14,13 @@ describe("test_eses Task Parser", function () {
     var taskParser;
 
     before(function() {
-        var _ = helper.baseInjector.get('_');
-
         // create a child injector with renasar-core and the base pieces we need to test this
-        injector = helper.baseInjector.createChild(_.flatten([
+        helper.setupInjector([
             helper.require('/spec/mocks/logger.js'),
             helper.require('/lib/utils/job-utils/command-parser.js')
-        ]));
+        ]);
 
-        taskParser = injector.get('JobUtils.CommandParser');
+        taskParser = helper.injector.get('JobUtils.CommandParser');
 
     });
 

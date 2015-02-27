@@ -28,26 +28,25 @@ var _samples = {
 describe(require('path').basename(__filename), function () {
     var _;
     var samples;
-    var injector;
     var base = require('./base-spec');
 
     base.before(function (context) {
-        _ = helper.baseInjector.get('_');
-        samples = _.cloneDeep(_samples);
         // create a child injector with renasar-core and the base pieces we need to test this
-        injector = helper.baseInjector.createChild(_.flatten([
+        helper.setupInjector([
             helper.require('/spec/mocks/logger.js'),
             helper.requireGlob('/lib/services/*.js'),
             helper.require('/lib/utils/job-utils/ipmi-parser.js'),
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/ipmi-sdr-alert-job.js'),
             helper.require('/lib/jobs/poller-alert-job.js')
-        ]));
+        ]);
 
-        context.parser = injector.get('JobUtils.IpmiCommandParser');
-        context.Jobclass = injector.get('Job.Poller.Alert.Ipmi.Sdr');
+        _ = helper.injector.get('_');
+        context.parser = helper.injector.get('JobUtils.IpmiCommandParser');
+        context.Jobclass = helper.injector.get('Job.Poller.Alert.Ipmi.Sdr');
         var alertJob = new context.Jobclass({}, { graphId: uuid.v4() }, uuid.v4());
         context.determineAlert = alertJob._determineAlert;
+        samples = _.cloneDeep(_samples);
     });
 
     describe('Base', function () {

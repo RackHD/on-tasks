@@ -3,68 +3,65 @@
 
 'use strict';
 
-var events = require('events');
-
-var injector;
-var Task;
-var taskData;
-var noopTask;
-var baseNoopTask;
-var noopDefinition;
-
-function literalCompare(objA, objB) {
-    _.forEach(objA, function(v, k) {
-        if (typeof v === 'object' && !(v instanceof Date)) {
-            literalCompare(v, objB[k]);
-        } else {
-            expect(v).to.deep.equal(objB[k]);
-        }
-    });
-}
-
-// The only values currently that won't compare accurately from JSON to
-// object are Date objects, so do some manual conversion there.
-function deserializeJson(json) {
-    _.forEach(json.stats, function(v, k) {
-        if (v) {
-            json.stats[k] = new Date(v);
-        }
-    });
-}
-
-before('task-spec before', function() {
-    this.timeout(5000);
-    var taskModule = helper.require('/index');
-    injector = helper.baseInjector.createChild(
-        _.flatten([
-            taskModule.injectables,
-            dihelper.simpleWrapper({}, 'Protocol.Events'),
-            dihelper.simpleWrapper({}, 'Protocol.Task')
-        ])
-    );
-    var Logger = injector.get('Logger');
-    Logger.prototype.log = sinon.spy();
-    Task = injector.get('Task.Task');
-    taskData = taskModule.taskData;
-
-    _.forEach(taskData, function(definition) {
-        if (definition.injectableName === 'Task.noop') {
-            noopTask = definition;
-        } else if (definition.injectableName === 'Task.Base.noop') {
-            baseNoopTask = definition;
-        }
-    });
-
-    expect(noopTask).to.not.be.empty;
-    expect(baseNoopTask).to.not.be.empty;
-
-    noopDefinition = _.merge(noopTask, baseNoopTask);
-});
 
 describe("Task", function () {
+    var events = require('events');
+    var Task;
+    var taskData;
+    var noopTask;
+    var baseNoopTask;
+    var noopDefinition;
+
+    function literalCompare(objA, objB) {
+        _.forEach(objA, function(v, k) {
+            if (typeof v === 'object' && !(v instanceof Date)) {
+                literalCompare(v, objB[k]);
+            } else {
+                expect(v).to.deep.equal(objB[k]);
+            }
+        });
+    }
+
+    // The only values currently that won't compare accurately from JSON to
+    // object are Date objects, so do some manual conversion there.
+    function deserializeJson(json) {
+        _.forEach(json.stats, function(v, k) {
+            if (v) {
+                json.stats[k] = new Date(v);
+            }
+        });
+    }
+
+    before('task-spec before', function() {
+        this.timeout(5000);
+        var taskModule = helper.require('/index');
+        helper.setupInjector([
+            taskModule.injectables,
+            helper.di.simpleWrapper({}, 'Protocol.Events'),
+            helper.di.simpleWrapper({}, 'Protocol.Task')
+        ]);
+        var Logger = helper.injector.get('Logger');
+        Logger.prototype.log = sinon.spy();
+        Task = helper.injector.get('Task.Task');
+        taskData = taskModule.taskData;
+
+        _.forEach(taskData, function(definition) {
+            if (definition.injectableName === 'Task.noop') {
+                noopTask = definition;
+            } else if (definition.injectableName === 'Task.Base.noop') {
+                baseNoopTask = definition;
+            }
+        });
+
+        expect(noopTask).to.not.be.empty;
+        expect(baseNoopTask).to.not.be.empty;
+
+        noopDefinition = _.merge(noopTask, baseNoopTask);
+    });
+
     it("should create subscriptions on start", function() {
         var task = Task.create(noopDefinition, {}, {});
-        var taskProtocol = injector.get('Protocol.Task');
+        var taskProtocol = helper.injector.get('Protocol.Task');
         taskProtocol.subscribeRun = sinon.stub().resolves('test run subscription');
         taskProtocol.subscribeCancel = sinon.stub().resolves('test cancel subscription');
 
@@ -107,7 +104,7 @@ describe("Task", function () {
         var cancelSpy;
 
         before('task-spec cancellation before', function() {
-            eventsProtocol = injector.get('Protocol.Events');
+            eventsProtocol = helper.injector.get('Protocol.Events');
             eventsProtocol.publishTaskFinished = sinon.stub().resolves();
             subscriptionStub = { dispose: sinon.stub().resolves() };
         });
@@ -201,7 +198,7 @@ describe("Task", function () {
 
         it("should cancel on receipt of a cancel message from AMQP", function(done) {
             var protocolStub = new events.EventEmitter();
-            var taskProtocol = injector.get('Protocol.Task');
+            var taskProtocol = helper.injector.get('Protocol.Task');
             taskProtocol.subscribeRun = sinon.stub().resolves(subscriptionStub);
             taskProtocol.subscribeCancel = function(taskId, callback) {
                 protocolStub.on('cancel.' + taskId, function() {

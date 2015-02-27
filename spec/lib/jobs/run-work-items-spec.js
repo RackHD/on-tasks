@@ -4,8 +4,6 @@
 'use strict';
 
 describe("Job.Catalog.GenerateSku", function () {
-
-    var injector;
     var waterline = {};
     var taskProtocol = {};
     var RunWorkItems;
@@ -13,19 +11,18 @@ describe("Job.Catalog.GenerateSku", function () {
     var uuid;
 
     before(function () {
-        var _ = helper.baseInjector.get('_');
         // create a child injector with renasar-core and the base pieces we need to test this
-        injector = helper.baseInjector.createChild(_.flatten([
+        helper.setupInjector([
             helper.require('/spec/mocks/logger.js'),
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/run-work-items.js'),
-            dihelper.simpleWrapper(waterline, 'Services.Waterline'),
-            dihelper.simpleWrapper(taskProtocol, 'Protocol.Task')
-        ]));
+            helper.di.simpleWrapper(waterline, 'Services.Waterline'),
+            helper.di.simpleWrapper(taskProtocol, 'Protocol.Task')
+        ]);
 
-        RunWorkItems = injector.get('Job.WorkItems.Run');
-        Q = injector.get('Q');
-        uuid = injector.get('uuid');
+        RunWorkItems = helper.injector.get('Job.WorkItems.Run');
+        Q = helper.injector.get('Q');
+        uuid = helper.injector.get('uuid');
     });
 
     beforeEach(function () {

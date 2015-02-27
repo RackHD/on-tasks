@@ -3,29 +3,22 @@
 
 'use strict';
 
-var fs = require('fs');
-var _ = require('lodash');
-
-var injector = helper.baseInjector.createChild(
-    _.flatten([
-        helper.require('/lib/jobs/base-job'),
-        helper.require('/lib/jobs/ipmi-job'),
-        helper.require('/lib/utils/job-utils/ipmitool'),
-        helper.require('/lib/utils/job-utils/ipmi-parser')
-    ])
-);
-
-var parser = injector.get('JobUtils.IpmiCommandParser');
-
-var ipmiOutMock = fs
-    .readFileSync(__dirname+'/ipmi-output-helper')
-    .toString();
-
-var emcIpmiData = fs
-    .readFileSync(__dirname+'/emc-ipmi-sdr-output')
-    .toString();
-
 describe("ipmi-parser", function() {
+    var fs = require('fs');
+
+    helper.setupInjector([
+        helper.require('/lib/utils/job-utils/ipmi-parser')
+    ]);
+
+    var parser = helper.injector.get('JobUtils.IpmiCommandParser');
+
+    var ipmiOutMock = fs
+        .readFileSync(__dirname+'/ipmi-output-helper')
+        .toString();
+
+    var emcIpmiData = fs
+        .readFileSync(__dirname+'/emc-ipmi-sdr-output')
+        .toString();
 
     describe("_processSensor", function() {
         it("should break sensor blocks into key value sets and determine type", function() {
@@ -101,47 +94,47 @@ describe("ipmi-parser", function() {
             .to.equal('0h');
         expect(parsed['Sensor Type (Threshold)']['P2 MTT (0x35)'].Status).to.equal("ok");
     });
-});
 
-describe("IPMI extraction", function() {
-    it("should parse ipmitool -v sdr output", function() {
-        var samples = parser.parseSdrData(ipmiOutMock);
+    describe("IPMI extraction", function() {
+        it("should parse ipmitool -v sdr output", function() {
+            var samples = parser.parseSdrData(ipmiOutMock);
 
-        /*
-         console.log(samples);
+            /*
+             console.log(samples);
 
-         { 'System Temp (0x2)': { value: '38' },
-         'CPU Vcore (0x5)': { value: '1.064' },
-         'CPU DIMM (0x6)': { value: '1.360' },
-         'CPU Mem VTT (0x15)': { value: '0.672' },
-         '+1.1 V (0x7)': { value: '1.104' },
-         '+1.8 V (0x8)': { value: '1.848' },
-         '+5 V (0x9)': { value: '5.056' },
-         '+12 V (0xa)': { value: '12.296' },
-         '-12 V (0xb)': { value: '-11.416' },
-         'HT Voltage (0x16)': { value: '1.184' },
-         '+3.3 V (0xc)': { value: '3.312' },
-         '+3.3VSB (0xd)': { value: '3.264' },
-         'VBAT (0xe)': { value: '3.096' },
-         'FAN 1 (0xf)': { value: '3249' },
-         'FAN 2 (0x10)': { value: '1296' },
-         'FAN 5 (0x13)': { value: '1225' } }
-         */
+             { 'System Temp (0x2)': { value: '38' },
+             'CPU Vcore (0x5)': { value: '1.064' },
+             'CPU DIMM (0x6)': { value: '1.360' },
+             'CPU Mem VTT (0x15)': { value: '0.672' },
+             '+1.1 V (0x7)': { value: '1.104' },
+             '+1.8 V (0x8)': { value: '1.848' },
+             '+5 V (0x9)': { value: '5.056' },
+             '+12 V (0xa)': { value: '12.296' },
+             '-12 V (0xb)': { value: '-11.416' },
+             'HT Voltage (0x16)': { value: '1.184' },
+             '+3.3 V (0xc)': { value: '3.312' },
+             '+3.3VSB (0xd)': { value: '3.264' },
+             'VBAT (0xe)': { value: '3.096' },
+             'FAN 1 (0xf)': { value: '3249' },
+             'FAN 2 (0x10)': { value: '1296' },
+             'FAN 5 (0x13)': { value: '1225' } }
+             */
 
-        _.forEach(samples, function(sample) {
-            expect(parseFloat(sample.value)).to.be.a('number');
+            _.forEach(samples, function(sample) {
+                expect(parseFloat(sample.value)).to.be.a('number');
+            });
+
+            expect(samples).to.have.property('System Temp (0x2)');
+            expect(samples).to.have.property('FAN 1 (0xf)');
+            expect(samples['FAN 1 (0xf)'].value).to.equal('3249');
+            //console.log(samples);
         });
 
-        expect(samples).to.have.property('System Temp (0x2)');
-        expect(samples).to.have.property('FAN 1 (0xf)');
-        expect(samples['FAN 1 (0xf)'].value).to.equal('3249');
-        //console.log(samples);
-    });
-
-    it("should parse the ipmi sdr data from EMC", function() {
-        var samples = parser.parseSdrData(emcIpmiData);
-        expect(samples).to.have.property('Exit Air Temp (0x2e)');
-        expect(samples['Exit Air Temp (0x2e)'].value).to.equal('ok');
-        //console.log(samples);
+        it("should parse the ipmi sdr data from EMC", function() {
+            var samples = parser.parseSdrData(emcIpmiData);
+            expect(samples).to.have.property('Exit Air Temp (0x2e)');
+            expect(samples['Exit Air Temp (0x2e)'].value).to.equal('ok');
+            //console.log(samples);
+        });
     });
 });
