@@ -115,7 +115,7 @@ describe("Base Job", function () {
                     var args = _.range(job[funcName].length - 1);
                     job[funcName].apply(job, args.concat([stub]));
                     // Assert that we always bind the callback
-                    expect(stub.bind).to.have.been.calledOnce;
+                    expect(stub.bind).to.have.been.calledWith(job);
                     numSubscriberMethods += 1;
                 }
             });
