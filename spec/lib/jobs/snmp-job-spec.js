@@ -6,22 +6,20 @@
 var uuid = require('node-uuid');
 
 describe(require('path').basename(__filename), function () {
-    var injector;
     var base = require('./base-spec');
 
     base.before(function (context) {
-        var _ = helper.baseInjector.get('_');
         // create a child injector with renasar-core and the base pieces we need to test this
-        injector = helper.baseInjector.createChild(_.flatten([
+        helper.setupInjector([
             helper.require('/spec/mocks/logger.js'),
             helper.requireGlob('/lib/services/*.js'),
             helper.require('/lib/utils/job-utils/net-snmp-tool.js'),
             helper.require('/lib/utils/job-utils/net-snmp-parser.js'),
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/snmp-job.js')
-        ]));
+        ]);
 
-        context.Jobclass = injector.get('Job.Snmp');
+        context.Jobclass = helper.injector.get('Job.Snmp');
     });
 
     describe('Base', function () {
@@ -46,7 +44,7 @@ describe(require('path').basename(__filename), function () {
         it("should listen for snmp command requests", function(done) {
             var self = this;
             self.snmp.collectHostSnmp = sinon.stub().resolves();
-            self.snmp._publishSnmpResult = sinon.stub();
+            self.snmp._publishSnmpCommandResult = sinon.stub();
             self.snmp._subscribeRunSnmpCommand = function(routingKey, callback) {
                 self.snmp.on('test-subscribe-snmp-command', function(config) {
                     callback(config);
@@ -56,12 +54,15 @@ describe(require('path').basename(__filename), function () {
             self.snmp._run();
 
             _.forEach(_.range(100), function() {
-                self.snmp.emit('test-subscribe-snmp-command');
+                self.snmp.emit('test-subscribe-snmp-command', {});
             });
 
             process.nextTick(function() {
                 try {
                     expect(self.snmp.collectHostSnmp.callCount).to.equal(100);
+                    expect(self.snmp._publishSnmpCommandResult.callCount).to.equal(100);
+                    expect(self.snmp._publishSnmpCommandResult)
+                        .to.have.been.calledWith(self.snmp.routingKey);
                     done();
                 } catch (e) {
                     done(e);

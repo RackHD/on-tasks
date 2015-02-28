@@ -1,12 +1,9 @@
 // Copyright 2015, Renasar Technologies Inc.
 /* jshint node:true */
-/* global dihelper: true */
 
 'use strict';
 
 describe("Job.Pollers.CreateDefault", function () {
-
-    var injector;
     var waterline = {};
     var taskProtocol = {};
     var CleanWorkItems;
@@ -14,19 +11,18 @@ describe("Job.Pollers.CreateDefault", function () {
     var uuid;
 
     before(function () {
-        var _ = helper.baseInjector.get('_');
         // create a child injector with renasar-core and the base pieces we need to test this
-        injector = helper.baseInjector.createChild(_.flatten([
+        helper.setupInjector([
             helper.require('/spec/mocks/logger.js'),
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/create-default-pollers.js'),
-            dihelper.simpleWrapper(waterline, 'Services.Waterline'),
-            dihelper.simpleWrapper(taskProtocol, 'Protocol.Task')
-        ]));
+            helper.di.simpleWrapper(waterline, 'Services.Waterline'),
+            helper.di.simpleWrapper(taskProtocol, 'Protocol.Task')
+        ]);
 
-        CleanWorkItems = injector.get('Job.Pollers.CreateDefault');
-        Q = injector.get('Q');
-        uuid = injector.get('uuid');
+        CleanWorkItems = helper.injector.get('Job.Pollers.CreateDefault');
+        Q = helper.injector.get('Q');
+        uuid = helper.injector.get('uuid');
     });
 
     beforeEach(function () {

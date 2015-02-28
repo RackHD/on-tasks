@@ -6,8 +6,6 @@
 var uuid = require('node-uuid');
 
 describe(require('path').basename(__filename), function () {
-    var _;
-    var injector;
     var base = require('./base-spec');
 
     var selData = "1,10/26/2014,20:17:30,Event Logging Disabled #0x07,Log area reset/cleared,Asserted\n" +  // jshint ignore:line
@@ -39,19 +37,18 @@ describe(require('path').basename(__filename), function () {
                      "0x000A,12/01/2014,14:38:31,Session Audit #0xFF,,Asserted\n";
 
     base.before(function (context) {
-        _ = helper.baseInjector.get('_');
         // create a child injector with renasar-core and the base pieces we need to test this
-        injector = helper.baseInjector.createChild(_.flatten([
+        helper.setupInjector([
             helper.require('/spec/mocks/logger.js'),
             helper.requireGlob('/lib/services/*.js'),
             helper.require('/lib/utils/job-utils/ipmi-parser.js'),
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/ipmi-sel-alert-job.js'),
             helper.require('/lib/jobs/poller-alert-job.js')
-        ]));
+        ]);
 
-        context.parser = injector.get('JobUtils.IpmiCommandParser');
-        context.Jobclass = injector.get('Job.Poller.Alert.Ipmi.Sel');
+        context.parser = helper.injector.get('JobUtils.IpmiCommandParser');
+        context.Jobclass = helper.injector.get('Job.Poller.Alert.Ipmi.Sel');
         var alertJob = new context.Jobclass({}, { graphId: uuid.v4() }, uuid.v4());
         context.determineAlert = alertJob._determineAlert;
     });

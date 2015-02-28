@@ -3,13 +3,10 @@
 
 'use strict';
 
-describe(require('path').basename(__filename), function () {
+var uuid = require('node-uuid');
 
-    var injector;
+describe(require('path').basename(__filename), function () {
     var base = require('./base-spec');
-    var Q = helper.baseInjector.get('Q');
-    var uuid = helper.baseInjector.get('uuid');
-    var _ = helper.baseInjector.get('_');
 
     // mock up the ChildProcess injectable to capture calls before they go to a local shell
     var mockChildProcessFactory = function() {
@@ -30,8 +27,6 @@ describe(require('path').basename(__filename), function () {
         };
         return MockChildProcess;
     };
-    helper.di.annotate(mockChildProcessFactory, new helper.di.Provide('ChildProcess'));
-    helper.di.annotate(mockChildProcessFactory, new helper.di.Inject('Logger'));
 
     // mock up the Services.Waterline injectable to subvert model lookups for our tests
     var mockWaterlineFactory = function() {
@@ -55,21 +50,20 @@ describe(require('path').basename(__filename), function () {
         };
         return new MockWaterline();
     };
-    helper.di.annotate(mockWaterlineFactory, new helper.di.Provide('Services.Waterline'));
 
     base.before(function (context) {
-        var _ = helper.baseInjector.get('_');
         // create a child injector with renasar-core and the base pieces we need to test this
-        injector = helper.baseInjector.createChild(_.flatten([
+        helper.setupInjector([
             helper.require('/spec/mocks/logger.js'),
-            mockChildProcessFactory,
-            mockWaterlineFactory,
+            helper.di.simpleWrapper(mockChildProcessFactory, 'ChildProcess'),
+            helper.di.simpleWrapper(mockWaterlineFactory, 'Services.Waterline'),
             helper.requireGlob('/lib/services/*.js'),
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/obm-control.js')
-        ]));
+        ]);
 
-        context.Jobclass = injector.get('Job.Obm.Node');
+        context.Jobclass = helper.injector.get('Job.Obm.Node');
+        context.Jobclass.prototype._subscribeActiveTaskExists = sinon.stub().resolves();
     });
 
     describe('Base', function () {

@@ -4,21 +4,18 @@
 'use strict';
 
 describe(require('path').basename(__filename), function () {
-
-    var injector;
     var base = require('./base-spec');
 
     base.before(function (context) {
-        var _ = helper.baseInjector.get('_');
         // create a child injector with renasar-core and the base pieces we need to test this
-        injector = helper.baseInjector.createChild(_.flatten([
+        helper.setupInjector([
             helper.require('/spec/mocks/logger.js'),
             helper.requireGlob('/lib/services/*.js'),
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/obm-control.js')
-        ]));
+        ]);
 
-        context.Jobclass = injector.get('Job.Obm.Node');
+        context.Jobclass = helper.injector.get('Job.Obm.Node');
     });
 
     describe('Base', function () {

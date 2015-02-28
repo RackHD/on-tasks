@@ -8,26 +8,24 @@ var events = require('events'),
     util = require('util');
 
 describe("Base Job", function () {
-    var injector;
     var BaseJob;
     var MockJob;
     var base = require('./base-spec');
 
     base.before(function (context) {
-        var _ = helper.baseInjector.get('_');
         // create a child injector with renasar-core and the base pieces we need to test this
-        injector = helper.baseInjector.createChild(_.flatten([
+        helper.setupInjector([
             helper.require('/spec/mocks/logger.js'),
             helper.require('/lib/jobs/base-job.js')
-        ]));
+        ]);
 
-        injector.get('Services.Messenger').subscribe = sinon.stub().returns(Q.resolve({}));
+        helper.injector.get('Services.Messenger').subscribe = sinon.stub().returns(Q.resolve({}));
 
-        context.Jobclass = injector.get('Job.Base');
+        context.Jobclass = helper.injector.get('Job.Base');
         BaseJob = context.Jobclass;
 
-        var taskProtocol = injector.get('Protocol.Task');
-        var eventsProtocol = injector.get('Protocol.Events');
+        var taskProtocol = helper.injector.get('Protocol.Task');
+        var eventsProtocol = helper.injector.get('Protocol.Events');
 
         _.forEach(Object.getPrototypeOf(taskProtocol), function(f, funcName) {
             var spy = sinon.spy(function() {
@@ -55,7 +53,7 @@ describe("Base Job", function () {
         });
 
         MockJob = function() {
-            var logger = injector.get('Logger').initialize(MockJob);
+            var logger = helper.injector.get('Logger').initialize(MockJob);
             MockJob.super_.call(this, logger, {}, {}, uuid.v4());
             this.nodeId = "54c69f87c7100ec77bfde17c";
             this.context = {};
@@ -117,7 +115,7 @@ describe("Base Job", function () {
                     var args = _.range(job[funcName].length - 1);
                     job[funcName].apply(job, args.concat([stub]));
                     // Assert that we always bind the callback
-                    expect(stub.bind).to.have.been.calledOnce;
+                    expect(stub.bind).to.have.been.calledWith(job);
                     numSubscriberMethods += 1;
                 }
             });

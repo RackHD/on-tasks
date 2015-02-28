@@ -6,22 +6,20 @@
 var uuid = require('node-uuid');
 
 describe(require('path').basename(__filename), function () {
-    var injector;
     var base = require('./base-spec');
 
     base.before(function (context) {
-        var _ = helper.baseInjector.get('_');
         // create a child injector with renasar-core and the base pieces we need to test this
-        injector = helper.baseInjector.createChild(_.flatten([
+        helper.setupInjector([
             helper.require('/spec/mocks/logger.js'),
             helper.requireGlob('/lib/services/*.js'),
             helper.require('/lib/utils/job-utils/ipmitool.js'),
             helper.require('/lib/utils/job-utils/ipmi-parser.js'),
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/ipmi-job.js')
-        ]));
+        ]);
 
-        context.Jobclass = injector.get('Job.Ipmi');
+        context.Jobclass = helper.injector.get('Job.Ipmi');
     });
 
     describe('Base', function () {
