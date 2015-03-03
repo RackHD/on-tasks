@@ -3,22 +3,28 @@
 
 'use strict';
 
+var fs = require('fs');
+
 describe("ipmi-parser", function() {
-    var fs = require('fs');
+    var parser;
+    var ipmiOutMock;
+    var emcIpmiData;
 
-    helper.setupInjector([
-        helper.require('/lib/utils/job-utils/ipmi-parser')
-    ]);
+    before(function() {
+        helper.setupInjector([
+            helper.require('/lib/utils/job-utils/ipmi-parser')
+        ]);
 
-    var parser = helper.injector.get('JobUtils.IpmiCommandParser');
+        parser = helper.injector.get('JobUtils.IpmiCommandParser');
 
-    var ipmiOutMock = fs
-        .readFileSync(__dirname+'/ipmi-output-helper')
-        .toString();
+        ipmiOutMock = fs
+            .readFileSync(__dirname+'/ipmi-output-helper')
+            .toString();
 
-    var emcIpmiData = fs
-        .readFileSync(__dirname+'/emc-ipmi-sdr-output')
-        .toString();
+        emcIpmiData = fs
+            .readFileSync(__dirname+'/emc-ipmi-sdr-output')
+            .toString();
+    });
 
     describe("_processSensor", function() {
         it("should break sensor blocks into key value sets and determine type", function() {

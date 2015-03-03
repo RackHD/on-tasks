@@ -5,10 +5,11 @@
 'use strict';
 
 describe("ipmi fru Task Parser", function () {
-    var stdoutMocks = require('./stdout-helper');
+    var stdoutMocks;
     var taskParser;
 
     before(function () {
+        stdoutMocks = require('./stdout-helper');
         // create a child injector with renasar-core and the base pieces we need to test this
         helper.setupInjector([
             helper.require('/spec/mocks/logger.js'),
