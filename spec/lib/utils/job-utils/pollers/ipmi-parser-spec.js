@@ -10,7 +10,7 @@ describe("ipmi-parser", function() {
     var ipmiOutMock;
     var emcIpmiData;
 
-    before(function() {
+    before('ipmi parser before', function() {
         helper.setupInjector([
             helper.require('/lib/utils/job-utils/ipmi-parser')
         ]);

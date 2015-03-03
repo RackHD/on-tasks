@@ -10,7 +10,7 @@ describe("Task Parser", function () {
     var stdoutMocks;
     var taskParser;
 
-    before(function() {
+    before('command task parser before', function() {
         stdoutMocks = require('./stdout-helper');
         // create a child injector with renasar-core and the base pieces we need to test this
         helper.setupInjector([

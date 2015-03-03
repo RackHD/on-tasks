@@ -9,7 +9,7 @@ describe('SnmpTool', function() {
     var SnmpTool;
     var agent;
 
-    before(function() {
+    before('snmp tool before', function() {
         helper.setupInjector([
             helper.require('/lib/utils/job-utils/net-snmp-tool')
         ]);
