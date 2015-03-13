@@ -71,16 +71,21 @@ describe(require('path').basename(__filename), function () {
     });
 
     describe("poweron-node-job", function(done) {
+        var options = {
+            action: 'powerOn',
+            obmServiceName: 'noop-obm-service'
+        };
+
         it('invoke a run function', function() {
             //this.timeout(60000);
-            var job = new this.Jobclass({ action: 'powerOn' }, { target: '123456' }, uuid.v4());
+            var job = new this.Jobclass(options, { target: '123456' }, uuid.v4());
             job.on('done', function() {
                 done();
             });
             job.run();
         });
         it('invoke a cancel function', function(done) {
-            var job = new this.Jobclass({ action: 'powerOn' }, { target: '123456' }, uuid.v4());
+            var job = new this.Jobclass(options, { target: '123456' }, uuid.v4());
             job.on('done', function() {
                 done();
             });
