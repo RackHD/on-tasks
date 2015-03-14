@@ -95,6 +95,13 @@ describe("Task", function () {
 
             literalCompare(task, parsed);
         });
+
+        it("should serialize a job for an instance", function() {
+            var task = Task.create(noopDefinition, {}, {});
+            task.instantiateJob();
+
+            expect(task.serialize().job).to.deep.equal(task.job.serialize());
+        });
     });
 
     describe("cancellation", function() {
