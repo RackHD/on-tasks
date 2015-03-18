@@ -13,7 +13,7 @@ describe("Base Job", function () {
     var base = require('./base-spec');
 
     base.before(function (context) {
-        // create a child injector with renasar-core and the base pieces we need to test this
+        // create a child injector with on-core and the base pieces we need to test this
         helper.setupInjector([
             helper.require('/spec/mocks/logger.js'),
             helper.require('/lib/jobs/base-job.js')
