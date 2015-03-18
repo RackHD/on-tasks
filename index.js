@@ -5,7 +5,7 @@
 
 var di = require('di'),
     _ = require('lodash'),
-    core = require('renasar-core')(di);
+    core = require('os-core')(di);
 
 module.exports = {
     injectables: _.flatten([

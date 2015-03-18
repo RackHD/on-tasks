@@ -1,5 +1,5 @@
 {
-  "name": "renasar-tasks",
+  "name": "on-tasks",
   "version": "0.0.1",
   "description": "Tasks repository (meant as a library of tasks) to be loaded and run by task graphs as needed.",
   "main": "index.js",
@@ -9,18 +9,18 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/renasar/renasar-tasks"
+    "url": "ssh://git@hwstashprd01.isus.emc.com:7999/onrack/on-tasks"
   },
   "author": "",
-  "license": "ISC",
+  "license": "Proprietary",
   "bugs": {
     "url": "https://github.com/renasar/renasar-tasks/issues"
   },
-  "homepage": "https://github.com/renasar/renasar-tasks",
+  "homepage": "https://hwstashprd01.isus.emc.com:8443/projects/ONRACK/repos/on-tasks",
   "dependencies": {
-    "di": "git+ssh://git@github.com/renasar/di.js.git",
+    "di": "git+ssh://git@hwstashprd01.isus.emc.com:7999/onrack/di.js.git",
     "lodash": "^2.4.1",
-    "renasar-core": "git+ssh://git@github.com/renasar/renasar-core.git",
+    "on-core": "git+ssh://git@hwstashprd01.isus.emc.com:7999/onrack/on-core.git",
     "xml2js": "^0.4.4"
   },
   "devDependencies": {

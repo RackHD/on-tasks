@@ -2,4 +2,4 @@
 /* jshint: node:true */
 'use strict';
 
-require('renasar-core/spec/helper');
+require('on-core/spec/helper');
