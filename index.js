@@ -5,7 +5,7 @@
 
 var di = require('di'),
     _ = require('lodash'),
-    core = require('os-core')(di);
+    core = require('on-core')(di);
 
 module.exports = {
     injectables: _.flatten([
