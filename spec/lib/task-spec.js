@@ -3,7 +3,6 @@
 
 'use strict';
 
-
 describe("Task", function () {
     var events = require('events');
     var Task;
@@ -11,23 +10,17 @@ describe("Task", function () {
     var noopTask;
     var baseNoopTask;
     var noopDefinition;
+    var Promise;
 
     function literalCompare(objA, objB) {
         _.forEach(objA, function(v, k) {
-            if (typeof v === 'object' && !(v instanceof Date)) {
+            if (_.contains(['subscriptions' ,'_events'], k)) {
+                return;
+            }
+            if (typeof v === 'object') {
                 literalCompare(v, objB[k]);
             } else {
                 expect(v).to.deep.equal(objB[k]);
-            }
-        });
-    }
-
-    // The only values currently that won't compare accurately from JSON to
-    // object are Date objects, so do some manual conversion there.
-    function deserializeJson(json) {
-        _.forEach(json.stats, function(v, k) {
-            if (v) {
-                json.stats[k] = new Date(v);
             }
         });
     }
@@ -40,6 +33,7 @@ describe("Task", function () {
             helper.di.simpleWrapper({}, 'Protocol.Events'),
             helper.di.simpleWrapper({}, 'Protocol.Task')
         ]);
+        Promise = helper.injector.get('Promise');
         var Logger = helper.injector.get('Logger');
         Logger.prototype.log = sinon.spy();
         Task = helper.injector.get('Task.Task');
@@ -84,36 +78,41 @@ describe("Task", function () {
             var taskJson;
             var task = Task.create(noopDefinition, {}, {});
 
-            expect(task).to.have.property('serialize');
+            expect(task).to.have.property('serialize').that.is.a('function');
             expect(function() {
                 taskJson = JSON.stringify(task);
             }).to.not.throw(Error);
 
             var parsed = JSON.parse(taskJson);
 
-            deserializeJson(parsed);
+            // Re-add properties removed from the serialized object
+            // just so our deep.equal comparison is easier.
+            parsed.subscriptions = task.subscriptions;
+            parsed._jobPromise = task._jobPromise;
+            parsed._resolver = task._resolver;
 
+            //expect(task).to.deep.equal(parsed);
             literalCompare(task, parsed);
         });
 
         it("should serialize a job for an instance", function() {
             var task = Task.create(noopDefinition, {}, {});
             task.instantiateJob();
-
             expect(task.serialize().job).to.deep.equal(task.job.serialize());
         });
     });
 
-    describe("cancellation", function() {
+    describe("cancellation/completion", function() {
         var task;
         var eventsProtocol;
         var subscriptionStub;
-        var cancelSpy;
+        var Errors;
 
         before('task-spec cancellation before', function() {
             eventsProtocol = helper.injector.get('Protocol.Events');
             eventsProtocol.publishTaskFinished = sinon.stub().resolves();
             subscriptionStub = { dispose: sinon.stub().resolves() };
+            Errors = helper.injector.get('Errors');
         });
 
         beforeEach('task-spec-cancellation beforeEach', function() {
@@ -125,68 +124,57 @@ describe("Task", function () {
                 run: subscriptionStub,
                 cancel: subscriptionStub
             };
-            cancelSpy = sinon.spy(task, 'cancel');
+            sinon.spy(task, 'cancel');
+            sinon.spy(task, 'finish');
         });
 
-        it("should cancel a task", function() {
-            return task.cancel()
-            .then(function() {
-                expect(cancelSpy).to.have.been.calledOnce;
-                expect(task.state).to.equal('cancelled');
-                expect(eventsProtocol.publishTaskFinished).to.have.been.calledWith(task.instanceId);
-                expect(subscriptionStub.dispose).to.have.been.calledTwice;
-            });
-        });
-
-        it("should cancel a task with an error", function() {
-            var error = new Error('test cancel error');
-            return task.cancel(error)
-            .then(function() {
-                expect(cancelSpy).to.have.been.calledOnce;
-                expect(task.error).to.equal(error);
-                expect(task.state).to.equal('cancelled');
-                expect(eventsProtocol.publishTaskFinished).to.have.been.calledWith(task.instanceId);
-                expect(subscriptionStub.dispose).to.have.been.calledTwice;
-            });
-        });
-
-        describe("of job", function() {
-            var jobCancelStub = sinon.stub();
-
-            beforeEach('task-spec-job-cancellation beforeEach', function() {
-                jobCancelStub.reset();
-
-                task.job = new events.EventEmitter();
-                task.job.cancel = function(error) {
-                    jobCancelStub(error);
-                    task.job.emit('done');
-                };
-                task.job.run = sinon.stub();
-                task.instantiateJob = sinon.stub();
-
-                task.run();
-            });
-
-            it("should cancel a job and publish finished on 'done' emitted from job", function() {
-                return task.cancel()
+        describe("of task", function() {
+            it("should clean up resources on finish", function() {
+                sinon.spy(task, 'cleanup');
+                return task.finish()
                 .then(function() {
-                    expect(cancelSpy).to.have.been.calledOnce;
-                    expect(jobCancelStub).to.have.been.calledOnce;
-                    // eventsProtocol.publishTaskFinished is either called
-                    // from task.cancel() if there is no job (on pre-job
-                    // instantiation failure), or in this case,
-                    // from job.on('done') when 'done' is emitted on job.cancel().
+                    expect(task.cleanup).to.have.been.calledOnce;
                     expect(eventsProtocol.publishTaskFinished)
                         .to.have.been.calledWith(task.instanceId);
                 });
             });
 
-            it("should cancel a job with an error", function() {
-                var error = new Error('test cancel job error');
-                return task.cancel(error)
+            it("should cancel a task before it has been set to run", function(done) {
+                var error = new Errors.TaskCancellationError('test error');
+                task.cancel(error);
+
+                process.nextTick(function() {
+                    try {
+                        expect(task.finish).to.have.been.calledOnce;
+                        expect(task.state).to.equal('cancelled');
+                        expect(task.error).to.equal(error);
+                        expect(subscriptionStub.dispose).to.have.been.calledTwice;
+                        done();
+                    } catch (e) {
+                        done(e);
+                    }
+                });
+            });
+
+            it("should cancel a task", function() {
+                task.instantiateJob();
+                task.state = 'running';
+
+                sinon.spy(task.job, 'cancel');
+                task.job._run = function() {
+                    return Promise.delay(100);
+                };
+
+                var error = new Errors.TaskCancellationError('test error');
+                task.cancel(error);
+
+                return task._run()
                 .then(function() {
-                    expect(cancelSpy).to.have.been.calledOnce;
-                    expect(jobCancelStub).to.have.been.calledWith(error);
+                    expect(task.finish).to.have.been.calledOnce;
+                    expect(task.state).to.equal('cancelled');
+                    expect(task.error).to.equal(error);
+                    expect(task.job.cancel).to.have.been.calledOnce;
+                    expect(subscriptionStub.dispose).to.have.been.calledTwice;
                 });
             });
 
@@ -197,8 +185,48 @@ describe("Task", function () {
 
                 return task.run()
                 .then(function() {
-                    expect(cancelSpy).to.have.been.calledOnce;
+                    expect(task.finish).to.have.been.calledOnce;
+                    expect(task.state).to.equal('failed');
                     expect(task.error).to.equal(error);
+                });
+            });
+        });
+
+        describe("of job", function() {
+            beforeEach('task-spec-job-cancellation beforeEach', function() {
+                sinon.spy(task.job, 'cancel');
+                sinon.spy(task.job, '_done');
+            });
+
+            it("should cancel a job", function() {
+                task.instantiateJob();
+                task.job._run = function() {
+                    return Promise.delay(100);
+                };
+                task.cancel(new Errors.TaskCancellationError('test error'));
+
+                return task._run()
+                .then(function() {
+                    expect(task.job.cancel).to.have.been.calledOnce;
+                    expect(task.job.cancel).to.have.been.calledWith(error);
+                    // eventsProtocol.publishTaskFinished is either called
+                    // from task.cancel() if there is no job (on pre-job
+                    // instantiation failure), or in this case,
+                    // from job.on('done') when 'done' is emitted on job.cancel().
+                    expect(eventsProtocol.publishTaskFinished)
+                        .to.have.been.calledWith(task.instanceId);
+                });
+            });
+
+            it("should clean up job resources on cancellation", function() {
+                task.instantiateJob();
+                task.job._run = function() {
+                    return Promise.delay(100);
+                };
+                task.cancel(new Errors.TaskCancellationError('test error'));
+
+                return task._run()
+                .then(function() {
                 });
             });
         });
@@ -218,7 +246,7 @@ describe("Task", function () {
             .then(function() {
                 protocolStub.emit('cancel.' + task.instanceId);
                 process.nextTick(function() {
-                    expect(cancelSpy).to.have.been.calledOnce;
+                    expect(task.cancel).to.have.been.calledOnce;
                     done();
                 });
             });
