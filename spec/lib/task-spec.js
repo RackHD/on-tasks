@@ -139,7 +139,7 @@ describe("Task", function () {
                 });
             });
 
-            it("should cancel a task before it has been set to run", function(done) {
+            it("should cancel before it has been set to run", function(done) {
                 var error = new Errors.TaskCancellationError('test error');
                 task.cancel(error);
 
@@ -156,7 +156,7 @@ describe("Task", function () {
                 });
             });
 
-            it("should cancel a task", function() {
+            it("should cancel", function() {
                 task.instantiateJob();
                 task.state = 'running';
 
@@ -194,39 +194,42 @@ describe("Task", function () {
 
         describe("of job", function() {
             beforeEach('task-spec-job-cancellation beforeEach', function() {
+                task.instantiateJob();
+                task.state = 'running';
                 sinon.spy(task.job, 'cancel');
                 sinon.spy(task.job, '_done');
-            });
-
-            it("should cancel a job", function() {
-                task.instantiateJob();
                 task.job._run = function() {
                     return Promise.delay(100);
                 };
-                task.cancel(new Errors.TaskCancellationError('test error'));
+            });
+
+            it("should cancel a job", function() {
+                var error = new Errors.TaskCancellationError('test error');
+                task.cancel(error);
 
                 return task._run()
                 .then(function() {
                     expect(task.job.cancel).to.have.been.calledOnce;
                     expect(task.job.cancel).to.have.been.calledWith(error);
-                    // eventsProtocol.publishTaskFinished is either called
-                    // from task.cancel() if there is no job (on pre-job
-                    // instantiation failure), or in this case,
-                    // from job.on('done') when 'done' is emitted on job.cancel().
-                    expect(eventsProtocol.publishTaskFinished)
-                        .to.have.been.calledWith(task.instanceId);
+                    expect(task.job._done).to.have.been.calledOnce;
+                    expect(task.job._done).to.have.been.calledWith(error);
                 });
             });
 
-            it("should clean up job resources on cancellation", function() {
-                task.instantiateJob();
-                task.job._run = function() {
-                    return Promise.delay(100);
-                };
+            it("should manage subscription resource creation and deletion", function() {
+                task.job.context.target = 'testtarget';
+                task.job._subscribeActiveTaskExists = sinon.stub().resolves();
+                var jobSubscriptionStub = { dispose: sinon.stub().resolves() };
+                task.job.subscriptions = [
+                    jobSubscriptionStub, jobSubscriptionStub, jobSubscriptionStub
+                ];
+
                 task.cancel(new Errors.TaskCancellationError('test error'));
 
                 return task._run()
                 .then(function() {
+                    expect(task.job._subscribeActiveTaskExists).to.have.been.calledOnce;
+                    expect(jobSubscriptionStub.dispose).to.have.been.calledThrice;
                 });
             });
         });

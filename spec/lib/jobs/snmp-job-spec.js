@@ -3,7 +3,8 @@
 
 'use strict';
 
-var uuid = require('node-uuid');
+var uuid = require('node-uuid'),
+    events = require('events');
 
 describe(require('path').basename(__filename), function () {
     var base = require('./base-spec');
@@ -27,6 +28,8 @@ describe(require('path').basename(__filename), function () {
     });
 
     describe("snmp-job", function() {
+        var testEmitter = new events.EventEmitter();
+
         beforeEach(function() {
             var graphId = uuid.v4();
             this.snmp = new this.Jobclass({}, { graphId: graphId }, uuid.v4());
@@ -46,7 +49,7 @@ describe(require('path').basename(__filename), function () {
             self.snmp.collectHostSnmp = sinon.stub().resolves();
             self.snmp._publishSnmpCommandResult = sinon.stub();
             self.snmp._subscribeRunSnmpCommand = function(routingKey, callback) {
-                self.snmp.on('test-subscribe-snmp-command', function(config) {
+                testEmitter.on('test-subscribe-snmp-command', function(config) {
                     callback(config);
                 });
             };
@@ -54,7 +57,7 @@ describe(require('path').basename(__filename), function () {
             self.snmp._run();
 
             _.forEach(_.range(100), function() {
-                self.snmp.emit('test-subscribe-snmp-command', {});
+                testEmitter.emit('test-subscribe-snmp-command', {});
             });
 
             process.nextTick(function() {

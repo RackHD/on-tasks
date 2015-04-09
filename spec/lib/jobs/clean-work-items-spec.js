@@ -37,20 +37,19 @@ describe("Job.Catalog.GenerateSku", function () {
         }];
 
         var job = new CleanWorkItems({}, { graphId: uuid.v4() }, uuid.v4());
-        job.on('done', function (err) {
-            done(err);
-        });
 
         waterline.workitems.findExpired.returns(Q.resolve(workItems));
+
         job.run();
+
         process.nextTick(function () {
-            expect(waterline.workitems.setFailed).to.have.been.calledOnce;
-            expect(waterline.workitems.setFailed).to.have.been.calledWith(null, workItems);
-            job.cancel();
+            try {
+                expect(waterline.workitems.setFailed).to.have.been.calledOnce;
+                expect(waterline.workitems.setFailed).to.have.been.calledWith(null, workItems);
+                done();
+            } catch (e) {
+                done(e);
+            }
         });
     });
-
 });
-
-
-

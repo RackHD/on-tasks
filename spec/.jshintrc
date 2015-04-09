@@ -76,6 +76,7 @@
         "dihelper": false,
         "_": false,
         "Q": false,
+        "Promise": false,
         "core": false
     }
 }

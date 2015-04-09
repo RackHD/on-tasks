@@ -39,85 +39,55 @@ describe("Job.Pollers.CreateDefault", function () {
         }));
     });
 
-    it('should create pollers for a job with options.nodeId', function (done) {
+    it('should create pollers for a job with options.nodeId', function () {
         var nodeId = 'bc7dab7e8fb7d6abf8e7d6ad';
 
         var job = new CleanWorkItems({ nodeId: nodeId }, { graphId: uuid.v4() }, uuid.v4());
-        job.on('done', function (err) {
-            if (err) {
-                done(err);
-                return;
-            }
-            try {
-                expect(waterline.catalogs.findMostRecent).to.have.been.calledOnce;
-                expect(waterline.catalogs.findMostRecent.firstCall.args[0])
-                    .to.have.property('node', nodeId);
-                expect(waterline.catalogs.findMostRecent.firstCall.args[0])
-                    .to.have.property('source', 'bmc');
-                expect(waterline.workitems.createIpmiPollers).to.have.been.calledOnce;
-                expect(waterline.workitems.createIpmiPollers).to.have.been.calledWith(nodeId);
-            } catch (e) {
-                done(e);
-                return;
-            }
-            done();
-        });
 
-        job.run();
+        return job.run()
+        .then(function() {
+            expect(waterline.catalogs.findMostRecent).to.have.been.calledOnce;
+            expect(waterline.catalogs.findMostRecent.firstCall.args[0])
+                .to.have.property('node', nodeId);
+            expect(waterline.catalogs.findMostRecent.firstCall.args[0])
+                .to.have.property('source', 'bmc');
+            expect(waterline.workitems.createIpmiPollers).to.have.been.calledOnce;
+            expect(waterline.workitems.createIpmiPollers).to.have.been.calledWith(nodeId);
+        });
     });
 
-    it('should create pollers for a job with context.target', function (done) {
+    it('should create pollers for a job with context.target', function () {
         var nodeId = 'bc7dab7e8fb7d6abf8e7d6af';
 
         var job = new CleanWorkItems({}, { target: nodeId, graphId: uuid.v4() }, uuid.v4());
-        job.on('done', function (err) {
-            if (err) {
-                done(err);
-                return;
-            }
-            try {
-                expect(waterline.catalogs.findMostRecent).to.have.been.calledOnce;
-                expect(waterline.catalogs.findMostRecent.firstCall.args[0])
-                    .to.have.property('node', nodeId);
-                expect(waterline.catalogs.findMostRecent.firstCall.args[0])
-                    .to.have.property('source', 'bmc');
-                expect(waterline.workitems.createIpmiPollers).to.have.been.calledOnce;
-                expect(waterline.workitems.createIpmiPollers).to.have.been.calledWith(nodeId);
-            } catch (e) {
-                done(e);
-                return;
-            }
-            done();
-        });
 
-        job.run();
+        return job.run()
+        .then(function() {
+            expect(waterline.catalogs.findMostRecent).to.have.been.calledOnce;
+            expect(waterline.catalogs.findMostRecent.firstCall.args[0])
+                .to.have.property('node', nodeId);
+            expect(waterline.catalogs.findMostRecent.firstCall.args[0])
+                .to.have.property('source', 'bmc');
+            expect(waterline.workitems.createIpmiPollers).to.have.been.calledOnce;
+            expect(waterline.workitems.createIpmiPollers).to.have.been.calledWith(nodeId);
+        });
     });
 
-    it('should not create pollers when bmc catalog does not exist', function (done) {
+    it('should not create pollers when bmc catalog does not exist', function () {
         var nodeId = 'bc7dab7e8fb7d6abf8e7d6af';
 
         waterline.catalogs.findMostRecent.returns(Q.resolve());
         var job = new CleanWorkItems({}, { target: nodeId, graphId: uuid.v4() }, uuid.v4());
-        job.on('done', function (err) {
-            if (err) {
-                done(err);
-                return;
-            }
-            try {
-                expect(waterline.catalogs.findMostRecent).to.have.been.calledOnce;
-                expect(waterline.catalogs.findMostRecent.firstCall.args[0])
-                    .to.have.property('node', nodeId);
-                expect(waterline.catalogs.findMostRecent.firstCall.args[0])
-                    .to.have.property('source', 'bmc');
-                expect(waterline.workitems.createIpmiPollers).to.not.have.been.called;
-            } catch (e) {
-                done(e);
-                return;
-            }
-            done();
-        });
 
-        job.run();
+        return job.run()
+        .then(function() {
+            expect(waterline.catalogs.findMostRecent).to.have.been.calledOnce;
+            expect(waterline.catalogs.findMostRecent.firstCall.args[0])
+                .to.have.property('node', nodeId);
+            expect(waterline.catalogs.findMostRecent.firstCall.args[0])
+                .to.have.property('source', 'bmc');
+            expect(waterline.workitems.createIpmiPollers).to.not.have.been.called;
+        });
     });
 });
 

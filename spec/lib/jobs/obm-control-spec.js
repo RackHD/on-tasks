@@ -55,6 +55,7 @@ describe("Job.Obm.Node", function () {
 
         beforeEach('Job.Obm.Node run beforeEach', function() {
             job = new Job(options, { target: '54da9d7bf33e0405c75f7111' }, uuid.v4());
+            job._subscribeActiveTaskExists = sinon.stub().resolves();
             ObmService.prototype.reboot.reset();
             ObmServiceSpy.reset();
         });
@@ -65,22 +66,31 @@ describe("Job.Obm.Node", function () {
 
         it('should fail if node does not exist', function(done) {
             mockWaterline.nodes.findByIdentifier.resolves(null);
-            job.on('done', function(e) {
+
+            job.run()
+            .then(function() {
+                done(new Error("Expected job to fail"));
+            })
+            .catch(function(e) {
                 try {
                     expect(e).to.have.property('name').that.equals('AssertionError');
                     expect(e).to.have.property('message').that.equals(
                         'Node should exist to run OBM command');
                     done();
                 } catch (e) {
-                    done(e);
+                    done();
                 }
             });
-            job._run();
         });
 
         it('should fail if node does not have obmSettings', function(done) {
             mockWaterline.nodes.findByIdentifier.resolves({});
-            job.on('done', function(e) {
+
+            job.run()
+            .then(function() {
+                done(new Error("Expected job to fail"));
+            })
+            .catch(function(e) {
                 try {
                     expect(e).to.have.property('name').that.equals('AssertionError');
                     expect(e).to.have.property('message').that.equals(
@@ -90,7 +100,6 @@ describe("Job.Obm.Node", function () {
                     done(e);
                 }
             });
-            job._run();
         });
 
         it('should fail if node does not have an obm config for the obm service', function(done) {
@@ -100,7 +109,12 @@ describe("Job.Obm.Node", function () {
                 }
             };
             mockWaterline.nodes.findByIdentifier.resolves(node);
-            job.on('done', function(e) {
+
+            job.run()
+            .then(function() {
+                done(new Error("Expected job to fail"));
+            })
+            .catch(function(e) {
                 try {
                     expect(e).to.have.property('name').that.equals('AssertionError');
                     expect(e).to.have.property('message').that.equals(
@@ -110,10 +124,9 @@ describe("Job.Obm.Node", function () {
                     done(e);
                 }
             });
-            job._run();
         });
 
-        it('should run an OBM command', function(done) {
+        it('should run an OBM command', function() {
             var node = {
                 obmSettings: [
                     {
@@ -127,21 +140,15 @@ describe("Job.Obm.Node", function () {
                 ]
             };
             mockWaterline.nodes.findByIdentifier.resolves(node);
-            job.on('done', function(e) {
-                try {
-                    expect(e).to.be.undefined;
-                    var ipmiObmServiceFactory = helper.injector.get('ipmi-obm-service');
-                    expect(ObmServiceSpy).to.have.been.calledWith(
-                        job.nodeId, ipmiObmServiceFactory, node.obmSettings[0],
-                        undefined, undefined);
-                    expect(ObmService.prototype.reboot).to.have.been.calledOnce;
-                    done();
-                } catch (e) {
-                    done(e);
-                }
-            });
 
-            job._run();
+            return job.run()
+            .then(function() {
+                var ipmiObmServiceFactory = helper.injector.get('ipmi-obm-service');
+                expect(ObmServiceSpy).to.have.been.calledWith(
+                    job.nodeId, ipmiObmServiceFactory, node.obmSettings[0],
+                    undefined, undefined);
+                expect(ObmService.prototype.reboot).to.have.been.calledOnce;
+            });
         });
     });
 
