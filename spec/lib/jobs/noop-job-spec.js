@@ -21,23 +21,8 @@ describe(require('path').basename(__filename), function () {
         base.examples();
     });
 
-    describe("noop-job", function() {
-        it('invoke a cancel function', function(done) {
-            var job = new this.Jobclass();
-            job.on('done', function() {
-                done();
-            });
-            job.cancel();
-        });
-
-        it('invoke a run function', function(done) {
-            var job = new this.Jobclass();
-            job.on('done', function() {
-                done();
-            });
-            job.run();
-        });
-
+    it("should run and finish", function() {
+        var job = new this.Jobclass();
+        return job.run();
     });
-
 });

@@ -38,7 +38,7 @@ describe("Job.Catalog.GenerateSku", function () {
         taskProtocol.publishRunSnmpCommand = sinon.stub().returns(Q.resolve());
     });
 
-    it('should run an IPMI Poller work item', function(done) {
+    it('should run an IPMI Poller work item', function() {
         var workItem = {
             id: 'bc7dab7e8fb7d6abf8e7d6ad',
             name: 'Pollers.IPMI',
@@ -51,9 +51,7 @@ describe("Job.Catalog.GenerateSku", function () {
         };
 
         var job = new RunWorkItems({}, { graphId: uuid.v4() }, uuid.v4());
-        job.on('done', function (err) {
-            done(err);
-        });
+
         waterline.workitems.startNextScheduled.onCall(0).returns(Q.resolve(workItem));
         job.run();
         process.nextTick(function () {
@@ -70,9 +68,11 @@ describe("Job.Catalog.GenerateSku", function () {
             expect(waterline.workitems.setSucceeded.firstCall.args[1]).to.equal(workItem);
             job.cancel();
         });
+
+        return job._deferred;
     });
 
-    it('should run an IPMI Poller work item against a node', function(done) {
+    it('should run an IPMI Poller work item against a node', function() {
         var node = {
             id: 'bc7dab7e8fb7d6abf8e7d6ac',
             obmSettings: [
@@ -96,9 +96,7 @@ describe("Job.Catalog.GenerateSku", function () {
         };
 
         var job = new RunWorkItems({}, { graphId: uuid.v4() }, uuid.v4());
-        job.on('done', function (err) {
-            done(err);
-        });
+
         waterline.workitems.startNextScheduled.onCall(0).returns(Q.resolve(workItem));
         waterline.nodes.findOne.returns(Q.resolve(node));
         job.run();
@@ -119,6 +117,8 @@ describe("Job.Catalog.GenerateSku", function () {
             expect(waterline.workitems.setSucceeded.firstCall.args[1]).to.equal(workItem);
             job.cancel();
         });
+
+        return job._deferred;
     });
 
     it('should run an SNMP Poller work item', function(done) {
@@ -132,21 +132,26 @@ describe("Job.Catalog.GenerateSku", function () {
         };
 
         var job = new RunWorkItems({}, { graphId: uuid.v4() }, uuid.v4());
-        job.on('done', function (err) {
-            done(err);
-        });
-        waterline.workitems.startNextScheduled.onCall(0).returns(Q.resolve(workItem));
-        job.run();
-        process.nextTick(function () {
-            expect(taskProtocol.publishRunSnmpCommand).to.have.been.calledOnce;
-            expect(taskProtocol.publishRunSnmpCommand.firstCall.args[1])
-                .to.have.property('ip', '1.2.3.4');
-            expect(taskProtocol.publishRunSnmpCommand.firstCall.args[1])
-                .to.have.property('communityString', 'hello');
 
-            expect(waterline.workitems.setSucceeded).to.have.been.calledOnce;
-            expect(waterline.workitems.setSucceeded.firstCall.args[1]).to.equal(workItem);
-            job.cancel();
+        waterline.workitems.startNextScheduled.onCall(0).returns(Q.resolve(workItem));
+
+        job.run();
+
+        process.nextTick(function () {
+            try {
+                expect(taskProtocol.publishRunSnmpCommand).to.have.been.calledOnce;
+                expect(taskProtocol.publishRunSnmpCommand.firstCall.args[1])
+                    .to.have.property('ip', '1.2.3.4');
+                expect(taskProtocol.publishRunSnmpCommand.firstCall.args[1])
+                    .to.have.property('communityString', 'hello');
+
+                expect(waterline.workitems.setSucceeded).to.have.been.calledOnce;
+                expect(waterline.workitems.setSucceeded.firstCall.args[1]).to.equal(workItem);
+                job.cancel();
+                done();
+            } catch (e) {
+                done(e);
+            }
         });
     });
 
@@ -157,15 +162,18 @@ describe("Job.Catalog.GenerateSku", function () {
         };
 
         var job = new RunWorkItems({}, { graphId: uuid.v4() }, uuid.v4());
-        job.on('done', function (err) {
-            done(err);
-        });
+
         waterline.workitems.startNextScheduled.onCall(0).returns(Q.resolve(workItem));
         job.run();
         process.nextTick(function () {
-            expect(waterline.workitems.setFailed).to.have.been.calledOnce;
-            expect(waterline.workitems.setFailed.firstCall.args[1]).to.equal(workItem);
-            job.cancel();
+            try {
+                expect(waterline.workitems.setFailed).to.have.been.calledOnce;
+                expect(waterline.workitems.setFailed.firstCall.args[1]).to.equal(workItem);
+                job.cancel();
+                done();
+            } catch (e) {
+                done(e);
+            }
         });
     });
 });

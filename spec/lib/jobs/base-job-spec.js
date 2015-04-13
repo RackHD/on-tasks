@@ -3,16 +3,16 @@
 
 'use strict';
 
-var events = require('events'),
-    uuid = require('node-uuid'),
+var uuid = require('node-uuid'),
     util = require('util');
 
 describe("Base Job", function () {
     var BaseJob;
     var MockJob;
-    var base = require('./base-spec');
+    var taskProtocol;
+    var eventsProtocol;
 
-    base.before(function (context) {
+    before('Base Job before', function () {
         // create a child injector with on-core and the base pieces we need to test this
         helper.setupInjector([
             helper.require('/spec/mocks/logger.js'),
@@ -21,11 +21,10 @@ describe("Base Job", function () {
 
         helper.injector.get('Services.Messenger').subscribe = sinon.stub().returns(Q.resolve({}));
 
-        context.Jobclass = helper.injector.get('Job.Base');
-        BaseJob = context.Jobclass;
+        BaseJob = helper.injector.get('Job.Base');
 
-        var taskProtocol = helper.injector.get('Protocol.Task');
-        var eventsProtocol = helper.injector.get('Protocol.Events');
+        taskProtocol = helper.injector.get('Protocol.Task');
+        eventsProtocol = helper.injector.get('Protocol.Events');
 
         _.forEach(Object.getPrototypeOf(taskProtocol), function(f, funcName) {
             var spy = sinon.spy(function() {
@@ -66,48 +65,61 @@ describe("Base Job", function () {
         MockJob.prototype._run = sinon.stub();
     });
 
-    base.examples();
-
-    describe("", function() {
-        it('should be an EventEmitter', function() {
-            var job = new MockJob();
-            expect(job).to.be.an.instanceof(events.EventEmitter);
+    beforeEach('Base Job beforeEach', function() {
+        _.forEach(Object.getPrototypeOf(taskProtocol), function(f, funcName) {
+            taskProtocol[funcName].dispose.reset();
+        });
+        _.forEach(Object.getPrototypeOf(eventsProtocol), function(f, funcName) {
+            eventsProtocol[funcName].dispose.reset();
         });
     });
 
     describe('Subscriptions', function() {
-        it("should respond to activeTaskExists requests", function() {
-            var job = new MockJob();
-            var activeCallback;
-            job._subscribeActiveTaskExists = function(callback) {
-                activeCallback = callback;
-                return Q.resolve();
+        var job;
+
+        beforeEach('Base Job Subscriptions beforeEach', function() {
+            job = new MockJob();
+            job._run = function() {
+                job._done();
             };
-            job._run = sinon.stub();
+            sinon.spy(job, '_run');
+        });
+
+        it("should respond to activeTaskExists requests", function() {
+            job._subscribeActiveTaskExists = sinon.stub().resolves();
 
             return job.run()
             .then(function() {
-                expect(job._run.calledOnce).to.equal(true);
-                expect(activeCallback).to.be.a.function;
-                expect(activeCallback()).to.deep.equal(job.serialize());
+                expect(job._run).to.have.been.calledOnce;
+                expect(job._subscribeActiveTaskExists).to.have.been.calledOnce;
+                var callback = job._subscribeActiveTaskExists.firstCall.args[0];
+                expect(callback()).to.deep.equal(job.serialize());
             });
         });
 
         it("should call subclass _run()", function() {
-            var job = new MockJob();
-            job._run = sinon.stub();
             return job.run()
             .then(function() {
-                expect(job._run.calledOnce).to.equal(true);
+                expect(job._run).to.have.been.calledOnce;
             });
         });
 
-        it("should clean up on done", function(done) {
-            var job = new MockJob();
+        it('should have a subscription to activeTaskExists if there is a target', function() {
+            return job.run()
+            .then(function() {
+                expect(job.subscriptions).to.be.an('array').with.length(1);
+                expect(job.subscriptions[0].toString()).to.equal('subscribeActiveTaskExists');
+            });
+        });
 
+        it("should clean up subscriptions for every subscriber helper method", function() {
             var numSubscriberMethods = 0;
+            // Call every AMQP subscriber helper method
             _.forEach(BaseJob.prototype, function(func, funcName) {
-                if (funcName.indexOf('_subscribe') === 0) {
+                // _subscribeActiveTaskExists should be added internally
+                if (funcName.indexOf('_subscribe') === 0 &&
+                    funcName !== '_subscribeActiveTaskExists') {
+
                     var stub = sinon.stub();
                     stub.bind = sinon.stub();
                     // Call all subscriber methods with appropriate arity, and
@@ -123,28 +135,14 @@ describe("Base Job", function () {
             expect(job.subscriptionPromises).to.have.length(numSubscriberMethods);
             expect(job.subscriptions).to.have.length(0);
 
-            job.on('done', function() {
-                _.forEach(job.subscriptions, function(subscription) {
-                    try {
-                        expect(subscription.dispose.calledOnce).to.equal(true);
-                    } catch (e) {
-                        done(e);
-                    }
-                });
-                process.nextTick(function() {
-                    // assert removeAllListeners() called
-                    expect(job._events).to.be.empty;
-
-                    done();
-                });
-            });
-
-            Q.all(job.subscriptionPromises)
+            return job.run()
             .then(function() {
-                expect(job.subscriptions).to.have.length(numSubscriberMethods);
-                job._done();
-            }).catch(function(error) {
-                done(error);
+                // account for subscribeActiveTaskExists
+                expect(job.subscriptions).to.have.length(numSubscriberMethods + 1);
+
+                _.forEach(job.subscriptions, function(subscription) {
+                    expect(subscription.dispose).to.have.been.calledOnce;
+                });
             });
         });
     });

@@ -53,8 +53,8 @@ describe('OBM Service', function() {
 
         it('should not retry an OBM command on an actual failure', function() {
             obmService.runObmCommand.rejects(new Error('test error'));
-            expect(obmService.retryObmCommand('testcommand'))
-                .to.be.rejectedWith(/test retry error/);
+            return expect(obmService.retryObmCommand('testcommand'))
+                .to.be.rejectedWith(/test error/);
         });
 
         it('should not fail on a config error when the command is setBootPxe', function() {

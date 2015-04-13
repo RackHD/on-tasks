@@ -3,7 +3,8 @@
 
 'use strict';
 
-var uuid = require('node-uuid');
+var uuid = require('node-uuid'),
+    events = require('events');
 
 describe(require('path').basename(__filename), function () {
     var base = require('./base-spec');
@@ -27,6 +28,8 @@ describe(require('path').basename(__filename), function () {
     });
 
     describe("ipmi-job", function() {
+        var testEmitter = new events.EventEmitter();
+
         beforeEach(function() {
             var graphId = uuid.v4();
             this.ipmi = new this.Jobclass({}, { graphId: graphId }, uuid.v4());
@@ -53,7 +56,7 @@ describe(require('path').basename(__filename), function () {
             self.ipmi._publishIpmiCommandResult = sinon.stub();
             self.ipmi._subscribeRunIpmiCommand = function(routingKey, type, callback) {
                 if (type === 'sdr') {
-                    self.ipmi.on('test-subscribe-ipmi-sdr-command', function(config) {
+                    testEmitter.on('test-subscribe-ipmi-sdr-command', function(config) {
                         // BaseJob normally binds this callback to its subclass instance,
                         // so do the equivalent
                         callback.call(self.ipmi, config);
@@ -66,7 +69,7 @@ describe(require('path').basename(__filename), function () {
             _.forEach(_.range(100), function(i) {
                 var _config = _.cloneDeep(config);
                 _config.host += i;
-                self.ipmi.emit('test-subscribe-ipmi-sdr-command', _config);
+                testEmitter.emit('test-subscribe-ipmi-sdr-command', _config);
             });
 
             process.nextTick(function() {
