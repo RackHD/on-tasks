@@ -51,18 +51,20 @@ describe("Base Job", function () {
             eventsProtocol[funcName] = spy;
         });
 
-        MockJob = function() {
-            var logger = helper.injector.get('Logger').initialize(MockJob);
-            MockJob.super_.call(this, logger, {}, {}, uuid.v4());
+        function InnerMockJob() {
+            var logger = helper.injector.get('Logger').initialize(InnerMockJob);
+            InnerMockJob.super_.call(this, logger, {}, {}, uuid.v4());
             this.nodeId = "54c69f87c7100ec77bfde17c";
             this.context = {};
             this.context.target = 'testtarget';
             this.graphId = uuid.v4();
-        };
+        }
+        util.inherits(InnerMockJob, BaseJob);
 
-        util.inherits(MockJob, BaseJob);
+        InnerMockJob.prototype._run = function() {};
+        InnerMockJob.prototype._cleanup = function() {};
 
-        MockJob.prototype._run = sinon.stub();
+        MockJob = InnerMockJob;
     });
 
     beforeEach('Base Job beforeEach', function() {
@@ -74,15 +76,56 @@ describe("Base Job", function () {
         });
     });
 
+    describe('Subclassed methods', function() {
+        var job;
+
+        before('Base Job Subclassed methods before', function() {
+            sinon.spy(MockJob.prototype, 'cleanup');
+        });
+
+        beforeEach('Base Job Subclassed methods beforeEach', function() {
+            MockJob.prototype.cleanup.reset();
+
+            job = new MockJob();
+
+            sinon.stub(job, '_run', function() {
+                job._done();
+            });
+
+            job._cleanup = sinon.stub();
+        });
+
+        it("should call subclass _run()", function() {
+            return job.run()
+            .then(function() {
+                expect(job._run).to.have.been.calledOnce;
+            });
+        });
+
+        it("should call subclass _cleanup() if it exists", function() {
+            job._done();
+
+            return job.run()
+            .then(function() {
+                expect(job._cleanup).to.have.been.calledOnce;
+                expect(job.cleanup).to.have.been.calledOnce;
+            });
+        });
+
+        it("should resolve cleanup() if it is not subclassed", function() {
+            job._cleanup = null;
+            return expect(job.cleanup()).to.eventually.be.fulfilled;
+        });
+    });
+
     describe('Subscriptions', function() {
         var job;
 
         beforeEach('Base Job Subscriptions beforeEach', function() {
             job = new MockJob();
-            job._run = function() {
+            sinon.stub(job, '_run', function() {
                 job._done();
-            };
-            sinon.spy(job, '_run');
+            });
         });
 
         it("should respond to activeTaskExists requests", function() {
@@ -94,13 +137,6 @@ describe("Base Job", function () {
                 expect(job._subscribeActiveTaskExists).to.have.been.calledOnce;
                 var callback = job._subscribeActiveTaskExists.firstCall.args[0];
                 expect(callback()).to.deep.equal(job.serialize());
-            });
-        });
-
-        it("should call subclass _run()", function() {
-            return job.run()
-            .then(function() {
-                expect(job._run).to.have.been.calledOnce;
             });
         });
 
