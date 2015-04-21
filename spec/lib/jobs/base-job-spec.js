@@ -61,7 +61,9 @@ describe("Base Job", function () {
         }
         util.inherits(InnerMockJob, BaseJob);
 
-        InnerMockJob.prototype._run = function() {};
+        InnerMockJob.prototype._run = function() {
+            this._done();
+        };
         InnerMockJob.prototype._cleanup = function() {};
 
         MockJob = InnerMockJob;
@@ -81,18 +83,20 @@ describe("Base Job", function () {
 
         before('Base Job Subclassed methods before', function() {
             sinon.spy(MockJob.prototype, 'cleanup');
+            sinon.spy(MockJob.prototype, '_run');
         });
 
         beforeEach('Base Job Subclassed methods beforeEach', function() {
             MockJob.prototype.cleanup.reset();
+            MockJob.prototype._run.reset();
 
             job = new MockJob();
-
-            sinon.stub(job, '_run', function() {
-                job._done();
-            });
-
             job._cleanup = sinon.stub();
+        });
+
+        after('Base Job Subclassed methods after', function() {
+            MockJob.prototype.cleanup.restore();
+            MockJob.prototype._run.restore();
         });
 
         it("should call subclass _run()", function() {
@@ -121,11 +125,17 @@ describe("Base Job", function () {
     describe('Subscriptions', function() {
         var job;
 
+        before('Base Job Subscriptions before', function() {
+            sinon.spy(MockJob.prototype, '_run');
+        });
+
         beforeEach('Base Job Subscriptions beforeEach', function() {
+            MockJob.prototype._run.reset();
             job = new MockJob();
-            sinon.stub(job, '_run', function() {
-                job._done();
-            });
+        });
+
+        after('Base Job Subscriptions after', function() {
+            MockJob.prototype._run.restore();
         });
 
         it("should respond to activeTaskExists requests", function() {
