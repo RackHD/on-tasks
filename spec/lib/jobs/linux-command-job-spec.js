@@ -6,6 +6,7 @@
 describe('Linux Command Job', function () {
     var LinuxCommandJob;
     var Logger;
+    var Promise;
     var uuid;
 
     before(function() {
@@ -13,10 +14,12 @@ describe('Linux Command Job', function () {
             _.flatten([
                 helper.require('/lib/jobs/base-job'),
                 helper.require('/lib/jobs/linux-command'),
-                helper.require('/lib/utils/job-utils/command-parser')
+                helper.require('/lib/utils/job-utils/command-parser'),
+                helper.di.simpleWrapper({ catalogs:  {} }, 'Services.Waterline')
             ])
         );
 
+        Promise = helper.injector.get('Promise');
         Logger = helper.injector.get('Logger');
         sinon.stub(Logger.prototype, 'log');
         LinuxCommandJob = helper.injector.get('Job.Linux.Commands');
@@ -140,9 +143,36 @@ describe('Linux Command Job', function () {
             });
         }));
 
+        it('should delegate responses to handleResponse() and finish', sinon.test(function(done) {
+            var handleResponseError = new Error('test handleResponse error');
+            this.stub(job, '_subscribeRequestCommands');
+            this.stub(job, '_subscribeRespondCommands', function(cb) {
+                cb('test data');
+            });
+            this.stub(job, 'handleResponse').rejects(handleResponseError);
+            this.stub(job, '_done');
+
+            job._run();
+
+            process.nextTick(function() {
+                try {
+                    expect(job._done).to.have.been.calledOnce;
+                    expect(job._done).to.have.been.calledWith(handleResponseError);
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        }));
+
         it('should reject on task failure', function() {
             var data = { tasks: [ { error: { code: 1 } } ] };
             return job.handleResponse(data).should.be.rejectedWith(/Encountered a failure/);
+        });
+
+        it('should not reject on failure with an accepted response code', function() {
+            var data = { tasks: [ { acceptedResponseCodes: [1, 127], error: { code: 127 } } ] };
+            return job.handleResponse(data).should.be.fulfilled;
         });
 
         it('should not try to catalog tasks if none are marked for cataloging', function() {
@@ -168,5 +198,96 @@ describe('Linux Command Job', function () {
             job.catalogUserTasks.rejects(new Error('test rejection error'));
             return job.handleResponse(data).should.be.rejectedWith(/test rejection error/);
         });
+    });
+
+    describe('catalogUserTasks', function() {
+        var waterline;
+        var parser;
+        var job;
+
+        before('Linux Command Job catalogUserTasks before', function() {
+            waterline = helper.injector.get('Services.Waterline');
+            parser = helper.injector.get('JobUtils.CommandParser');
+            waterline.catalogs.create = sinon.stub();
+            sinon.stub(parser, 'parseUnknownTasks');
+        });
+
+        beforeEach('Linux Command Job catalogUserTasks beforeEach', function() {
+            waterline.catalogs.create.reset();
+            parser.parseUnknownTasks.reset();
+            job = new LinuxCommandJob({ commands: [] }, { target: 'testid' }, uuid.v4());
+        });
+
+        after('Linux Command Job catalogUserTasks after', function() {
+            parser.parseUnknownTasks.restore();
+        });
+
+        it('should create catalog entries for parsed task output', function() {
+            parser.parseUnknownTasks.returns(Promise.all([
+                {
+                    store: true,
+                    source: 'test-source-1',
+                    data: 'test data 1'
+                },
+                {
+                    store: true,
+                    source: undefined,
+                    data: 'test data 2'
+                },
+                {
+                    store: false,
+                    source: 'test-source-3',
+                    data: 'test data 3'
+                },
+                {
+                    error: {},
+                    source: 'test-error-source'
+                }
+            ]));
+
+            return job.catalogUserTasks([])
+            .then(function() {
+                // Make sure we only catalog objects with store: true and no error
+                expect(waterline.catalogs.create).to.have.been.calledTwice;
+                expect(waterline.catalogs.create).to.have.been.calledWith({
+                    node: job.nodeId,
+                    source: 'test-source-1',
+                    data: 'test data 1'
+                });
+                expect(waterline.catalogs.create).to.have.been.calledWith({
+                    node: job.nodeId,
+                    // Assert that an undefined source gets changed to unknown
+                    source: 'unknown',
+                    data: 'test data 2'
+                });
+            });
+        });
+    });
+
+    it('should transform commands object to schema consumed by bootstrap.js', function() {
+        var commands = [
+            {
+                command: 'test',
+                catalog: { format: 'raw', source: 'test' }
+            },
+            {
+                command: 'test 2',
+                acceptedResponseCodes: [1, 127]
+            }
+        ];
+        var transformedCommands = LinuxCommandJob.prototype.buildCommands(commands);
+
+        expect(transformedCommands).to.deep.equal([
+            {
+                cmd: 'test',
+                format: 'raw',
+                source: 'test',
+                catalog: true
+            },
+            {
+                cmd: 'test 2',
+                acceptedResponseCodes: [1, 127]
+            }
+        ]);
     });
 });
