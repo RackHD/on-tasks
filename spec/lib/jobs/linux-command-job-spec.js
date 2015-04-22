@@ -5,6 +5,7 @@
 
 describe('Linux Command Job', function () {
     var LinuxCommandJob;
+    var Logger;
     var uuid;
 
     before(function() {
@@ -16,14 +17,20 @@ describe('Linux Command Job', function () {
             ])
         );
 
+        Logger = helper.injector.get('Logger');
+        sinon.stub(Logger.prototype, 'log');
         LinuxCommandJob = helper.injector.get('Job.Linux.Commands');
         uuid = helper.injector.get('uuid');
     });
 
-    describe('baseline behavior', function() {
+    after(function() {
+        Logger.prototype.log.restore();
+    });
+
+    describe('instances', function() {
         var job;
 
-        beforeEach(function() {
+        beforeEach('Linux Command Job instances beforeEach', function() {
             job = new LinuxCommandJob({ commands: [] }, { target: 'testid' }, uuid.v4());
         });
 
@@ -47,6 +54,23 @@ describe('Linux Command Job', function () {
             );
             expect(job.options.runOnlyOnce).to.equal(false);
         });
+    });
+
+    describe('request handling', function() {
+        var job;
+
+        beforeEach('Linux Command Job request handling beforeEach', function() {
+            var options = {
+                commands: [
+                    {
+                        command: 'test',
+                        catalog: { format: 'raw', source: 'test' },
+                        acceptedResponseCodes: [1, 127]
+                    }
+                ]
+            };
+            job = new LinuxCommandJob(options, { target: 'testid' }, uuid.v4());
+        });
 
         it('should delegate requests to handleRequest()', sinon.test(function() {
             this.stub(job, '_subscribeRequestCommands', function(cb) {
@@ -59,6 +83,35 @@ describe('Linux Command Job', function () {
 
             expect(job.handleRequest).to.have.been.calledOnce;
         }));
+
+        it('should respond to a request with transformed commands', sinon.test(function() {
+            expect(job.handleRequest()).to.deep.equal({
+                identifier: job.nodeId,
+                tasks: job.commands
+            });
+        }));
+
+        it('should ignore a request if one has already been received', function() {
+            job.hasSentCommands = true;
+            expect(job.handleRequest()).to.equal(undefined);
+        });
+    });
+
+    describe('response handling', function() {
+        var job;
+
+        before('Linux Command Job response handling before', function() {
+            sinon.stub(LinuxCommandJob.prototype, 'catalogUserTasks');
+        });
+
+        beforeEach('Linux Command Job response handling beforeEach', function() {
+            LinuxCommandJob.prototype.catalogUserTasks.reset();
+            job = new LinuxCommandJob({ commands: [] }, { target: 'testid' }, uuid.v4());
+        });
+
+        after('Linux Command Job response handling after', function() {
+            LinuxCommandJob.prototype.catalogUserTasks.restore();
+        });
 
         it('should delegate responses to handleResponse() and finish', sinon.test(function(done) {
             this.stub(job, '_subscribeRequestCommands');
@@ -86,34 +139,34 @@ describe('Linux Command Job', function () {
                 }
             });
         }));
-    });
 
-    describe('request handling', function() {
-        var job;
-
-        beforeEach(function() {
-            var options = {
-                commands: [
-                    {
-                        command: 'test',
-                        catalog: { format: 'raw', source: 'test' },
-                        acceptedResponseCodes: [1, 127]
-                    }
-                ]
-            };
-            job = new LinuxCommandJob(options, { target: 'testid' }, uuid.v4());
+        it('should reject on task failure', function() {
+            var data = { tasks: [ { error: { code: 1 } } ] };
+            return job.handleResponse(data).should.be.rejectedWith(/Encountered a failure/);
         });
 
-        it('should respond to a request with transformed commands', sinon.test(function() {
-            expect(job.handleRequest()).to.deep.equal({
-                identifier: job.nodeId,
-                tasks: job.commands
+        it('should not try to catalog tasks if none are marked for cataloging', function() {
+            var data = { tasks: [ { catalog: false }, { catalog: false } ] };
+            return job.handleResponse(data)
+            .then(function() {
+                expect(job.catalogUserTasks).to.not.have.been.called;
             });
-        }));
+        });
 
-        it('should ignore a request if one has already been received', function() {
-            job.hasSentCommands = true;
-            expect(job.handleRequest()).to.equal(undefined);
+        it('should add catalog responses marked for cataloging', function() {
+            var data = { tasks: [ { catalog: true }, { catalog: true }, { catalog: false } ] };
+            return job.handleResponse(data)
+            .then(function() {
+                expect(job.catalogUserTasks).to.have.been.calledWith(
+                    [ { catalog: true}, { catalog: true } ]
+                );
+            });
+        });
+
+        it('should bubble up catalogUserTasks rejections', function() {
+            var data = { tasks: [ { catalog: true } ] };
+            job.catalogUserTasks.rejects(new Error('test rejection error'));
+            return job.handleResponse(data).should.be.rejectedWith(/test rejection error/);
         });
     });
 });
