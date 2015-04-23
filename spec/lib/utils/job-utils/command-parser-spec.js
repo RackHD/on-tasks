@@ -51,6 +51,97 @@ describe("Task Parser", function () {
         });
     });
 
+    describe("dmi parser", function() {
+        var dmiSchema = {
+            'BIOS Information': 'object',
+            'System Information': 'object',
+            'Base Board Information': 'object',
+            'Chassis Information': 'object',
+            'Processor Information': 'array',
+            'Cache Information': 'array',
+            'Port Connector Information': 'array',
+            'System Slot Information': 'array',
+            'On Board Device 1 Information': 'object',
+            'On Board Device 2 Information': 'object',
+            'On Board Device 3 Information': 'object',
+            'OEM Strings': 'object',
+            'Physical Memory Array': 'array',
+            'Memory Array Mapped Address': 'array',
+            'Memory Device': 'array',
+            'Memory Device Mapped Address': 'array',
+            'System Boot Information': 'object',
+            'Management Device': 'array',
+            'Voltage Probe': 'array',
+            'Management Device Threshold Data': 'array',
+            'Management Device Component': 'array',
+            'Temperature Probe': 'array',
+            'Cooling Device': 'array',
+            'Electrical Current Probe': 'array',
+            'System Power Supply': 'array',
+            'Onboard Device': 'array',
+            'IPMI Device Information': 'object',
+            'System Event Log': 'object',
+            'BIOS Language Information': 'object',
+        };
+
+        it("should parse sudo dmidecode", function() {
+            var dmiCmd = "sudo dmidecode";
+            var tasks = [
+                {
+                    cmd: dmiCmd,
+                    stdout: stdoutMocks.dmidecode,
+                    stderr: '',
+                    error: null
+                }
+            ];
+            return taskParser.parseTasks(tasks)
+            .then(function(result) {
+                // NOTE: While we don't check EVERY attribute, we check one or two
+                // members of each class of attribute types and assume if we got
+                // them right we got all the others right as well.
+
+                var data = result[0].data;
+
+                _.forEach(dmiSchema, function(elementType, element) {
+                    expect(data).to.have.property(element).that.is.an(elementType);
+                });
+
+                expect(data).to.not.have.property('End Of Table');
+
+                expect(data['Memory Device']).to.have.length(16);
+                expect(data['On Board Device 1 Information']).to.have.property('Type')
+                    .that.equals('Video');
+                expect(data['On Board Device 2 Information']).to.have.property('Type')
+                    .that.equals('Ethernet');
+
+                // Assert we can handle empty objects
+                expect(data['Management Device Threshold Data']).to.have.length(13);
+                expect(data['Management Device Threshold Data'][11]).to.be.empty;
+
+                // Assert we can parse top-level objects with a mix of sub-array and sub-objects
+                expect(data['BIOS Information']).to.have.property('Vendor')
+                    .that.equals('American Megatrends Inc.');
+                expect(data['BIOS Information']).to.have.property('Characteristics')
+                    .that.is.an('array').with.length(20);
+                expect(data['BIOS Information'].Characteristics[0]).to.equal('PCI is supported');
+
+                // Assert we can do the above assertions but with objects in a top-level array
+                expect(data['Processor Information']).to.have.length(2);
+                _.forEach(data['Processor Information'], function(info) {
+                    expect(info).to.have.property('Type').that.equals('Central Processor');
+                    expect(info).to.have.property('Flags').that.is.an('array').with.length(28);
+                });
+
+                // Assert we handled the language information corner case
+                expect(data['BIOS Language Information']).to.deep.equal({
+                    'Language Description Format': 'Long',
+                    'Installable Languages': ['en|US|iso8859-1'],
+                    'Currently Installed Language': 'en|US|iso8859-1'
+                });
+            });
+        });
+    });
+
     describe("lshw, lspci parsers", function () {
         it("should parse lspci -nn -vmm", function () {
             var lspciCmd = 'sudo lspci -nn -vmm';
