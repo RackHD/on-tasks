@@ -3,11 +3,10 @@
 
 'use strict';
 
-describe("Job.Catalog.GenerateSku", function () {
+describe("Job.Catalog.RunWorkItem", function () {
     var waterline = {};
     var taskProtocol = {};
     var RunWorkItems;
-    var Q;
     var uuid;
 
     before(function () {
@@ -21,24 +20,30 @@ describe("Job.Catalog.GenerateSku", function () {
         ]);
 
         RunWorkItems = helper.injector.get('Job.WorkItems.Run');
-        Q = helper.injector.get('Q');
         uuid = helper.injector.get('uuid');
-    });
 
-    beforeEach(function () {
+        taskProtocol.publishRunIpmiCommand = sinon.stub().resolves();
+        taskProtocol.publishRunSnmpCommand = sinon.stub().resolves();
         waterline.workitems = {
-            startNextScheduled: sinon.stub().returns(Q.resolve()),
+            startNextScheduled: sinon.stub().resolves(),
             setSucceeded: sinon.stub(),
             setFailed: sinon.stub()
         };
         waterline.nodes = {
             findOne: sinon.stub()
         };
-        taskProtocol.publishRunIpmiCommand = sinon.stub().returns(Q.resolve());
-        taskProtocol.publishRunSnmpCommand = sinon.stub().returns(Q.resolve());
     });
 
-    it('should run an IPMI Poller work item', function() {
+    beforeEach(function () {
+        waterline.workitems.startNextScheduled.reset();
+        waterline.workitems.setSucceeded.reset();
+        waterline.workitems.setFailed.reset();
+        waterline.nodes.findOne.reset();
+        taskProtocol.publishRunIpmiCommand.reset();
+        taskProtocol.publishRunSnmpCommand.reset();
+    });
+
+    it('should run an IPMI Poller work item', function(done) {
         var workItem = {
             id: 'bc7dab7e8fb7d6abf8e7d6ad',
             name: 'Pollers.IPMI',
@@ -52,27 +57,35 @@ describe("Job.Catalog.GenerateSku", function () {
 
         var job = new RunWorkItems({}, { graphId: uuid.v4() }, uuid.v4());
 
-        waterline.workitems.startNextScheduled.onCall(0).returns(Q.resolve(workItem));
+        waterline.workitems.startNextScheduled.onCall(0).resolves(workItem);
         job.run();
-        process.nextTick(function () {
-            expect(taskProtocol.publishRunIpmiCommand).to.have.been.calledOnce;
-            expect(taskProtocol.publishRunIpmiCommand.firstCall.args[1]).to.equal('sel');
-            expect(taskProtocol.publishRunIpmiCommand.firstCall.args[2])
-                .to.have.property('ip', '1.2.3.4');
-            expect(taskProtocol.publishRunIpmiCommand.firstCall.args[2])
-                .to.have.property('user', 'myuser');
-            expect(taskProtocol.publishRunIpmiCommand.firstCall.args[2])
-                .to.have.property('password', 'mypass');
 
-            expect(waterline.workitems.setSucceeded).to.have.been.calledOnce;
-            expect(waterline.workitems.setSucceeded.firstCall.args[1]).to.equal(workItem);
-            job.cancel();
+        // This is guaranteed to run because job._deferred won't resolve until
+        // we call job.cancel()
+        process.nextTick(function () {
+            try {
+                expect(taskProtocol.publishRunIpmiCommand).to.have.been.calledOnce;
+                expect(taskProtocol.publishRunIpmiCommand.firstCall.args[1]).to.equal('sel');
+                expect(taskProtocol.publishRunIpmiCommand.firstCall.args[2])
+                    .to.have.property('ip', '1.2.3.4');
+                expect(taskProtocol.publishRunIpmiCommand.firstCall.args[2])
+                    .to.have.property('user', 'myuser');
+                expect(taskProtocol.publishRunIpmiCommand.firstCall.args[2])
+                    .to.have.property('password', 'mypass');
+
+                expect(waterline.workitems.setSucceeded).to.have.been.calledOnce;
+                expect(waterline.workitems.setSucceeded.firstCall.args[1]).to.equal(workItem);
+                job.cancel();
+                done();
+            } catch (e) {
+                done(e);
+            }
         });
 
         return job._deferred;
     });
 
-    it('should run an IPMI Poller work item against a node', function() {
+    it('should run an IPMI Poller work item against a node', function(done) {
         var node = {
             id: 'bc7dab7e8fb7d6abf8e7d6ac',
             obmSettings: [
@@ -97,28 +110,34 @@ describe("Job.Catalog.GenerateSku", function () {
 
         var job = new RunWorkItems({}, { graphId: uuid.v4() }, uuid.v4());
 
-        waterline.workitems.startNextScheduled.onCall(0).returns(Q.resolve(workItem));
-        waterline.nodes.findOne.returns(Q.resolve(node));
+        waterline.workitems.startNextScheduled.onCall(0).resolves(workItem);
+        waterline.nodes.findOne.resolves(node);
         job.run();
+
+        // This is guaranteed to run because job._deferred won't resolve until
+        // we call job.cancel()
         process.nextTick(function () {
-            expect(waterline.nodes.findOne).to.have.been.calledOnce;
-            expect(waterline.nodes.findOne).to.have.been.calledWith(node.id);
+            try {
+                expect(waterline.nodes.findOne).to.have.been.calledOnce;
+                expect(waterline.nodes.findOne).to.have.been.calledWith(node.id);
 
-            expect(taskProtocol.publishRunIpmiCommand).to.have.been.calledOnce;
-            expect(taskProtocol.publishRunIpmiCommand.firstCall.args[1]).to.equal('power');
-            expect(taskProtocol.publishRunIpmiCommand.firstCall.args[2])
-                .to.have.property('ip', '1.2.3.4');
-            expect(taskProtocol.publishRunIpmiCommand.firstCall.args[2])
-                .to.have.property('user', 'myuser');
-            expect(taskProtocol.publishRunIpmiCommand.firstCall.args[2])
-                .to.have.property('password', 'mypass');
+                expect(taskProtocol.publishRunIpmiCommand).to.have.been.calledOnce;
+                expect(taskProtocol.publishRunIpmiCommand.firstCall.args[1]).to.equal('power');
+                expect(taskProtocol.publishRunIpmiCommand.firstCall.args[2])
+                    .to.have.property('ip', '1.2.3.4');
+                expect(taskProtocol.publishRunIpmiCommand.firstCall.args[2])
+                    .to.have.property('user', 'myuser');
+                expect(taskProtocol.publishRunIpmiCommand.firstCall.args[2])
+                    .to.have.property('password', 'mypass');
 
-            expect(waterline.workitems.setSucceeded).to.have.been.calledOnce;
-            expect(waterline.workitems.setSucceeded.firstCall.args[1]).to.equal(workItem);
-            job.cancel();
-        });
-
-        return job._deferred;
+                expect(waterline.workitems.setSucceeded).to.have.been.calledOnce;
+                expect(waterline.workitems.setSucceeded.firstCall.args[1]).to.equal(workItem);
+                job.cancel();
+                done();
+            } catch (e) {
+                done(e);
+            }
+        }, 1000);
     });
 
     it('should run an SNMP Poller work item', function(done) {
@@ -133,7 +152,7 @@ describe("Job.Catalog.GenerateSku", function () {
 
         var job = new RunWorkItems({}, { graphId: uuid.v4() }, uuid.v4());
 
-        waterline.workitems.startNextScheduled.onCall(0).returns(Q.resolve(workItem));
+        waterline.workitems.startNextScheduled.onCall(0).resolves(workItem);
 
         job.run();
 
@@ -163,8 +182,9 @@ describe("Job.Catalog.GenerateSku", function () {
 
         var job = new RunWorkItems({}, { graphId: uuid.v4() }, uuid.v4());
 
-        waterline.workitems.startNextScheduled.onCall(0).returns(Q.resolve(workItem));
+        waterline.workitems.startNextScheduled.onCall(0).resolves(workItem);
         job.run();
+
         process.nextTick(function () {
             try {
                 expect(waterline.workitems.setFailed).to.have.been.calledOnce;

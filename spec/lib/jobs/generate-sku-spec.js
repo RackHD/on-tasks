@@ -7,7 +7,6 @@ describe("Job.Catalog.GenerateSku", function () {
     var waterline = {};
     var taskProtocol = {};
     var GenerateSku;
-    var Q;
     var uuid;
 
     var catalog1 = {
@@ -44,11 +43,7 @@ describe("Job.Catalog.GenerateSku", function () {
         ]);
 
         GenerateSku = helper.injector.get('Job.Catalog.GenerateSku');
-        Q = helper.injector.get('Q');
         uuid = helper.injector.get('uuid');
-    });
-
-    beforeEach(function () {
         waterline.skus = {
             find: sinon.stub()
         };
@@ -56,11 +51,17 @@ describe("Job.Catalog.GenerateSku", function () {
             findMostRecent: sinon.stub()
         };
         waterline.nodes = {
-            updateByIdentifier: sinon.stub().returns(Q.resolve())
+            updateByIdentifier: sinon.stub().resolves()
         };
-        taskProtocol.subscribeActiveTaskExists = sinon.stub().returns(Q.resolve({
+    });
+
+    beforeEach(function () {
+        waterline.skus.find.reset();
+        waterline.catalogs.findMostRecent.reset();
+        waterline.nodes.updateByIdentifier.reset();
+        taskProtocol.subscribeActiveTaskExists = sinon.stub().resolves({
             dispose: sinon.stub()
-        }));
+        });
     });
 
     it('assigns a matching sku', function() {
@@ -87,8 +88,8 @@ describe("Job.Catalog.GenerateSku", function () {
                 }
             ]
         };
-        waterline.skus.find.returns(Q.resolve([sku, sku2]));
-        waterline.catalogs.findMostRecent.returns(Q.resolve(catalog1));
+        waterline.skus.find.resolves([sku, sku2]);
+        waterline.catalogs.findMostRecent.resolves(catalog1);
 
         return job.run()
         .then(function() {
@@ -111,8 +112,8 @@ describe("Job.Catalog.GenerateSku", function () {
                 }
             ]
         };
-        waterline.skus.find.returns(Q.resolve([sku]));
-        waterline.catalogs.findMostRecent.returns(Q.resolve(catalog1));
+        waterline.skus.find.resolves([sku]);
+        waterline.catalogs.findMostRecent.resolves(catalog1);
 
         return job.run()
         .then(function() {
@@ -150,8 +151,8 @@ describe("Job.Catalog.GenerateSku", function () {
                 }
             ]
         };
-        waterline.skus.find.returns(Q.resolve([sku, sku2]));
-        waterline.catalogs.findMostRecent.returns(Q.resolve(catalog1));
+        waterline.skus.find.resolves([sku, sku2]);
+        waterline.catalogs.findMostRecent.resolves(catalog1);
 
         return job.run()
         .then(function() {
@@ -178,9 +179,9 @@ describe("Job.Catalog.GenerateSku", function () {
                 }
             ]
         };
-        waterline.skus.find.returns(Q.resolve([sku]));
-        waterline.catalogs.findMostRecent.onCall(0).returns(Q.resolve(catalog1));
-        waterline.catalogs.findMostRecent.onCall(1).returns(Q.resolve(catalog2));
+        waterline.skus.find.resolves([sku]);
+        waterline.catalogs.findMostRecent.onCall(0).resolves(catalog1);
+        waterline.catalogs.findMostRecent.onCall(1).resolves(catalog2);
 
         return job.run()
         .then(function() {
@@ -207,9 +208,9 @@ describe("Job.Catalog.GenerateSku", function () {
                 }
             ]
         };
-        waterline.skus.find.returns(Q.resolve([sku]));
-        waterline.catalogs.findMostRecent.onCall(0).returns(Q.resolve(catalog1));
-        waterline.catalogs.findMostRecent.onCall(1).returns(Q.resolve(catalog2));
+        waterline.skus.find.resolves([sku]);
+        waterline.catalogs.findMostRecent.onCall(0).resolves(catalog1);
+        waterline.catalogs.findMostRecent.onCall(1).resolves(catalog2);
 
         return job.run()
         .then(function() {
@@ -237,8 +238,8 @@ describe("Job.Catalog.GenerateSku", function () {
                 }
             ]
         };
-        waterline.skus.find.returns(Q.resolve([sku]));
-        waterline.catalogs.findMostRecent.returns(Q.resolve());
+        waterline.skus.find.resolves([sku]);
+        waterline.catalogs.findMostRecent.resolves();
 
         return job.run()
         .then(function() {

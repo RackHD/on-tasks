@@ -3,10 +3,9 @@
 
 'use strict';
 
-describe("Job.Catalog.GenerateSku", function () {
+describe("Job.Catalog.CleanWorkItems", function () {
     var waterline = {};
     var CleanWorkItems;
-    var Q;
     var uuid;
 
     before(function () {
@@ -19,15 +18,16 @@ describe("Job.Catalog.GenerateSku", function () {
         ]);
 
         CleanWorkItems = helper.injector.get('Job.WorkItems.Clean');
-        Q = helper.injector.get('Q');
         uuid = helper.injector.get('uuid');
-    });
-
-    beforeEach(function () {
         waterline.workitems = {
             findExpired: sinon.stub(),
             setFailed: sinon.stub()
         };
+    });
+
+    beforeEach(function () {
+        waterline.workitems.findExpired.reset();
+        waterline.workitems.setFailed.reset();
     });
 
     it('should clean the work item queue', function (done) {
@@ -38,7 +38,7 @@ describe("Job.Catalog.GenerateSku", function () {
 
         var job = new CleanWorkItems({}, { graphId: uuid.v4() }, uuid.v4());
 
-        waterline.workitems.findExpired.returns(Q.resolve(workItems));
+        waterline.workitems.findExpired.resolves(workItems);
 
         job.run();
 
