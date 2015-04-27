@@ -42,21 +42,24 @@ describe("test_eses Task Parser", function () {
                 done(err);
                 return;
             }
-            var parsePromises = taskParser.parseTasks(tasks);
-            parsePromises[0]
-                .then(function (result) {
-                    expect(result.error).to.be.undefined;
-                    expect(_.isEqual(result.data, jsonOut)).to.be.true;
-                    expect(result.source).to.equal('test_eses');
-                    // data specific format verification
-                    expect(result.data.REVISION.exp).to.be.an("Array");
-                    expect(result.data.REVISION.exp.length).to.equal(3);
-                    _.forEach(result.data.REVISION.exp, function(devicedata) {
-                        expect(devicedata).to.be.ok;
-                        expect(devicedata.dev).to.be.an('Array');
-                    });
-                    done();
+
+            taskParser.parseTasks(tasks)
+            .spread(function (result) {
+                expect(result.error).to.be.undefined;
+                expect(_.isEqual(result.data, jsonOut)).to.be.true;
+                expect(result.source).to.equal('test_eses');
+                // data specific format verification
+                expect(result.data.REVISION.exp).to.be.an("Array");
+                expect(result.data.REVISION.exp.length).to.equal(3);
+                _.forEach(result.data.REVISION.exp, function(devicedata) {
+                    expect(devicedata).to.be.ok;
+                    expect(devicedata.dev).to.be.an('Array');
                 });
+                done();
+            })
+            .catch(function(err) {
+                done(err);
+            });
         });
     });
 
@@ -77,21 +80,23 @@ describe("test_eses Task Parser", function () {
                 done(err);
                 return;
             }
-            var parsePromises = taskParser.parseTasks(tasks);
-            parsePromises[0]
-                .then(function (result) {
-                    expect(result.error).to.be.undefined;
-                    expect(_.isEqual(result.data, jsonOut)).to.be.true;
-                    expect(result.source).to.equal('test_eses');
-                    // data specific format verification
-                    //var util = require('util');
-                    //console.log(util.inspect(result.data, {depth: null}));
-                    expect(result.data).to.have.property('VPD').to.be.ok;
-                    expect(result.data.VPD).to.have.property('version').to.be.ok;
-                    expect(result.data.VPD).to.have.property('vendor_id').to.be.ok;
-                    expect(result.data.VPD).to.have.property('product_id').to.be.ok;
-                    done();
-                });
+            return taskParser.parseTasks(tasks)
+            .spread(function (result) {
+                expect(result.error).to.be.undefined;
+                expect(_.isEqual(result.data, jsonOut)).to.be.true;
+                expect(result.source).to.equal('test_eses');
+                // data specific format verification
+                //var util = require('util');
+                //console.log(util.inspect(result.data, {depth: null}));
+                expect(result.data).to.have.property('VPD').to.be.ok;
+                expect(result.data.VPD).to.have.property('version').to.be.ok;
+                expect(result.data.VPD).to.have.property('vendor_id').to.be.ok;
+                expect(result.data.VPD).to.have.property('product_id').to.be.ok;
+                done();
+            })
+            .catch(function(err) {
+                done(err);
+            });
         });
     });
 });
