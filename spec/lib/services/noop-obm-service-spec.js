@@ -19,5 +19,13 @@ describe('NoopObmService', function() {
         base.after('NoopObmService after');
 
         base.runInterfaceTestCases();
+
+        it('should share a nodePowerStates cache across instances', function() {
+            var instance1 = new this.Service();
+            var instance2 = new this.Service();
+            expect(instance1.nodePowerStates).to.equal(instance2.nodePowerStates);
+            instance1.nodePowerStates.set('testnode', false);
+            expect(instance2.nodePowerStates.get('testnode')).to.equal(false);
+        });
     });
 });
