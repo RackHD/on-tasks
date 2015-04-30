@@ -6,7 +6,7 @@
 describe('ISC DHCP Poller Job', function () {
     var base = require('./base-spec');
     var fs;
-    var leaseCache;
+    var lookupService;
     var uuid;
 
     var leaseData = new Buffer(
@@ -45,8 +45,8 @@ describe('ISC DHCP Poller Job', function () {
 
         uuid = helper.injector.get('uuid');
 
-        leaseCache = helper.injector.get('DhcpLeaseCache');
-        sinon.stub(leaseCache, 'setLeaseByIp');
+        lookupService = helper.injector.get('Services.Lookup');
+        sinon.stub(lookupService, 'setIpAddress');
 
         fs = helper.injector.get('fs');
         sinon.stub(fs, 'watchFile').returns({});
@@ -57,14 +57,14 @@ describe('ISC DHCP Poller Job', function () {
     });
 
     beforeEach('ISC DHCP Poller Job beforeEach', function() {
-        leaseCache.setLeaseByIp.reset();
+        lookupService.setIpAddress.reset();
         fs.readFile.reset();
         fs.watchFile.reset();
         fs.unwatchFile.reset();
     });
 
     after('ISC DHCP Poller Job afterEach', function() {
-        leaseCache.setLeaseByIp.restore();
+        lookupService.setIpAddress.restore();
         fs.readFile.restore();
         fs.watchFile.restore();
         fs.unwatchFile.restore();
@@ -132,8 +132,8 @@ describe('ISC DHCP Poller Job', function () {
         expect(fs.readFile.firstCall.args[1]).to.be.a('function');
         job._updateLeasesCallback(null, leaseData);
 
-        expect(leaseCache.setLeaseByIp).to.have.been.calledWith('10.1.1.3', '08:00:27:9b:d9:f8');
-        expect(leaseCache.setLeaseByIp).to.have.been.calledWith('10.1.1.4', '08:00:27:a4:f4:bb');
+        expect(lookupService.setIpAddress).to.have.been.calledWith('10.1.1.3', '08:00:27:9b:d9:f8');
+        expect(lookupService.setIpAddress).to.have.been.calledWith('10.1.1.4', '08:00:27:a4:f4:bb');
     });
 
     it('should cache leases', function() {
@@ -149,27 +149,27 @@ describe('ISC DHCP Poller Job', function () {
         var job = new this.Jobclass({}, {}, uuid.v4());
         job.updateLeases();
         job._updateLeasesCallback(null, leaseData);
-        leaseCache.setLeaseByIp.reset();
+        lookupService.setIpAddress.reset();
 
         var updatedLeaseData = leaseData.toString().replace(/10\.1\.1\.3/, '10.1.1.5');
         job._updateLeasesCallback(null, updatedLeaseData);
 
-        expect(leaseCache.setLeaseByIp).to.have.been.calledOnce;
-        expect(leaseCache.setLeaseByIp).to.have.been.calledWith('10.1.1.5', '08:00:27:9b:d9:f8');
+        expect(lookupService.setIpAddress).to.have.been.calledOnce;
+        expect(lookupService.setIpAddress).to.have.been.calledWith('10.1.1.5', '08:00:27:9b:d9:f8');
     });
 
     it('should update the lease cache with a changed mac only for the changed lease', function() {
         var job = new this.Jobclass({}, {}, uuid.v4());
         job.updateLeases();
         job._updateLeasesCallback(null, leaseData);
-        leaseCache.setLeaseByIp.reset();
+        lookupService.setIpAddress.reset();
 
         var updatedLeaseData = leaseData.toString()
             .replace(/08:00:27:9b:d9:f8/, '08:00:27:00:00:00');
         job._updateLeasesCallback(null, updatedLeaseData);
 
-        expect(leaseCache.setLeaseByIp).to.have.been.calledOnce;
-        expect(leaseCache.setLeaseByIp).to.have.been.calledWith('10.1.1.3', '08:00:27:00:00:00');
+        expect(lookupService.setIpAddress).to.have.been.calledOnce;
+        expect(lookupService.setIpAddress).to.have.been.calledWith('10.1.1.3', '08:00:27:00:00:00');
     });
 
     it('should load leases on start', function() {
