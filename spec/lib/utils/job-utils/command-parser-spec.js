@@ -206,6 +206,13 @@ describe("Task Parser", function () {
             .spread(function (result) {
                 expect(result.error).to.be.undefined;
                 expect(result.store).to.be.true;
+                expect(result.lookups).to.deep.equal(
+                    [
+                        { mac: '00:1e:67:ab:5e:dc' },
+                        { mac: '00:1e:67:ab:5e:dd' },
+                        { mac: '00:1e:67:69:4c:b8' }
+                    ]
+                );
                 expect(_.isEqual(result.data,
                     JSON.parse(stdoutMocks.lshwOutput))).to.be.true;
                 expect(result.source).to.equal('lshw');
