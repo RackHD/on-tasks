@@ -52,7 +52,7 @@ describe("Task Parser", function () {
     });
 
     describe("dmi parser", function() {
-        var dmiSchema = {
+        var dmiSchemaSupermicro = {
             'BIOS Information': 'object',
             'System Information': 'object',
             'Base Board Information': 'object',
@@ -84,12 +84,30 @@ describe("Task Parser", function () {
             'BIOS Language Information': 'object',
         };
 
-        it("should parse sudo dmidecode", function() {
+        var dmiSchemaQuanta = {
+            'BIOS Information': 'object',
+            'System Information': 'object',
+            'Base Board Information': 'object',
+            'Chassis Information': 'object',
+            'Processor Information': 'array',
+            'Cache Information': 'array',
+            'Port Connector Information': 'array',
+            'System Slot Information': 'array',
+            'OEM Strings': 'object',
+            'Physical Memory Array': 'array',
+            'Memory Array Mapped Address': 'array',
+            'Memory Device': 'array',
+            'Onboard Device': 'array',
+            'IPMI Device Information': 'object',
+            'BIOS Language Information': 'object',
+        };
+
+        it("should parse sudo dmidecode from a supermicro", function() {
             var dmiCmd = "sudo dmidecode";
             var tasks = [
                 {
                     cmd: dmiCmd,
-                    stdout: stdoutMocks.dmidecode,
+                    stdout: stdoutMocks.dmidecodeSupermicro,
                     stderr: '',
                     error: null
                 }
@@ -102,7 +120,7 @@ describe("Task Parser", function () {
 
                 var data = result[0].data;
 
-                _.forEach(dmiSchema, function(elementType, element) {
+                _.forEach(dmiSchemaSupermicro, function(elementType, element) {
                     expect(data).to.have.property(element).that.is.an(elementType);
                 });
 
@@ -123,6 +141,71 @@ describe("Task Parser", function () {
                     .that.equals('American Megatrends Inc.');
                 expect(data['BIOS Information']).to.have.property('Characteristics')
                     .that.is.an('array').with.length(20);
+                expect(data['BIOS Information'].Characteristics[0]).to.equal('PCI is supported');
+
+                // Assert we can do the above assertions but with objects in a top-level array
+                expect(data['Processor Information']).to.have.length(2);
+                _.forEach(data['Processor Information'], function(info) {
+                    expect(info).to.have.property('Type').that.equals('Central Processor');
+                    expect(info).to.have.property('Flags').that.is.an('array').with.length(28);
+                });
+
+                // Assert we handled the case where a key has both
+                // a length value and an array, but we drop the length and
+                // coerce it to an array
+                expect(data['BIOS Language Information']).to.deep.equal({
+                    'Language Description Format': 'Long',
+                    'Installable Languages': ['en|US|iso8859-1'],
+                    'Currently Installed Language': 'en|US|iso8859-1'
+                });
+            });
+        });
+
+        it("should parse sudo dmidecode from a quanta", function() {
+            var dmiCmd = "sudo dmidecode";
+            var tasks = [
+                {
+                    cmd: dmiCmd,
+                    stdout: stdoutMocks.dmidecodeQuanta,
+                    stderr: '',
+                    error: null
+                }
+            ];
+            return taskParser.parseTasks(tasks)
+            .then(function(result) {
+                // NOTE: While we don't check EVERY attribute, we check one or two
+                // members of each class of attribute types and assume if we got
+                // them right we got all the others right as well.
+
+                var data = result[0].data;
+
+                _.forEach(dmiSchemaQuanta, function(elementType, element) {
+                    expect(data).to.have.property(element).that.is.an(elementType);
+                });
+
+                expect(data).to.not.have.property('End Of Table');
+
+                expect(data['Memory Device']).to.have.length(16);
+                expect(data['Onboard Device'][0]).to.have.property('Type')
+                    .that.equals('Video');
+                expect(data['Onboard Device'][1]).to.have.property('Type')
+                    .that.equals('SATA Controller');
+                expect(data['Onboard Device'][2]).to.have.property('Type')
+                    .that.equals('SATA Controller');
+
+                // Assert we handled the case where a key has both
+                // a length value and an array, but we drop the length and
+                // coerce it to an array
+                expect(data['Chassis Information'])
+                    .to.have.property('Contained Elements').that.deep.equals([
+                        '<OUT OF SPEC> (0)'
+                    ]);
+
+                // Assert we can parse top-level objects with a mix of sub-array and sub-objects
+                expect(data['BIOS Information']).to.have.property('Vendor')
+                    .that.equals('American Megatrends Inc.');
+                expect(data['BIOS Information']).to.have.property('Characteristics')
+                    .that.is.an('array').with.length(16);
                 expect(data['BIOS Information'].Characteristics[0]).to.equal('PCI is supported');
 
                 // Assert we can do the above assertions but with objects in a top-level array
