@@ -61,8 +61,20 @@ module.exports.lspciOutput = 'Slot:	00:00.0\n' +
                              'Device:	82801FB/FBM/FR/FW/FRW (ICH6 Family) USB2 EHCI Controller [265c]\n' +
                              'ProgIf:	20';
 
-module.exports.lsscsiOutput =
-
+module.exports.lsscsiPlusRotationalOutput =
+'KNAME TYPE ROTA\n' +
+'sda   disk    0\n' +
+'sdb   disk    1\n' +
+'sdb1  part    1\n' +
+'sdb2  part    1\n' +
+'sdb3  part    1\n' +
+'dm-0  lvm     1\n' +
+'dm-1  lvm     1\n' +
+'sdc   disk    1\n' +
+'sdd   disk    1\n' +
+'sde   disk    1\n' +
+'sdf   disk    1\n' +
+'BREAK\n' +
 '[0:0:0:0]    disk    HITACHI  HUSMM812 CLAR200 C118  /dev/sdb    200GB\n' +
 '[0:0:1:0]    enclosu EMC      ESES Enclosure   0001  -               -\n' +
 '[0:0:2:0]    disk    HGST     HUSMM8080ASS200  A116  /dev/sdc        -\n' +
