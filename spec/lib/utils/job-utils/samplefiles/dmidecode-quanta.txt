@@ -1,0 +1,937 @@
+# dmidecode 2.12
+SMBIOS 2.8 present.
+60 structures occupying 3688 bytes.
+Table at 0x000EB000.
+
+Handle 0x0000, DMI type 0, 24 bytes
+BIOS Information
+	Vendor: American Megatrends Inc.
+	Version: S2S_3A14         
+	Release Date: 09/18/2014
+	Address: 0xF0000
+	Runtime Size: 64 kB
+	ROM Size: 8192 kB
+	Characteristics:
+		PCI is supported
+		BIOS is upgradeable
+		BIOS shadowing is allowed
+		Boot from CD is supported
+		Selectable boot is supported
+		BIOS ROM is socketed
+		EDD is supported
+		Print screen service is supported (int 5h)
+		8042 keyboard services are supported (int 9h)
+		Serial services are supported (int 14h)
+		Printer services are supported (int 17h)
+		ACPI is supported
+		USB legacy is supported
+		BIOS boot specification is supported
+		Targeted content distribution is supported
+		UEFI is supported
+	BIOS Revision: 5.6
+	Firmware Revision: 3.16
+
+Handle 0x0001, DMI type 1, 27 bytes
+System Information
+	Manufacturer: Quanta Computer Inc
+	Product Name: QuantaPlex T41S-2U
+	Version: To be filled by O.E.M.
+	Serial Number: QTFCKJ50800080
+	UUID: 5B59659F-7C01-1000-AD69-2C600C6F174D
+	Wake-up Type: Power Switch
+	SKU Number: To be filled by O.E.M.
+	Family: To be filled by O.E.M.
+
+Handle 0x0002, DMI type 2, 15 bytes
+Base Board Information
+	Manufacturer: Quanta Computer Inc
+	Product Name: S2S-MB
+	Version: 31S2SMB0050
+	Serial Number: WKJ50501091
+	Asset Tag:  
+	Features:
+		Board is a hosting board
+		Board is replaceable
+	Location In Chassis: To be filled by O.E.M.
+	Chassis Handle: 0x0003
+	Type: Motherboard
+	Contained Object Handles: 0
+
+Handle 0x0003, DMI type 3, 25 bytes
+Chassis Information
+	Manufacturer: Quanta Computer Inc
+	Type: Rack Mount Chassis
+	Lock: Not Present
+	Version: X5M
+	Serial Number: To be filled by O.E.M.
+	Asset Tag:  
+	Boot-up State: Safe
+	Power Supply State: Safe
+	Thermal State: Safe
+	Security Status: None
+	OEM Information: 0x00000000
+	Height: Unspecified
+	Number Of Power Cords: 1
+	Contained Elements: 1
+		<OUT OF SPEC> (0)
+	SKU Number: To be filled by O.E.M.
+
+Handle 0x0004, DMI type 8, 9 bytes
+Port Connector Information
+	Internal Reference Designator: J26-B2B_CONN_0
+	Internal Connector Type: Other
+	External Reference Designator: Not Specified
+	External Connector Type: None
+	Port Type: Other
+
+Handle 0x0005, DMI type 8, 9 bytes
+Port Connector Information
+	Internal Reference Designator: J46-B2B_CONN_1
+	Internal Connector Type: Other
+	External Reference Designator: Not Specified
+	External Connector Type: None
+	Port Type: Other
+
+Handle 0x0006, DMI type 8, 9 bytes
+Port Connector Information
+	Internal Reference Designator: U60-SATA_PORT
+	Internal Connector Type: SAS/SATA Plug Receptacle
+	External Reference Designator: Not Specified
+	External Connector Type: None
+	Port Type: SAS
+
+Handle 0x0007, DMI type 8, 9 bytes
+Port Connector Information
+	Internal Reference Designator: J27-ITP
+	Internal Connector Type: Other
+	External Reference Designator: Not Specified
+	External Connector Type: None
+	Port Type: Other
+
+Handle 0x0008, DMI type 8, 9 bytes
+Port Connector Information
+	Internal Reference Designator: J39-HDD_PORT_0-3
+	Internal Connector Type: Other
+	External Reference Designator: Not Specified
+	External Connector Type: None
+	Port Type: SAS
+
+Handle 0x0009, DMI type 8, 9 bytes
+Port Connector Information
+	Internal Reference Designator: J40-HDD_PORT_4-7
+	Internal Connector Type: Other
+	External Reference Designator: Not Specified
+	External Connector Type: None
+	Port Type: SAS
+
+Handle 0x000A, DMI type 8, 9 bytes
+Port Connector Information
+	Internal Reference Designator: J12-TPM
+	Internal Connector Type: Other
+	External Reference Designator: Not Specified
+	External Connector Type: None
+	Port Type: Other
+
+Handle 0x000B, DMI type 8, 9 bytes
+Port Connector Information
+	Internal Reference Designator: J37-SATA_0-3
+	Internal Connector Type: Other
+	External Reference Designator: Not Specified
+	External Connector Type: None
+	Port Type: Other
+
+Handle 0x000C, DMI type 8, 9 bytes
+Port Connector Information
+	Internal Reference Designator: J49-sSATA_0-3
+	Internal Connector Type: Other
+	External Reference Designator: Not Specified
+	External Connector Type: None
+	Port Type: Other
+
+Handle 0x000D, DMI type 8, 9 bytes
+Port Connector Information
+	Internal Reference Designator: J31-SATA_6G
+	Internal Connector Type: SAS/SATA Plug Receptacle
+	External Reference Designator: Not Specified
+	External Connector Type: None
+	Port Type: SATA
+
+Handle 0x000E, DMI type 8, 9 bytes
+Port Connector Information
+	Internal Reference Designator: J41-SATA_6G
+	Internal Connector Type: SAS/SATA Plug Receptacle
+	External Reference Designator: Not Specified
+	External Connector Type: None
+	Port Type: SATA
+
+Handle 0x000F, DMI type 8, 9 bytes
+Port Connector Information
+	Internal Reference Designator: Not Specified
+	Internal Connector Type: None
+	External Reference Designator: J34-USB
+	External Connector Type: Access Bus (USB)
+	Port Type: USB
+
+Handle 0x0010, DMI type 8, 9 bytes
+Port Connector Information
+	Internal Reference Designator: Not Specified
+	Internal Connector Type: None
+	External Reference Designator: J9-VGA
+	External Connector Type: Access Bus (USB)
+	Port Type: USB
+
+Handle 0x0011, DMI type 8, 9 bytes
+Port Connector Information
+	Internal Reference Designator: Not Specified
+	Internal Connector Type: None
+	External Reference Designator: J21-COMA
+	External Connector Type: DB-9 male
+	Port Type: Serial Port 16550A Compatible
+
+Handle 0x0012, DMI type 8, 9 bytes
+Port Connector Information
+	Internal Reference Designator: Not Specified
+	Internal Connector Type: None
+	External Reference Designator: J6-BMC_MANAGEMENT_PORT
+	External Connector Type: RJ-45
+	Port Type: Network Port
+
+Handle 0x0013, DMI type 9, 17 bytes
+System Slot Information
+	Designation: OCP_Slot
+	Type: x8 PCI Express 3 x8
+	Current Usage: In Use
+	Length: Short
+	Characteristics:
+		3.3 V is provided
+		PME signal is supported
+	Bus Address: 0000:00:01.0
+
+Handle 0x0014, DMI type 9, 17 bytes
+System Slot Information
+	Designation: Riser1_Slot0
+	Type: x16 PCI Express 3 x16
+	Current Usage: In Use
+	Length: Long
+	Characteristics:
+		3.3 V is provided
+		PME signal is supported
+	Bus Address: 0000:00:02.0
+
+Handle 0x0015, DMI type 41, 11 bytes
+Onboard Device
+	Reference Designation: AST2400
+	Type: Video
+	Status: Enabled
+	Type Instance: 1
+	Bus Address: 0001:06:00.0
+
+Handle 0x0016, DMI type 41, 11 bytes
+Onboard Device
+	Reference Designation: SATA_Controller
+	Type: SATA Controller
+	Status: Enabled
+	Type Instance: 1
+	Bus Address: 0001:00:1f.2
+
+Handle 0x0017, DMI type 41, 11 bytes
+Onboard Device
+	Reference Designation: sSATA_Controller
+	Type: SATA Controller
+	Status: Enabled
+	Type Instance: 1
+	Bus Address: 0001:00:11.4
+
+Handle 0x0024, DMI type 11, 5 bytes
+OEM Strings
+	String 1: To Be Filled By O.E.M.
+
+Handle 0x0028, DMI type 38, 18 bytes
+IPMI Device Information
+	Interface Type: KCS (Keyboard Control Style)
+	Specification Version: 2.0
+	I2C Slave Address: 0x10
+	NV Storage Device: Not Present
+	Base Address: 0x0000000000000CA2 (I/O)
+	Register Spacing: Successive Byte Boundaries
+
+Handle 0x0036, DMI type 16, 23 bytes
+Physical Memory Array
+	Location: System Board Or Motherboard
+	Use: System Memory
+	Error Correction Type: Multi-bit ECC
+	Maximum Capacity: 256 GB
+	Error Information Handle: Not Provided
+	Number Of Devices: 4
+
+Handle 0x0037, DMI type 19, 31 bytes
+Memory Array Mapped Address
+	Starting Address: 0x00000000000
+	Ending Address: 0x00FFFFFFFFF
+	Range Size: 64 GB
+	Physical Array Handle: 0x0036
+	Partition Width: 4
+
+Handle 0x0038, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x0036
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 16384 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: DIMM_A0
+	Bank Locator: _Node0_Channel0_Dimm0
+	Type: Other
+	Type Detail: Synchronous
+	Speed: 2133 MHz
+	Manufacturer: Samsung
+	Serial Number: 71338DC3
+	Asset Tag: DIMM_A0_AssetTag
+	Part Number: M393A2G40DB0-CPB   
+	Rank: 2
+	Configured Clock Speed: 1866 MHz
+	Minimum voltage:  1.200 V
+	Maximum voltage:  1.200 V
+	Configured voltage:  1.200 V
+
+Handle 0x0039, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x0036
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 16384 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: DIMM_A1
+	Bank Locator: _Node0_Channel0_Dimm1
+	Type: Other
+	Type Detail: Synchronous
+	Speed: 2133 MHz
+	Manufacturer: Samsung
+	Serial Number: 71338DBC
+	Asset Tag: DIMM_A1_AssetTag
+	Part Number: M393A2G40DB0-CPB   
+	Rank: 2
+	Configured Clock Speed: 1866 MHz
+	Minimum voltage:  1.200 V
+	Maximum voltage:  1.200 V
+	Configured voltage:  1.200 V
+
+Handle 0x003A, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x0036
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 16384 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: DIMM_B0
+	Bank Locator: _Node0_Channel1_Dimm0
+	Type: Other
+	Type Detail: Synchronous
+	Speed: 2133 MHz
+	Manufacturer: Samsung
+	Serial Number: 71338BFC
+	Asset Tag: DIMM_B0_AssetTag
+	Part Number: M393A2G40DB0-CPB   
+	Rank: 2
+	Configured Clock Speed: 1866 MHz
+	Minimum voltage:  1.200 V
+	Maximum voltage:  1.200 V
+	Configured voltage:  1.200 V
+
+Handle 0x003B, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x0036
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 16384 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: DIMM_B1
+	Bank Locator: _Node0_Channel1_Dimm1
+	Type: Other
+	Type Detail: Synchronous
+	Speed: 2133 MHz
+	Manufacturer: Samsung
+	Serial Number: 71338BF6
+	Asset Tag: DIMM_B1_AssetTag
+	Part Number: M393A2G40DB0-CPB   
+	Rank: 2
+	Configured Clock Speed: 1866 MHz
+	Minimum voltage:  1.200 V
+	Maximum voltage:  1.200 V
+	Configured voltage:  1.200 V
+
+Handle 0x003C, DMI type 16, 23 bytes
+Physical Memory Array
+	Location: System Board Or Motherboard
+	Use: System Memory
+	Error Correction Type: Multi-bit ECC
+	Maximum Capacity: 256 GB
+	Error Information Handle: Not Provided
+	Number Of Devices: 4
+
+Handle 0x003D, DMI type 19, 31 bytes
+Memory Array Mapped Address
+	Starting Address: 0x01000000000
+	Ending Address: 0x01FFFFFFFFF
+	Range Size: 64 GB
+	Physical Array Handle: 0x003C
+	Partition Width: 4
+
+Handle 0x003E, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x003C
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 16384 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: DIMM_C0
+	Bank Locator: _Node0_Channel2_Dimm0
+	Type: Other
+	Type Detail: Synchronous
+	Speed: 2133 MHz
+	Manufacturer: Samsung
+	Serial Number: 71338BFA
+	Asset Tag: DIMM_C0_AssetTag
+	Part Number: M393A2G40DB0-CPB   
+	Rank: 2
+	Configured Clock Speed: 1866 MHz
+	Minimum voltage:  1.200 V
+	Maximum voltage:  1.200 V
+	Configured voltage:  1.200 V
+
+Handle 0x003F, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x003C
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 16384 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: DIMM_C1
+	Bank Locator: _Node0_Channel2_Dimm1
+	Type: Other
+	Type Detail: Synchronous
+	Speed: 2133 MHz
+	Manufacturer: Samsung
+	Serial Number: 71338D51
+	Asset Tag: DIMM_C1_AssetTag
+	Part Number: M393A2G40DB0-CPB   
+	Rank: 2
+	Configured Clock Speed: 1866 MHz
+	Minimum voltage:  1.200 V
+	Maximum voltage:  1.200 V
+	Configured voltage:  1.200 V
+
+Handle 0x0040, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x003C
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 16384 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: DIMM_D0
+	Bank Locator: _Node0_Channel3_Dimm0
+	Type: Other
+	Type Detail: Synchronous
+	Speed: 2133 MHz
+	Manufacturer: Samsung
+	Serial Number: 71338BF0
+	Asset Tag: DIMM_D0_AssetTag
+	Part Number: M393A2G40DB0-CPB   
+	Rank: 2
+	Configured Clock Speed: 1866 MHz
+	Minimum voltage:  1.200 V
+	Maximum voltage:  1.200 V
+	Configured voltage:  1.200 V
+
+Handle 0x0041, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x003C
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 16384 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: DIMM_D1
+	Bank Locator: _Node0_Channel3_Dimm1
+	Type: Other
+	Type Detail: Synchronous
+	Speed: 2133 MHz
+	Manufacturer: Samsung
+	Serial Number: 71338FE0
+	Asset Tag: DIMM_D1_AssetTag
+	Part Number: M393A2G40DB0-CPB   
+	Rank: 2
+	Configured Clock Speed: 1866 MHz
+	Minimum voltage:  1.200 V
+	Maximum voltage:  1.200 V
+	Configured voltage:  1.200 V
+
+Handle 0x0042, DMI type 16, 23 bytes
+Physical Memory Array
+	Location: System Board Or Motherboard
+	Use: System Memory
+	Error Correction Type: Multi-bit ECC
+	Maximum Capacity: 256 GB
+	Error Information Handle: Not Provided
+	Number Of Devices: 4
+
+Handle 0x0043, DMI type 19, 31 bytes
+Memory Array Mapped Address
+	Starting Address: 0x02000000000
+	Ending Address: 0x02FFFFFFFFF
+	Range Size: 64 GB
+	Physical Array Handle: 0x0042
+	Partition Width: 4
+
+Handle 0x0044, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x0042
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 16384 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: DIMM_E0
+	Bank Locator: _Node1_Channel0_Dimm0
+	Type: Other
+	Type Detail: Synchronous
+	Speed: 2133 MHz
+	Manufacturer: Samsung
+	Serial Number: 71338E99
+	Asset Tag: DIMM_E0_AssetTag
+	Part Number: M393A2G40DB0-CPB   
+	Rank: 2
+	Configured Clock Speed: 1866 MHz
+	Minimum voltage:  1.200 V
+	Maximum voltage:  1.200 V
+	Configured voltage:  1.200 V
+
+Handle 0x0045, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x0042
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 16384 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: DIMM_E1
+	Bank Locator: _Node1_Channel0_Dimm1
+	Type: Other
+	Type Detail: Synchronous
+	Speed: 2133 MHz
+	Manufacturer: Samsung
+	Serial Number: 71338D4F
+	Asset Tag: DIMM_E1_AssetTag
+	Part Number: M393A2G40DB0-CPB   
+	Rank: 2
+	Configured Clock Speed: 1866 MHz
+	Minimum voltage:  1.200 V
+	Maximum voltage:  1.200 V
+	Configured voltage:  1.200 V
+
+Handle 0x0046, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x0042
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 16384 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: DIMM_F0
+	Bank Locator: _Node1_Channel1_Dimm0
+	Type: Other
+	Type Detail: Synchronous
+	Speed: 2133 MHz
+	Manufacturer: Samsung
+	Serial Number: 71338FDA
+	Asset Tag: DIMM_F0_AssetTag
+	Part Number: M393A2G40DB0-CPB   
+	Rank: 2
+	Configured Clock Speed: 1866 MHz
+	Minimum voltage:  1.200 V
+	Maximum voltage:  1.200 V
+	Configured voltage:  1.200 V
+
+Handle 0x0047, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x0042
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 16384 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: DIMM_F1
+	Bank Locator: _Node1_Channel1_Dimm1
+	Type: Other
+	Type Detail: Synchronous
+	Speed: 2133 MHz
+	Manufacturer: Samsung
+	Serial Number: 71338E89
+	Asset Tag: DIMM_F1_AssetTag
+	Part Number: M393A2G40DB0-CPB   
+	Rank: 2
+	Configured Clock Speed: 1866 MHz
+	Minimum voltage:  1.200 V
+	Maximum voltage:  1.200 V
+	Configured voltage:  1.200 V
+
+Handle 0x0048, DMI type 16, 23 bytes
+Physical Memory Array
+	Location: System Board Or Motherboard
+	Use: System Memory
+	Error Correction Type: Multi-bit ECC
+	Maximum Capacity: 256 GB
+	Error Information Handle: Not Provided
+	Number Of Devices: 4
+
+Handle 0x0049, DMI type 19, 31 bytes
+Memory Array Mapped Address
+	Starting Address: 0x03000000000
+	Ending Address: 0x03FFFFFFFFF
+	Range Size: 64 GB
+	Physical Array Handle: 0x0048
+	Partition Width: 4
+
+Handle 0x004A, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x0048
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 16384 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: DIMM_G0
+	Bank Locator: _Node1_Channel2_Dimm0
+	Type: Other
+	Type Detail: Synchronous
+	Speed: 2133 MHz
+	Manufacturer: Samsung
+	Serial Number: 71338E8D
+	Asset Tag: DIMM_G0_AssetTag
+	Part Number: M393A2G40DB0-CPB   
+	Rank: 2
+	Configured Clock Speed: 1866 MHz
+	Minimum voltage:  1.200 V
+	Maximum voltage:  1.200 V
+	Configured voltage:  1.200 V
+
+Handle 0x004B, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x0048
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 16384 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: DIMM_G1
+	Bank Locator: _Node1_Channel2_Dimm1
+	Type: Other
+	Type Detail: Synchronous
+	Speed: 2133 MHz
+	Manufacturer: Samsung
+	Serial Number: 71338EA5
+	Asset Tag: DIMM_G1_AssetTag
+	Part Number: M393A2G40DB0-CPB   
+	Rank: 2
+	Configured Clock Speed: 1866 MHz
+	Minimum voltage:  1.200 V
+	Maximum voltage:  1.200 V
+	Configured voltage:  1.200 V
+
+Handle 0x004C, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x0048
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 16384 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: DIMM_H0
+	Bank Locator: _Node1_Channel3_Dimm0
+	Type: Other
+	Type Detail: Synchronous
+	Speed: 2133 MHz
+	Manufacturer: Samsung
+	Serial Number: 71338E9D
+	Asset Tag: DIMM_H0_AssetTag
+	Part Number: M393A2G40DB0-CPB   
+	Rank: 2
+	Configured Clock Speed: 1866 MHz
+	Minimum voltage:  1.200 V
+	Maximum voltage:  1.200 V
+	Configured voltage:  1.200 V
+
+Handle 0x004D, DMI type 17, 40 bytes
+Memory Device
+	Array Handle: 0x0048
+	Error Information Handle: Not Provided
+	Total Width: 72 bits
+	Data Width: 64 bits
+	Size: 16384 MB
+	Form Factor: DIMM
+	Set: None
+	Locator: DIMM_H1
+	Bank Locator: _Node1_Channel3_Dimm1
+	Type: Other
+	Type Detail: Synchronous
+	Speed: 2133 MHz
+	Manufacturer: Samsung
+	Serial Number: 71338E9B
+	Asset Tag: DIMM_H1_AssetTag
+	Part Number: M393A2G40DB0-CPB   
+	Rank: 2
+	Configured Clock Speed: 1866 MHz
+	Minimum voltage:  1.200 V
+	Maximum voltage:  1.200 V
+	Configured voltage:  1.200 V
+
+Handle 0x004E, DMI type 7, 19 bytes
+Cache Information
+	Socket Designation: CPU Internal L1
+	Configuration: Enabled, Not Socketed, Level 1
+	Operational Mode: Write Back
+	Location: Internal
+	Installed Size: 640 kB
+	Maximum Size: 640 kB
+	Supported SRAM Types:
+		Unknown
+	Installed SRAM Type: Unknown
+	Speed: Unknown
+	Error Correction Type: Parity
+	System Type: Other
+	Associativity: 8-way Set-associative
+
+Handle 0x004F, DMI type 7, 19 bytes
+Cache Information
+	Socket Designation: CPU Internal L2
+	Configuration: Enabled, Not Socketed, Level 2
+	Operational Mode: Write Back
+	Location: Internal
+	Installed Size: 2560 kB
+	Maximum Size: 2560 kB
+	Supported SRAM Types:
+		Unknown
+	Installed SRAM Type: Unknown
+	Speed: Unknown
+	Error Correction Type: Single-bit ECC
+	System Type: Unified
+	Associativity: 8-way Set-associative
+
+Handle 0x0050, DMI type 7, 19 bytes
+Cache Information
+	Socket Designation: CPU Internal L3
+	Configuration: Enabled, Not Socketed, Level 3
+	Operational Mode: Write Back
+	Location: Internal
+	Installed Size: 25600 kB
+	Maximum Size: 25600 kB
+	Supported SRAM Types:
+		Unknown
+	Installed SRAM Type: Unknown
+	Speed: Unknown
+	Error Correction Type: Single-bit ECC
+	System Type: Unified
+	Associativity: 20-way Set-associative
+
+Handle 0x0051, DMI type 4, 42 bytes
+Processor Information
+	Socket Designation: SOCKET 0
+	Type: Central Processor
+	Family: Xeon
+	Manufacturer: Intel
+	ID: F2 06 03 00 FF FB EB BF
+	Signature: Type 0, Family 6, Model 63, Stepping 2
+	Flags:
+		FPU (Floating-point unit on-chip)
+		VME (Virtual mode extension)
+		DE (Debugging extension)
+		PSE (Page size extension)
+		TSC (Time stamp counter)
+		MSR (Model specific registers)
+		PAE (Physical address extension)
+		MCE (Machine check exception)
+		CX8 (CMPXCHG8 instruction supported)
+		APIC (On-chip APIC hardware supported)
+		SEP (Fast system call)
+		MTRR (Memory type range registers)
+		PGE (Page global enable)
+		MCA (Machine check architecture)
+		CMOV (Conditional move instruction supported)
+		PAT (Page attribute table)
+		PSE-36 (36-bit page size extension)
+		CLFSH (CLFLUSH instruction supported)
+		DS (Debug store)
+		ACPI (ACPI supported)
+		MMX (MMX technology supported)
+		FXSR (FXSAVE and FXSTOR instructions supported)
+		SSE (Streaming SIMD extensions)
+		SSE2 (Streaming SIMD extensions 2)
+		SS (Self-snoop)
+		HTT (Multi-threading)
+		TM (Thermal monitor supported)
+		PBE (Pending break enabled)
+	Version: Intel(R) Xeon(R) CPU E5-2650 v3 @ 2.30GHz
+	Voltage: 0.6 V
+	External Clock: 100 MHz
+	Max Speed: 2300 MHz
+	Current Speed: 2300 MHz
+	Status: Populated, Enabled
+	Upgrade: <OUT OF SPEC>
+	L1 Cache Handle: 0x004E
+	L2 Cache Handle: 0x004F
+	L3 Cache Handle: 0x0050
+	Serial Number: Not Specified
+	Asset Tag: Not Specified
+	Part Number: Not Specified
+	Core Count: 10
+	Core Enabled: 10
+	Thread Count: 20
+	Characteristics:
+		64-bit capable
+		Multi-Core
+		Hardware Thread
+		Execute Protection
+		Enhanced Virtualization
+		Power/Performance Control
+
+Handle 0x0052, DMI type 7, 19 bytes
+Cache Information
+	Socket Designation: CPU Internal L1
+	Configuration: Enabled, Not Socketed, Level 1
+	Operational Mode: Write Back
+	Location: Internal
+	Installed Size: 640 kB
+	Maximum Size: 640 kB
+	Supported SRAM Types:
+		Unknown
+	Installed SRAM Type: Unknown
+	Speed: Unknown
+	Error Correction Type: Parity
+	System Type: Other
+	Associativity: 8-way Set-associative
+
+Handle 0x0053, DMI type 7, 19 bytes
+Cache Information
+	Socket Designation: CPU Internal L2
+	Configuration: Enabled, Not Socketed, Level 2
+	Operational Mode: Write Back
+	Location: Internal
+	Installed Size: 2560 kB
+	Maximum Size: 2560 kB
+	Supported SRAM Types:
+		Unknown
+	Installed SRAM Type: Unknown
+	Speed: Unknown
+	Error Correction Type: Single-bit ECC
+	System Type: Unified
+	Associativity: 8-way Set-associative
+
+Handle 0x0054, DMI type 7, 19 bytes
+Cache Information
+	Socket Designation: CPU Internal L3
+	Configuration: Enabled, Not Socketed, Level 3
+	Operational Mode: Write Back
+	Location: Internal
+	Installed Size: 25600 kB
+	Maximum Size: 25600 kB
+	Supported SRAM Types:
+		Unknown
+	Installed SRAM Type: Unknown
+	Speed: Unknown
+	Error Correction Type: Single-bit ECC
+	System Type: Unified
+	Associativity: 20-way Set-associative
+
+Handle 0x0055, DMI type 4, 42 bytes
+Processor Information
+	Socket Designation: SOCKET 1
+	Type: Central Processor
+	Family: Xeon
+	Manufacturer: Intel
+	ID: F2 06 03 00 FF FB EB BF
+	Signature: Type 0, Family 6, Model 63, Stepping 2
+	Flags:
+		FPU (Floating-point unit on-chip)
+		VME (Virtual mode extension)
+		DE (Debugging extension)
+		PSE (Page size extension)
+		TSC (Time stamp counter)
+		MSR (Model specific registers)
+		PAE (Physical address extension)
+		MCE (Machine check exception)
+		CX8 (CMPXCHG8 instruction supported)
+		APIC (On-chip APIC hardware supported)
+		SEP (Fast system call)
+		MTRR (Memory type range registers)
+		PGE (Page global enable)
+		MCA (Machine check architecture)
+		CMOV (Conditional move instruction supported)
+		PAT (Page attribute table)
+		PSE-36 (36-bit page size extension)
+		CLFSH (CLFLUSH instruction supported)
+		DS (Debug store)
+		ACPI (ACPI supported)
+		MMX (MMX technology supported)
+		FXSR (FXSAVE and FXSTOR instructions supported)
+		SSE (Streaming SIMD extensions)
+		SSE2 (Streaming SIMD extensions 2)
+		SS (Self-snoop)
+		HTT (Multi-threading)
+		TM (Thermal monitor supported)
+		PBE (Pending break enabled)
+	Version: Intel(R) Xeon(R) CPU E5-2650 v3 @ 2.30GHz
+	Voltage: 0.6 V
+	External Clock: 100 MHz
+	Max Speed: 2300 MHz
+	Current Speed: 2300 MHz
+	Status: Populated, Enabled
+	Upgrade: <OUT OF SPEC>
+	L1 Cache Handle: 0x0052
+	L2 Cache Handle: 0x0053
+	L3 Cache Handle: 0x0054
+	Serial Number: Not Specified
+	Asset Tag: Not Specified
+	Part Number: Not Specified
+	Core Count: 10
+	Core Enabled: 10
+	Thread Count: 20
+	Characteristics:
+		64-bit capable
+		Multi-Core
+		Hardware Thread
+		Execute Protection
+		Enhanced Virtualization
+		Power/Performance Control
+
+Handle 0x006A, DMI type 13, 22 bytes
+BIOS Language Information
+	Language Description Format: Long
+	Installable Languages: 1
+		en|US|iso8859-1
+	Currently Installed Language: en|US|iso8859-1
+
+Handle 0x006B, DMI type 127, 4 bytes
+End Of Table
+
