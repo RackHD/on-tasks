@@ -303,12 +303,12 @@ describe("Task Parser", function () {
         });
 
         describe("lssci parser", function () {
-            it("should parse lsscsi --size", function () {
-                var lsscsiCmd = 'sudo lsscsi --size';
+            it("should parse lsscsi and lsblk output", function () {
+                var cmd = 'sudo lsblk -o KNAME,TYPE,ROTA; echo BREAK; sudo lsscsi --size';
                 var tasks = [
                     {
-                        cmd: lsscsiCmd,
-                        stdout: stdoutMocks.lsscsiOutput,
+                        cmd: cmd,
+                        stdout: stdoutMocks.lsscsiPlusRotationalOutput,
                         stderr: '',
                         error: null
                     }
@@ -360,6 +360,18 @@ describe("Task Parser", function () {
 
                     expect(result.data[2]).to.have.property('size');
                     expect(result.data[2].size).to.equal('-');
+
+                    // lsblk rotational data assertions
+                    expect(result.data[0]).to.have.property('rotational');
+                    expect(result.data[0].rotational).to.equal(true);
+
+                    expect(result.data[2]).to.have.property('rotational');
+                    expect(result.data[2].rotational).to.equal(true);
+
+                    expect(result.data[10]).to.not.have.property('rotational');
+
+                    expect(_.last(result.data)).to.have.property('rotational');
+                    expect(_.last(result.data).rotational).to.equal(false);
 
                     expect(result.source).to.equal('lsscsi');
                 });
