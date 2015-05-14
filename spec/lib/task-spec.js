@@ -207,29 +207,67 @@ describe("Task", function () {
                 testConfigValue: 'test config value'
             });
 
-            var baseHttpRoute = 'http://' + config.get('server') + ':' + config.get('httpPort');
-            var baseHttpsRoute = 'https://' + config.get('server') + ':' + config.get('httpsPort');
+            var server = 'http://' + config.get('server') + ':' + config.get('httpPort');
+            var httpsServer = 'https://' + config.get('server') + ':' + config.get('httpsPort');
             definition.options = {
-                filesRoute: '{{ api.baseHttpRoute }}/files',
-                filesRouteHttps: '{{ api.baseHttpsRoute }}/files',
+                server: '{{ api.server }}',
+                httpsServer: '{{ api.httpsServer }}',
+                baseRoute: '{{ api.base }}',
+                filesRoute: '{{ api.files }}',
+                baseRouteHttps: '{{ api.baseHttps }}',
+                filesRouteHttps: '{{ api.filesHttps }}',
                 testConfigValue: 'test: {{ server.testConfigValue }}'
             };
             var task = Task.create(definition, {}, {});
 
-            expect(task.options.filesRoute).to.equal(baseHttpRoute + '/files');
-            expect(task.options.filesRouteHttps).to.equal(baseHttpsRoute + '/files');
+            expect(task.options.server).to.equal(server);
+            expect(task.options.httpsServer).to.equal(httpsServer);
+            expect(task.options.baseRoute).to.equal(server + '/api/current');
+            expect(task.options.baseRouteHttps).to.equal(httpsServer + '/api/current');
+            expect(task.options.filesRoute).to.equal(server + '/api/current/files');
+            expect(task.options.filesRouteHttps).to.equal(httpsServer + '/api/current/files');
             expect(task.options.testConfigValue)
                 .to.equal('test: ' + config.getAll().testConfigValue);
         });
 
-        it("should throw an error if the render key does not exist in context", function() {
-            var TemplateRenderError = helper.injector.get('Errors').TemplateRenderError;
+        it("should render nested templates", function() {
             definition.options = {
-                nonExistantValue: '{{ options.doesNotExist }}'
+                sourceValue: 'source value',
+                nested1: '{{ options.sourceValue }}',
+                nested2: '{{ options.nested1 }}',
+                nested3: '{{ options.nested2 }}'
             };
-            expect(function() {
-                Task.create(definition, {}, {});
-            }).to.throw(TemplateRenderError);
+            var task = Task.create(definition, {}, {});
+            expect(task.options.nested1).to.equal(definition.options.sourceValue);
+            expect(task.options.nested2).to.equal(definition.options.sourceValue);
+            expect(task.options.nested3).to.equal(definition.options.sourceValue);
+        });
+
+        describe('errors', function() {
+            var TemplateRenderError;
+
+            before('Task option rendering errors', function() {
+                TemplateRenderError = helper.injector.get('Errors').TemplateRenderError;
+            });
+
+            it("should throw an error if the render key does not exist in context", function() {
+                definition.options = {
+                    nonExistantValue: '{{ options.doesNotExist }}'
+                };
+                expect(function() {
+                    Task.create(definition, {}, {});
+                }).to.throw(TemplateRenderError, /Value does not exist/);
+            });
+
+            it("should throw an error on nested template loops", function() {
+                definition.options = {
+                    loop1: '{{ options.loop2 }}',
+                    loop2: '{{ options.loop1 }}'
+                };
+                expect(function() {
+                    Task.create(definition, {}, {});
+                }).to.throw(TemplateRenderError, /Exceeded max depth rendering string/);
+            });
         });
     });
 
