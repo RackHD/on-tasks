@@ -290,4 +290,37 @@ describe('Linux Command Job', function () {
             }
         ]);
     });
+
+    it('should accept an array of strings for commands', function() {
+        var commands = [ 'test', 'echo test' ];
+        var transformedCommands = LinuxCommandJob.prototype.buildCommands(commands);
+
+        expect(transformedCommands).to.deep.equal([
+            {
+                cmd: 'test'
+            },
+            {
+                cmd: 'echo test'
+            }
+        ]);
+    });
+
+    it('should accept a multi-typed commands array', function() {
+        var commands = [
+            'test',
+            {
+                command: 'echo test'
+            }
+        ];
+        var transformedCommands = LinuxCommandJob.prototype.buildCommands(commands);
+
+        expect(transformedCommands).to.deep.equal([
+            {
+                cmd: 'test'
+            },
+            {
+                cmd: 'echo test'
+            }
+        ]);
+    });
 });
