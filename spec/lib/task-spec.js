@@ -210,12 +210,16 @@ describe("Task", function () {
             var baseHttpRoute = 'http://' + config.get('server') + ':' + config.get('httpPort');
             var baseHttpsRoute = 'https://' + config.get('server') + ':' + config.get('httpsPort');
             definition.options = {
-                filesRoute: '{{ api.baseHttpRoute }}/files',
-                filesRouteHttps: '{{ api.baseHttpsRoute }}/files',
+                baseRoute: '{{ api.base }}',
+                filesRoute: '{{ api.files }}',
+                baseRouteHttps: '{{ api.baseHttps }}',
+                filesRouteHttps: '{{ api.filesHttps }}',
                 testConfigValue: 'test: {{ server.testConfigValue }}'
             };
             var task = Task.create(definition, {}, {});
 
+            expect(task.options.baseRoute).to.equal(baseHttpRoute);
+            expect(task.options.baseRouteHttps).to.equal(baseHttpsRoute);
             expect(task.options.filesRoute).to.equal(baseHttpRoute + '/files');
             expect(task.options.filesRouteHttps).to.equal(baseHttpsRoute + '/files');
             expect(task.options.testConfigValue)
