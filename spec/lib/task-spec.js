@@ -102,6 +102,14 @@ describe("Task", function () {
             expect(task.options.toRenderVal).to.equal('val: DEFAULT');
         });
 
+        it("should render options using the '||' helper", function() {
+            definition.options = {
+                toRenderVal: 'val: {{ options.doesNotExist || DEFAULT }}'
+            };
+            var task = Task.create(definition, {}, {});
+            expect(task.options.toRenderVal).to.equal('val: DEFAULT');
+        });
+
         it("should render options using the '|' helper not encapsulated by spaces", function() {
             definition.options = {
                 toRenderVal: 'val: {{ options.doesNotExist|DEFAULT }}'
@@ -113,6 +121,17 @@ describe("Task", function () {
         it("should render options with multiple '|' helpers", function() {
             definition.options = {
                 toRenderVal: 'val: {{ options.doesNotExist | options.stillNotThere | DEFAULT }}'
+            };
+            var task = Task.create(definition, {}, {});
+            expect(task.options.toRenderVal).to.equal('val: DEFAULT');
+        });
+
+        it("should render options with multiple '|' helpers, spaces, and newlines", function() {
+            definition.options = {
+                toRenderVal: 'val: {{ ' +
+                             'options.doesNotExist | ' +
+                             'options.stillNotThere | ' +
+                             'DEFAULT }}'
             };
             var task = Task.create(definition, {}, {});
             expect(task.options.toRenderVal).to.equal('val: DEFAULT');
@@ -204,7 +223,7 @@ describe("Task", function () {
         });
 
         it("should throw an error if the render key does not exist in context", function() {
-            var TemplateRenderError = helper.injector.get('TemplateRenderer').TemplateRenderError;
+            var TemplateRenderError = helper.injector.get('Errors').TemplateRenderError;
             definition.options = {
                 nonExistantValue: '{{ options.doesNotExist }}'
             };
