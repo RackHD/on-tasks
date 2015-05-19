@@ -38,6 +38,7 @@ describe("Job.Catalog.GenerateSku", function () {
             helper.require('/spec/mocks/logger.js'),
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/generate-sku.js'),
+            helper.require('/lib/utils/job-utils/catalog-searcher.js'),
             helper.di.simpleWrapper(waterline, 'Services.Waterline'),
             helper.di.simpleWrapper(taskProtocol, 'Protocol.Task')
         ]);
