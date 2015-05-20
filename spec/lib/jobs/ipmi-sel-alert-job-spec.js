@@ -68,7 +68,8 @@ describe(require('path').basename(__filename), function () {
                 sel: parsed,
                 alerts: [
                     {
-                        "sensor": "Power Unit #0x02",
+                        "sensorType": "Power Unit",
+                        "sensorNumber": "#0x02",
                         "event": "Fully Redundant"
                     }
                 ]
@@ -77,11 +78,13 @@ describe(require('path').basename(__filename), function () {
                 expect(out).to.have.property('alerts').with.length(1);
                 expect(out.alerts[0]).to.have.property('data');
                 expect(out.alerts[0].data).to.deep.equal({
-                   date: '10/26/2014',
-                   time: '20:17:48',
-                   sensor: 'Power Unit #0x02',
-                   event: 'Fully Redundant',
-                   value: 'Deasserted'
+                    logId: '3',
+                    date: '10/26/2014',
+                    time: '20:17:48',
+                    sensorType: "Power Unit",
+                    sensorNumber: "#0x02",
+                    event: 'Fully Redundant',
+                    value: 'Deasserted'
                 });
                 expect(out.alerts[0]).to.have.property('matches');
                 expect(out.alerts[0].matches).to.deep.equal(data.alerts);
@@ -95,7 +98,8 @@ describe(require('path').basename(__filename), function () {
                 alerts: [
                     {
                         "time": "14:38:31",
-                        "sensor": "Session Audit #0xFF",
+                        "sensorType": "Session Audit",
+                        "sensorNumber": "#0xFF",
                         "value": "Asserted"
                     }
                 ]
@@ -104,11 +108,13 @@ describe(require('path').basename(__filename), function () {
                 expect(out).to.have.property('alerts').with.length(1);
                 expect(out.alerts[0]).to.have.property('data');
                 expect(out.alerts[0].data).to.deep.equal({
-                   date: '12/01/2014',
-                   time: '14:38:31',
-                   sensor: 'Session Audit #0xFF',
-                   event: '',
-                   value: 'Asserted'
+                    logId: '0x000A',
+                    date: '12/01/2014',
+                    time: '14:38:31',
+                    sensorType: "Session Audit",
+                    sensorNumber: "#0xFF",
+                    event: '',
+                    value: 'Asserted'
                 });
                 expect(out.alerts[0]).to.have.property('matches');
                 expect(out.alerts[0].matches).to.deep.equal(data.alerts);
@@ -121,13 +127,14 @@ describe(require('path').basename(__filename), function () {
                 sel: parsed,
                 alerts: [
                     {
-                        "sensor": "/Power Unit.*/",
+                        "sensorType": "/Power.*/",
+                        "sensorNumber": "/.*/",
                         "event": "/\\w*/"  // jshint ignore:line
                     }
                 ]
             };
             return this.determineAlert(data).then(function(out) {
-                expect(out).to.have.property('alerts').with.length(3);
+                expect(out).to.have.property('alerts').with.length(5);
             });
         });
 
