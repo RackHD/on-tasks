@@ -11,10 +11,11 @@ describe("Task", function () {
     var baseNoopTask;
     var noopDefinition;
     var Promise;
+    var Constants;
 
     function literalCompare(objA, objB) {
         _.forEach(objA, function(v, k) {
-            if (_.contains(['subscriptions' ,'_events'], k)) {
+            if (_.contains(['renderContext', 'subscriptions' ,'_events', '_cancellable'], k)) {
                 return;
             }
             if (typeof v === 'object') {
@@ -33,6 +34,7 @@ describe("Task", function () {
             helper.di.simpleWrapper({}, 'Protocol.Events'),
             helper.di.simpleWrapper({}, 'Protocol.Task')
         ]);
+        Constants = helper.injector.get('Constants');
         Promise = helper.injector.get('Promise');
         var Logger = helper.injector.get('Logger');
         Logger.prototype.log = sinon.spy();
@@ -241,6 +243,50 @@ describe("Task", function () {
             expect(task.options.nested1).to.equal(definition.options.sourceValue);
             expect(task.options.nested2).to.equal(definition.options.sourceValue);
             expect(task.options.nested3).to.equal(definition.options.sourceValue);
+        });
+
+        describe('deferred rendering', function() {
+            it("should defer renders for special values", function() {
+                definition.options = {
+                    value: 'source value',
+                    defer: '{{ context.defer.value }}',
+                    noDefer: '{{ options.value }}'
+                };
+                var task = Task.create(definition, {}, {});
+                expect(task.options.defer).to.equal(definition.options.defer);
+                expect(task.options.noDefer).to.equal(definition.options.value);
+            });
+
+            it("should render deferred renders at specified task states", function() {
+                this.sandbox.stub(Task.prototype, 'instantiateJob');
+                this.sandbox.stub(Task.prototype, '_run');
+                this.sandbox.stub(Task.prototype, 'finish');
+                definition.options = {
+                    value: 'source value',
+                    defer: '{{ context.defer.value }}',
+                    noDefer: '{{ options.value }}'
+                };
+                var task = Task.create(definition, {}, {});
+                task.parentContext.defer = { value: 'source context value' };
+                task.run();
+                expect(task.options.defer).to.equal(task.parentContext.defer.value);
+            });
+
+            it("should respect fallbacks for deferred renders", function() {
+                this.sandbox.stub(Task.prototype, 'instantiateJob');
+                this.sandbox.stub(Task.prototype, '_run');
+                this.sandbox.stub(Task.prototype, 'finish');
+                definition.options = {
+                    value: 'source value',
+                    defer: '{{ context.defer.value || options.value }}',
+                    noDefer: '{{ options.value }}'
+                };
+                var task = Task.create(definition, {}, {});
+                expect(task.options.defer).to.equal(definition.options.defer);
+                task.parentContext.defer = null;
+                task.run();
+                expect(task.options.defer).to.equal(definition.options.value);
+            });
         });
 
         describe('errors', function() {
