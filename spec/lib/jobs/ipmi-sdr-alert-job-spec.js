@@ -6,24 +6,32 @@
 var uuid = require('node-uuid');
 
 // Various data pieced together from EMC and local data and spit out of parseSdrData()
-var _samples = {
-    // analog sensors
-    '+5 V (0x9)': { value: '5.056', type: 'analog' },
-    '+3.3VSB (0xd)': { value: '3.264', type: 'analog' },
-    '+12 V (0xa)': { value: '12.296', type: 'analog' },
-    'FAN 1 (0xf)': { value: '3249', type: 'analog' },
-    '+1.1 V (0x7)': { value: '1.104', type: 'analog' },
-    '+1.8 V (0x8)': { value: '1.848', type: 'analog' },
-    'CPU Mem VTT (0x15)': { value: '0.672', type: 'analog' },
-    // threshold sensors
-    'P1 MTT (0x34)': { value: 'ok', type: 'threshold' },
-    'Sys Fan 1A (0x30)': { value: 'ok', type: 'threshold' },
-    'PS1 Input Power (0x54)': { value: 'ok', type: 'threshold' },
-    'HSBP PSOC (0x29)': { value: 'ok', type: 'threshold' },
-    'BB Inlet Temp (0x20)': { value: 'ok', type: 'threshold' },
-    'DIMM Thrm Mrgn 2 (0xb1)': { value: 'ok', type: 'threshold' },
-    'P2 DTS Therm Mgn (0x84)': { value: 'ok', type: 'threshold' }
-};
+var _samples = [
+        // Long format
+        {
+            'Entity Id': '7.18',
+            'Status': 'ok',
+            'Sensor ID': 'VBAT',
+            'Normal Minimum': '8.928',
+            'Lower non-critical': '2.688',
+            'Upper critical': '3.456',
+            'Sensor Reading': '3.168',
+            'Upper non-critical': '3.312',
+            'Lower critical': '2.544',
+            'Sensor Type': 'Voltage',
+            'Normal Maximum': '11.424',
+            'Entry Id Name': 'System Board',
+            'Sensor Reading Units': 'Volts',
+            'Nominal Reading': '9.216'
+        },
+        // Short format
+        {
+            'Entity ID': '10.1',
+            'Status': 'ok',
+            'Sensor ID': 'PS1 Status',
+            'States Asserted': 'Presence detected'
+        }
+];
 
 describe(require('path').basename(__filename), function () {
     var _;
@@ -58,19 +66,24 @@ describe(require('path').basename(__filename), function () {
             return this.determineAlert(null).should.become(undefined);
         });
 
-        it("should alert on the right sdr data thresholds", function() {
-            samples['Test Threshold'] = { value: 'nr', type: 'threshold' };
+        it("should alert on Statuses that are not ok", function() {
+            var testAlertSensor = {
+                'Entity Id': 'test',
+                Status: 'nr'
+            };
+            samples.push(testAlertSensor);
             var data = {
+                host: 'host',
+                user: 'user',
+                password: 'pass',
+                workItemId: '54d6cdff8db79442ddf33333',
                 sdr: samples
             };
             return this.determineAlert(data)
             .then(function(out) {
-                expect(out).to.have.property('thresholds').with.property('Test Threshold');
-                expect(out.thresholds['Test Threshold'])
-                    .to.have.property('value').that.equals('nr');
-                expect(out.thresholds['Test Threshold'])
-                    .to.have.property('type').that.equals('threshold');
-                expect(_.keys(out)).to.have.length(1);
+                expect(out).to.have.length(1);
+                expect(out[0]).to.have.property('reading').that.equals(testAlertSensor);
+                expect(out[0]).to.have.property('host').that.equals(data.host);
             });
         });
     });
