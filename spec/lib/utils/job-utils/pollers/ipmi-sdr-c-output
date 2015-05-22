@@ -1,33 +1,98 @@
 Running Get PICMG Properties my_addr 0x20, transit 0, target 0x20
 Error Response 0xc1 from Get PICMG Properities
 No PICMG Extenstion discovered
-CPU1 Temp,31,degrees C,ok,3.1,Processor,Temperature,45.000,-4.000,89.000,89.000,87.000,84.000,0.000,0.000,0.000,-128.000,127.000
-CPU2 Temp,25,degrees C,ok,3.2,Processor,Temperature,45.000,-4.000,89.000,89.000,87.000,84.000,0.000,0.000,0.000,-128.000,127.000
-System Temp,30,degrees C,ok,7.1,System Board,Temperature,45.000,-4.000,74.000,90.000,85.000,80.000,-9.000,-7.000,-5.000,-128.000,127.000
-Peripheral Temp,41,degrees C,ok,7.2,System Board,Temperature,45.000,-4.000,74.000,90.000,85.000,80.000,-9.000,-7.000,-5.000,-128.000,127.000
-PCH Temp,50,degrees C,ok,7.3,System Board,Temperature,45.000,-4.000,67.000,100.000,95.000,90.000,-11.000,-8.000,-5.000,-128.000,127.000
-P1-DIMMA1 TEMP,37,degrees C,ok,32.64,Memory Device,Temperature,225.000,168.000,206.000,90.000,85.000,80.000,1.000,2.000,4.000,0.000,255.000
-P1-DIMMB1 TEMP,37,degrees C,ok,32.65,Memory Device,Temperature,225.000,168.000,206.000,90.000,85.000,80.000,1.000,2.000,4.000,0.000,255.000
-P1-DIMMC1 TEMP,38,degrees C,ok,32.68,Memory Device,Temperature,225.000,168.000,206.000,90.000,85.000,80.000,1.000,2.000,4.000,0.000,255.000
-P1-DIMMD1 TEMP,38,degrees C,ok,32.69,Memory Device,Temperature,225.000,168.000,206.000,90.000,85.000,80.000,1.000,2.000,4.000,0.000,255.000
-P2-DIMME1 TEMP,34,degrees C,ok,32.72,Memory Device,Temperature,225.000,168.000,206.000,90.000,85.000,80.000,1.000,2.000,4.000,0.000,255.000
-P2-DIMMF1 TEMP,33,degrees C,ok,32.73,Memory Device,Temperature,225.000,168.000,206.000,90.000,85.000,80.000,1.000,2.000,4.000,0.000,255.000
-P2-DIMMG1 TEMP,34,degrees C,ok,32.76,Memory Device,Temperature,225.000,168.000,206.000,90.000,85.000,80.000,1.000,2.000,4.000,0.000,255.000
-P2-DIMMH1 TEMP,34,degrees C,ok,32.77,Memory Device,Temperature,225.000,168.000,206.000,90.000,85.000,80.000,1.000,2.000,4.000,0.000,255.000
-FAN1,4050,RPM,ok,29.1,Fan Device,Fan,9600.000,1500.000,12750.000,19125.000,19050.000,18975.000,300.000,450.000,600.000,0.000,19125.000
-FAN2,3975,RPM,ok,29.2,Fan Device,Fan,9600.000,1500.000,12750.000,19125.000,19050.000,18975.000,300.000,450.000,600.000,0.000,19125.000
-VTT,1.008,Volts,ok,7.10,System Board,Voltage,1.488,1.344,1.648,1.440,1.392,1.344,0.816,0.864,0.912,0.000,4.080
-CPU1 Vcore,0.672,Volts,ok,3.3,Processor,Voltage,2.048,1.600,2.688,1.552,1.520,1.488,0.480,0.512,0.544,0.000,4.080
-CPU2 Vcore,0.688,Volts,ok,3.4,Processor,Voltage,2.048,1.664,2.688,1.552,1.520,1.488,0.480,0.512,0.544,0.000,4.080
-VDIMM ABCD,1.360,Volts,ok,32.1,Memory Device,Voltage,3.072,2.592,3.488,1.744,1.696,1.648,1.104,1.152,1.200,0.000,4.080
-VDIMM EFGH,1.344,Volts,ok,32.2,Memory Device,Voltage,3.072,2.592,3.488,1.744,1.696,1.648,1.104,1.152,1.200,0.000,4.080
-+1.1 V,1.104,Volts,ok,7.11,System Board,Voltage,2.192,1.968,2.416,1.312,1.264,1.216,0.880,0.928,0.976,0.000,4.080
-+1.5 V,1.488,Volts,ok,7.12,System Board,Voltage,3.072,2.704,3.312,1.744,1.696,1.648,1.248,1.296,1.344,0.000,4.080
-3.3V,3.264,Volts,ok,7.13,System Board,Voltage,9.216,8.928,10.656,3.936,3.792,3.648,2.640,2.784,2.928,0.000,12.240
-+3.3VSB,3.312,Volts,ok,7.14,System Board,Voltage,6.624,5.952,7.296,3.936,3.792,3.648,2.640,2.784,2.928,0.000,12.240
-5V,4.928,Volts,ok,7.15,System Board,Voltage,10.112,9.280,10.560,6.912,5.696,5.504,4.096,4.288,4.480,0.000,16.320
-+5VSB,4.992,Volts,ok,7.16,System Board,Voltage,10.112,9.024,11.008,6.912,5.696,5.504,4.096,4.288,4.480,0.000,16.320
-12V,11.872,Volts,ok,7.17,System Board,Voltage,24.168,21.624,25.970,13.886,13.568,13.250,10.176,10.494,10.812,0.000,27.030
-VBAT,3.168,Volts,ok,7.18,System Board,Voltage,9.216,8.928,11.424,3.600,3.456,3.312,2.400,2.544,2.688,0.000,12.240
-PS1 Status,C8h,ok,10.1,Presence detected
-PS2 Status,C9h,ok,10.2,Presence detected
+Event Log,E6h,ok,6.1,
+Watchdog,E7h,ok,6.2,
+System Event,E9h,ok,6.3,
+Critical IRQ,90h,ok,7.1,
+CATERR,EBh,ok,7.1,
+PCH Thermal Trip,BFh,ok,7.1,
+MB Thermal Trip,B9h,ok,7.1,
+DIMM_HOT,B8h,ok,7.1,
+CPU_DIMM_VRHOT,B7h,ok,7.1,
+Power Unit,E8h,ok,19.1,
+Temp_CPU0,35,% degrees C,ok,65.1,Processor,Temperature,,,,,104.000,101.000,,,,-128.000,127.000
+Temp_CPU1,35,% degrees C,ok,65.2,Processor,Temperature,,,,,104.000,101.000,,,,-128.000,127.000
+Temp_DIMM_AB,30,% degrees C,ok,66.1,Baseboard/Main System Board,Temperature,,,,,85.000,84.000,,,,-128.000,127.000
+Temp_DIMM_CD,31,% degrees C,ok,66.2,Baseboard/Main System Board,Temperature,,,,,85.000,84.000,,,,-128.000,127.000
+Temp_DIMM_EF,29,% degrees C,ok,66.3,Baseboard/Main System Board,Temperature,,,,,85.000,84.000,,,,-128.000,127.000
+Temp_DIMM_GH,28,% degrees C,ok,66.4,Baseboard/Main System Board,Temperature,,,,,85.000,84.000,,,,-128.000,127.000
+Temp_VR_CPU0,33,% degrees C,ok,66.5,Baseboard/Main System Board,Temperature,,,,,105.000,104.000,,,,-128.000,127.000
+Temp_VR_CPU1,27,% degrees C,ok,66.6,Baseboard/Main System Board,Temperature,,,,,105.000,104.000,,,,-128.000,127.000
+Temp_VR_DIMM_AB,34,% degrees C,ok,66.7,Baseboard/Main System Board,Temperature,,,,,105.000,104.000,,,,-128.000,127.000
+Temp_VR_DIMM_CD,34,% degrees C,ok,66.8,Baseboard/Main System Board,Temperature,,,,,105.000,104.000,,,,-128.000,127.000
+Temp_VR_DIMM_EF,31,% degrees C,ok,66.9,Baseboard/Main System Board,Temperature,,,,,105.000,104.000,,,,-128.000,127.000
+Temp_VR_DIMM_GH,30,% degrees C,ok,66.10,Baseboard/Main System Board,Temperature,,,,,105.000,104.000,,,,-128.000,127.000
+Temp_Ambient_BP0,24,% degrees C,ok,64.1,Air Inlet,Temperature,,,,,55.000,50.000,,,,-128.000,127.000
+Temp_Ambient_BP1,25,% degrees C,ok,64.2,Air Inlet,Temperature,,,,,55.000,50.000,,,,-128.000,127.000
+Temp_Ambient_FP,23,% degrees C,ok,64.3,Air Inlet,Temperature,,,,,38.000,36.000,,0.000,,-128.000,127.000
+Temp_Ambient_PCI,36,% degrees C,ok,66.11,Baseboard/Main System Board,Temperature,,,,,80.000,75.000,,,,-128.000,127.000
+Temp_Inlet_MB,26,% degrees C,ok,66.12,Baseboard/Main System Board,Temperature,,,,,80.000,75.000,,,,-128.000,127.000
+Temp_PCH,41,% degrees C,ok,66.13,Baseboard/Main System Board,Temperature,,,,,100.000,98.000,,,,-128.000,127.000
+Temp_Outlet,31,% degrees C,ok,7.1,System Board,Temperature,,,,,,,,,,-128.000,127.000
+Volt_VR_CPU0,1.820,% Volts,ok,7.1,System Board,Voltage,,,,,1.960,,,1.350,,0.000,2.550
+Volt_VR_CPU1,1.820,% Volts,ok,7.1,System Board,Voltage,,,,,1.960,,,1.350,,0.000,2.550
+Volt_VR_DIMM_AB,1.220,% Volts,ok,7.1,System Board,Voltage,,,,,1.320,,,1.080,,0.000,2.550
+Volt_VR_DIMM_EF,1.220,% Volts,ok,7.1,System Board,Voltage,,,,,1.320,,,1.080,,0.000,2.550
+Volt_VR_DIMM_GH,1.220,% Volts,ok,7.1,System Board,Voltage,,,,,1.320,,,1.080,,0.000,2.550
+Volt_VR_DIMM_CD,1.220,% Volts,ok,7.1,System Board,Voltage,,,,,1.320,,,1.080,,0.000,2.550
+Volt_P1V05,1.058,% Volts,ok,7.1,System Board,Voltage,,,,,1.107,,,0.990,,0.000,2.499
+Volt_P1V8_AUX,1.842,% Volts,ok,7.1,System Board,Voltage,,,,,1.891,,,1.705,,0.000,2.499
+Volt_P3V3,3.355,% Volts,ok,7.1,System Board,Voltage,,,,,3.466,,,3.132,,0.000,4.054
+Volt_P3V_BAT,3.161,% Volts,ok,7.1,System Board,Voltage,,,,,3.596,,,2.523,,0.000,7.395
+Volt_P3V3_AUX,3.355,% Volts,ok,7.1,System Board,Voltage,,,,,3.466,,,3.132,,0.000,4.054
+Volt_P5V,5.082,% Volts,ok,7.1,System Board,Voltage,,,,,5.251,,,4.743,,0.000,6.171
+Volt_P5V_AUX,5.106,% Volts,ok,7.1,System Board,Voltage,,,,,5.251,,,4.743,,0.000,6.171
+Volt_P12V,12.120,% Volts,ok,7.1,System Board,Voltage,,,,,12.600,,,11.400,,0.000,15.300
+Fan_SYS0_1,1800,% RPM,ok,29.1,Fan Device,Fan,,,,,,,,600.000,,0.000,25500.000
+Fan_SYS0_2,1900,% RPM,ok,29.1,Fan Device,Fan,,,,,,,,600.000,,0.000,25500.000
+Fan_SYS1_1,1700,% RPM,ok,29.2,Fan Device,Fan,,,,,,,,600.000,,0.000,25500.000
+Fan_SYS1_2,1900,% RPM,ok,29.2,Fan Device,Fan,,,,,,,,600.000,,0.000,25500.000
+Fan_SYS2_1,4300,% RPM,ok,29.3,Fan Device,Fan,,,,,,,,600.000,,0.000,25500.000
+Fan_SYS2_2,3300,% RPM,ok,29.3,Fan Device,Fan,,,,,,,,600.000,,0.000,25500.000
+Fan_SYS3_1,4200,% RPM,ok,29.4,Fan Device,Fan,,,,,,,,600.000,,0.000,25500.000
+Fan_SYS3_2,3400,% RPM,ok,29.4,Fan Device,Fan,,,,,,,,600.000,,0.000,25500.000
+Airflow,36,CFM,ok,23.1,System Chassis,Other,,,,,,,,,,0.000,255.000
+PSU1 Input,98,% Watts,ok,10.1,Power Supply,Other,,,,,,,,0.000,,0.000,1785.000
+PSU2 Input,56,% Watts,ok,10.2,Power Supply,Other,,,,,,,,0.000,,0.000,1785.000
+HSC0 Input,33,Watts,ok,20.1,Power Module,Current,,,,,,,,0.000,,0.000,765.000
+CPU_0,A8h,ok,3.1,Presence detected
+CPU_1,A9h,ok,3.2,Presence detected
+PSU Redundancy,E4h,ok,21.1,Fully Redundant
+PSU1 Status,E0h,ok,10.1,Presence detected
+PSU2 Status,E1h,ok,10.2,Presence detected
+HSC0 Status Low,CCh,ok,20.1,
+HSC0 Status High,CDh,ok,20.1,
+HDD0,45h,ok,26.0,Drive Present
+HDD1,46h,ok,26.1,Drive Present
+HDD2,47h,ok,26.2,Drive Present
+HDD3,48h,ok,26.3,Drive Present
+HDD4,49h,ok,26.4,Drive Present
+HDD5,4Ah,ok,26.5,Drive Present
+HDD6,4Bh,ns,26.6,No Reading
+HDD7,4Ch,ns,26.7,No Reading
+HDD8,4Dh,ns,26.8,No Reading
+HDD9,4Eh,ns,26.9,No Reading
+HDD10,4Fh,ns,26.10,No Reading
+HDD11,50h,ns,26.11,No Reading
+HDD12,51h,ns,26.12,No Reading
+HDD13,52h,ns,26.13,No Reading
+HDD14,53h,ns,26.14,No Reading
+HDD15,54h,ns,26.15,No Reading
+HDD16,55h,ns,26.16,No Reading
+HDD17,56h,ns,26.17,No Reading
+HDD18,57h,ns,26.18,No Reading
+HDD19,58h,ns,26.19,No Reading
+HDD20,59h,ns,26.20,No Reading
+HDD21,5Ah,ns,26.21,No Reading
+HDD22,5Bh,ns,26.22,No Reading
+HDD23,5Ch,ns,26.23,No Reading
+Button,F1h,ok,209.1,
+PDB Event,F8h,ok,23.0,
+CMC_REP_TAB_STA,F3h,ok,6.4,
+CMC_FAN_TAB_STA,F4h,ok,6.5,
+CMC_REP_RDY_STA,F5h,ok,6.6,
+CMC_LINK_BRD_STA,F6h,ok,6.7,
+NVMeSSD_0,,,ns,7.16,System Board,Temperature,,,,,76.000,75.000,,,,-128.000,127.000
+NVMeSSD_1,,,ns,7.17,System Board,Temperature,,,,,76.000,75.000,,,,-128.000,127.000
+Temp_OCP,,,ns,7.18,System Board,Temperature,,,,,108.000,106.000,,,,-128.000,127.000
