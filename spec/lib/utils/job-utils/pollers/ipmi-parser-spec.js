@@ -31,7 +31,7 @@ describe("ipmi-parser", function() {
                     {
                         'Entity Id': '7.18',
                         'Status': 'ok',
-                        'Sensor ID': 'VBAT',
+                        'Sensor Id': 'VBAT',
                         'Normal Minimum': '8.928',
                         'Lower non-critical': '2.688',
                         'Upper critical': '3.456',
@@ -46,25 +46,75 @@ describe("ipmi-parser", function() {
                     },
                     // Short format
                     {
-                        'Entity ID': '10.1',
+                        'Entity Id': '10.1',
                         'Status': 'ok',
-                        'Sensor ID': 'PS1 Status',
+                        'Sensor Id': 'PS1 Status',
                         'States Asserted': 'Presence detected'
                     }
                 ]
             */
 
-            _.forEach(samples, function(sample) {
-                expect(sample).to.have.property('Status').that.equals('ok');
+            // Make the array an object with keys to make testing assertions easier below
+            // Run assertions on the objects while we transform as well as an optimization.
+            var samplesObj = _.transform(samples, function(result, sample) {
                 var length = _.keys(sample).length;
+                expect(['ok', 'ns']).to.include(sample.Status);
                 expect([4, 14]).to.contain(length);
                 if (length === 4) {
-                    expect(sample).to.have.property('States Asserted')
-                        .that.equals('Presence detected');
+                    expect(sample).to.have.property('States Asserted');
                 } else {
                     expect(parseFloat(sample['Sensor Reading'])).to.be.a('number');
                 }
+
+                result[sample['Sensor Id']] = sample;
+            }, {});
+
+            // Long format parsing assertions
+            var columnsLongKeys = [
+                "Sensor Id",
+                "Sensor Reading",
+                "Sensor Reading Units",
+                "Status",
+                "Entity Id",
+                "Entry Id Name",
+                "Sensor Type",
+                "Nominal Reading",
+                "Normal Minimum",
+                "Normal Maximum",
+                "Upper critical",
+                "Upper non-critical",
+                "Lower critical",
+                "Lower non-critical"
+            ];
+            var vrdimm = samplesObj['Temp_VR_DIMM_CD.'];
+            _.forEach(columnsLongKeys, function(key) {
+                try {
+                    expect(vrdimm).to.have.property(key);
+                } catch (e) {
+                    key, vrdimm;
+                    debugger;
+                }
             });
+
+            // Short format parsing assertions
+            var columnsShortKeys = [
+                "Sensor Id",
+                "Status",
+                "Entity Id",
+                "States Asserted"
+            ];
+            var button = samplesObj.Button;
+            _.forEach(columnsShortKeys, function(key) {
+                expect(button).to.have.property(key);
+            });
+            _.forEach(_.range(0, 5), function(i) {
+                expect(samplesObj).to.have.deep.property('HDD%s.States Asserted'.format(i))
+                    .that.equals('Drive Present');
+                expect(samplesObj).to.have.deep.property('HDD%s.Entity Id'.format(i))
+                    .that.equals('26.' + i);
+            });
+            expect(samplesObj).to.have.deep.property('CMC_LINK_BRD_STA.States Asserted')
+                .that.equals('');
         });
     });
 });

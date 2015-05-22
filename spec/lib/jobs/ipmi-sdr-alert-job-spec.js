@@ -11,7 +11,7 @@ var _samples = [
         {
             'Entity Id': '7.18',
             'Status': 'ok',
-            'Sensor ID': 'VBAT',
+            'Sensor Id': 'VBAT',
             'Normal Minimum': '8.928',
             'Lower non-critical': '2.688',
             'Upper critical': '3.456',
@@ -26,9 +26,9 @@ var _samples = [
         },
         // Short format
         {
-            'Entity ID': '10.1',
+            'Entity Id': '10.1',
             'Status': 'ok',
-            'Sensor ID': 'PS1 Status',
+            'Sensor Id': 'PS1 Status',
             'States Asserted': 'Presence detected'
         }
 ];
