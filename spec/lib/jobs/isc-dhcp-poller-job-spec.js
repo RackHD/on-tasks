@@ -92,7 +92,7 @@ describe('ISC DHCP Poller Job', function () {
         it('should find the right lease file on linux', function() {
             process.platform = 'linux';
             var _job = new this.Jobclass({}, {}, uuid.v4());
-            expect(_job.options.leasesFile).to.equal('/var/lib/dhcpd/dhcpd.leases');
+            expect(_job.options.leasesFile).to.equal('/var/lib/dhcp/dhcpd.leases');
         });
 
         it('should find the right lease file on OSX', function() {
