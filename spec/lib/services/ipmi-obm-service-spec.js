@@ -24,6 +24,14 @@ describe('IpmiObmService', function() {
 
         // Run assertions that we typically run over the base interface methods
         // against these extra, ipmi-specific methods
-        base.runInterfaceTestCases(['setBootPxe', 'soft', 'reset']);
+        base.runInterfaceTestCases([
+            'setBootPxe',
+            'soft',
+            'reset',
+            'identifyOn',
+            'identifyOff',
+            'mcResetCold',
+            'mcInfo'
+        ]);
     });
 });
