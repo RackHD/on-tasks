@@ -56,6 +56,7 @@ describe("Job.Obm.Node", function () {
         beforeEach('Job.Obm.Node run beforeEach', function() {
             job = new Job(options, { target: '54da9d7bf33e0405c75f7111' }, uuid.v4());
             job._subscribeActiveTaskExists = sinon.stub().resolves();
+            job.killObm = sinon.stub().resolves();
             ObmService.prototype.reboot.reset();
             ObmServiceSpy.reset();
         });
