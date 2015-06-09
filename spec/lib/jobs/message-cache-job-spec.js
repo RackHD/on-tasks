@@ -167,6 +167,16 @@ describe("Message Cache Job", function () {
             });
         });
 
+        it("should work for poller cache requests for the latest entry", function() {
+            job.cacheSet('testid', { test: 'data' });
+            job.cacheSet('testid', { test: 'data latest' });
+            return job.requestPollerCacheCallback('testid', { latestOnly: true })
+            .then(function(data) {
+                expect(data).to.have.length(1);
+                expect(data[0]).to.have.property('test').that.equals('data latest');
+            });
+        });
+
         it("should reject for poller cache requests on non-existant workItems", function() {
             return expect(job.requestPollerCacheCallback('badid'))
                 .to.be.rejectedWith(Errors.NotFoundError, /There is no cache record/);
