@@ -18,6 +18,9 @@ describe("Message Cache Job", function () {
             helper.require('/lib/jobs/message-cache-job.js')
         ]);
 
+        var configuration = helper.injector.get('Services.Configuration');
+        sinon.stub(configuration, 'get').withArgs('pollerCacheSize').returns(10);
+
         Errors = helper.injector.get('Errors');
         context.Jobclass = helper.injector.get('Job.Message.Cache');
     });
