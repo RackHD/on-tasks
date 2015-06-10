@@ -18,6 +18,9 @@ describe("Message Cache Job", function () {
             helper.require('/lib/jobs/message-cache-job.js')
         ]);
 
+        var configuration = helper.injector.get('Services.Configuration');
+        sinon.stub(configuration, 'get').withArgs('pollerCacheSize').returns(10);
+
         Errors = helper.injector.get('Errors');
         context.Jobclass = helper.injector.get('Job.Message.Cache');
     });
@@ -164,6 +167,16 @@ describe("Message Cache Job", function () {
             .then(function(data) {
                 expect(data).to.have.length(1);
                 expect(data[0]).to.have.property('test').that.equals('data');
+            });
+        });
+
+        it("should work for poller cache requests for the latest entry", function() {
+            job.cacheSet('testid', { test: 'data' });
+            job.cacheSet('testid', { test: 'data latest' });
+            return job.requestPollerCacheCallback('testid', { latestOnly: true })
+            .then(function(data) {
+                expect(data).to.have.length(1);
+                expect(data[0]).to.have.property('test').that.equals('data latest');
             });
         });
 
