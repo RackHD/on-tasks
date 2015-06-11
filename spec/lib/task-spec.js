@@ -201,16 +201,16 @@ describe("Task", function () {
         });
 
         it("should render api and server values", function() {
-            var config = this.sandbox.stub(helper.injector.get('Services.Configuration'));
-            config.get.withArgs('server').returns('10.1.1.1');
-            config.get.withArgs('httpPort').returns('80');
-            config.get.withArgs('httpsPort').returns('443');
-            config.getAll.returns({
-                testConfigValue: 'test config value'
-            });
+            Task.configCache = {
+                testConfigValue: 'test config value',
+                server: '10.1.1.1',
+                httpPort: '80',
+                httpsPort: '443',
+            };
 
-            var server = 'http://' + config.get('server') + ':' + config.get('httpPort');
-            var httpsServer = 'https://' + config.get('server') + ':' + config.get('httpsPort');
+            var server = 'http://' + Task.configCache.server + ':' + Task.configCache.httpPort;
+            var httpsServer =
+                'https://' + Task.configCache.server + ':' + Task.configCache.httpsPort;
             definition.options = {
                 server: '{{ api.server }}',
                 httpsServer: '{{ api.httpsServer }}',
@@ -229,7 +229,7 @@ describe("Task", function () {
             expect(task.options.filesRoute).to.equal(server + '/api/current/files');
             expect(task.options.filesRouteHttps).to.equal(httpsServer + '/api/current/files');
             expect(task.options.testConfigValue)
-                .to.equal('test: ' + config.getAll().testConfigValue);
+                .to.equal('test: ' + Task.configCache.testConfigValue);
         });
 
         it("should render nested templates", function() {
