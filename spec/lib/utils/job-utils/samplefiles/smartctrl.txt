@@ -1,0 +1,228 @@
+####/dev/sda1 megaraid,9
+smartctl 5.41 2011-06-09 r3365 [i686-w64-mingw32-win7(64)-sp1] (sf-win32-5.41-1)
+Copyright (C) 2002-11 by Bruce Allen, http://smartmontools.sourceforge.net
+
+=== START OF INFORMATION SECTION ===
+Device Model:     Micron_P400e-MTFDDAK200MAR
+Serial Number:    1144031E6FB3
+LU WWN Device Id: 5 00a075 1031e6fb3
+Firmware Version: 0135
+User Capacity:    200,049,647,616 bytes [200 GB]
+Sector Size:      512 bytes logical/physical
+Device is:        Not in smartctl database [for details use: -P showall]
+ATA Version is:   8
+ATA Standard is:  ATA-8-ACS revision 6
+Local Time is:    Fri Jun 12 23:55:27 2015 CST
+SMART support is: Available - device has SMART capability.
+SMART support is: Enabled
+
+=== START OF READ SMART DATA SECTION ===
+SMART overall-health self-assessment test result: PASSED
+
+General SMART Values:
+Offline data collection status:  (0x84)	Offline data collection activity
+					was suspended by an interrupting command from host.
+					Auto Offline Data Collection: Enabled.
+Self-test execution status:      (   0)	The previous self-test routine completed
+					without error or no self-test has ever
+					been run.
+Total time to complete Offline
+data collection: 		(  475) seconds.
+Offline data collection
+capabilities: 			 (0x7b) SMART execute Offline immediate.
+					Auto Offline data collection on/off support.
+					Suspend Offline collection upon new
+					command.
+					Offline surface scan supported.
+					Self-test supported.
+					Conveyance Self-test supported.
+					Selective Self-test supported.
+SMART capabilities:            (0x0003)	Saves SMART data before entering
+					power-saving mode.
+					Supports SMART auto save timer.
+Error logging capability:        (0x01)	Error logging supported.
+					General Purpose Logging supported.
+Short self-test routine
+recommended polling time: 	 (   2) minutes.
+Extended self-test routine
+recommended polling time: 	 (  15) minutes.
+Conveyance self-test routine
+recommended polling time: 	 (   3) minutes.
+SCT capabilities: 	       (0x003d)	SCT Status supported.
+					SCT Error Recovery Control supported.
+					SCT Feature Control supported.
+					SCT Data Table supported.
+
+SMART Attributes Data Structure revision number: 16
+Vendor Specific SMART Attributes with Thresholds:
+ID# ATTRIBUTE_NAME          FLAG     VALUE WORST THRESH TYPE      UPDATED  WHEN_FAILED RAW_VALUE
+  1 Raw_Read_Error_Rate     0x002f   100   100   050    Pre-fail  Always       -       0
+  5 Reallocated_Sector_Ct   0x0033   100   100   010    Pre-fail  Always       -       0
+  9 Power_On_Hours          0x0032   100   100   001    Old_age   Always       -       472
+ 12 Power_Cycle_Count       0x0032   100   100   001    Old_age   Always       -       177
+170 Unknown_Attribute       0x0033   100   100   010    Pre-fail  Always       -       0
+171 Unknown_Attribute       0x0032   100   100   001    Old_age   Always       -       0
+172 Unknown_Attribute       0x0032   100   100   001    Old_age   Always       -       0
+173 Unknown_Attribute       0x0033   100   100   010    Pre-fail  Always       -       3
+174 Unknown_Attribute       0x0032   100   100   001    Old_age   Always       -       171
+181 Program_Fail_Cnt_Total  0x0022   100   100   001    Old_age   Always       -       1275616690298
+183 Runtime_Bad_Block       0x0032   100   100   001    Old_age   Always       -       0
+184 End-to-End_Error        0x0033   100   100   050    Pre-fail  Always       -       0
+187 Reported_Uncorrect      0x0032   100   100   001    Old_age   Always       -       0
+188 Command_Timeout         0x0032   100   100   001    Old_age   Always       -       0
+189 High_Fly_Writes         0x000e   100   100   001    Old_age   Always       -       107
+194 Temperature_Celsius     0x0022   060   053   000    Old_age   Always       -       40 (Min/Max 25/47)
+195 Hardware_ECC_Recovered  0x003a   100   100   001    Old_age   Always       -       38
+196 Reallocated_Event_Count 0x0032   100   100   001    Old_age   Always       -       0
+197 Current_Pending_Sector  0x0032   100   100   001    Old_age   Always       -       0
+198 Offline_Uncorrectable   0x0030   100   100   001    Old_age   Offline      -       0
+199 UDMA_CRC_Error_Count    0x0032   100   100   001    Old_age   Always       -       1968
+202 Data_Address_Mark_Errs  0x0018   100   100   001    Old_age   Offline      -       0
+206 Flying_Height           0x000e   100   100   001    Old_age   Always       -       0
+242 Total_LBAs_Read         0x0002   095   095   001    Old_age   Always       -       35429
+
+SMART Error Log Version: 1
+No Errors Logged
+
+SMART Self-test log structure revision number 1
+Num  Test_Description    Status                  Remaining  LifeTime(hours)  LBA_of_first_error
+# 1  Vendor (0xff)       Completed without error       00%       463         -
+# 2  Vendor (0xff)       Completed without error       00%       288         -
+# 3  Extended offline    Completed without error       00%       263         -
+# 4  Short offline       Completed without error       00%       263         -
+
+SMART Selective self-test log data structure revision number 1
+ SPAN  MIN_LBA  MAX_LBA  CURRENT_TEST_STATUS
+    1        0        0  Not_testing
+    2        0        0  Not_testing
+    3        0        0  Not_testing
+    4        0        0  Not_testing
+    5        0        0  Not_testing
+Selective self-test flags (0x0):
+  After scanning selected spans, do NOT read-scan remainder of disk.
+If Selective self-test is pending on power-up, resume after 0 minute delay.
+o
+####/dev/sda2 scsi
+smartctl 6.2 2013-07-26 r3841 [x86_64-linux-3.13.0-32-generic] (local build)
+Copyright (C) 2002-13, Bruce Allen, Christian Franke, www.smartmontools.org
+
+=== START OF INFORMATION SECTION ===
+Device Model:     QEMU HARDDISK
+Serial Number:    QM00001
+Firmware Version: 2.2.1
+User Capacity:    9,006,219,264 bytes [9.00 GB]
+Sector Size:      512 bytes logical/physical
+Device is:        Not in smartctl database [for details use: -P showall]
+ATA Version is:   ATA/ATAPI-7, ATA/ATAPI-5 published, ANSI NCITS 340-2000
+Local Time is:    Fri Jun 12 22:54:09 2015 UTC
+SMART support is: Available - device has SMART capability.
+SMART support is: Enabled
+
+=== START OF READ SMART DATA SECTION ===
+SMART overall-health self-assessment test result: PASSED
+
+General SMART Values:
+Offline data collection status:  (0x82)	Offline data collection activity
+					was completed without error.
+					Auto Offline Data Collection: Enabled.
+Self-test execution status:      (   0)	The previous self-test routine completed
+					without error or no self-test has ever
+					been run.
+Total time to complete Offline
+data collection: 		(  288) seconds.
+Offline data collection
+capabilities: 			 (0x19) SMART execute Offline immediate.
+					No Auto Offline data collection support.
+					Suspend Offline collection upon new
+					command.
+					Offline surface scan supported.
+					Self-test supported.
+					No Conveyance Self-test supported.
+					No Selective Self-test supported.
+SMART capabilities:            (0x0003)	Saves SMART data before entering
+					power-saving mode.
+					Supports SMART auto save timer.
+Error logging capability:        (0x01)	Error logging supported.
+					No General Purpose Logging support.
+Short self-test routine
+recommended polling time: 	 (   2) minutes.
+Extended self-test routine
+recommended polling time: 	 (  54) minutes.
+
+SMART Attributes Data Structure revision number: 1
+Vendor Specific SMART Attributes with Thresholds:
+ID# ATTRIBUTE_NAME          FLAG     VALUE WORST THRESH TYPE      UPDATED  WHEN_FAILED RAW_VALUE
+  1 Raw_Read_Error_Rate     0x0003   100   100   006    Pre-fail  Always       -       0
+  3 Spin_Up_Time            0x0003   100   100   000    Pre-fail  Always       -       16
+  4 Start_Stop_Count        0x0002   100   100   020    Old_age   Always       -       100
+  5 Reallocated_Sector_Ct   0x0003   100   100   036    Pre-fail  Always       -       0
+  9 Power_On_Hours          0x0003   100   100   000    Pre-fail  Always       -       1
+ 12 Power_Cycle_Count       0x0003   100   100   000    Pre-fail  Always       -       0
+190 Airflow_Temperature_Cel 0x0003   069   069   050    Pre-fail  Always       -       31 (Min/Max 31/31)
+
+SMART Error Log Version: 1
+N
+####/dev/sda0 megaraid,13
+smartctl 6.2 2013-07-26 r3841 [x86_64-linux-3.13.0-32-generic] (local build)
+Copyright (C) 2002-13, Bruce Allen, Christian Franke, www.smartmontools.org
+
+=== START OF INFORMATION SECTION ===
+Device Model:     QEMU HARDDISK
+Serial Number:    QM00001
+Firmware Version: 2.2.1
+User Capacity:    9,006,219,264 bytes [9.00 GB]
+Sector Size:      512 bytes logical/physical
+Device is:        Not in smartctl database [for details use: -P showall]
+ATA Version is:   ATA/ATAPI-7, ATA/ATAPI-5 published, ANSI NCITS 340-2000
+Local Time is:    Fri Jun 12 22:54:09 2015 UTC
+SMART support is: Available - device has SMART capability.
+SMART support is: Enabled
+
+=== START OF READ SMART DATA SECTION ===
+SMART overall-health self-assessment test result: PASSED
+
+General SMART Values:
+Offline data collection status:  (0x82)	Offline data collection activity
+					was completed without error.
+					Auto Offline Data Collection: Enabled.
+Self-test execution status:      (   0)	The previous self-test routine completed
+					without error or no self-test has ever
+					been run.
+Total time to complete Offline
+data collection: 		(  288) seconds.
+Offline data collection
+capabilities: 			 (0x19) SMART execute Offline immediate.
+					No Auto Offline data collection support.
+					Suspend Offline collection upon new
+					command.
+					Offline surface scan supported.
+					Self-test supported.
+					No Conveyance Self-test supported.
+					No Selective Self-test supported.
+SMART capabilities:            (0x0003)	Saves SMART data before entering
+					power-saving mode.
+					Supports SMART auto save timer.
+Error logging capability:        (0x01)	Error logging supported.
+					No General Purpose Logging support.
+Short self-test routine
+recommended polling time: 	 (   2) minutes.
+Extended self-test routine
+recommended polling time: 	 (  54) minutes.
+
+SMART Attributes Data Structure revision number: 1
+Vendor Specific SMART Attributes with Thresholds:
+ID# ATTRIBUTE_NAME          FLAG     VALUE WORST THRESH TYPE      UPDATED  WHEN_FAILED RAW_VALUE
+  1 Raw_Read_Error_Rate     0x0003   100   100   006    Pre-fail  Always       -       0
+  3 Spin_Up_Time            0x0003   100   100   000    Pre-fail  Always       -       16
+  4 Start_Stop_Count        0x0002   100   100   020    Old_age   Always       -       100
+  5 Reallocated_Sector_Ct   0x0003   100   100   036    Pre-fail  Always       -       0
+  9 Power_On_Hours          0x0003   100   100   000    Pre-fail  Always       -       1
+ 12 Power_Cycle_Count       0x0003   100   100   000    Pre-fail  Always       -       0
+190 Airflow_Temperature_Cel 0x0003   069   069   050    Pre-fail  Always       -       31 (Min/Max 31/31)
+
+SMART Error Log Version: 1
+No Errors Logged
+
+SMART Self-test log structure revision number 1
+No self-tests have been logged.  [To run self-tests, use: smartctl -t]
+ Errors Logged
