@@ -81,5 +81,18 @@ describe(require('path').basename(__filename), function () {
                 }
             });
         });
+
+        it("should add a concurrent request", function() {
+            expect(this.ipmi.concurrentRequests('test', 'power')).to.equal(false);
+            this.ipmi.addConcurrentRequest('test', 'power');
+            expect(this.ipmi.concurrent).to.have.property('test')
+                .with.property('power').that.equals(1);
+        });
+
+        it("should return true if there are requests outstanding", function() {
+            expect(this.ipmi.concurrentRequests('test', 'power')).to.equal(false);
+            this.ipmi.addConcurrentRequest('test', 'power');
+            expect(this.ipmi.concurrentRequests('test', 'power')).to.equal(true);
+        });
     });
 });
