@@ -6,6 +6,9 @@
 describe("Job.Catalog.GenerateSku", function () {
     var waterline = {};
     var taskProtocol = {};
+    var eventsProtocol = {
+        publishSkuAssigned: sinon.stub()
+    };
     var GenerateSku;
     var uuid;
 
@@ -40,7 +43,8 @@ describe("Job.Catalog.GenerateSku", function () {
             helper.require('/lib/jobs/generate-sku.js'),
             helper.require('/lib/utils/job-utils/catalog-searcher.js'),
             helper.di.simpleWrapper(waterline, 'Services.Waterline'),
-            helper.di.simpleWrapper(taskProtocol, 'Protocol.Task')
+            helper.di.simpleWrapper(taskProtocol, 'Protocol.Task'),
+            helper.di.simpleWrapper(eventsProtocol, 'Protocol.Events')
         ]);
 
         GenerateSku = helper.injector.get('Job.Catalog.GenerateSku');
@@ -57,6 +61,7 @@ describe("Job.Catalog.GenerateSku", function () {
     });
 
     beforeEach(function () {
+        eventsProtocol.publishSkuAssigned.reset();
         waterline.skus.find.reset();
         waterline.catalogs.findMostRecent.reset();
         waterline.nodes.updateByIdentifier.reset();
@@ -97,6 +102,40 @@ describe("Job.Catalog.GenerateSku", function () {
             expect(waterline.nodes.updateByIdentifier).to.have.been.calledOnce;
             expect(waterline.nodes.updateByIdentifier.firstCall.args[1])
                 .to.have.property('sku', '1');
+        });
+    });
+
+    it('publishes an event when a SKU has been assigned', function() {
+        var job = new GenerateSku({}, { target: 'bc7dab7e8fb7d6abf8e7d6ab' }, uuid.v4());
+        var sku = {
+            id: '1',
+            createdAt: new Date('Feb 01 2015 12:00:00'),
+            name: 'Test Sku',
+            rules: [
+                {
+                    path: 'dmi.dmi.system.manufacturer',
+                    equals: 'Renasar'
+                }
+            ]
+        };
+        waterline.skus.find.resolves([sku]);
+        waterline.catalogs.findMostRecent.resolves(catalog1);
+
+        return job.run()
+        .then(function() {
+            expect(eventsProtocol.publishSkuAssigned)
+                .to.have.been.calledWith('bc7dab7e8fb7d6abf8e7d6ab', '1');
+        });
+    });
+
+    it('does not publish an event when a SKU has not been assigned', function() {
+        var job = new GenerateSku({}, { target: 'bc7dab7e8fb7d6abf8e7d6ab' }, uuid.v4());
+        waterline.skus.find.resolves([]);
+        waterline.catalogs.findMostRecent.resolves(catalog1);
+
+        return job.run()
+        .then(function() {
+            expect(eventsProtocol.publishSkuAssigned).to.not.have.been.called;
         });
     });
 
