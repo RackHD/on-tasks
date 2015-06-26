@@ -59,6 +59,23 @@ describe('Linux Command Job', function () {
         });
     });
 
+    it('should respond to properties requests', sinon.test(function() {
+        var requestPropertiesCallback;
+        var options = {
+            test: 'options'
+        };
+        var job = new LinuxCommandJob(options, { target: 'testid' }, uuid.v4());
+        this.stub(job, '_subscribeRequestCommands');
+        this.stub(job, '_subscribeRespondCommands');
+        this.stub(job, '_subscribeRequestProperties', function(_cb) {
+            requestPropertiesCallback = _cb;
+        });
+
+        job._run();
+
+        expect(requestPropertiesCallback()).to.equal(options);
+    }));
+
     describe('request handling', function() {
         var job;
 
@@ -73,6 +90,7 @@ describe('Linux Command Job', function () {
                 ]
             };
             job = new LinuxCommandJob(options, { target: 'testid' }, uuid.v4());
+            job._subscribeRequestProperties = sinon.stub();
         });
 
         it('should delegate requests to handleRequest()', sinon.test(function() {
@@ -110,6 +128,7 @@ describe('Linux Command Job', function () {
         beforeEach('Linux Command Job response handling beforeEach', function() {
             LinuxCommandJob.prototype.catalogUserTasks.reset();
             job = new LinuxCommandJob({ commands: [] }, { target: 'testid' }, uuid.v4());
+            job._subscribeRequestProperties = sinon.stub();
         });
 
         after('Linux Command Job response handling after', function() {
@@ -216,6 +235,7 @@ describe('Linux Command Job', function () {
             waterline.catalogs.create.reset();
             parser.parseUnknownTasks.reset();
             job = new LinuxCommandJob({ commands: [] }, { target: 'testid' }, uuid.v4());
+            job._subscribeRequestProperties = sinon.stub();
         });
 
         after('Linux Command Job catalogUserTasks after', function() {
@@ -320,6 +340,23 @@ describe('Linux Command Job', function () {
             },
             {
                 cmd: 'echo test'
+            }
+        ]);
+    });
+
+    it('should accept a downloadUrl for a command', function() {
+        var commands = [
+            {
+                command: './testscript.sh',
+                downloadUrl: '/api/current/templates/testscript.sh'
+            }
+        ];
+        var transformedCommands = LinuxCommandJob.prototype.buildCommands(commands);
+
+        expect(transformedCommands).to.deep.equal([
+            {
+                cmd: './testscript.sh',
+                downloadUrl: '/api/current/templates/testscript.sh'
             }
         ]);
     });
