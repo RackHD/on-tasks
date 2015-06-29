@@ -3619,3 +3619,8 @@ module.exports.testesesE0 = fs
 module.exports.ipmiFru = fs
     .readFileSync(__dirname+"/samplefiles/quanta_fru.txt")
     .toString();
+
+module.exports.smart = fs
+	.readFileSync(__dirname+"/samplefiles/smartctrl.txt")
+	.toString();
+

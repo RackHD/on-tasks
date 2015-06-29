@@ -840,6 +840,8 @@ describe("Task Parser", function () {
 
                 taskParser.parseTasks(tasks)
                 .spread(function (result) {
+                    expect(result.error).to.be.undefined;
+                    expect(result.store).to.be.true;
                     expect(result.data.systemRomId).to.equal('S2RS4A08');
                     expect(result.data.systemRomGuid)
                         .to.equal('b5c59087-feac-4b41-9d80790ba5aa070f');
@@ -852,5 +854,119 @@ describe("Task Parser", function () {
                 });
             });
         });
+
+        describe("SMART Parser", function() {
+            it("should parse smartctrl output", function (done) {
+                var smartCmd = 'sudo /opt/scripts/get_smart.sh';
+                var tasks = [
+                    {
+                        cmd: smartCmd,
+                        stdout: stdoutMocks.smart,
+                        stderr: '',
+                        error: null
+                    }
+                ];
+
+                taskParser.parseTasks(tasks)
+                .spread(function (result) {
+                    expect(result.source).to.equal('smart');
+                    expect(result.data).that.is.an('array');
+                    expect(result.data).to.have.length(3);
+
+                    _.forEach(result.data, function(elem) {
+                        expect(elem).to.contain.all.keys('OS Device Name',
+                                                         'SMART', 'smartctl Version');
+                        expect(elem).property('OS Device Name').that.is.a('string');
+                        expect(elem).property('OS Device Name').to.match(/^\/dev\/[\w]+/);
+                        expect(elem).property('SMART').that.is.an('object');
+                        expect(elem).property('SMART').to.contain.keys('Attributes',
+                            'Self-Assessment', 'Capabilities', 'Identity');
+                        expect(elem).property('smartctl Version').to.match(/^\d+\.\d+$/);
+                    });
+
+                    var smart = result.data[0].SMART;
+                    expect(smart).to.contains.all.keys('Attributes', 'Capabilities', 'Identity',
+                                                       'Self-Assessment', 'Self-test Log',
+                                                       'Selective Self-test Log', 'Error Log');
+
+                    var attr = smart.Attributes;
+                    expect(attr).to.contains.all.keys('Revision', "Attributes Table");
+                    expect(attr).property('Revision').to.match(/^\d+$/);
+                    expect(attr).property('Attributes Table').that.is.an('Array');
+                    expect(attr).property('Attributes Table').to.have.length(24);
+                    _.forEach(attr['Attributes Table'], function(elem) {
+                        expect(elem).to.contain.all.keys(
+                            'ID#', 'ATTRIBUTE_NAME', 'FLAG', 'VALUE', 'WORST',
+                            'THRESH', 'TYPE', 'UPDATED', 'WHEN_FAILED', 'RAW_VALUE');
+                        expect(elem).property('ID#').to.match(/^\d+$/);
+                        expect(elem).property('ATTRIBUTE_NAME').that.is.a('string');
+                        expect(elem).property('ATTRIBUTE_NAME').match(/[\w_]+/);
+                        expect(elem).property('FLAG').to.match(/^0x[\da-f]{4}$/);
+                        expect(elem).property('VALUE').to.match(/^\d+$/);
+                        expect(elem).property('WORST').to.match(/^\d+$/);
+                        expect(elem).property('THRESH').to.match(/^\d+$/);
+                        expect(elem).property('TYPE').that.is.a('string');
+                        expect(elem).property('UPDATED').that.is.a('string');
+                        expect(elem).property('WHEN_FAILED').to.equal('-');
+                        expect(elem).property('RAW_VALUE').to.match(/^\d+/);
+                    });
+
+                    var cap = smart.Capabilities;
+                    expect(cap).that.is.an('array');
+                    _.forEach(cap, function(elem) {
+                        expect(elem).contain.all.keys('Name', 'Value', 'Annotation');
+                        expect(elem).property('Name').to.match(/^[\w\s]+/);
+                        expect(elem).property('Value').to.match(/^0x[\da-f]+$|^\d+$/);
+                        expect(elem).property('Annotation').is.an('array');
+                        expect(elem).property('Annotation').have.length.least(1);
+                    });
+
+                    var errlog = smart['Error Log'];
+                    expect(errlog).contain.all.keys('Error Log Table', 'Revision');
+                    expect(errlog).property('Revision').to.match(/^\d+$/);
+                    expect(errlog).property('Error Log Table').that.is.an('array');
+
+                    var iden = smart.Identity;
+                    expect(iden).that.is.an('object');
+                    _.forEach(iden, function(val, key) {
+                        expect(val).to.match(/^[\w\s]+/);
+                        expect(key).to.match(/^[\w\s]+/);
+                    });
+
+                    var selTestLog = smart['Selective Self-test Log'];
+                    expect(selTestLog).contain.all.keys('Revision',
+                        'Selective Self-test Log Table');
+                    expect(selTestLog).property('Revision').to.match(/^\d+$/);
+                    expect(selTestLog).property('Selective Self-test Log Table')
+                        .that.is.an('array');
+                    _.forEach(selTestLog['Selective Self-test Log Table'], function(elem) {
+                        expect(elem).contain.all.keys('CURRENT_TEST_STATUS',
+                            'MAX_LBA', 'MIN_LBA', 'SPAN');
+                        expect(elem).property('MAX_LBA').to.match(/^\d+$/);
+                        expect(elem).property('MIN_LBA').to.match(/^\d+$/);
+                        expect(elem).property('SPAN').to.match(/^\d+$/);
+                    });
+
+                    var testLog = smart['Self-test Log'];
+                    expect(testLog).contain.all.keys('Revision', 'Self-test Log Table');
+                    expect(testLog).property('Revision').to.match(/^\d+$/);
+                    expect(testLog).property('Self-test Log Table').that.is.an('array');
+                    _.forEach(testLog['Self-test Log Table'], function(elem) {
+                        expect(elem).contain.all.keys('LBA_of_first_error', 'LifeTime(hours)',
+                            'Num', 'Remaining', 'Status', 'Test_Description');
+                        expect(elem).property('LifeTime(hours)').to.match(/^\d+$/);
+                        expect(elem).property('Num').to.match(/^#\s*\d+$/);
+                        expect(elem).property('Remaining').to.match(/^\d\d\%$/);
+                        expect(elem).property('Test_Description').is.a('string');
+                    });
+
+                    done();
+                })
+                .catch(function (err) {
+                    done(err);
+                });
+            });
+        });
+
     });
 });
