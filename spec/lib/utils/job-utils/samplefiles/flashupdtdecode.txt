@@ -1,0 +1,37 @@
+
+	One Boot Flash Update Utility Version 13.1 Build 5
+	Copyright (c) 2015 Intel Corporation
+
+System BIOS and FW Versions
+
+BIOS Version Information:
+-------------------------
+   BIOS Version:...... S1200BT.86B.02.00.0035
+
+BMC Firmware Version:
+---------------------
+   Op Code:........... 1.13.2825
+   Boot Code:......... 00.03
+
+ME Firmware Version:.. 02.02.00.036
+
+SDR Version:.......... SDR Package 1.14
+
+Baseboard Information:
+----------------------
+   Base Board ID:..... S1200BTL
+   Asset Tag Name:.... To be filled by O.E.M.
+
+System Information:
+----------------------
+   Manufacturer Name:. EMC
+   Product Name:...... ..
+   Version Number:.... FFF
+
+Chassis Information:
+----------------------
+   Manufacturer Name:. ..............................
+   Chassis Type:...... Main Server Chassis
+   Asset Tag Name:.... FC6NS130200083_100-520-152-01_FFF
+
+Successfully Completed

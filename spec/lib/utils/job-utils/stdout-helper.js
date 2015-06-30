@@ -3624,3 +3624,6 @@ module.exports.smart = fs
 	.readFileSync(__dirname+"/samplefiles/smartctrl.txt")
 	.toString();
 
+module.exports.flashupdtdecode = fs
+    .readFileSync(__dirname+"/samplefiles/flashupdtdecode.txt")
+    .toString();

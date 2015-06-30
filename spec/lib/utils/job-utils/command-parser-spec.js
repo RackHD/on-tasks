@@ -969,4 +969,58 @@ describe("Task Parser", function () {
         });
 
     });
+
+    describe("flashupdt parser", function() {
+        var flashupdtSchema = {
+            'BIOS Version Information': 'object',
+            'BMC Firmware Version': 'object',
+            'ME Firmware Version': 'string',
+            'SDR Version': 'string',
+            'Baseboard Information': 'object',
+            'System Information': 'object',
+            'Chassis Information': 'object',
+        };
+
+        it("should parse sudo flashupdt -i", function() {
+            var flashupdtCmd = "sudo /opt/intel/flashupdt -i";
+            var tasks = [
+                {
+                    cmd: flashupdtCmd,
+                    stdout: stdoutMocks.flashupdtdecode,
+                    stderr: '',
+                    error: null
+                }
+            ];
+            return taskParser.parseTasks(tasks)
+            .then(function(result) {
+                // NOTE: While we don't check EVERY attribute, we check one or two
+                // members of each class of attribute types and assume if we got
+                // them right we got all the others right as well.
+
+                var data = result[0].data;
+
+                _.forEach(flashupdtSchema, function(elementType, element) {
+                    expect(data).to.have.property(element).that.is.an(elementType);
+                });
+
+                expect(data).to.not.have.property('Successfully Completed');
+
+                // Assert we can parse key
+                expect(data['SDR Version']).to.equal('SDR Package 1.14');
+
+                // Assert we can handle subkey
+                expect(data['BIOS Version Information']).to.have.property('BIOS Version')
+                    .that.equals('S1200BT.86B.02.00.0035');
+                expect(data['BMC Firmware Version']).to.have.property('Op Code')
+                    .that.equals('1.13.2825');
+                expect(data['BMC Firmware Version']).to.have.property('Boot Code')
+                    .that.equals('00.03');
+
+                // Assert we can handle empty objects
+                expect(data['Chassis Information']).to.have.property('Manufacturer Name')
+                    .that.equals('..............................');
+
+           });
+        });
+    });
 });
