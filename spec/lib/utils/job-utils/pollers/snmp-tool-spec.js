@@ -81,5 +81,24 @@ describe('SnmpTool', function() {
             });
         });
 
+        describe('ping', function () {
+            it('exists', function () {
+                should.exist(instance.ping);
+            });
+            it('is a function', function () {
+                expect(instance.ping).is.a('function');
+            });
+            it('should ping the host', function () {
+                return instance.ping()
+                .then(function(out) {
+                    expect(out).to.be.an('Array');
+                });
+            });
+            it('should fail if host cannot be reached', function () {
+                var getStub = sinon.stub(instance, 'get');
+                getStub.returns(Q.reject());
+                return instance.ping().should.be.rejected;
+            });
+        });
     });
 });
