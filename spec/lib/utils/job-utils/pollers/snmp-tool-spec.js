@@ -96,7 +96,7 @@ describe('SnmpTool', function() {
             });
             it('should fail if host cannot be reached', function () {
                 var getStub = sinon.stub(instance, 'get');
-                getStub.returns(Q.reject());
+                getStub.rejects();
                 return instance.ping().should.be.rejected;
             });
         });
