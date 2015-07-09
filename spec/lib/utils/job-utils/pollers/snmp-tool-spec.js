@@ -89,9 +89,12 @@ describe('SnmpTool', function() {
                 expect(instance.ping).is.a('function');
             });
             it('should ping the host', function () {
+                var getStub = sinon.stub(instance, 'get');
+                getStub.resolves();
                 return instance.ping()
-                .then(function(out) {
-                    expect(out).to.be.an('Array');
+                .then(function() {
+                    expect(instance.get).to.have.been.calledOnce;
+                    getStub.restore();
                 });
             });
             it('should fail if host cannot be reached', function () {
