@@ -23,7 +23,7 @@ describe('SnmpTool', function() {
         //  > DISMAN-EVENT-MIB::sysUpTimeInstance = INTEGER: 345
         agent = snmp.createAgent();
 
-        agent.request({ oid: '.1.3.6.1.2.1.1.3.0', handler: function (prq) {
+        agent.request({ oid: '.1.3.6.1.2.1.1.3.0', handler: function(prq) {
             var val = snmp.data.createData({ type: 'OctetString', value: '345' });
             snmp.provider.readOnlyScalar(prq, val);
         } });
@@ -34,37 +34,37 @@ describe('SnmpTool', function() {
     });
 
     describe('Base', function() {
-        it('should exist', function () {
+        it('should exist', function() {
             should.exist(SnmpTool);
         });
 
-        it('should be a function', function () {
+        it('should be a function', function() {
             SnmpTool.should.be.a('function');
         });
     });
 
-    describe('instance', function () {
+    describe('instance', function() {
         var instance;
 
         before(function() {
             instance = new SnmpTool('127.0.0.1:5588', 'any');
         });
 
-        describe('walk', function () {
-            it('is a function', function () {
+        describe('walk', function() {
+            it('is a function', function() {
                 expect(instance).to.be.a('object');
             });
 
-            it('exists', function () {
+            it('exists', function() {
                 should.exist(instance);
                 should.exist(instance.walk);
             });
 
-            it('is a function', function () {
+            it('is a function', function() {
                 expect(instance.walk).is.a('function');
             });
 
-            it('returns promise of array', function () {
+            it('returns promise of array', function() {
                 return instance.walk('.1.3.6.1.2.1.1.3')
                 .then(function(out) {
                     expect(out).to.be.an('Array');
@@ -72,14 +72,43 @@ describe('SnmpTool', function() {
             });
         });
 
-        describe('get', function () {
-            it('exists', function () {
+        describe('get', function() {
+            it('exists', function() {
                 should.exist(instance.get);
             });
-            it('is a function', function () {
+            it('is a function', function() {
                 expect(instance.get).is.a('function');
             });
         });
 
+        describe('ping', function() {
+            beforeEach(function() {
+                this.sandbox = sinon.sandbox.create();
+            });
+
+            afterEach(function() {
+                this.sandbox.restore();
+            });
+
+            it('exists', function() {
+                should.exist(instance.ping);
+            });
+            it('is a function', function() {
+                expect(instance.ping).is.a('function');
+            });
+            it('should ping the host', function() {
+                var getStub = this.sandbox.stub(instance, 'get');
+                getStub.resolves();
+                return instance.ping()
+                .then(function() {
+                    expect(instance.get).to.have.been.calledOnce;
+                });
+            });
+            it('should fail if host cannot be reached', function() {
+                var getStub = this.sandbox.stub(instance, 'get');
+                getStub.rejects();
+                return instance.ping().should.be.rejected;
+            });
+        });
     });
 });
