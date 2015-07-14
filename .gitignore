@@ -37,3 +37,9 @@ node_modules
 
 # IDE
 .idea
+
+# IDE: WebStorm
+.settings
+
+# Tern configure file
+.tern-project
