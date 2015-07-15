@@ -910,6 +910,12 @@ describe("Task Parser", function () {
                         expect(elem).property('WHEN_FAILED').to.equal('-');
                         expect(elem).property('RAW_VALUE').to.match(/^\d+/);
                     });
+                   // Add test case for Jira MAG-91 issue
+                   expect(attr['Attributes Table'][15]).property('RAW_VALUE').equal('40 (Min/Max 25/47)'); //jshint ignore:line
+                   expect(attr['Attributes Table'][9]).property('RAW_VALUE').equal('1275616690298');
+                   expect(attr['Attributes Table'][23]).property('ID#').equal('242');
+                   expect(attr['Attributes Table'][21]).property('UPDATED').equal('Offline');
+                   expect(attr['Attributes Table'][17]).property('ATTRIBUTE_NAME').equal('Reallocated_Event_Count');//jshint ignore:line
 
                     var cap = smart.Capabilities;
                     expect(cap).that.is.an('array');
@@ -920,6 +926,11 @@ describe("Task Parser", function () {
                         expect(elem).property('Annotation').is.an('array');
                         expect(elem).property('Annotation').have.length.least(1);
                     });
+                    // Add test case for Jira MAG-91 issue
+                    expect(cap[cap.length-1]).property('Name').to.equal('SCT capabilities');
+                    expect(cap[cap.length-1]).property('Value').to.equal('0x003d');
+                    expect(cap[cap.length-1]).property('Annotation').have.length(4);
+                    expect(cap[cap.length-1]).property('Annotation').property(3).to.equal('SCT Data Table supported');//jshint ignore:line
 
                     var errlog = smart['Error Log'];
                     expect(errlog).contain.all.keys('Error Log Table', 'Revision');
