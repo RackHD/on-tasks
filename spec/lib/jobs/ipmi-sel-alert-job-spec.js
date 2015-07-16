@@ -43,7 +43,7 @@ describe(require('path').basename(__filename), function () {
             helper.requireGlob('/lib/services/*.js'),
             helper.require('/lib/utils/job-utils/ipmi-parser.js'),
             helper.require('/lib/jobs/base-job.js'),
-            helper.require('/lib/jobs/ipmi-sel-alert-job.js'),
+            helper.require('/lib/jobs/ipmi-sel-list-alert-job.js'),
             helper.require('/lib/jobs/poller-alert-job.js')
         ]);
 
