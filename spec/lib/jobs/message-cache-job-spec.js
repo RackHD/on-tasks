@@ -107,8 +107,8 @@ describe("Message Cache Job", function () {
         it("should set subscription callbacks for ipmi results", function() {
             this.sandbox.stub(job, 'createSetIpmiCommandResultCallback').returns('fn return stub');
             job._run();
-            expect(job._subscribeIpmiCommandResult).to.have.callCount(4);
-            _.forEach(['sdr', 'power', 'sel', 'uid'], function(command) {
+            expect(job._subscribeIpmiCommandResult.callCount).to.equal(4);
+            _.forEach(['sdr', 'power', 'selInformation', 'selList', 'uid'], function(command) {
                 expect(job._subscribeIpmiCommandResult).to.have.been.calledWith(
                     job.routingKey,
                     command,
@@ -132,7 +132,7 @@ describe("Message Cache Job", function () {
         });
 
         it("should work for setting cache data on ipmi results", function() {
-            _.forEach(['sdr', 'power', 'sel', 'uid'], function(command) {
+            _.forEach(['sdr', 'power', 'selInformation', 'selList', 'uid'], function(command) {
                 var testdata = { test: 'data' };
                 var cb = job.createSetIpmiCommandResultCallback(command);
                 cb.call(job, testdata);

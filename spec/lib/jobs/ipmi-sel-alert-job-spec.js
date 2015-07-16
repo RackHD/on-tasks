@@ -48,7 +48,7 @@ describe(require('path').basename(__filename), function () {
         ]);
 
         context.parser = helper.injector.get('JobUtils.IpmiCommandParser');
-        context.Jobclass = helper.injector.get('Job.Poller.Alert.Ipmi.Sel');
+        context.Jobclass = helper.injector.get('Job.Poller.Alert.Ipmi.SelList');
         var alertJob = new context.Jobclass({}, { graphId: uuid.v4() }, uuid.v4());
         context.determineAlert = alertJob._determineAlert;
     });
@@ -63,7 +63,7 @@ describe(require('path').basename(__filename), function () {
         });
 
         it("should alert on sel data", function() {
-            var parsed = this.parser.parseSelData(selData);
+            var parsed = this.parser.parseSelListData(selData);
             var data = {
                 sel: parsed,
                 alerts: [
@@ -92,7 +92,7 @@ describe(require('path').basename(__filename), function () {
         });
 
         it("should alert on alternative sel data", function() {
-            var parsed = this.parser.parseSelData(selDataAlt);
+            var parsed = this.parser.parseSelListData(selDataAlt);
             var data = {
                 sel: parsed,
                 alerts: [
@@ -122,7 +122,7 @@ describe(require('path').basename(__filename), function () {
         });
 
         it("should alert on sel data with regexes", function() {
-            var parsed = this.parser.parseSelData(selData);
+            var parsed = this.parser.parseSelListData(selData);
             var data = {
                 sel: parsed,
                 alerts: [
@@ -142,7 +142,7 @@ describe(require('path').basename(__filename), function () {
             var _selData = _.cloneDeep(selData);
             _selData += "7,10/26/2014,20:17:55,Power Supply #0x51,Fully Redundant,Deasserted\n";
             _selData += "8,10/26/2014,20:17:59,Power Supply #0x51,Fully Redundant,Asserted\n";
-            var parsed = this.parser.parseSelData(_selData);
+            var parsed = this.parser.parseSelListData(_selData);
             var data = {
                 sel: parsed,
                 alerts: [

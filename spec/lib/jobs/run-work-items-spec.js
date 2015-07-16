@@ -48,7 +48,7 @@ describe("Job.Catalog.RunWorkItem", function () {
             id: 'bc7dab7e8fb7d6abf8e7d6ad',
             name: 'Pollers.IPMI',
             config: {
-                command: 'sel',
+                command: 'selList',
                 ip: '1.2.3.4',
                 user: 'myuser',
                 password: 'mypass'
@@ -65,7 +65,7 @@ describe("Job.Catalog.RunWorkItem", function () {
         process.nextTick(function () {
             try {
                 expect(taskProtocol.publishRunIpmiCommand).to.have.been.calledOnce;
-                expect(taskProtocol.publishRunIpmiCommand.firstCall.args[1]).to.equal('sel');
+                expect(taskProtocol.publishRunIpmiCommand.firstCall.args[1]).to.equal('selList');
                 expect(taskProtocol.publishRunIpmiCommand.firstCall.args[2])
                     .to.have.property('ip', '1.2.3.4');
                 expect(taskProtocol.publishRunIpmiCommand.firstCall.args[2])
