@@ -636,6 +636,39 @@ describe("Task Parser", function () {
                 });
             });
 
+            it("should parse ipmitool sel", function() {
+                var ipmiCmd = 'sudo ipmitool sel';
+                var tasks = [
+                    {
+                        cmd: ipmiCmd,
+                        stdout: stdoutMocks.ipmiSelOutput,
+                        stderr: '',
+                        error: null
+                    }
+                ];
+
+                return taskParser.parseTasks(tasks)
+                .spread(function(result) {
+                    expect(result.source).to.equal('ipmi-sel');
+                    expect(result.store).to.equal(true);
+                    expect(_.keys(result.data).length).to.equal(13);
+                    expect(result.data.Version).to.equal('1.5 (v1.5, v2 compliant)');
+                    expect(result.data.Entries).to.equal('545');
+                    expect(result.data['Free Space']).to.equal('6552 bytes');
+                    expect(result.data['Percent Used']).to.equal('57%');
+                    expect(result.data['Last Add Time']).to.equal('07/15/2015 22:35:35');
+                    expect(result.data['Last Del Time']).to.equal('Not Available');
+                    expect(result.data.Overflow).to.equal('false');
+                    expect(result.data['Supported Cmds']).to.equal(
+                        "'Delete' 'Partial Add' 'Reserve' 'Get Alloc Info'");
+                    expect(result.data['# of Alloc Units']).to.equal('909');
+                    expect(result.data['Alloc Unit Size']).to.equal('18');
+                    expect(result.data['# Free Units']).to.equal('364');
+                    expect(result.data['Largest Free Blk']).to.equal('364');
+                    expect(result.data['Max Record Size']).to.equal('1');
+                });
+            });
+
             it("should parse ipmitool sel list -c", function () {
                 var ipmiCmd = 'sudo ipmitool sel list -c';
                 var tasks = [
