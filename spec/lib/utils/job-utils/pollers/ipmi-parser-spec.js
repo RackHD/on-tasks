@@ -115,5 +115,12 @@ describe("ipmi-parser", function() {
             expect(samplesObj).to.have.deep.property('CMC_LINK_BRD_STA.States Asserted')
                 .that.equals('');
         });
+
+        it('should parse ipmitool uid LED status raw data output', function() {
+            expect(parser.parseUidData("21 10 60 10")).to.equal(2); //uid on
+            expect(parser.parseUidData("01 00 40 70")).to.equal(0); //uid off
+            expect(parser.parseUidData("21 10 50 10")).to.equal(1);	//uid temp on
+            expect(parser.parseUidData("bad data")).to.equal(-1);	//uid unknown bad data
+        });
     });
 });
