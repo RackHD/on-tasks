@@ -92,7 +92,6 @@ describe("ipmi-parser", function() {
                     expect(vrdimm).to.have.property(key);
                 } catch (e) {
                     key, vrdimm;
-                    debugger;
                 }
             });
 
