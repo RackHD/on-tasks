@@ -28,12 +28,19 @@ describe(require('path').basename(__filename), function () {
     });
 
     describe("snmp-job", function() {
+        var Snmptool;
         var testEmitter = new events.EventEmitter();
 
         beforeEach(function() {
+            this.sandbox = sinon.sandbox.create();
             var graphId = uuid.v4();
             this.snmp = new this.Jobclass({}, { graphId: graphId }, uuid.v4());
+            Snmptool = helper.injector.get('JobUtils.Snmptool');
             expect(this.snmp.routingKey).to.equal(graphId);
+        });
+
+        afterEach(function() {
+            this.sandbox.restore();
         });
 
         it("should have a _run() method", function() {
@@ -46,7 +53,8 @@ describe(require('path').basename(__filename), function () {
 
         it("should listen for snmp command requests", function(done) {
             var self = this;
-            self.snmp.collectHostSnmp = sinon.stub().resolves();
+            this.sandbox.stub(Snmptool.prototype, 'collectHostSnmp');
+            Snmptool.prototype.collectHostSnmp.resolves();
             self.snmp._publishSnmpCommandResult = sinon.stub();
             self.snmp._subscribeRunSnmpCommand = function(routingKey, callback) {
                 testEmitter.on('test-subscribe-snmp-command', function(config) {
@@ -62,7 +70,7 @@ describe(require('path').basename(__filename), function () {
 
             process.nextTick(function() {
                 try {
-                    expect(self.snmp.collectHostSnmp.callCount).to.equal(100);
+                    expect(Snmptool.prototype.collectHostSnmp.callCount).to.equal(100);
                     expect(self.snmp._publishSnmpCommandResult.callCount).to.equal(100);
                     expect(self.snmp._publishSnmpCommandResult)
                         .to.have.been.calledWith(self.snmp.routingKey);

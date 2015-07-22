@@ -11,7 +11,8 @@ describe('SnmpTool', function() {
 
     before('snmp tool before', function() {
         helper.setupInjector([
-            helper.require('/lib/utils/job-utils/net-snmp-tool')
+            helper.require('/lib/utils/job-utils/net-snmp-tool'),
+            helper.require('/lib/utils/job-utils/net-snmp-parser')
         ]);
 
         // setting up a snmp agent to respond on this one oid (faking system up time
