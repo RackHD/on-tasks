@@ -65,10 +65,10 @@ describe('SnmpTool', function() {
                 expect(instance.walk).is.a('function');
             });
 
-            it('returns promise of array', function() {
+            it('returns ChildProcess output object', function() {
                 return instance.walk('.1.3.6.1.2.1.1.3')
                 .then(function(out) {
-                    expect(out).to.be.an('Array');
+                    expect(out).to.have.property('stdout').that.is.a('string');
                 });
             });
         });
