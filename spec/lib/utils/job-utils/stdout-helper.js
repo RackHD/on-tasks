@@ -3627,3 +3627,7 @@ module.exports.smart = fs
 module.exports.flashupdtdecode = fs
     .readFileSync(__dirname+"/samplefiles/flashupdtdecode.txt")
     .toString();
+
+module.exports.snmp = fs
+    .readFileSync(__dirname+"/samplefiles/snmp.txt")
+    .toString();

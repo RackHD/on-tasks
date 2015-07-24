@@ -111,5 +111,87 @@ describe('SnmpTool', function() {
                 return instance.ping().should.be.rejected;
             });
         });
+
+        describe('collectHostSnmp', function() {
+            var results;
+            before(function() {
+                results = {
+                    stdout: 'LLDP-MIB::lldpMessageTxInterval.0 30 seconds\n' +
+                            'LLDP-MIB::lldpMessageTxHoldMultiplier.0 4\n' +
+                            'LLDP-MIB::lldpReinitDelay.0 2 seconds\n' +
+                            'LLDP-MIB::lldpTxDelay.0 2 seconds\n' +
+                            'LLDP-MIB::lldpNotificationInterval.0 5 seconds\n'
+                };
+            });
+
+            beforeEach(function() {
+                this.sandbox = sinon.sandbox.create();
+            });
+
+            afterEach(function() {
+                this.sandbox.restore();
+            });
+
+            it('should run an snmpwalk', function() {
+                this.sandbox.stub(instance, 'walk').resolves(results);
+
+                return instance.collectHostSnmp(['test'], {})
+                .then(function(out) {
+                    expect(out).to.have.length(1);
+                    expect(out[0]).to.have.property('source').that.equals('test');
+                    expect(out[0]).to.have.property('values').that.deep.equals({
+                        'LLDP-MIB::lldpMessageTxInterval.0': '30 seconds',
+                        'LLDP-MIB::lldpTxDelay.0': '2 seconds',
+                        'LLDP-MIB::lldpMessageTxHoldMultiplier.0': '4',
+                        'LLDP-MIB::lldpReinitDelay.0': '2 seconds',
+                        'LLDP-MIB::lldpNotificationInterval.0': '5 seconds'
+                    });
+                });
+            });
+
+            it('should run an snmpwalk for multiple oids', function() {
+                this.sandbox.stub(instance, 'walk').resolves(results);
+
+                return instance.collectHostSnmp(['test0', 'test1', 'test2'], {})
+                .then(function(out) {
+                    expect(out).to.have.length(3);
+                    expect(out[0]).to.have.property('source').that.equals('test0');
+                    expect(out[1]).to.have.property('source').that.equals('test1');
+                    expect(out[2]).to.have.property('source').that.equals('test2');
+                    _.forEach(out, function(el) {
+                        expect(el).to.have.property('values').that.deep.equals({
+                            'LLDP-MIB::lldpMessageTxInterval.0': '30 seconds',
+                            'LLDP-MIB::lldpTxDelay.0': '2 seconds',
+                            'LLDP-MIB::lldpMessageTxHoldMultiplier.0': '4',
+                            'LLDP-MIB::lldpReinitDelay.0': '2 seconds',
+                            'LLDP-MIB::lldpNotificationInterval.0': '5 seconds'
+                        });
+                    });
+                });
+            });
+
+            it('should run a custom supported snmp query method', function() {
+                this.sandbox.stub(instance, 'get').resolves(results);
+
+                return instance.collectHostSnmp(['test'], { snmpQueryType: 'get' })
+                .then(function() {
+                    expect(instance.get).to.have.been.calledOnce;
+                });
+            });
+
+            it('should run bulk queries with all oids at once and maxRepetitions set', function() {
+                this.sandbox.stub(instance, 'bulkget').resolves(results);
+
+                return instance.collectHostSnmp(
+                    ['test0', 'test1', 'test2'],
+                    { snmpQueryType: 'bulkget', maxRepetitions: 25 }
+                )
+                .then(function() {
+                    expect(instance.bulkget).to.have.been.calledOnce;
+                    expect(instance.bulkget.firstCall.args[0]).to.equal('test0 test1 test2');
+                    expect(instance.bulkget.firstCall.args[1]).to.equal(25);
+                });
+            });
+        });
     });
 });
