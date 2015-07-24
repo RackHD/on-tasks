@@ -167,13 +167,11 @@ describe("Base Job", function () {
                     funcName !== '_subscribeActiveTaskExists') {
 
                     var stub = sinon.stub();
-                    stub.bind = sinon.stub();
+                    stub.call = sinon.stub();
                     // Call all subscriber methods with appropriate arity, and
                     // the callback as the last argument
                     var args = _.range(job[funcName].length - 1);
                     job[funcName].apply(job, args.concat([stub]));
-                    // Assert that we always bind the callback
-                    expect(stub.bind).to.have.been.calledWith(job);
                     numSubscriberMethods += 1;
                 }
             });

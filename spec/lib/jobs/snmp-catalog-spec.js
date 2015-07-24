@@ -9,7 +9,7 @@ describe('Catalog Snmp Job', function () {
         aNodeId = uuid.v4(),
         snmpData = [{
             source: 'theSource',
-            value:  {stuff: 'stuff'}
+            values:  {stuff: 'stuff'}
         }];
 
     before(function() {
@@ -45,7 +45,7 @@ describe('Catalog Snmp Job', function () {
     it('should subscribe to snmpCommandResult', function() {
         this.sandbox.stub(job, '_subscribeSnmpCommandResult').callsArgWith(
                 1,
-                {result: Promise.resolve(snmpData)}
+                { result: Promise.resolve(snmpData) }
             );
         mockWaterline.catalogs.create = function() {};
         this.sandbox.stub(mockWaterline.catalogs, 'create').resolves();
@@ -62,7 +62,7 @@ describe('Catalog Snmp Job', function () {
     it('should create a catalog via waterline', function() {
         this.sandbox.stub(job, '_subscribeSnmpCommandResult').callsArgWith(
                 1,
-                {result: Promise.resolve(snmpData)}
+                { result: Promise.resolve(snmpData) }
         );
         mockWaterline.catalogs.create = function() {};
         this.sandbox.stub(mockWaterline.catalogs, 'create').resolves();
@@ -72,8 +72,8 @@ describe('Catalog Snmp Job', function () {
         .then(function() {
             expect(mockWaterline.catalogs.create).to.have.been.calledWith({
                 node: aNodeId,
-                source: 'snmp-' + snmpData[0].source,
-                data: snmpData[0].value
+                source: 'snmp-theSource',
+                data: {stuff: 'stuff'}
             });
         });
     });

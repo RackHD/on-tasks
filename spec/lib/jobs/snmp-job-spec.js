@@ -65,7 +65,7 @@ describe(require('path').basename(__filename), function () {
             self.snmp._run();
 
             _.forEach(_.range(100), function() {
-                testEmitter.emit('test-subscribe-snmp-command', {});
+                testEmitter.emit('test-subscribe-snmp-command', { config: {} });
             });
 
             process.nextTick(function() {

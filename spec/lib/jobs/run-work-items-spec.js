@@ -159,9 +159,9 @@ describe("Job.Catalog.RunWorkItem", function () {
         process.nextTick(function () {
             try {
                 expect(taskProtocol.publishRunSnmpCommand).to.have.been.calledOnce;
-                expect(taskProtocol.publishRunSnmpCommand.firstCall.args[1])
+                expect(taskProtocol.publishRunSnmpCommand.firstCall.args[1].config)
                     .to.have.property('ip', '1.2.3.4');
-                expect(taskProtocol.publishRunSnmpCommand.firstCall.args[1])
+                expect(taskProtocol.publishRunSnmpCommand.firstCall.args[1].config)
                     .to.have.property('communityString', 'hello');
 
                 expect(waterline.workitems.setSucceeded).to.have.been.calledOnce;
