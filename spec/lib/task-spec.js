@@ -203,31 +203,26 @@ describe("Task", function () {
         it("should render api and server values", function() {
             Task.configCache = {
                 testConfigValue: 'test config value',
-                server: '10.1.1.1',
-                httpBindPort: '80',
-                httpsBindPort: '443',
+                apiServerAddress: '10.1.1.1',
+                apiServerPort: '80'
             };
 
-            var server = 'http://' + Task.configCache.server + ':' + Task.configCache.httpBindPort;
-            var httpsServer =
-                'https://' + Task.configCache.server + ':' + Task.configCache.httpsBindPort;
+            var server = 'http://%s:%s'.format(
+                Task.configCache.apiServerAddress,
+                Task.configCache.apiServerPort
+            );
+
             definition.options = {
                 server: '{{ api.server }}',
-                httpsServer: '{{ api.httpsServer }}',
                 baseRoute: '{{ api.base }}',
                 filesRoute: '{{ api.files }}',
-                baseRouteHttps: '{{ api.baseHttps }}',
-                filesRouteHttps: '{{ api.filesHttps }}',
                 testConfigValue: 'test: {{ server.testConfigValue }}'
             };
             var task = Task.create(definition, {}, {});
 
             expect(task.options.server).to.equal(server);
-            expect(task.options.httpsServer).to.equal(httpsServer);
             expect(task.options.baseRoute).to.equal(server + '/api/current');
-            expect(task.options.baseRouteHttps).to.equal(httpsServer + '/api/current');
             expect(task.options.filesRoute).to.equal(server + '/api/current/files');
-            expect(task.options.filesRouteHttps).to.equal(httpsServer + '/api/current/files');
             expect(task.options.testConfigValue)
                 .to.equal('test: ' + Task.configCache.testConfigValue);
         });
