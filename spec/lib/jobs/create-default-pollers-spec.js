@@ -6,7 +6,8 @@
 describe("Job.Pollers.CreateDefault", function () {
     var waterline = {};
     var taskProtocol = {};
-    var CleanWorkItems;
+    var CreateDefaultPollers;
+    var pollers;
     var Q;
     var uuid;
 
@@ -20,29 +21,42 @@ describe("Job.Pollers.CreateDefault", function () {
             helper.di.simpleWrapper(taskProtocol, 'Protocol.Task')
         ]);
 
-        CleanWorkItems = helper.injector.get('Job.Pollers.CreateDefault');
+        CreateDefaultPollers = helper.injector.get('Job.Pollers.CreateDefault');
         Q = helper.injector.get('Q');
         uuid = helper.injector.get('uuid');
     });
 
     beforeEach(function () {
         waterline.workitems = {
-            createIpmiPollers: sinon.stub().returns(Q.resolve())
+            create: sinon.stub().resolves()
         };
         waterline.catalogs = {
-            findMostRecent: sinon.stub().returns(Q.resolve({
+            findMostRecent: sinon.stub().resolves({
                 id: 'bc7dab7e8fb7d6abf8e7d6a1'
-            }))
+            })
         };
         taskProtocol.subscribeActiveTaskExists = sinon.stub().returns(Q.resolve({
             dispose: sinon.stub()
         }));
+        pollers = [
+            {
+                "type": "ipmi",
+                "pollInterval": 60000,
+                "config": {
+                    "command": "power"
+                }
+            }
+        ];
     });
 
     it('should create pollers for a job with options.nodeId', function () {
         var nodeId = 'bc7dab7e8fb7d6abf8e7d6ad';
 
-        var job = new CleanWorkItems({ nodeId: nodeId }, { graphId: uuid.v4() }, uuid.v4());
+        var job = new CreateDefaultPollers(
+            { nodeId: nodeId, pollers: pollers },
+            { graphId: uuid.v4() },
+            uuid.v4()
+        );
 
         return job.run()
         .then(function() {
@@ -51,15 +65,19 @@ describe("Job.Pollers.CreateDefault", function () {
                 .to.have.property('node', nodeId);
             expect(waterline.catalogs.findMostRecent.firstCall.args[0])
                 .to.have.property('source', 'bmc');
-            expect(waterline.workitems.createIpmiPollers).to.have.been.calledOnce;
-            expect(waterline.workitems.createIpmiPollers).to.have.been.calledWith(nodeId);
+            expect(waterline.workitems.create).to.have.been.calledOnce;
+            expect(waterline.workitems.create).to.have.been.calledWith(pollers[0]);
         });
     });
 
     it('should create pollers for a job with context.target', function () {
         var nodeId = 'bc7dab7e8fb7d6abf8e7d6af';
 
-        var job = new CleanWorkItems({}, { target: nodeId, graphId: uuid.v4() }, uuid.v4());
+        var job = new CreateDefaultPollers(
+            { pollers: pollers },
+            { target: nodeId, graphId: uuid.v4() },
+            uuid.v4()
+        );
 
         return job.run()
         .then(function() {
@@ -68,16 +86,21 @@ describe("Job.Pollers.CreateDefault", function () {
                 .to.have.property('node', nodeId);
             expect(waterline.catalogs.findMostRecent.firstCall.args[0])
                 .to.have.property('source', 'bmc');
-            expect(waterline.workitems.createIpmiPollers).to.have.been.calledOnce;
-            expect(waterline.workitems.createIpmiPollers).to.have.been.calledWith(nodeId);
+            expect(waterline.workitems.create).to.have.been.calledOnce;
+            expect(waterline.workitems.create).to.have.been.calledWith(pollers[0]);
         });
     });
 
     it('should not create pollers when bmc catalog does not exist', function () {
         var nodeId = 'bc7dab7e8fb7d6abf8e7d6af';
 
-        waterline.catalogs.findMostRecent.returns(Q.resolve());
-        var job = new CleanWorkItems({}, { target: nodeId, graphId: uuid.v4() }, uuid.v4());
+        waterline.catalogs.findMostRecent.resolves();
+
+        var job = new CreateDefaultPollers(
+            { pollers: pollers },
+            { target: nodeId, graphId: uuid.v4() },
+            uuid.v4()
+        );
 
         return job.run()
         .then(function() {
@@ -86,7 +109,41 @@ describe("Job.Pollers.CreateDefault", function () {
                 .to.have.property('node', nodeId);
             expect(waterline.catalogs.findMostRecent.firstCall.args[0])
                 .to.have.property('source', 'bmc');
-            expect(waterline.workitems.createIpmiPollers).to.not.have.been.called;
+            expect(waterline.workitems.create).to.not.have.been.called;
+        });
+    });
+
+    it('should create multiple pollers', function () {
+        var nodeId = 'bc7dab7e8fb7d6abf8e7d6ad';
+
+        pollers.push({
+            "type": "snmp",
+            "pollInterval": 60000,
+            "config": {
+                "metric": "snmp-interface-bandwidth-utilization"
+            }
+        });
+
+        var job = new CreateDefaultPollers(
+            { nodeId: nodeId, pollers: pollers },
+            { graphId: uuid.v4() },
+            uuid.v4()
+        );
+
+        return job.run()
+        .then(function() {
+            expect(waterline.catalogs.findMostRecent).to.have.been.calledTwice;
+            expect(waterline.catalogs.findMostRecent.firstCall.args[0])
+                .to.have.property('node', nodeId);
+            expect(waterline.catalogs.findMostRecent.firstCall.args[0])
+                .to.have.property('source', 'bmc');
+            expect(waterline.catalogs.findMostRecent.secondCall.args[0])
+                .to.have.property('node', nodeId);
+            expect(waterline.catalogs.findMostRecent.secondCall.args[0])
+                .to.have.property('source', 'snmp-1');
+            expect(waterline.workitems.create).to.have.been.calledTwice;
+            expect(waterline.workitems.create).to.have.been.calledWith(pollers[0]);
+            expect(waterline.workitems.create).to.have.been.calledWith(pollers[1]);
         });
     });
 });
