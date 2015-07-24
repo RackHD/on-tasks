@@ -179,7 +179,7 @@ describe('SnmpTool', function() {
                 });
             });
 
-            it('should run bulk queries with all oids at once and maxRepetitions set', function() {
+            it('should run bulkget queries with combined oids and maxRepetitions set', function() {
                 this.sandbox.stub(instance, 'bulkget').resolves(results);
 
                 return instance.collectHostSnmp(
@@ -190,6 +190,20 @@ describe('SnmpTool', function() {
                     expect(instance.bulkget).to.have.been.calledOnce;
                     expect(instance.bulkget.firstCall.args[0]).to.equal('test0 test1 test2');
                     expect(instance.bulkget.firstCall.args[1]).to.equal(25);
+                });
+            });
+
+            it('should run bulkwalk queries with combined oids and maxRepetitions set', function() {
+                this.sandbox.stub(instance, 'bulkwalk').resolves(results);
+
+                return instance.collectHostSnmp(
+                    ['test0', 'test1', 'test2'],
+                    { snmpQueryType: 'bulkwalk', maxRepetitions: 25 }
+                )
+                .then(function() {
+                    expect(instance.bulkwalk).to.have.been.calledOnce;
+                    expect(instance.bulkwalk.firstCall.args[0]).to.equal('test0 test1 test2');
+                    expect(instance.bulkwalk.firstCall.args[1]).to.equal(25);
                 });
             });
         });
