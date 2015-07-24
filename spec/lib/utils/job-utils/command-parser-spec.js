@@ -641,7 +641,7 @@ describe("Task Parser", function () {
                 var tasks = [
                     {
                         cmd: ipmiCmd,
-                        stdout: stdoutMocks.ipmiSelOutput,
+                        stdout: stdoutMocks.ipmiSelInformationOutput,
                         stderr: '',
                         error: null
                     }
@@ -649,7 +649,7 @@ describe("Task Parser", function () {
 
                 return taskParser.parseTasks(tasks)
                 .spread(function(result) {
-                    expect(result.source).to.equal('ipmi-sel');
+                    expect(result.source).to.equal('ipmi-sel-information');
                     expect(result.store).to.equal(true);
                     expect(_.keys(result.data).length).to.equal(13);
                     expect(result.data.Version).to.equal('1.5 (v1.5, v2 compliant)');
@@ -674,7 +674,7 @@ describe("Task Parser", function () {
                 var tasks = [
                     {
                         cmd: ipmiCmd,
-                        stdout: stdoutMocks.ipmiSelListOutput,
+                        stdout: stdoutMocks.ipmiSelOutput,
                         stderr: '',
                         error: null
                     }
