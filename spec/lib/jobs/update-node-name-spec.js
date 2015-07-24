@@ -23,7 +23,7 @@ describe('Name Node Job', function () {
         },
         catalog = {
             data: {
-                'SNMPv2-MIB::sysDescr-0': 'stuff'
+                'SNMPv2-MIB::sysDescr_0': 'stuff'
             }
         };
 
