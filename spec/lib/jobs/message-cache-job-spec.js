@@ -136,8 +136,8 @@ describe("Message Cache Job", function () {
                 var testdata = { test: 'data' };
                 var cb = job.createSetIpmiCommandResultCallback(command);
                 cb.call(job, testdata);
-                expect(job.cacheGet('unknown.' + command)).to.have.length(1);
-                expect(job.cacheGet('unknown.' + command)[0])
+                expect(job.cacheGet('unknown.ipmi.' + command)).to.have.length(1);
+                expect(job.cacheGet('unknown.ipmi.' + command)[0])
                     .to.have.property('test').that.equals('data');
                 testdata.workItemId = 'testid.' + command;
                 cb.call(job, testdata);
@@ -159,6 +159,22 @@ describe("Message Cache Job", function () {
             expect(job.cacheGet(testdata.workItemId)).to.have.length(1);
             expect(job.cacheGet(testdata.workItemId)[0])
                 .to.have.property('test').that.equals('data');
+        });
+
+        it("should work for setting cache data on metric results", function() {
+            _.forEach(['test-metric-1', 'test-metric-2', 'test-metric-3'], function(metric) {
+                var testdata = { test: 'data' };
+                job.setMetricResultCallback(testdata, metric);
+                expect(job.cacheGet('unknown.metric.' + metric)).to.have.length(1);
+                expect(job.cacheGet('unknown.metric.' + metric)[0])
+                    .to.have.property('test').that.equals('data');
+
+                testdata.workItemId = 'testid.' + metric;
+                job.setMetricResultCallback(testdata, metric);
+                expect(job.cacheGet(testdata.workItemId)).to.have.length(1);
+                expect(job.cacheGet(testdata.workItemId)[0])
+                    .to.have.property('test').that.equals('data');
+            });
         });
 
         it("should work for poller cache requests", function() {
