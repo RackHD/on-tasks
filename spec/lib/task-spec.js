@@ -204,13 +204,13 @@ describe("Task", function () {
             Task.configCache = {
                 testConfigValue: 'test config value',
                 server: '10.1.1.1',
-                httpPort: '80',
-                httpsPort: '443',
+                httpBindPort: '80',
+                httpsBindPort: '443',
             };
 
-            var server = 'http://' + Task.configCache.server + ':' + Task.configCache.httpPort;
+            var server = 'http://' + Task.configCache.server + ':' + Task.configCache.httpBindPort;
             var httpsServer =
-                'https://' + Task.configCache.server + ':' + Task.configCache.httpsPort;
+                'https://' + Task.configCache.server + ':' + Task.configCache.httpsBindPort;
             definition.options = {
                 server: '{{ api.server }}',
                 httpsServer: '{{ api.httpsServer }}',
