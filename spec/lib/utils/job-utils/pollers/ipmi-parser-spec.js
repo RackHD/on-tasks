@@ -116,11 +116,19 @@ describe("ipmi-parser", function() {
                 .that.equals('');
         });
 
-        it('should parse ipmitool uid LED status raw data output', function() {
-            expect(parser.parseUidData("21 10 60 10")).to.equal(2); //uid on
-            expect(parser.parseUidData("01 00 40 70")).to.equal(0); //uid off
-            expect(parser.parseUidData("21 10 50 10")).to.equal(1);	//uid temp on
-            expect(parser.parseUidData("bad data")).to.equal(-1);	//uid unknown bad data
+        it('should parse ipmitool chassis status raw data output', function() {
+            var chassisStatus = parser.parseChassisData("21 10 60 10");
+            expect(chassisStatus).to.have.property("uid", "On");
+            expect(chassisStatus).to.have.property("power", true);
+            chassisStatus = parser.parseChassisData("01 00 40 70");
+            expect(chassisStatus).to.have.property("uid", "Off");
+            expect(chassisStatus).to.have.property("power", true);
+            chassisStatus = parser.parseChassisData("20 10 50 10");
+            expect(chassisStatus).to.have.property("uid", "Temporary On");
+            expect(chassisStatus).to.have.property("power", false);
+            expect(function (){
+                parser.parseChassisData("bad data");
+            }).to.throw(/Invalid chassis status output :/);
         });
     });
 });
