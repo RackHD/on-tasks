@@ -91,7 +91,9 @@ var base = {
                             expect(service.run.callCount).to.be.above(0);
                         }
                         _.forEach(_.range(service.run.callCount), function(call) {
-                            var args = service.run.firstCall.args[call];
+                            var args = service.run.getCall(call).args[0];
+                            debugger;
+                            console.log('Ted unit test: args.command= ' + args.command + " args.args=" + args.args + service.constructor.name);
                             expect(args).to.be.an('object');
                             expect(args).to.have.property('command').that.is.a('string');
                             expect(args).to.have.property('args').that.is.an('array');
