@@ -117,17 +117,17 @@ describe("ipmi-parser", function() {
         });
 
         it('should parse ipmitool chassis status raw data output', function() {
-            var chassisStatus = parser.parseChissisData("21 10 60 10");
+            var chassisStatus = parser.parseChassisData("21 10 60 10");
             expect(chassisStatus).to.have.property("uid", "On");
             expect(chassisStatus).to.have.property("power", true);
-            chassisStatus = parser.parseChissisData("01 00 40 70");
+            chassisStatus = parser.parseChassisData("01 00 40 70");
             expect(chassisStatus).to.have.property("uid", "Off");
             expect(chassisStatus).to.have.property("power", true);
-            chassisStatus = parser.parseChissisData("20 10 50 10");
+            chassisStatus = parser.parseChassisData("20 10 50 10");
             expect(chassisStatus).to.have.property("uid", "Temporary On");
             expect(chassisStatus).to.have.property("power", false);
             expect(function (){
-                parser.parseChissisData("bad data");
+                parser.parseChassisData("bad data");
             }).to.throw(/Invalid chassis status output :/);
         });
     });
