@@ -68,9 +68,10 @@ describe(require('path').basename(__filename), function () {
             expect(this.snmp).to.have.property('_subscribeRunSnmpCommand').with.length(2);
         });
 
-        it("should listen for snmp command requests", function(done) {
+        it("should listen for snmp command requests but limit concurrent requests", function(done) {
             var self = this;
             this.sandbox.stub(Snmptool.prototype, 'collectHostSnmp');
+            this.sandbox.spy(this.snmp, 'concurrentRequests');
             Snmptool.prototype.collectHostSnmp.resolves();
             self.snmp._publishSnmpCommandResult = sinon.stub();
             self.snmp._subscribeRunSnmpCommand = function(routingKey, callback) {
@@ -95,8 +96,11 @@ describe(require('path').basename(__filename), function () {
 
             process.nextTick(function() {
                 try {
-                    expect(Snmptool.prototype.collectHostSnmp.callCount).to.equal(100);
-                    expect(self.snmp._publishSnmpCommandResult.callCount).to.equal(100);
+                    expect(self.snmp.concurrentRequests.callCount).to.equal(100);
+                    expect(Snmptool.prototype.collectHostSnmp.callCount).to
+                    .equal(self.snmp.maxConcurrent);
+                    expect(self.snmp._publishSnmpCommandResult.callCount).to
+                    .equal(self.snmp.maxConcurrent);
                     expect(self.snmp._publishSnmpCommandResult)
                         .to.have.been.calledWith(self.snmp.routingKey);
                     done();
@@ -106,9 +110,11 @@ describe(require('path').basename(__filename), function () {
             });
         });
 
-        it("should listen for snmp metric command requests", function(done) {
+        it("should listen for snmp metric command requests " +
+        "but limit concurrent requests", function(done) {
             var self = this;
             this.sandbox.stub(self.snmp, '_collectMetricData');
+            this.sandbox.spy(self.snmp, 'concurrentRequests');
             self.snmp._collectMetricData.resolves();
             self.snmp._publishMetricResult = sinon.stub();
             self.snmp._subscribeRunSnmpCommand = function(routingKey, callback) {
@@ -133,8 +139,11 @@ describe(require('path').basename(__filename), function () {
 
             process.nextTick(function() {
                 try {
-                    expect(self.snmp._collectMetricData.callCount).to.equal(100);
-                    expect(self.snmp._publishMetricResult.callCount).to.equal(100);
+                    expect(self.snmp.concurrentRequests.callCount).to.equal(100);
+                    expect(self.snmp._collectMetricData.callCount).to
+                    .equal(self.snmp.maxConcurrent);
+                    expect(self.snmp._publishMetricResult.callCount).to
+                    .equal(self.snmp.maxConcurrent);
                     expect(self.snmp._publishMetricResult)
                         .to.have.been.calledWith(self.snmp.routingKey);
                     done();
