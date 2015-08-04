@@ -3,7 +3,7 @@
 
 'use strict';
 
-describe('Ipmi Catalog Job', function () {
+describe('LocalIpmi Catalog Job', function () {
     var IpmiCatalogJob;
     var Promise;
     var uuid;
@@ -23,7 +23,7 @@ describe('Ipmi Catalog Job', function () {
         );
 
         Promise = helper.injector.get('Promise');
-        IpmiCatalogJob = helper.injector.get('Job.Ipmi.Catalog');
+        IpmiCatalogJob = helper.injector.get('Job.LocalIpmi.Catalog');
         uuid = helper.injector.get('uuid');
     });
 
@@ -136,7 +136,7 @@ describe('Ipmi Catalog Job', function () {
             ]);
         });
 
-        it('should run command and process response', function(done) {
+        it('should run command and process response', function() {
             var node = {
                 id: 'bc7dab7e8fb7d6abf8e7d6ac',
                 obmSettings: [
@@ -160,10 +160,6 @@ describe('Ipmi Catalog Job', function () {
             .then(function() {
                 expect(job.runCommand).to.have.been.called;
                 expect(job.handleResponse).to.have.been.called;
-                done();
-            })
-            .catch(function(e) {
-                done(e);
             });
         });
 
@@ -203,7 +199,7 @@ describe('Ipmi Catalog Job', function () {
         });
 
         it('should create catalog entries for response data', function() {
-            parser.parseTasks.returns(Promise.all([
+            parser.parseTasks.resolves([
                 {
                     store: true,
                     source: 'test-source-1',
@@ -223,7 +219,7 @@ describe('Ipmi Catalog Job', function () {
                     error: {},
                     source: 'test-error-source'
                 }
-            ]));
+            ]);
             
             return job.handleResponse([])
             .then(function() {
