@@ -34,6 +34,9 @@ describe('PanduitObmService', function() {
 
         // Run assertions that we typically run over the base interface methods
         // against these extra, panduit-specific methods
-        base.runInterfaceTestCases([]);     //no need to add additional Interface, as powerOn/powerOff/powerStatus/reboot are already defined in public interface.
+        
+        //no need to add additional Interface, as powerOn/powerOff/powerStatus/reboot 
+        //are already defined in public interface.
+        base.runInterfaceTestCases([]);         
     });
 });
