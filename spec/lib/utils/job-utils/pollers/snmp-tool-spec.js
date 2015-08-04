@@ -170,6 +170,27 @@ describe('SnmpTool', function() {
                 });
             });
 
+            it('should run an snmpwalk for multiple oids with isSequential true', function() {
+                this.sandbox.stub(instance, 'walk').resolves(results);
+
+                return instance.collectHostSnmp(['test0', 'test1', 'test2'], {})
+                .then(function(out) {
+                    expect(out).to.have.length(3);
+                    expect(out[0]).to.have.property('source').that.equals('test0');
+                    expect(out[1]).to.have.property('source').that.equals('test1');
+                    expect(out[2]).to.have.property('source').that.equals('test2');
+                    _.forEach(out, function(el) {
+                        expect(el).to.have.property('values').that.deep.equals({
+                            'LLDP-MIB::lldpMessageTxInterval.0': '30 seconds',
+                            'LLDP-MIB::lldpTxDelay.0': '2 seconds',
+                            'LLDP-MIB::lldpMessageTxHoldMultiplier.0': '4',
+                            'LLDP-MIB::lldpReinitDelay.0': '2 seconds',
+                            'LLDP-MIB::lldpNotificationInterval.0': '5 seconds'
+                        });
+                    });
+                });
+            });
+
             it('should run a custom supported snmp query method', function() {
                 this.sandbox.stub(instance, 'get').resolves(results);
 
@@ -193,7 +214,20 @@ describe('SnmpTool', function() {
                 });
             });
 
-            it('should run bulkwalk queries with combined oids and maxRepetitions set', function() {
+            it('should run get queries with combined oids', function() {
+                this.sandbox.stub(instance, 'get').resolves(results);
+
+                return instance.collectHostSnmp(
+                    ['test0', 'test1', 'test2'],
+                    { snmpQueryType: 'get'}
+                )
+                .then(function() {
+                    expect(instance.get).to.have.been.calledOnce;
+                    expect(instance.get.firstCall.args[0]).to.equal('test0 test1 test2');
+                });
+            });
+
+            it('should run bulkwalk queries with maxRepetitions set', function() {
                 this.sandbox.stub(instance, 'bulkwalk').resolves(results);
 
                 return instance.collectHostSnmp(
@@ -201,9 +235,28 @@ describe('SnmpTool', function() {
                     { snmpQueryType: 'bulkwalk', maxRepetitions: 25 }
                 )
                 .then(function() {
-                    expect(instance.bulkwalk).to.have.been.calledOnce;
-                    expect(instance.bulkwalk.firstCall.args[0]).to.equal('test0 test1 test2');
+                    expect(instance.bulkwalk).to.have.been.Thrice;
+                    expect(instance.bulkwalk.firstCall.args[0]).to.equal('test0');
                     expect(instance.bulkwalk.firstCall.args[1]).to.equal(25);
+                    expect(instance.bulkwalk.secondCall.args[0]).to.equal('test1');
+                    expect(instance.bulkwalk.secondCall.args[1]).to.equal(25);
+                    expect(instance.bulkwalk.thirdCall.args[0]).to.equal('test2');
+                    expect(instance.bulkwalk.thirdCall.args[1]).to.equal(25);
+                });
+            });
+
+            it('should run bulkwalk queries with isSequential true and multiple oids', function() {
+                this.sandbox.stub(instance, 'bulkwalk').resolves(results);
+
+                return instance.collectHostSnmp(
+                    ['test0', 'test1', 'test2'],
+                    { snmpQueryType: 'bulkwalk', isSequential: true }
+                )
+                .then(function() {
+                    expect(instance.bulkwalk).to.have.been.Thrice;
+                    expect(instance.bulkwalk.firstCall.args[0]).to.equal('test0');
+                    expect(instance.bulkwalk.secondCall.args[0]).to.equal('test1');
+                    expect(instance.bulkwalk.thirdCall.args[0]).to.equal('test2');
                 });
             });
         });
