@@ -15,6 +15,7 @@ describe("Base Job", function () {
     before('Base Job before', function () {
         // create a child injector with on-core and the base pieces we need to test this
         helper.setupInjector([
+            helper.require('/spec/mocks/logger.js'),
             helper.require('/lib/jobs/base-job.js')
         ]);
 
@@ -24,9 +25,6 @@ describe("Base Job", function () {
 
         taskProtocol = helper.injector.get('Protocol.Task');
         eventsProtocol = helper.injector.get('Protocol.Events');
-
-        var Logger = helper.injector.get('Logger');
-        sinon.stub(Logger.prototype, 'log');
 
         _.forEach(Object.getPrototypeOf(taskProtocol), function(f, funcName) {
             var spy = sinon.spy(function() {
@@ -188,99 +186,6 @@ describe("Base Job", function () {
 
                 _.forEach(job.subscriptions, function(subscription) {
                     expect(subscription.dispose).to.have.been.calledOnce;
-                });
-            });
-        });
-
-        describe("poller callbacks", function() {
-            var encryption;
-            var lookup;
-
-            before(function() {
-                lookup = helper.injector.get('Services.Lookup');
-                encryption = helper.injector.get('Services.Encryption');
-                encryption.start();
-            });
-
-            beforeEach(function() {
-                this.sandbox = sinon.sandbox.create();
-            });
-
-            afterEach(function() {
-                this.sandbox.restore();
-            });
-
-            after(function() {
-                encryption.stop();
-            });
-
-            describe("IPMI run command", function() {
-                it("should decrypt a password", function() {
-                    var iv = 'vNtIgxV4kh0XHSa9ZJxkSg==';
-                    var password = encryption.encrypt('password', iv);
-                    var callback = function() {};
-                    callback.call = sinon.stub();
-                    var data = {
-                        password: password
-                    };
-                    job._runIpmiCommandCallback(callback, data);
-                    expect(callback.call.firstCall.args[1]).to.deep.equal({
-                        password: 'password'
-                    });
-                });
-
-                it("should convert a host mac address to an IP", function() {
-                    this.sandbox.stub(lookup, 'macAddressToIp');
-                    lookup.macAddressToIp.resolves({
-                        host: '10.1.1.2'
-                    });
-                    var callback = function() {};
-                    callback.call = sinon.stub();
-                    var data = {
-                        host: '7a:c0:7a:c0:be:ef'
-                    };
-                    job._runIpmiCommandCallback(callback, data);
-
-                    process.nextTick(function() {
-                        expect(callback.call.firstCall.args[1]).to.deep.equal({
-                            host: '10.1.1.2'
-                        });
-                    });
-                });
-            });
-
-            describe("SNMP run command", function() {
-                it("should decrypt a password", function() {
-                    var iv = 'vNtIgxV4kh0XHSa9ZJxkSg==';
-                    var community = encryption.encrypt('public', iv);
-                    var callback = function() {};
-                    callback.call = sinon.stub();
-                    var data = {
-                        community: community
-                    };
-                    job._runSnmpCommandCallback(callback, data);
-                    expect(callback.call.firstCall.args[1]).to.deep.equal({
-                        community: 'public'
-                    });
-                });
-
-                it("should convert a host mac address to an IP", function() {
-                    this.sandbox.stub(lookup, 'macAddressToIp');
-                    lookup.macAddressToIp.resolves({
-                        host: '10.1.1.2'
-                    });
-                    var callback = function() {};
-                    callback.call = sinon.stub();
-                    var data = {
-                        host: '7a:c0:7a:c0:be:ef'
-                    };
-                    job._runSnmpCommandCallback(callback, data);
-
-                    process.nextTick(function() {
-                        expect(callback.call.firstCall.args[1]).to.deep.equal({
-                            host: '10.1.1.2'
-                        });
-                    });
                 });
             });
         });
