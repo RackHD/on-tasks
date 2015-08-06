@@ -541,6 +541,31 @@ describe("Task Parser", function () {
                 });
             });
 
+            it("should add a lookup field if the BMC IP is statically configured", function () {
+                var ipmiCmd = 'sudo ipmitool lan print';
+
+                var tasks = [
+                    {
+                        cmd: ipmiCmd,
+                        stdout: stdoutMocks.ipmiLanPrintOutputStatic,
+                        stderr: '',
+                        error: null
+                    }
+                ];
+
+                return taskParser.parseTasks(tasks)
+                .spread(function (result) {
+                    expect(result.lookups).to.deep.equal(
+                        [
+                            {
+                                ip: '10.1.1.24',
+                                mac: '00:25:90:83:d4:4c'
+                            }
+                        ]
+                    );
+                });
+            });
+
             it("should append channel number > 1 to ipmi source names", function () {
                 var tasks = [
                     {
