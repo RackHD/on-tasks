@@ -12,15 +12,18 @@ describe('PanduitObmService', function() {
         base.before('PanduitObmService before', servicePath, function(self) {
             self.serviceOptions = {
                 config: {
-                    'host': 'localhost',
-                    'community': 'public',
-                    'cyclePassword': 'onrack',
-                    'mappings': [
+                    'pduOutlets': [
                         {
+                            'host': 'localhost',
+                            'community': 'public',
+                            'cyclePassword': 'A01',
                             "pdu": 1,
                             "outlet": 1
                         },
                         {
+                            'host': 'localhost',
+                            'community': 'public',
+                            'cyclePassword': 'A02',
                             "pdu": 2,
                             "outlet": 2
                         }
