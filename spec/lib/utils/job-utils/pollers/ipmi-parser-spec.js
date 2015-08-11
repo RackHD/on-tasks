@@ -123,6 +123,9 @@ describe("ipmi-parser", function() {
             chassisStatus = parser.parseChassisData("01 00 40 70");
             expect(chassisStatus).to.have.property("uid", "Off");
             expect(chassisStatus).to.have.property("power", true);
+            chassisStatus = parser.parseChassisData("01 00 40");
+            expect(chassisStatus).to.have.property("uid", "Off");
+            expect(chassisStatus).to.have.property("power", true);
             chassisStatus = parser.parseChassisData("20 10 50 10");
             expect(chassisStatus).to.have.property("uid", "Temporary On");
             expect(chassisStatus).to.have.property("power", false);
