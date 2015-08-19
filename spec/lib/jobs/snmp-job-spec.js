@@ -42,8 +42,7 @@ describe(require('path').basename(__filename), function () {
     describe("snmp-job", function() {
         var Snmptool;
         var Constants;
-        var testEmitter = new events.EventEmitter();
-
+        var testEmitter;
         before(function() {
             Constants = helper.injector.get('Constants');
         });
@@ -54,6 +53,7 @@ describe(require('path').basename(__filename), function () {
             this.snmp = new this.Jobclass({}, { graphId: graphId }, uuid.v4());
             Snmptool = helper.injector.get('JobUtils.Snmptool');
             expect(this.snmp.routingKey).to.equal(graphId);
+            testEmitter = new events.EventEmitter();
         });
 
         afterEach(function() {
@@ -68,9 +68,13 @@ describe(require('path').basename(__filename), function () {
             expect(this.snmp).to.have.property('_subscribeRunSnmpCommand').with.length(2);
         });
 
+
         it("should listen for snmp command requests", function(done) {
             var self = this;
             this.sandbox.stub(Snmptool.prototype, 'collectHostSnmp');
+            this.sandbox.stub(this.snmp, 'concurrentRequests').returns(false);
+            this.sandbox.stub(this.snmp, 'addConcurrentRequest');
+            this.sandbox.stub(this.snmp, 'removeConcurrentRequest');
             Snmptool.prototype.collectHostSnmp.resolves();
             self.snmp._publishSnmpCommandResult = sinon.stub();
             self.snmp._subscribeRunSnmpCommand = function(routingKey, callback) {
@@ -86,6 +90,7 @@ describe(require('path').basename(__filename), function () {
                     host: 'test',
                     community: 'test',
                     node: 'test',
+                    workItemId: 'testWorkItemId',
                     pollInterval: 60000,
                     config: {
                         oids: ['testoid']
@@ -95,6 +100,7 @@ describe(require('path').basename(__filename), function () {
 
             process.nextTick(function() {
                 try {
+                    expect(self.snmp.concurrentRequests.callCount).to.equal(100);
                     expect(Snmptool.prototype.collectHostSnmp.callCount).to.equal(100);
                     expect(self.snmp._publishSnmpCommandResult.callCount).to.equal(100);
                     expect(self.snmp._publishSnmpCommandResult)
@@ -109,6 +115,9 @@ describe(require('path').basename(__filename), function () {
         it("should listen for snmp metric command requests", function(done) {
             var self = this;
             this.sandbox.stub(self.snmp, '_collectMetricData');
+            this.sandbox.stub(this.snmp, 'concurrentRequests').returns(false);
+            this.sandbox.stub(this.snmp, 'addConcurrentRequest');
+            this.sandbox.stub(this.snmp, 'removeConcurrentRequest');
             self.snmp._collectMetricData.resolves();
             self.snmp._publishMetricResult = sinon.stub();
             self.snmp._subscribeRunSnmpCommand = function(routingKey, callback) {
@@ -124,6 +133,7 @@ describe(require('path').basename(__filename), function () {
                     host: 'test',
                     community: 'test',
                     node: 'test',
+                    workItemId: 'testWorkItemId',
                     pollInterval: 60000,
                     config: {
                         metric: "snmp-interface-state"
@@ -133,9 +143,56 @@ describe(require('path').basename(__filename), function () {
 
             process.nextTick(function() {
                 try {
+                    expect(self.snmp.concurrentRequests.callCount).to.equal(100);
                     expect(self.snmp._collectMetricData.callCount).to.equal(100);
                     expect(self.snmp._publishMetricResult.callCount).to.equal(100);
                     expect(self.snmp._publishMetricResult)
+                        .to.have.been.calledWith(self.snmp.routingKey);
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+
+        it("should limit concurrent snmp requests against a single host", function(done) {
+            var self = this;
+            this.sandbox.stub(Snmptool.prototype, 'collectHostSnmp');
+            this.sandbox.spy(this.snmp, 'concurrentRequests');
+            this.sandbox.spy(this.snmp, 'addConcurrentRequest');
+            this.sandbox.spy(this.snmp, 'removeConcurrentRequest');
+            Snmptool.prototype.collectHostSnmp.resolves();
+            self.snmp._publishSnmpCommandResult = sinon.stub();
+            self.snmp._subscribeRunSnmpCommand = function(routingKey, callback) {
+                testEmitter.on('test-subscribe-snmp-command', function(config) {
+                    callback(config);
+                });
+            };
+
+            self.snmp._run();
+
+            _.forEach(_.range(100), function() {
+                testEmitter.emit('test-subscribe-snmp-command', {
+                    host: 'test',
+                    community: 'test',
+                    node: 'test',
+                    workItemId: 'testWorkItemId',
+                    pollInterval: 60000,
+                    config: {
+                        oids: ['testoid']
+                    }
+                });
+            });
+
+            process.nextTick(function() {
+                try {
+                    expect(self.snmp.concurrentRequests.callCount).to.equal(100);
+                    expect(Snmptool.prototype.collectHostSnmp.callCount).to
+                        .equal(self.snmp.addConcurrentRequest.callCount);
+                    expect(self.snmp._publishSnmpCommandResult.callCount).to
+                        .equal(self.snmp.addConcurrentRequest.callCount);
+                    expect(self.snmp._publishSnmpCommandResult)
                         .to.have.been.calledWith(self.snmp.routingKey);
                     done();
                 } catch (e) {
