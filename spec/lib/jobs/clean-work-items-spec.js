@@ -42,7 +42,7 @@ describe("Job.Catalog.CleanWorkItems", function () {
 
         job.run();
 
-        process.nextTick(function () {
+        setImmediate(function () {
             try {
                 expect(waterline.workitems.setFailed).to.have.been.calledOnce;
                 expect(waterline.workitems.setFailed).to.have.been.calledWith(null, workItems);

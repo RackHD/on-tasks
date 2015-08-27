@@ -32,28 +32,6 @@ describe('SnmpTool', function() {
             instance = new SnmpTool('127.0.0.1:5588', 'any');
         });
 
-        describe('walk', function() {
-            it('is a function', function() {
-                expect(instance).to.be.a('object');
-            });
-
-            it('exists', function() {
-                should.exist(instance);
-                should.exist(instance.walk);
-            });
-
-            it('is a function', function() {
-                expect(instance.walk).is.a('function');
-            });
-
-            it('returns ChildProcess output object', function() {
-                return instance.walk('.1.3.6.1.2.1.1.3')
-                .then(function(out) {
-                    expect(out).to.have.property('stdout').that.is.a('string');
-                });
-            });
-        });
-
         describe('get', function() {
             it('exists', function() {
                 should.exist(instance.get);
