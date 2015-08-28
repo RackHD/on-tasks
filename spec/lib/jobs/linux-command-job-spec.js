@@ -126,6 +126,7 @@ describe('Linux Command Job', function () {
         });
 
         beforeEach('Linux Command Job response handling beforeEach', function() {
+            this.sandbox = sinon.sandbox.create();
             LinuxCommandJob.prototype.catalogUserTasks.reset();
             job = new LinuxCommandJob({ commands: [] }, { target: 'testid' }, uuid.v4());
             job._subscribeRequestProperties = sinon.stub();
@@ -135,54 +136,53 @@ describe('Linux Command Job', function () {
             LinuxCommandJob.prototype.catalogUserTasks.restore();
         });
 
-        it('should delegate responses to handleResponse() and finish', sinon.test(function(done) {
-            this.stub(job, '_subscribeRequestCommands');
-            this.stub(job, '_subscribeRespondCommands', function(cb) {
+        afterEach('Linux Command Job response handling afterEach', function() {
+            this.sandbox.restore();
+        });
+
+        it('should delegate responses to handleResponse() and finish', function(done) {
+            this.sandbox.stub(job, '_subscribeRequestCommands');
+            this.sandbox.stub(job, '_subscribeRespondCommands', function(cb) {
                 cb('test data');
             });
-            this.stub(job, 'handleResponse').resolves();
-            this.stub(job, '_done');
-
-            job._run();
-
-            try {
-                expect(job.handleResponse).to.have.been.calledOnce;
-                expect(job.handleResponse).to.have.been.calledWith('test data');
-            } catch (e) {
-                done(e);
-                return;
-            }
-            process.nextTick(function() {
+            this.sandbox.stub(job, 'handleResponse').resolves();
+            this.sandbox.stub(job, '_done', function(err) {
+                if (err) {
+                    done(err);
+                    return;
+                }
                 try {
-                    expect(job._done).to.have.been.calledOnce;
+                    expect(job.handleResponse).to.have.been.calledOnce;
+                    expect(job.handleResponse).to.have.been.calledWith('test data');
                     done();
                 } catch (e) {
                     done(e);
                 }
             });
-        }));
 
-        it('should delegate responses to handleResponse() and finish', sinon.test(function(done) {
+            job._run();
+        });
+
+        it('should fail with a handleResponseError if handleResponse rejects', function(done) {
             var handleResponseError = new Error('test handleResponse error');
-            this.stub(job, '_subscribeRequestCommands');
-            this.stub(job, '_subscribeRespondCommands', function(cb) {
+            this.sandbox.stub(job, '_subscribeRequestCommands');
+            this.sandbox.stub(job, '_subscribeRespondCommands', function(cb) {
                 cb('test data');
             });
-            this.stub(job, 'handleResponse').rejects(handleResponseError);
-            this.stub(job, '_done');
 
-            job._run();
+            this.sandbox.stub(job, 'handleResponse').rejects(handleResponseError);
 
-            process.nextTick(function() {
+            this.sandbox.stub(job, '_done', function(err) {
                 try {
-                    expect(job._done).to.have.been.calledOnce;
-                    expect(job._done).to.have.been.calledWith(handleResponseError);
+                    expect(err).to.equal(handleResponseError);
                     done();
                 } catch (e) {
                     done(e);
                 }
             });
-        }));
+
+            job._run();
+        });
 
         it('should reject on task failure', function() {
             var data = { tasks: [ { error: { code: 1 } } ] };
