@@ -41,35 +41,29 @@ describe('ISC DHCP Poller Job', function () {
     });
 
     describe('Platform', function() {
-        var platform;
-
-        before('ISC DHCP Poller Job platform before', function() {
-            platform = process.platform;
+        beforeEach(function () {
+            this.sandbox = sinon.sandbox.create();
         });
 
-        beforeEach('ISC DHCP Poller Job platform beforeEach', function() {
-            process.platform = null;
-        });
-
-        after('ISC DHCP Poller Job platform before', function() {
-            process.platform = platform;
+        afterEach(function () {
+            this.sandbox.restore();
         });
 
         it('should find the right lease file on linux', function() {
-            process.platform = 'linux';
+            this.sandbox.stub(this.Jobclass.prototype, 'getPlatform').returns('linux');
             var _job = new this.Jobclass({}, {}, uuid.v4());
             expect(_job.options.leasesFile).to.equal('/var/lib/dhcp/dhcpd.leases');
         });
 
         it('should find the right lease file on OSX', function() {
-            process.platform = 'darwin';
+            this.sandbox.stub(this.Jobclass.prototype, 'getPlatform').returns('darwin');
             var _job = new this.Jobclass({}, {}, uuid.v4());
             expect(_job.options.leasesFile).to.equal('/var/db/dhcpd.leases');
         });
 
         it('should throw on unsupported platform', function() {
             var self = this;
-            process.platform = 'invalid';
+            this.sandbox.stub(this.Jobclass.prototype, 'getPlatform').returns('invalid');
             expect(function() {
                 var _job = new self.Jobclass({}, {}, uuid.v4());  /* jshint ignore:line */
             }).to.throw(/Unsupported platform type/);

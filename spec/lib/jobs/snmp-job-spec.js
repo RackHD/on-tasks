@@ -98,7 +98,7 @@ describe(require('path').basename(__filename), function () {
                 });
             });
 
-            process.nextTick(function() {
+            setImmediate(function() {
                 try {
                     expect(self.snmp.concurrentRequests.callCount).to.equal(100);
                     expect(Snmptool.prototype.collectHostSnmp.callCount).to.equal(100);
@@ -141,7 +141,7 @@ describe(require('path').basename(__filename), function () {
                 });
             });
 
-            process.nextTick(function() {
+            setImmediate(function() {
                 try {
                     expect(self.snmp.concurrentRequests.callCount).to.equal(100);
                     expect(self.snmp._collectMetricData.callCount).to.equal(100);
@@ -185,7 +185,7 @@ describe(require('path').basename(__filename), function () {
                 });
             });
 
-            process.nextTick(function() {
+            setImmediate(function() {
                 try {
                     expect(self.snmp.concurrentRequests.callCount).to.equal(100);
                     expect(Snmptool.prototype.collectHostSnmp.callCount).to

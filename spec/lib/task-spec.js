@@ -389,7 +389,7 @@ describe("Task", function () {
                 var error = new Errors.TaskCancellationError('test error');
                 task.cancel(error);
 
-                process.nextTick(function() {
+                setImmediate(function() {
                     try {
                         expect(task.finish).to.have.been.calledOnce;
                         expect(task.state).to.equal('cancelled');
@@ -494,7 +494,7 @@ describe("Task", function () {
             return task.start()
             .then(function() {
                 protocolStub.emit('cancel.' + task.instanceId);
-                process.nextTick(function() {
+                setImmediate(function() {
                     expect(task.cancel).to.have.been.calledOnce;
                     done();
                 });

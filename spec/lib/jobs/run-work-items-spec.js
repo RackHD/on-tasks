@@ -62,7 +62,7 @@ describe("Job.Catalog.RunWorkItem", function () {
 
         // This is guaranteed to run because job._deferred won't resolve until
         // we call job.cancel()
-        process.nextTick(function () {
+        setImmediate(function () {
             try {
                 expect(taskProtocol.publishRunIpmiCommand).to.have.been.calledOnce;
                 expect(taskProtocol.publishRunIpmiCommand.firstCall.args[1]).to.equal('sel');
@@ -116,7 +116,7 @@ describe("Job.Catalog.RunWorkItem", function () {
 
         // This is guaranteed to run because job._deferred won't resolve until
         // we call job.cancel()
-        process.nextTick(function () {
+        setImmediate(function () {
             try {
                 expect(waterline.nodes.findOne).to.have.been.calledOnce;
                 expect(waterline.nodes.findOne).to.have.been.calledWith(node.id);
@@ -156,7 +156,7 @@ describe("Job.Catalog.RunWorkItem", function () {
 
         job.run();
 
-        process.nextTick(function () {
+        setImmediate(function () {
             try {
                 expect(taskProtocol.publishRunSnmpCommand).to.have.been.calledOnce;
                 expect(taskProtocol.publishRunSnmpCommand.firstCall.args[1].config)
@@ -185,7 +185,7 @@ describe("Job.Catalog.RunWorkItem", function () {
         waterline.workitems.startNextScheduled.onCall(0).resolves(workItem);
         job.run();
 
-        process.nextTick(function () {
+        setImmediate(function () {
             try {
                 expect(waterline.workitems.setFailed).to.have.been.calledOnce;
                 expect(waterline.workitems.setFailed.firstCall.args[1]).to.equal(workItem);
