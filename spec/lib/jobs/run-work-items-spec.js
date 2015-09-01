@@ -73,8 +73,6 @@ describe("Job.Catalog.RunWorkItem", function () {
                 expect(taskProtocol.publishRunIpmiCommand.firstCall.args[2])
                     .to.have.property('password', 'mypass');
 
-                expect(waterline.workitems.setSucceeded).to.have.been.calledOnce;
-                expect(waterline.workitems.setSucceeded.firstCall.args[1]).to.equal(workItem);
                 job.cancel();
                 done();
             } catch (e) {
@@ -130,8 +128,6 @@ describe("Job.Catalog.RunWorkItem", function () {
                 expect(taskProtocol.publishRunIpmiCommand.firstCall.args[2])
                     .to.have.property('password', 'mypass');
 
-                expect(waterline.workitems.setSucceeded).to.have.been.calledOnce;
-                expect(waterline.workitems.setSucceeded.firstCall.args[1]).to.equal(workItem);
                 job.cancel();
                 done();
             } catch (e) {
@@ -164,8 +160,6 @@ describe("Job.Catalog.RunWorkItem", function () {
                 expect(taskProtocol.publishRunSnmpCommand.firstCall.args[1].config)
                     .to.have.property('communityString', 'hello');
 
-                expect(waterline.workitems.setSucceeded).to.have.been.calledOnce;
-                expect(waterline.workitems.setSucceeded.firstCall.args[1]).to.equal(workItem);
                 job.cancel();
                 done();
             } catch (e) {
@@ -195,6 +189,18 @@ describe("Job.Catalog.RunWorkItem", function () {
                 done(e);
             }
         });
+    });
+
+    it('should back off exponentially after consecutive failures', function() {
+
+    });
+
+    it('should report its successes and failures through the database object', function() {
+
+    });
+
+    it('should resume working at the appropriate interval after success', function() {
+
     });
 });
 
