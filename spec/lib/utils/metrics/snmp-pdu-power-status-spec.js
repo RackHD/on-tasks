@@ -51,7 +51,7 @@ describe("SNMP PDU Power Metric", function () {
                     }
                 }
             ]
-        }
+        };
         metric.snmptool.collectHostSnmp.resolves([ { values: values } ]);
 
         return expect(metric._collectSineticaPowerData()).to.eventually.deep.equal(expectValues);
