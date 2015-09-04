@@ -27,7 +27,8 @@ describe("Job.Catalog.RunWorkItem", function () {
         waterline.workitems = {
             startNextScheduled: sinon.stub().resolves(),
             setSucceeded: sinon.stub(),
-            setFailed: sinon.stub()
+            setFailed: sinon.stub(),
+            update: sinon.stub()
         };
         waterline.nodes = {
             findOne: sinon.stub()
@@ -189,18 +190,6 @@ describe("Job.Catalog.RunWorkItem", function () {
                 done(e);
             }
         });
-    });
-
-    it('should back off exponentially after consecutive failures', function() {
-
-    });
-
-    it('should report its successes and failures through the database object', function() {
-
-    });
-
-    it('should resume working at the appropriate interval after success', function() {
-
     });
 });
 
