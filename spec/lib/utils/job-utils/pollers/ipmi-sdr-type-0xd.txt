@@ -1,0 +1,24 @@
+HDD0,45h,ok,26.0,Drive Present
+HDD1,46h,ok,26.1,Drive Present
+HDD2,47h,ok,26.2,Drive Present
+HDD3,48h,ok,26.3,Drive Present
+HDD4,49h,ok,26.4,
+HDD5,4Ah,ok,26.5,Drive Present
+HDD6,4Bh,ns,26.6,No Reading
+HDD7,4Ch,ns,26.7,No Reading
+HDD8,4Dh,ns,26.8,No Reading
+HDD9,4Eh,ns,26.9,No Reading
+HDD10,4Fh,ns,26.10,No Reading
+HDD11,50h,ns,26.11,No Reading
+HDD12,51h,ns,26.12,No Reading
+HDD13,52h,ns,26.13,No Reading
+HDD14,53h,ns,26.14,No Reading
+HDD15,54h,ns,26.15,No Reading
+HDD16,55h,ns,26.16,No Reading
+HDD17,56h,ns,26.17,No Reading
+HDD18,57h,ns,26.18,No Reading
+HDD19,58h,ns,26.19,No Reading
+HDD20,59h,ns,26.20,No Reading
+HDD21,5Ah,ns,26.21,No Reading
+HDD22,5Bh,ns,26.22,No Reading
+HDD23,5Ch,ns,26.23,No Reading
