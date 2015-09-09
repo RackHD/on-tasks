@@ -141,15 +141,22 @@ describe("ipmi-parser", function() {
 
         it('should parse ipmitool -c sdr type 0xd (drive health status) output', function() {
             var status = parser.parseDriveHealthData(ipmiDriveHealthOutMock);
-            expect(status.length).to.equals(6);
+            expect(status.length).to.equals(10);
+            var expectedStatus = [
+                "Drive Present",
+                "Drive Fault",
+                "Predictive Failure",
+                "Hot Spare",
+                "Parity Check In Progress",
+                "In Critical Array",
+                "In Failed Array",
+                "Rebuild In Progress",
+                "Rebuild Aborted",
+                "Not Present"
+            ];
             _.forEach(status, function(item, idx) {
-                expect(item).to.have.property('name', 'HDD%s'.format(idx));
-                if (idx === 4) {
-                    expect(item).to.have.property('status', 'Not Present');
-                }
-                else {
-                    expect(item).to.have.property('status', 'Drive Present');
-                }
+                expect(item).to.have.property("name", "HDD%s".format(idx));
+                expect(item).to.have.property("status", expectedStatus[idx]);
             });
         });
     });

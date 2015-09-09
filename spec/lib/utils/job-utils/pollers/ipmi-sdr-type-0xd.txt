@@ -1,13 +1,13 @@
 HDD0,45h,ok,26.0,Drive Present
-HDD1,46h,ok,26.1,Drive Present
-HDD2,47h,ok,26.2,Drive Present
-HDD3,48h,ok,26.3,Drive Present
-HDD4,49h,ok,26.4,
-HDD5,4Ah,ok,26.5,Drive Present
-HDD6,4Bh,ns,26.6,No Reading
-HDD7,4Ch,ns,26.7,No Reading
-HDD8,4Dh,ns,26.8,No Reading
-HDD9,4Eh,ns,26.9,No Reading
+HDD1,46h,ok,26.1,Drive Fault
+HDD2,47h,ok,26.2,Predictive Failure
+HDD3,48h,ok,26.3,Hot Spare
+HDD4,49h,ok,26.4,Parity Check In Progress
+HDD5,4Ah,ok,26.5,In Critical Array
+HDD6,4Bh,ok,26.6,In Failed Array
+HDD7,4Ch,ok,26.7,Rebuild In Progress
+HDD8,4Dh,ok,26.8,Rebuild Aborted
+HDD9,4Eh,ok,26.9,
 HDD10,4Fh,ns,26.10,No Reading
 HDD11,50h,ns,26.11,No Reading
 HDD12,51h,ns,26.12,No Reading
