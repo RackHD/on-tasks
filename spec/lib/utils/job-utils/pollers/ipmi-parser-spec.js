@@ -8,6 +8,7 @@ var fs = require('fs');
 describe("ipmi-parser", function() {
     var parser;
     var ipmiOutMock;
+    var ipmiDriveHealthOutMock;
 
     before('ipmi parser before', function() {
         helper.setupInjector([
@@ -18,6 +19,10 @@ describe("ipmi-parser", function() {
 
         ipmiOutMock = fs
             .readFileSync(__dirname+'/ipmi-sdr-c-output')
+            .toString();
+
+        ipmiDriveHealthOutMock = fs
+            .readFileSync(__dirname + '/ipmi-sdr-type-0xd.txt')
             .toString();
     });
 
@@ -132,6 +137,27 @@ describe("ipmi-parser", function() {
             expect(function (){
                 parser.parseChassisData("bad data");
             }).to.throw(/Invalid chassis status output :/);
+        });
+
+        it('should parse ipmitool -c sdr type 0xd (drive health status) output', function() {
+            var status = parser.parseDriveHealthData(ipmiDriveHealthOutMock);
+            expect(status.length).to.equals(10);
+            var expectedStatus = [
+                "Drive Present",
+                "Drive Fault",
+                "Predictive Failure",
+                "Hot Spare",
+                "Parity Check In Progress",
+                "In Critical Array",
+                "In Failed Array",
+                "Rebuild In Progress",
+                "Rebuild Aborted",
+                "Not Present"
+            ];
+            _.forEach(status, function(item, idx) {
+                expect(item).to.have.property("name", "HDD%s".format(idx));
+                expect(item).to.have.property("status", expectedStatus[idx]);
+            });
         });
     });
 });
