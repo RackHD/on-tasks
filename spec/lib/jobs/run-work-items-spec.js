@@ -27,7 +27,8 @@ describe("Job.Catalog.RunWorkItem", function () {
         waterline.workitems = {
             startNextScheduled: sinon.stub().resolves(),
             setSucceeded: sinon.stub(),
-            setFailed: sinon.stub()
+            setFailed: sinon.stub(),
+            update: sinon.stub()
         };
         waterline.nodes = {
             findOne: sinon.stub()
@@ -73,8 +74,6 @@ describe("Job.Catalog.RunWorkItem", function () {
                 expect(taskProtocol.publishRunIpmiCommand.firstCall.args[2])
                     .to.have.property('password', 'mypass');
 
-                expect(waterline.workitems.setSucceeded).to.have.been.calledOnce;
-                expect(waterline.workitems.setSucceeded.firstCall.args[1]).to.equal(workItem);
                 job.cancel();
                 done();
             } catch (e) {
@@ -130,8 +129,6 @@ describe("Job.Catalog.RunWorkItem", function () {
                 expect(taskProtocol.publishRunIpmiCommand.firstCall.args[2])
                     .to.have.property('password', 'mypass');
 
-                expect(waterline.workitems.setSucceeded).to.have.been.calledOnce;
-                expect(waterline.workitems.setSucceeded.firstCall.args[1]).to.equal(workItem);
                 job.cancel();
                 done();
             } catch (e) {
@@ -164,8 +161,6 @@ describe("Job.Catalog.RunWorkItem", function () {
                 expect(taskProtocol.publishRunSnmpCommand.firstCall.args[1].config)
                     .to.have.property('communityString', 'hello');
 
-                expect(waterline.workitems.setSucceeded).to.have.been.calledOnce;
-                expect(waterline.workitems.setSucceeded.firstCall.args[1]).to.equal(workItem);
                 job.cancel();
                 done();
             } catch (e) {

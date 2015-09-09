@@ -10,6 +10,7 @@ describe(require('path').basename(__filename), function () {
     var base = require('./base-spec');
     var collectMetricDataStub;
     var metricStub;
+    var waterline = {};
 
     base.before(function (context) {
         // create a child injector with on-core and the base pieces we need to test this
@@ -30,8 +31,8 @@ describe(require('path').basename(__filename), function () {
             helper.di.simpleWrapper(metricStub, 'JobUtils.Metrics.Snmp.InterfaceStateMetric'),
             helper.di.simpleWrapper(metricStub, 'JobUtils.Metrics.Snmp.ProcessorLoadMetric'),
             helper.di.simpleWrapper(metricStub, 'JobUtils.Metrics.Snmp.MemoryUsageMetric'),
+            helper.di.simpleWrapper(waterline,'Services.Waterline')
         ]);
-
         context.Jobclass = helper.injector.get('Job.Snmp');
     });
 
@@ -49,6 +50,11 @@ describe(require('path').basename(__filename), function () {
 
         beforeEach(function() {
             this.sandbox = sinon.sandbox.create();
+            waterline.workitems = {
+                findOne: this.sandbox.stub(),
+                setFailed: this.sandbox.stub().resolves(),
+                setSucceeded: this.sandbox.stub().resolves()
+            };
             var graphId = uuid.v4();
             this.snmp = new this.Jobclass({}, { graphId: graphId }, uuid.v4());
             Snmptool = helper.injector.get('JobUtils.Snmptool');
@@ -71,11 +77,20 @@ describe(require('path').basename(__filename), function () {
 
         it("should listen for snmp command requests", function(done) {
             var self = this;
+            var workItem = {
+                id: 'bc7dab7e8fb7d6abf8e7d6ad',
+                name: 'Pollers.SNMP',
+                config: {
+                    ip: '1.2.3.4',
+                    communityString: 'community'
+                }
+            };
             this.sandbox.stub(Snmptool.prototype, 'collectHostSnmp');
             this.sandbox.stub(this.snmp, 'concurrentRequests').returns(false);
             this.sandbox.stub(this.snmp, 'addConcurrentRequest');
             this.sandbox.stub(this.snmp, 'removeConcurrentRequest');
             Snmptool.prototype.collectHostSnmp.resolves();
+            waterline.workitems.findOne.resolves(workItem);
             self.snmp._publishSnmpCommandResult = sinon.stub();
             self.snmp._subscribeRunSnmpCommand = function(routingKey, callback) {
                 testEmitter.on('test-subscribe-snmp-command', function(config) {
@@ -114,10 +129,19 @@ describe(require('path').basename(__filename), function () {
 
         it("should listen for snmp metric command requests", function(done) {
             var self = this;
+            var workItem = {
+                id: 'bc7dab7e8fb7d6abf8e7d6ad',
+                name: 'Pollers.SNMP',
+                config: {
+                    ip: '1.2.3.4',
+                    communityString: 'community'
+                }
+            };
             this.sandbox.stub(self.snmp, '_collectMetricData');
             this.sandbox.stub(this.snmp, 'concurrentRequests').returns(false);
             this.sandbox.stub(this.snmp, 'addConcurrentRequest');
             this.sandbox.stub(this.snmp, 'removeConcurrentRequest');
+            waterline.workitems.findOne.resolves(workItem);
             self.snmp._collectMetricData.resolves();
             self.snmp._publishMetricResult = sinon.stub();
             self.snmp._subscribeRunSnmpCommand = function(routingKey, callback) {
@@ -158,11 +182,20 @@ describe(require('path').basename(__filename), function () {
 
         it("should limit concurrent snmp requests against a single host", function(done) {
             var self = this;
+            var workItem = {
+                id: 'bc7dab7e8fb7d6abf8e7d6ad',
+                name: 'Pollers.SNMP',
+                config: {
+                    ip: '1.2.3.4',
+                    communityString: 'community'
+                }
+            };
             this.sandbox.stub(Snmptool.prototype, 'collectHostSnmp');
             this.sandbox.spy(this.snmp, 'concurrentRequests');
             this.sandbox.spy(this.snmp, 'addConcurrentRequest');
             this.sandbox.spy(this.snmp, 'removeConcurrentRequest');
             Snmptool.prototype.collectHostSnmp.resolves();
+            waterline.workitems.findOne.resolves(workItem);
             self.snmp._publishSnmpCommandResult = sinon.stub();
             self.snmp._subscribeRunSnmpCommand = function(routingKey, callback) {
                 testEmitter.on('test-subscribe-snmp-command', function(config) {
