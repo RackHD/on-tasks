@@ -283,6 +283,16 @@ describe("Base Job", function () {
                     });
                 });
             });
+
+            describe("Ansible run command", function() {
+                it("should drop invalid data", function() {
+                    var callback = function() {};
+                    callback.call = sinon.stub();
+                    job._ansibleCommandCallback(callback, undefined);
+                    expect(callback.call).to.not.have.been.called;
+                });
+            });
+
         });
     });
 });
