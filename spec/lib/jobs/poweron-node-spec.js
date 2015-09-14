@@ -18,7 +18,7 @@ describe(require('path').basename(__filename), function () {
             // logger.info("code: "+code);
             if ((command === 'ipmitool') && _.contains(args, 'status')) {
                 // power status call, return a "success"
-                return Q.resolve({
+                return Promise.resolve({
                     stdout: 'Chassis Power is on'
                 });
             }
@@ -32,7 +32,7 @@ describe(require('path').basename(__filename), function () {
         MockWaterline.prototype.nodes = {};
         MockWaterline.prototype.nodes.findByIdentifier = function (nodeId) {
                 //return instance of a node with settings in it...
-                return Q.resolve({
+                return Promise.resolve({
                     obmSettings: [
                         {
                             service: 'ipmi-obm-service',

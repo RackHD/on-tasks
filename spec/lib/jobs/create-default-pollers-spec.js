@@ -8,7 +8,7 @@ describe("Job.Pollers.CreateDefault", function () {
     var taskProtocol = {};
     var CreateDefaultPollers;
     var pollers;
-    var Q;
+    var Promise;
     var uuid;
 
     before(function () {
@@ -22,7 +22,7 @@ describe("Job.Pollers.CreateDefault", function () {
         ]);
 
         CreateDefaultPollers = helper.injector.get('Job.Pollers.CreateDefault');
-        Q = helper.injector.get('Q');
+        Promise = helper.injector.get('Promise');
         uuid = helper.injector.get('uuid');
     });
 
@@ -35,7 +35,7 @@ describe("Job.Pollers.CreateDefault", function () {
                 id: 'bc7dab7e8fb7d6abf8e7d6a1'
             })
         };
-        taskProtocol.subscribeActiveTaskExists = sinon.stub().returns(Q.resolve({
+        taskProtocol.subscribeActiveTaskExists = sinon.stub().returns(Promise.resolve({
             dispose: sinon.stub()
         }));
         pollers = [

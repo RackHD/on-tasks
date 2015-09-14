@@ -63,7 +63,7 @@ describe("test_eses Task Parser", function () {
         });
     });
 
-    it("should parse test_eses -Q output", function (done) {
+    it("should parse test_eses -Promise output", function (done) {
         var esesCmd = 'sudo test_eses -q std --xml';
 
         var tasks = [
