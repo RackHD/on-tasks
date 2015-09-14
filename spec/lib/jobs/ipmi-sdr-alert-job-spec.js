@@ -36,6 +36,7 @@ var _samples = [
 describe(require('path').basename(__filename), function () {
     var _;
     var samples;
+    var waterline = {};
     var base = require('./base-spec');
 
     base.before(function (context) {
@@ -46,7 +47,8 @@ describe(require('path').basename(__filename), function () {
             helper.require('/lib/utils/job-utils/ipmi-parser.js'),
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/ipmi-sdr-alert-job.js'),
-            helper.require('/lib/jobs/poller-alert-job.js')
+            helper.require('/lib/jobs/poller-alert-job.js'),
+            helper.di.simpleWrapper(waterline, 'Services.Waterline')
         ]);
 
         _ = helper.injector.get('_');
@@ -62,29 +64,120 @@ describe(require('path').basename(__filename), function () {
     });
 
     describe("ipmi-sdr-alert-job", function() {
-        it("should not alert on empty sdr data", function() {
-            return this.determineAlert(null).should.become(undefined);
-        });
+        var goodTestSensor,
+        badTestSensor,
+        data;
 
-        it("should alert on Statuses that are not ok", function() {
-            var testAlertSensor = {
-                'Entity Id': 'test',
-                Status: 'nr'
+        beforeEach(function() {
+            this.sandbox = sinon.sandbox.create();
+            waterline.workitems = {
+                find: this.sandbox.stub().resolves(),
+                update: this.sandbox.stub().resolves()
             };
-            samples.push(testAlertSensor);
-            var data = {
+
+            goodTestSensor= {
+                'Entity Id': 'test',
+                Status: 'ok',
+                'Sensor Id': 'good sensor'
+            };
+
+            badTestSensor= {
+                'Entity Id': 'test',
+                Status: 'nr',
+                'Sensor Id': 'bad sensor'
+            };
+
+            data = {
                 host: 'host',
                 user: 'user',
                 password: 'pass',
                 workItemId: '54d6cdff8db79442ddf33333',
                 sdr: samples
             };
+        });
+
+        afterEach(function() {
+            this.sandbox.restore();
+        });
+
+
+        it("should not alert on empty sdr data", function() {
+            return this.determineAlert(null).should.become(undefined);
+        });
+
+        it("should alert and update the db when a Status becomes not okay", function() {
+            var workitem = {
+                config: {
+                    command: 'sdr'
+                }
+            };
+            waterline.workitems.find.resolves(workitem);
+
+            var conf = {
+                command: 'sdr',
+                inCondition: {
+                    'bad sensor': true
+                }
+            };
+
+            data.sdr = samples.concat(badTestSensor);
+
             return this.determineAlert(data)
             .then(function(out) {
                 expect(out).to.have.length(1);
-                expect(out[0]).to.have.property('reading').that.equals(testAlertSensor);
+                expect(out[0]).to.have.property('reading').that.equals(badTestSensor);
                 expect(out[0]).to.have.property('host').that.equals(data.host);
+                expect(waterline.workitems.update).to.have.been
+                    .calledWith({ id: data.workItemId }, { config: conf });
             });
+        });
+
+        it("should alert and update the db when a Status becomes okay", function() {
+            var workitem = {
+                config: {
+                    command: 'sdr',
+                    inCondition: {
+                        'good sensor': true
+                    }
+                }
+            };
+            waterline.workitems.find.resolves(workitem);
+
+            var conf = {
+                command: 'sdr',
+                inCondition: {
+                    'good sensor': false
+                }
+            };
+
+            data.sdr = samples.concat(goodTestSensor);
+
+            return this.determineAlert(data)
+            .then(function(out) {
+                expect(out).to.have.length(1);
+                expect(out[0]).to.have.property('reading').that.equals(goodTestSensor);
+                expect(out[0]).to.have.property('host').that.equals(data.host);
+                expect(waterline.workitems.update).to.have.been
+                    .calledWith({ id: data.workItemId }, { config: conf });
+            });
+        });
+
+        it("should not alert if state has not changed", function() {
+            var workitem = {
+                config: {
+                    command: 'sdr',
+                    inCondition: {
+                        'bad sensor': true,
+                        'good sensor': false
+                    }
+                }
+            };
+            waterline.workitems.find.resolves(workitem);
+
+
+             data.sdr = samples.concat(goodTestSensor).concat(badTestSensor);
+
+            return this.determineAlert(data).should.become(null);
         });
     });
 });
