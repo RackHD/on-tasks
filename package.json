@@ -9,18 +9,17 @@
   },
   "repository": {
     "type": "git",
-    "url": "ssh://git@hwstashprd01.isus.emc.com:7999/onrack/on-tasks"
+    "url": "https://github.com/RackHD/on-tasks"
   },
-  "author": "",
-  "license": "Proprietary",
+  "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/renasar/renasar-tasks/issues"
+    "url": "https://github.com/RackHD/on-tasks/issues"
   },
-  "homepage": "https://hwstashprd01.isus.emc.com:8443/projects/ONRACK/repos/on-tasks",
+  "homepage": "https://github.com/RackHD/on-tasks",
   "dependencies": {
-    "di": "git+ssh://git@hwstashprd01.isus.emc.com:7999/onrack/di.js.git",
+    "di": "git+https://5f5fdee3b5f3bc054cece98ad854c3090043f3c0:x-oauth-basic@github.com/RackHD/di.js.git",
     "lodash": "^2.4.1",
-    "on-core": "git+ssh://git@hwstashprd01.isus.emc.com:7999/onrack/on-core.git",
+    "on-core": "git+https://5f5fdee3b5f3bc054cece98ad854c3090043f3c0:x-oauth-basic@github.com/RackHD/on-core.git",
     "xml2js": "^0.4.4"
   },
   "devDependencies": {
