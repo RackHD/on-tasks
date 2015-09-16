@@ -216,6 +216,7 @@ describe("Task", function () {
                 server: '{{ api.server }}',
                 baseRoute: '{{ api.base }}',
                 filesRoute: '{{ api.files }}',
+                nodesRoute: '{{ api.nodes }}',
                 testConfigValue: 'test: {{ server.testConfigValue }}'
             };
             var task = Task.create(definition, {}, {});
@@ -223,6 +224,7 @@ describe("Task", function () {
             expect(task.options.server).to.equal(server);
             expect(task.options.baseRoute).to.equal(server + '/api/current');
             expect(task.options.filesRoute).to.equal(server + '/api/current/files');
+            expect(task.options.nodesRoute).to.equal(server + '/api/current/nodes');
             expect(task.options.testConfigValue)
                 .to.equal('test: ' + Task.configCache.testConfigValue);
         });
