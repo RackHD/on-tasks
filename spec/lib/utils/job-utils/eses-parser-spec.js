@@ -1,5 +1,4 @@
-// Copyright 2014, Renasar Technologies Inc.
-// Created by heckj on 7/10/14.
+// Copyright 2015, EMC, Inc.
 /* jshint node: true */
 
 
