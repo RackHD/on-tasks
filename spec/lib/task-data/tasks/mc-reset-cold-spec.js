@@ -1,4 +1,4 @@
-// Copyright (c) 2015, EMC Corporation
+// Copyright 2015, EMC, Inc.
 /* jshint node:true */
 
 'use strict';
