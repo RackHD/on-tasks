@@ -92,6 +92,7 @@ describe(require('path').basename(__filename), function () {
                 user: 'user',
                 password: 'pass',
                 workItemId: '54d6cdff8db79442ddf33333',
+                node: '560022c2c5ac58132c5d3cc5',
                 sdr: samples
             };
         });
@@ -127,6 +128,7 @@ describe(require('path').basename(__filename), function () {
                 expect(out).to.have.length(1);
                 expect(out[0]).to.have.property('reading').that.equals(badTestSensor);
                 expect(out[0]).to.have.property('host').that.equals(data.host);
+                expect(out[0]).to.have.property('node').that.equals(data.node);
                 expect(waterline.workitems.update).to.have.been
                     .calledWith({ id: data.workItemId }, { config: conf });
             });
@@ -157,6 +159,7 @@ describe(require('path').basename(__filename), function () {
                 expect(out).to.have.length(1);
                 expect(out[0]).to.have.property('reading').that.equals(goodTestSensor);
                 expect(out[0]).to.have.property('host').that.equals(data.host);
+                expect(out[0]).to.have.property('node').that.equals(data.node);
                 expect(waterline.workitems.update).to.have.been
                     .calledWith({ id: data.workItemId }, { config: conf });
             });
