@@ -18,7 +18,7 @@ describe("Base Job", function () {
             helper.require('/lib/jobs/base-job.js')
         ]);
 
-        helper.injector.get('Services.Messenger').subscribe = sinon.stub().returns(Q.resolve({}));
+        helper.injector.get('Services.Messenger').subscribe = sinon.stub().resolves({});
 
         BaseJob = helper.injector.get('Job.Base');
 
@@ -30,11 +30,11 @@ describe("Base Job", function () {
 
         _.forEach(Object.getPrototypeOf(taskProtocol), function(f, funcName) {
             var spy = sinon.spy(function() {
-                var deferred = Q.defer();
-                process.nextTick(function() {
-                    deferred.resolve(spy);
+                return new Promise(function (resolve) {
+                    process.nextTick(function() {
+                        resolve(spy);
+                    });
                 });
-                return deferred.promise;
             });
             spy.dispose = sinon.stub();
             spy.dispose = sinon.stub();
@@ -42,11 +42,11 @@ describe("Base Job", function () {
         });
         _.forEach(Object.getPrototypeOf(eventsProtocol), function(f, funcName) {
             var spy = sinon.spy(function() {
-                var deferred = Q.defer();
-                process.nextTick(function() {
-                    deferred.resolve(spy);
+                return new Promise(function (resolve) {
+                    process.nextTick(function() {
+                        resolve(spy);
+                    });
                 });
-                return deferred.promise;
             });
             spy.dispose = sinon.stub();
             spy.dispose = sinon.stub();

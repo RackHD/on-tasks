@@ -490,7 +490,7 @@ describe("Task", function () {
                 protocolStub.on('cancel.' + taskId, function() {
                     callback.call(task);
                 });
-                return Q.resolve(subscriptionStub);
+                return Promise.resolve(subscriptionStub);
             };
 
             return task.start()
