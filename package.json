@@ -20,7 +20,10 @@
     "di": "git+https://5f5fdee3b5f3bc054cece98ad854c3090043f3c0:x-oauth-basic@github.com/RackHD/di.js.git",
     "lodash": "^2.4.1",
     "on-core": "git+https://5f5fdee3b5f3bc054cece98ad854c3090043f3c0:x-oauth-basic@github.com/RackHD/on-core.git",
-    "xml2js": "^0.4.4"
+    "ffi-ipmi": "git+https://github.com/jlongever/ffi-ipmi.git",
+    "xml2js": "^0.4.4",
+    "ffi": "^2.0.0",
+    "ref": "^1.1.2"
   },
   "devDependencies": {
     "chai": "^2.0.0",
