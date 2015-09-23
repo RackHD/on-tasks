@@ -78,7 +78,7 @@ describe(require('path').basename(__filename), function () {
                     testEmitter.emit('test-subscribe-ipmi-sdr-command', _config);
                 });
 
-                process.nextTick(function() {
+                setImmediate(function() {
                     try {
                         expect(self.ipmi.collectIpmiSdr.callCount).to.equal(100);
                         done();
