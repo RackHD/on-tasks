@@ -128,6 +128,8 @@ describe("Job.Catalog.RunWorkItem", function () {
                     .to.have.property('user', 'myuser');
                 expect(taskProtocol.publishRunIpmiCommand.firstCall.args[2])
                     .to.have.property('password', 'mypass');
+                expect(taskProtocol.publishRunIpmiCommand.firstCall.args[2])
+                    .to.have.property('node', node.id);
 
                 job.cancel();
                 done();
