@@ -4,7 +4,8 @@
 'use strict';
 
 var uuid = require('node-uuid'),
-    events = require('events');
+    events = require('events'),
+    waterline = {};
 
 describe(require('path').basename(__filename), function () {
     var base = require('./base-spec');
@@ -17,7 +18,8 @@ describe(require('path').basename(__filename), function () {
             helper.require('/lib/utils/job-utils/ipmitool.js'),
             helper.require('/lib/utils/job-utils/ipmi-parser.js'),
             helper.require('/lib/jobs/base-job.js'),
-            helper.require('/lib/jobs/ipmi-job.js')
+            helper.require('/lib/jobs/ipmi-job.js'),
+            helper.di.simpleWrapper(waterline,'Services.Waterline')
         ]);
 
         context.Jobclass = helper.injector.get('Job.Ipmi');
@@ -31,6 +33,10 @@ describe(require('path').basename(__filename), function () {
         var testEmitter = new events.EventEmitter();
 
         beforeEach(function() {
+            this.sandbox = sinon.sandbox.create();
+            waterline.workitems = {
+                update: this.sandbox.stub().resolves()
+            };
             var graphId = uuid.v4();
             this.ipmi = new this.Jobclass({}, { graphId: graphId }, uuid.v4());
             expect(this.ipmi.routingKey).to.equal(graphId);
@@ -64,21 +70,22 @@ describe(require('path').basename(__filename), function () {
                 }
             };
 
-            self.ipmi._run();
+            self.ipmi._run()
+            .then(function() {
+                _.forEach(_.range(100), function(i) {
+                    var _config = _.cloneDeep(config);
+                    _config.host += i;
+                    testEmitter.emit('test-subscribe-ipmi-sdr-command', _config);
+                });
 
-            _.forEach(_.range(100), function(i) {
-                var _config = _.cloneDeep(config);
-                _config.host += i;
-                testEmitter.emit('test-subscribe-ipmi-sdr-command', _config);
-            });
-
-            process.nextTick(function() {
-                try {
-                    expect(self.ipmi.collectIpmiSdr.callCount).to.equal(100);
-                    done();
-                } catch (e) {
-                    done(e);
-                }
+                setImmediate(function() {
+                    try {
+                        expect(self.ipmi.collectIpmiSdr.callCount).to.equal(100);
+                        done();
+                    } catch (e) {
+                        done(e);
+                    }
+                });
             });
         });
 

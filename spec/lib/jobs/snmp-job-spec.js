@@ -53,7 +53,8 @@ describe(require('path').basename(__filename), function () {
             waterline.workitems = {
                 findOne: this.sandbox.stub(),
                 setFailed: this.sandbox.stub().resolves(),
-                setSucceeded: this.sandbox.stub().resolves()
+                setSucceeded: this.sandbox.stub().resolves(),
+                update: this.sandbox.stub().resolves()
             };
             var graphId = uuid.v4();
             this.snmp = new this.Jobclass({}, { graphId: graphId }, uuid.v4());
@@ -98,32 +99,33 @@ describe(require('path').basename(__filename), function () {
                 });
             };
 
-            self.snmp._run();
+            return self.snmp._run()
+            .then(function() {
+                _.forEach(_.range(100), function() {
+                    testEmitter.emit('test-subscribe-snmp-command', {
+                        host: 'test',
+                        community: 'test',
+                        node: 'test',
+                        workItemId: 'testWorkItemId',
+                        pollInterval: 60000,
+                        config: {
+                            oids: ['testoid']
+                        }
+                    });
+                });
 
-            _.forEach(_.range(100), function() {
-                testEmitter.emit('test-subscribe-snmp-command', {
-                    host: 'test',
-                    community: 'test',
-                    node: 'test',
-                    workItemId: 'testWorkItemId',
-                    pollInterval: 60000,
-                    config: {
-                        oids: ['testoid']
+                setImmediate(function() {
+                    try {
+                        expect(self.snmp.concurrentRequests.callCount).to.equal(100);
+                        expect(Snmptool.prototype.collectHostSnmp.callCount).to.equal(100);
+                        expect(self.snmp._publishSnmpCommandResult.callCount).to.equal(100);
+                        expect(self.snmp._publishSnmpCommandResult)
+                            .to.have.been.calledWith(self.snmp.routingKey);
+                        done();
+                    } catch (e) {
+                        done(e);
                     }
                 });
-            });
-
-            setImmediate(function() {
-                try {
-                    expect(self.snmp.concurrentRequests.callCount).to.equal(100);
-                    expect(Snmptool.prototype.collectHostSnmp.callCount).to.equal(100);
-                    expect(self.snmp._publishSnmpCommandResult.callCount).to.equal(100);
-                    expect(self.snmp._publishSnmpCommandResult)
-                        .to.have.been.calledWith(self.snmp.routingKey);
-                    done();
-                } catch (e) {
-                    done(e);
-                }
             });
         });
 
@@ -150,32 +152,33 @@ describe(require('path').basename(__filename), function () {
                 });
             };
 
-            self.snmp._run();
+            self.snmp._run()
+            .then(function() {
+                _.forEach(_.range(100), function() {
+                    testEmitter.emit('test-subscribe-snmp-command', {
+                        host: 'test',
+                        community: 'test',
+                        node: 'test',
+                        workItemId: 'testWorkItemId',
+                        pollInterval: 60000,
+                        config: {
+                            metric: "snmp-interface-state"
+                        }
+                    });
+                });
 
-            _.forEach(_.range(100), function() {
-                testEmitter.emit('test-subscribe-snmp-command', {
-                    host: 'test',
-                    community: 'test',
-                    node: 'test',
-                    workItemId: 'testWorkItemId',
-                    pollInterval: 60000,
-                    config: {
-                        metric: "snmp-interface-state"
+                setImmediate(function() {
+                    try {
+                        expect(self.snmp.concurrentRequests.callCount).to.equal(100);
+                        expect(self.snmp._collectMetricData.callCount).to.equal(100);
+                        expect(self.snmp._publishMetricResult.callCount).to.equal(100);
+                        expect(self.snmp._publishMetricResult)
+                            .to.have.been.calledWith(self.snmp.routingKey);
+                        done();
+                    } catch (e) {
+                        done(e);
                     }
                 });
-            });
-
-            setImmediate(function() {
-                try {
-                    expect(self.snmp.concurrentRequests.callCount).to.equal(100);
-                    expect(self.snmp._collectMetricData.callCount).to.equal(100);
-                    expect(self.snmp._publishMetricResult.callCount).to.equal(100);
-                    expect(self.snmp._publishMetricResult)
-                        .to.have.been.calledWith(self.snmp.routingKey);
-                    done();
-                } catch (e) {
-                    done(e);
-                }
             });
         });
 
@@ -203,34 +206,35 @@ describe(require('path').basename(__filename), function () {
                 });
             };
 
-            self.snmp._run();
+            self.snmp._run()
+            .then(function() {
+                _.forEach(_.range(100), function() {
+                    testEmitter.emit('test-subscribe-snmp-command', {
+                        host: 'test',
+                        community: 'test',
+                        node: 'test',
+                        workItemId: 'testWorkItemId',
+                        pollInterval: 60000,
+                        config: {
+                            oids: ['testoid']
+                        }
+                    });
+                });
 
-            _.forEach(_.range(100), function() {
-                testEmitter.emit('test-subscribe-snmp-command', {
-                    host: 'test',
-                    community: 'test',
-                    node: 'test',
-                    workItemId: 'testWorkItemId',
-                    pollInterval: 60000,
-                    config: {
-                        oids: ['testoid']
+                setImmediate(function() {
+                    try {
+                        expect(self.snmp.concurrentRequests.callCount).to.equal(100);
+                        expect(Snmptool.prototype.collectHostSnmp.callCount).to
+                            .equal(self.snmp.addConcurrentRequest.callCount);
+                        expect(self.snmp._publishSnmpCommandResult.callCount).to
+                            .equal(self.snmp.addConcurrentRequest.callCount);
+                        expect(self.snmp._publishSnmpCommandResult)
+                            .to.have.been.calledWith(self.snmp.routingKey);
+                        done();
+                    } catch (e) {
+                        done(e);
                     }
                 });
-            });
-
-            setImmediate(function() {
-                try {
-                    expect(self.snmp.concurrentRequests.callCount).to.equal(100);
-                    expect(Snmptool.prototype.collectHostSnmp.callCount).to
-                        .equal(self.snmp.addConcurrentRequest.callCount);
-                    expect(self.snmp._publishSnmpCommandResult.callCount).to
-                        .equal(self.snmp.addConcurrentRequest.callCount);
-                    expect(self.snmp._publishSnmpCommandResult)
-                        .to.have.been.calledWith(self.snmp.routingKey);
-                    done();
-                } catch (e) {
-                    done(e);
-                }
             });
         });
 
