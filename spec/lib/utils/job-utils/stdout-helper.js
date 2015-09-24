@@ -1,6 +1,6 @@
 module.exports.amiOutput = '+---------------------------------------------------------------------------+\n' +
-                           '|                AMI Firmware Update Utility  v3.05.00                    |\n' +
-                           '|      Copyright (C)2012 American Megatrends Inc. All Rights Reserved.      |\n' +
+                           '|                *** ******** ****** *******  ********                      |\n' +
+                           '|      ********* ******* ******** ********** **** *** ****** *********      |\n' +
                            '+---------------------------------------------------------------------------+\n' +
                            'Reading flash ............... done\n' +
                            '- System ROM ID = S2RS4A08\n' +
@@ -3593,9 +3593,9 @@ module.exports.storcliControllerCountNoControllers = '{' +
     ']' +
 '}';
 
-module.exports.sas2flashList = 'LSI Corporation SAS2 Flash Utility\n' +
-                               'Version 10.00.00.00 (2011.05.13)\n' +
-                               'Copyright (c) 2008-2011 LSI Corporation. All rights reserved\n' +
+module.exports.sas2flashList = '*** *********** **** ***** *******\n' +
+                               '******* *********** ************\n' +
+                               '********* *** ********* *** ***********. *** ****** ********\n' +
                                '\n' +
                                '	Adapter Selected is a LSI SAS: SAS2008(B2)\n' +
                                '\n' +
