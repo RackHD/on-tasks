@@ -187,7 +187,11 @@ describe("Base Job", function () {
                 expect(job.subscriptions).to.have.length(numSubscriberMethods + 1);
 
                 _.forEach(job.subscriptions, function(subscription) {
-                    expect(subscription.dispose).to.have.been.calledOnce;
+                    if (subscription.toString() === 'subscribeTrigger') {
+                        expect(subscription.dispose).to.have.been.calledTwice;
+                    } else {
+                        expect(subscription.dispose).to.have.been.calledOnce;
+                    }
                 });
             });
         });
