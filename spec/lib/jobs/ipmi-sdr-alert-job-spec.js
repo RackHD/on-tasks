@@ -66,15 +66,16 @@ describe(require('path').basename(__filename), function () {
     describe("ipmi-sdr-alert-job", function() {
         var goodTestSensor,
         badTestSensor,
-        data;
+        data,
+        Errors;
 
         beforeEach(function() {
             this.sandbox = sinon.sandbox.create();
             waterline.workitems = {
-                find: this.sandbox.stub().resolves(),
+                needByIdentifier: this.sandbox.stub().resolves(),
                 update: this.sandbox.stub().resolves()
             };
-
+            Errors = helper.injector.get('Errors');
             goodTestSensor= {
                 'Entity Id': 'test',
                 Status: 'ok',
@@ -101,18 +102,13 @@ describe(require('path').basename(__filename), function () {
             this.sandbox.restore();
         });
 
-
-        it("should not alert on empty sdr data", function() {
-            return this.determineAlert(null).should.become(undefined);
-        });
-
         it("should alert and update the db when a Status becomes not okay", function() {
             var workitem = {
                 config: {
                     command: 'sdr'
                 }
             };
-            waterline.workitems.find.resolves(workitem);
+            waterline.workitems.needByIdentifier.resolves(workitem);
 
             var conf = {
                 command: 'sdr',
@@ -143,7 +139,7 @@ describe(require('path').basename(__filename), function () {
                     }
                 }
             };
-            waterline.workitems.find.resolves(workitem);
+            waterline.workitems.needByIdentifier.resolves(workitem);
 
             var conf = {
                 command: 'sdr',
@@ -175,12 +171,18 @@ describe(require('path').basename(__filename), function () {
                     }
                 }
             };
-            waterline.workitems.find.resolves(workitem);
+            waterline.workitems.needByIdentifier.resolves(workitem);
 
 
              data.sdr = samples.concat(goodTestSensor).concat(badTestSensor);
 
-            return this.determineAlert(data).should.become(null);
+            return this.determineAlert(data).should.become(undefined);
+        });
+
+        it("should not alert if no workitem is found", function() {
+            waterline.workitems.needByIdentifier.rejects(new Errors.NotFoundError(
+                        "test not found rejection"));
+            return this.determineAlert({}).should.become(undefined);
         });
     });
 });
