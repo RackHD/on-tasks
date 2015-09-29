@@ -38,7 +38,7 @@ describe("Task Parser", function () {
         var error = new Error("command failure");
         var tasks = [
             {
-                cmd: 'sudo /opt/chef/bin/ohai --directory /etc/ohai/plugins',
+                cmd: 'sudo ohai --directory /etc/ohai/plugins',
                 stdout: '',
                 stderr: '',
                 error: error
