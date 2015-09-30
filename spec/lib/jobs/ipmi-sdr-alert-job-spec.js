@@ -184,5 +184,43 @@ describe(require('path').basename(__filename), function () {
                         "test not found rejection"));
             return this.determineAlert({}).should.become(undefined);
         });
+
+        it('should sanitize data before updating the database', function() {
+            var workitem = {
+                config: {
+                    command: 'sdr'
+                }
+            };
+            waterline.workitems.needByIdentifier.resolves(workitem);
+            data.sdr = [{
+                'Status': 'ns',
+                'Sensor Id': 'BB +1.5 P1MEM AB',
+                'Sensor Reading Units': undefined,
+                'Sensor Reading': undefined,
+                'Normal Maximum': '1.570',
+                'Sensor Type': 'Voltage',
+                'Upper non-critical': '1.611',
+                'Nominal Reading': '1.495',
+                'Entity Id': '7.1',
+                'Entry Id Name': 'System Board',
+                'Lower non-critical': '1.387',
+                'Lower critical': '1.339',
+                'Normal Minimum': '1.421',
+                'Upper critical': '1.659'
+            }];
+
+            return this.determineAlert(data)
+            .then(function(out) {
+                console.log(out);
+                expect(waterline.workitems.update.getCall(0).args[1]).to.deep.equal({
+                    config: {
+                        command: 'sdr',
+                        inCondition: {
+                            'BB +1_5 P1MEM AB': true
+                        }
+                    }
+                });
+            });
+        });
     });
 });
