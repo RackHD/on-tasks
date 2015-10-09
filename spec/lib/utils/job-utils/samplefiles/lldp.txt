@@ -1,0 +1,11 @@
+lldp.p20p2.via=LLDP
+lldp.p20p2.rid=1
+lldp.p20p2.age=0 day, 00:08:35
+lldp.p20p2.chassis.mac=00:1c:73:ac:94:89
+lldp.p20p2.chassis.name=mgmt01
+lldp.p20p2.chassis.descr=Arista Networks EOS version 4.14.7M running on an Arista Networks DCS-7010T-48
+lldp.p20p2.chassis.mgmt-ip=10.240.19.102
+lldp.p20p2.chassis.Bridge.enabled=on
+lldp.p20p2.chassis.Router.enabled=off
+lldp.p20p2.port.ifname=Ethernet50
+lldp.p20p2.port.descr=Not received
