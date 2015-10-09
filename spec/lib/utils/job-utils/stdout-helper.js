@@ -3665,7 +3665,3 @@ module.exports.flashupdtdecode = fs
 module.exports.snmp = fs
     .readFileSync(__dirname+"/samplefiles/snmp.txt")
     .toString();
-
-module.exports.lldpOutput = fs
-    .readFileSync(__dirname+"/samplefiles/lldp.txt")
-    .toString();

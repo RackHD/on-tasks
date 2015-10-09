@@ -1092,35 +1092,3 @@ describe("Task Parser", function () {
         });
     });
 });
-
-    describe("LLDP Parsers", function () {
-        it("should parse lldpcli output", function (done) {
-            var lldpCmd = 'sudo /usr/sbin/lldpcli show neighbor -f keyvalue';
-
-            var tasks = [
-                {
-                    cmd: lldpCmd,
-                    stdout: stdoutMocks.lldpOutput,
-                    stderr: '',
-                    error: null
-                }
-            ];
-
-            taskParser.parseTasks(tasks)
-            .spread(function (result) {
-                expect(result.error).to.be.undefined;
-                expect(result.store).to.be.true;
-                expect(result.data.p20p2.port.descr).to.equal('Not received');
-                expect(result.data.p20p2.port.ifname).to.equal('Ethernet50');
-                expect(result.data.p20p2.chassis.mac).to.equal('00:1c:73:ac:94:89');
-                expect(result.data.p20p2.chassis.name).to.equal('mgmt01');
-                expect(result.data.p20p2.chassis.mgmt-ip).to.equal('10.240.19.102');
-                expect(result.data.p20p2.chassis.Bridge.enabled).to.equal('on');
-                expect(result.data.p20p2.chassis.Router.enabled).to.equal('off');
-                done();
-            })
-            .catch(function (err) {
-                done(err);
-            });
-        });
-    });
