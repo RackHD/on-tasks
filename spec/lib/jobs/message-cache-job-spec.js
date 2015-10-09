@@ -89,18 +89,21 @@ describe("Message Cache Job", function () {
             baseJob = helper.injector.get('Job.Base');
             sinon.stub(baseJob.prototype, '_subscribeIpmiCommandResult');
             sinon.stub(baseJob.prototype, '_subscribeSnmpCommandResult');
+            sinon.stub(baseJob.prototype, '_subscribeCommonCommandResult');
             sinon.stub(baseJob.prototype, '_subscribeRequestPollerCache');
         });
 
         beforeEach("Message Cache subscription callbacks beforeEach", function() {
             baseJob.prototype._subscribeIpmiCommandResult.reset();
             baseJob.prototype._subscribeSnmpCommandResult.reset();
+            baseJob.prototype._subscribeCommonCommandResult.reset();
             baseJob.prototype._subscribeRequestPollerCache.reset();
         });
 
         after("Message Cache subscription callbacks after", function() {
             baseJob.prototype._subscribeIpmiCommandResult.restore();
             baseJob.prototype._subscribeSnmpCommandResult.restore();
+            baseJob.prototype._subscribeCommonCommandResult.restore();
             baseJob.prototype._subscribeRequestPollerCache.restore();
         });
 
@@ -122,6 +125,19 @@ describe("Message Cache Job", function () {
             expect(job._subscribeSnmpCommandResult).to.have.been.calledOnce;
             expect(job._subscribeSnmpCommandResult)
                 .to.have.been.calledWith(job.routingKey, job.setSnmpCommandResultCallback);
+        });
+
+        it("should set subscription callbacks for common command results", function() {
+            this.sandbox.stub(job, 'createSetCommonCommandResultCallback').returns('fn return stub');
+            job._run();
+            expect(job._subscribeCommonCommandResult.callCount).to.equal(1);
+            _.forEach(['ping'], function(command) {
+                expect(job._subscribeCommonCommandResult).to.have.been.calledWith(
+                    job.routingKey,
+                    command,
+                    'fn return stub'
+                );
+            });
         });
 
         it("should set subscription callbacks for poller cache requests", function() {
@@ -159,6 +175,22 @@ describe("Message Cache Job", function () {
             expect(job.cacheGet(testdata.workItemId)).to.have.length(1);
             expect(job.cacheGet(testdata.workItemId)[0])
                 .to.have.property('test').that.equals('data');
+        });
+
+        it("should work for setting cache data on common command results", function() {
+            _.forEach(['ping'], function(command) {
+                var testdata = { test: 'data' };
+                var cb = job.createSetCommonCommandResultCallback(command);
+                cb.call(job, testdata);
+                expect(job.cacheGet('unknown.command.' + command)).to.have.length(1);
+                expect(job.cacheGet('unknown.command.' + command)[0])
+                    .to.have.property('test').that.equals('data');
+                testdata.workItemId = 'testid.' + command;
+                cb.call(job, testdata);
+                expect(job.cacheGet('testid.' + command)).to.have.length(1);
+                expect(job.cacheGet('testid.' + command)[0])
+                    .to.have.property('test').that.equals('data');
+            });
         });
 
         it("should work for setting cache data on metric results", function() {

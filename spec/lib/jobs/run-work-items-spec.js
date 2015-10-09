@@ -24,6 +24,7 @@ describe("Job.Catalog.RunWorkItem", function () {
 
         taskProtocol.publishRunIpmiCommand = sinon.stub().resolves();
         taskProtocol.publishRunSnmpCommand = sinon.stub().resolves();
+        taskProtocol.publishRunCommonCommand = sinon.stub().resolves();
         waterline.workitems = {
             startNextScheduled: sinon.stub().resolves(),
             setSucceeded: sinon.stub(),
@@ -42,6 +43,7 @@ describe("Job.Catalog.RunWorkItem", function () {
         waterline.nodes.findOne.reset();
         taskProtocol.publishRunIpmiCommand.reset();
         taskProtocol.publishRunSnmpCommand.reset();
+        taskProtocol.publishRunCommonCommand.reset();
     });
 
     it('should run an IPMI Poller work item', function(done) {
@@ -169,6 +171,46 @@ describe("Job.Catalog.RunWorkItem", function () {
                 done(e);
             }
         });
+    });
+
+    it('should run an common command poller work item', function(done) {
+        var workItem = {
+            id: 'bc7dab7e8fb7d6abf8e7d6ad',
+            name: 'Pollers.COMMON',
+            config: {
+                command: 'ping',
+                ip: '1.2.3.4',
+                user: 'myuser',
+                password: 'mypass'
+            }
+        };
+
+        var job = new RunWorkItems({}, { graphId: uuid.v4() }, uuid.v4());
+
+        waterline.workitems.startNextScheduled.onCall(0).resolves(workItem);
+        job.run();
+
+        // This is guaranteed to run because job._deferred won't resolve until
+        // we call job.cancel()
+        setImmediate(function () {
+            try {
+                expect(taskProtocol.publishRunCommonCommand).to.have.been.calledOnce;
+                expect(taskProtocol.publishRunCommonCommand.firstCall.args[1]).to.equal('ping');
+                expect(taskProtocol.publishRunCommonCommand.firstCall.args[2])
+                    .to.have.property('ip', '1.2.3.4');
+                expect(taskProtocol.publishRunCommonCommand.firstCall.args[2])
+                    .to.have.property('user', 'myuser');
+                expect(taskProtocol.publishRunCommonCommand.firstCall.args[2])
+                    .to.have.property('password', 'mypass');
+
+                job.cancel();
+                done();
+            } catch (e) {
+                done(e);
+            }
+        });
+
+        return job._deferred;
     });
 
     it('should mark an unknown work item as failed', function(done) {

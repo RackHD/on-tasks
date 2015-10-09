@@ -3665,3 +3665,7 @@ module.exports.flashupdtdecode = fs
 module.exports.snmp = fs
     .readFileSync(__dirname+"/samplefiles/snmp.txt")
     .toString();
+
+module.exports.ping = fs
+    .readFileSync(__dirname+"/samplefiles/ping.txt")
+    .toString();
