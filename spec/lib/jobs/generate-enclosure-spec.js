@@ -6,7 +6,7 @@
 describe(require('path').basename(__filename), function () {
     var GenerateEnclJob;
     var uuid = require('node-uuid');
-    var nodeId = uuid.v4();
+    var nodeId = '561885426cb1f2ea4486589d';
     var mockWaterline;
     var job;
     mockWaterline = {
@@ -46,17 +46,18 @@ describe(require('path').basename(__filename), function () {
             this.sandbox.restore();
         });
 
-        it('should fail if ipmi-fru catalog does not exist', function(done) {
+        it('should fail if all catalogs does not exist', function(done) {
             this.sandbox.stub(mockWaterline.catalogs,'findMostRecent').rejects('empty catalog');
-
             job.run()
             .then(function() {
                 done(new Error("Expected job to fail"));
             })
             .catch(function(e) {
                 try {
-                    expect(e).to.have.property('name').that.equals('Error');
-                    expect(e).to.have.property('message').that.equals('empty catalog');
+                    expect(e).to.have.property('name').that.equals('AggregateError');
+                    expect(e).to.have.property('length').that.equals(2);
+                    expect(e[0]).to.have.property('message').that.equals('empty catalog');
+                    expect(e[1]).to.have.property('message').that.equals('empty catalog');
                     expect(mockWaterline.nodes.updateByIdentifier).to.not.have.been.called;
                     done();
                 } catch (e) {
@@ -65,7 +66,7 @@ describe(require('path').basename(__filename), function () {
             });
         });
 
-        it('Should fail if no buildin FRU entry in catalog', function(done) {
+        it('Should fail if no expected entry in catalog', function(done) {
             var catalog = {
                     "data": {
                         "Basbrd Mgmt Ctlr": {
@@ -78,7 +79,15 @@ describe(require('path').basename(__filename), function () {
                     "source": "ipmi-fru",
                 };
 
-            this.sandbox.stub(mockWaterline.catalogs,'findMostRecent').resolves(catalog);
+            var findMostRecent = this.sandbox.stub(mockWaterline.catalogs,'findMostRecent');
+            findMostRecent.withArgs({
+                node: nodeId,
+                source: 'ipmi-fru'
+            }).resolves(catalog);
+            findMostRecent.withArgs({
+                node: nodeId,
+                source: 'dmi'
+            }).rejects('empty catalog');
 
             job.run()
             .then(function() {
@@ -86,10 +95,11 @@ describe(require('path').basename(__filename), function () {
             })
             .catch(function(e) {
                 try {
-                    expect(e).to.have.property('name').that.equals('Error');
-                    expect(e).to.have.property('message').that.equals(
-                        'Could not find serial number in path: ' +
-                        'Builtin FRU Device (ID 0).Product Serial');
+                    expect(e).to.have.property('name').that.equals('AggregateError');
+                    expect(e).to.have.property('length').that.equals(2);
+                    expect(e[0]).to.have.property('message').that
+                        .equals('Could not find serial number in source: ipmi-fru');
+                    expect(e[1]).to.have.property('message').that.equals('empty catalog');
                     expect(mockWaterline.nodes.updateByIdentifier).to.not.have.been.called;
                     done();
                 } catch (e) {
@@ -101,16 +111,24 @@ describe(require('path').basename(__filename), function () {
         it('Should fail if no serial number item', function(done) {
             var catalog = {
                     "data": {
-                        "Builtin FRU Device (ID 0)": {
-                            "Product Version": "FFF"
+                        "System Information": {
+                            "Part Number": "FFF"
                         }
                     },
                     "id": uuid.v4(),
                     "node": nodeId,
-                    "source": "ipmi-fru",
+                    "source": "dmi",
                 };
 
-            this.sandbox.stub(mockWaterline.catalogs,'findMostRecent').resolves(catalog);
+            var findMostRecent = this.sandbox.stub(mockWaterline.catalogs,'findMostRecent');
+            findMostRecent.withArgs({
+                node: nodeId,
+                source: 'dmi'
+            }).resolves(catalog);
+            findMostRecent.withArgs({
+                node: nodeId,
+                source: 'ipmi-fru'
+            }).rejects('empty catalog');
 
             job.run()
             .then(function() {
@@ -118,10 +136,11 @@ describe(require('path').basename(__filename), function () {
             })
             .catch(function(e) {
                 try {
-                    expect(e).to.have.property('name').that.equals('Error');
-                    expect(e).to.have.property('message').that.equals(
-                        'Could not find serial number in path: ' +
-                        'Builtin FRU Device (ID 0).Product Serial');
+                    expect(e).to.have.property('name').that.equals('AggregateError');
+                    expect(e).to.have.property('length').that.equals(2);
+                    expect(e[0]).to.have.property('message').that.equals('empty catalog');
+                    expect(e[1]).to.have.property('message').that
+                        .equals('Could not find serial number in source: dmi');
                     expect(mockWaterline.nodes.updateByIdentifier).to.not.have.been.called;
                     done();
                 } catch (e) {
@@ -143,7 +162,15 @@ describe(require('path').basename(__filename), function () {
                     "source": "ipmi-fru",
                 };
 
-            this.sandbox.stub(mockWaterline.catalogs,'findMostRecent').resolves(catalog);
+            var findMostRecent = this.sandbox.stub(mockWaterline.catalogs,'findMostRecent');
+            findMostRecent.withArgs({
+                node: nodeId,
+                source: 'ipmi-fru'
+            }).resolves(catalog);
+            findMostRecent.withArgs({
+                node: nodeId,
+                source: 'dmi'
+            }).rejects('empty catalog');
 
             job.run()
             .then(function() {
@@ -151,9 +178,11 @@ describe(require('path').basename(__filename), function () {
             })
             .catch(function(e) {
                 try {
-                    expect(e).to.have.property('name').that.equals('Error');
-                    expect(e).to.have.property('message').that.equals(
-                        'No valid serial number in SN: ..............');
+                    expect(e).to.have.property('name').that.equals('AggregateError');
+                    expect(e).to.have.property('length').that.equals(2);
+                    expect(e[0]).to.have.property('message').that
+                        .equal('No valid serial number in SN: ..............');
+                    expect(e[1]).to.have.property('message').that.equals('empty catalog');
                     expect(mockWaterline.nodes.updateByIdentifier).to.not.have.been.called;
                     done();
                 } catch (e) {
@@ -164,6 +193,7 @@ describe(require('path').basename(__filename), function () {
     });
 
     describe('Update enclosure and compute node', function() {
+        var findMostRecent;
 
         beforeEach('Generate enclosure job update node', function() {
             var catalog = {
@@ -181,8 +211,18 @@ describe(require('path').basename(__filename), function () {
 
             this.sandbox = sinon.sandbox.create();
             this.sandbox.stub(job, '_subscribeActiveTaskExists').resolves();
-            this.sandbox.stub(mockWaterline.catalogs,'findMostRecent').resolves(catalog);
             this.sandbox.stub(mockWaterline.nodes,'updateByIdentifier').resolves();
+
+            findMostRecent = this.sandbox.stub(mockWaterline.catalogs,'findMostRecent');
+            findMostRecent.withArgs({
+                node: nodeId,
+                source: 'ipmi-fru'
+            }).resolves(catalog);
+            findMostRecent.withArgs({
+                node: nodeId,
+                source: 'dmi'
+            }).rejects('empty catalog');
+
         });
 
         afterEach('Generate enclosure job udpate node', function() {
@@ -268,7 +308,6 @@ describe(require('path').basename(__filename), function () {
 
             this.sandbox.stub(mockWaterline.nodes,'create');
             this.sandbox.stub(mockWaterline.nodes,'find').resolves(encl);
-
             return job.run()
             .then(function() {
                 expect(mockWaterline.nodes.create).to.not.have.been.called;
@@ -282,26 +321,37 @@ describe(require('path').basename(__filename), function () {
     });
 
     describe('Actions when the job ran on node more than once', function() {
+        var findMostRecent;
 
         beforeEach('Generate enclosure job action more than once', function() {
             var catalog = {
                 "data": {
-                    "Builtin FRU Device (ID 0)": {
-                        "Product Serial": "ABC123"
+                    "System Information": {
+                        "Serial Number": "ABC123"
                     }
                 },
                 "id": uuid.v4(),
                 "node": nodeId,
-                "source": "ipmi-fru",
+                "source": "dmi",
             };
 
             job = new GenerateEnclJob({}, { target: nodeId }, uuid.v4());
 
             this.sandbox = sinon.sandbox.create();
             this.sandbox.stub(job, '_subscribeActiveTaskExists').resolves();
-            this.sandbox.stub(mockWaterline.catalogs,'findMostRecent').resolves(catalog);
             this.sandbox.stub(mockWaterline.nodes,'create');
             this.sandbox.stub(mockWaterline.nodes,'updateByIdentifier').resolves();
+
+            findMostRecent = this.sandbox.stub(mockWaterline.catalogs,'findMostRecent');
+            findMostRecent.withArgs({
+                node: nodeId,
+                source: 'ipmi-fru'
+            }).rejects('empty catalog');
+            findMostRecent.withArgs({
+                node: nodeId,
+                source: 'dmi'
+            }).resolves(catalog);
+
         });
 
         afterEach('Generate enclosure job action more than once', function() {
