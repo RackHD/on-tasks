@@ -298,9 +298,9 @@ describe("Task", function () {
                     noDefer: '{{ options.value }}'
                 };
                 var task = Task.create(definition, {}, {});
-                task.parentContext.defer = { value: 'source context value' };
+                task.context.defer = { value: 'source context value' };
                 task.run();
-                expect(task.options.defer).to.equal(task.parentContext.defer.value);
+                expect(task.options.defer).to.equal(task.context.defer.value);
             });
 
             it("should respect fallbacks for deferred renders", function() {
@@ -314,7 +314,7 @@ describe("Task", function () {
                 };
                 var task = Task.create(definition, {}, {});
                 expect(task.options.defer).to.equal(definition.options.defer);
-                task.parentContext.defer = null;
+                task.context.defer = null;
                 task.run();
                 expect(task.options.defer).to.equal(definition.options.value);
             });
