@@ -94,7 +94,7 @@ describe(require('path').basename(__filename), function () {
                 expect(out.alerts[0]).to.have.property('matches');
                 console.log(out.alerts[0].matches);
                 expect(out.alerts[0].matches).to.deep.equal({
-                    '.1.3.6.1.2.1.1.5': /test/,
+                    '.1.3.6.1.2.1.1.5': "/test/",
                     inCondition: true
                 });
             });
@@ -111,7 +111,7 @@ describe(require('path').basename(__filename), function () {
                 expect(out.alerts[0].data).to.equal(undefined);
                 expect(out.alerts[0]).to.have.property('matches');
                 expect(out.alerts[0].matches).to.deep.equal({
-                    '.1.3.6.1.2.1.1.5': /won'tMatch/,
+                    '.1.3.6.1.2.1.1.5': "/won'tMatch/",
                     inCondition: false
                 });
             });
