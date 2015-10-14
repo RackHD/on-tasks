@@ -485,7 +485,7 @@ describe("Task Parser", function () {
 
     describe("IPMI Parsers", function () {
         it("should parse ipmitool lan print output", function () {
-            var ipmiCmd = 'sudo ipmitool lan print';
+            var ipmiCmd = 'sudo ipmitool lan print || true';
             var tasks = [
                 {
                     cmd: ipmiCmd,
@@ -543,7 +543,7 @@ describe("Task Parser", function () {
         });
 
         it("should add a lookup field if the BMC IP is statically configured", function () {
-            var ipmiCmd = 'sudo ipmitool lan print';
+            var ipmiCmd = 'sudo ipmitool lan print || true';
 
             var tasks = [
                 {
@@ -570,19 +570,19 @@ describe("Task Parser", function () {
         it("should append channel number > 1 to ipmi source names", function () {
             var tasks = [
                 {
-                    cmd: 'sudo ipmitool lan print 15',
+                    cmd: 'sudo ipmitool lan print 15 || true',
                     stdout: stdoutMocks.ipmiLanPrintOutput,
                     stderr: '',
                     error: null
                 },
                 {
-                    cmd: 'sudo ipmitool -c user list 15',
+                    cmd: 'sudo ipmitool -c user list 15 || true',
                     stdout: stdoutMocks.ipmiLanPrintOutput,
                     stderr: '',
                     error: null
                 },
                 {
-                    cmd: 'sudo ipmitool user summary 15',
+                    cmd: 'sudo ipmitool user summary 15 || true',
                     stdout: stdoutMocks.ipmiLanPrintOutput,
                     stderr: '',
                     error: null
@@ -608,19 +608,19 @@ describe("Task Parser", function () {
         it("should name ipmi channel 3 sources as rmm", function () {
             var tasks = [
                 {
-                    cmd: 'sudo ipmitool lan print 3',
+                    cmd: 'sudo ipmitool lan print 3 || true',
                     stdout: stdoutMocks.ipmiLanPrintOutput,
                     stderr: '',
                     error: null
                 },
                 {
-                    cmd: 'sudo ipmitool -c user list 3',
+                    cmd: 'sudo ipmitool -c user list 3 || true',
                     stdout: stdoutMocks.ipmiLanPrintOutput,
                     stderr: '',
                     error: null
                 },
                 {
-                    cmd: 'sudo ipmitool user summary 3',
+                    cmd: 'sudo ipmitool user summary 3 || true',
                     stdout: stdoutMocks.ipmiLanPrintOutput,
                     stderr: '',
                     error: null
@@ -644,7 +644,7 @@ describe("Task Parser", function () {
         });
 
         it("should ignore lan print output with empty mac address", function () {
-            var ipmiCmd = 'sudo ipmitool lan print 3';
+            var ipmiCmd = 'sudo ipmitool lan print 3 || true';
             var tasks = [
                 {
                     cmd: ipmiCmd,
@@ -760,7 +760,7 @@ describe("Task Parser", function () {
         });
 
         it("should parse ipmitool user list 1 output", function () {
-            var ipmiCmd = 'sudo ipmitool -c user list 1';
+            var ipmiCmd = 'sudo ipmitool -c user list 1 || true';
             var tasks = [
                 {
                     cmd: ipmiCmd,
@@ -791,7 +791,7 @@ describe("Task Parser", function () {
         });
 
         it("should parse ipmitool user summary 1 output", function () {
-            var ipmiCmd = 'sudo ipmitool user summary 1';
+            var ipmiCmd = 'sudo ipmitool user summary 1 || true';
             var tasks = [
                 {
                     cmd: ipmiCmd,
