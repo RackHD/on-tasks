@@ -35,7 +35,10 @@ describe(require('path').basename(__filename), function () {
         beforeEach(function() {
             this.sandbox = sinon.sandbox.create();
             waterline.workitems = {
-                update: this.sandbox.stub().resolves()
+                update: this.sandbox.stub().resolves(),
+                findOne: this.sandbox.stub().resolves(),
+                setSucceeded: this.sandbox.stub().resolves(),
+                setFailed: this.sandbox.stub().resolves()
             };
             var graphId = uuid.v4();
             this.ipmi = new this.Jobclass({}, { graphId: graphId }, uuid.v4());
