@@ -1,0 +1,463 @@
+{
+"Controllers":[
+{
+        "Command Status" : {
+                "Controller" : 0,
+                "Status" : "Success",
+                "Description" : "Show Drive Information Succeeded."
+        },
+        "Response Data" : {
+                "Drive /c0/e252/s0" : [
+                        {
+                                "EID:Slt" : "252:0",
+                                "DID" : 0,
+                                "State" : "UGood",
+                                "DG" : "-",
+                                "Size" : "372.093 GB",
+                                "Intf" : "SAS",
+                                "Med" : "SSD",
+                                "SED" : "N",
+                                "PI" : "N",
+                                "SeSz" : "512B",
+                                "Model" : "HUSMM1640ASS200 ",
+                                "Sp" : "U"
+                        }
+                ],
+                "Drive /c0/e252/s0 - Detailed Information" : {
+                        "Drive /c0/e252/s0 State" : {
+                                "Shield Counter" : 0,
+                                "Media Error Count" : 0,
+                                "Other Error Count" : 0,
+                                "Drive Temperature" : " 26C (78.80 F)",
+                                "Predictive Failure Count" : 0,
+                                "S.M.A.R.T alert flagged by drive" : "No"
+                        },
+                        "Drive /c0/e252/s0 Device attributes" : {
+                                "SN" : "        0QVAUG4A",
+                                "Manufacturer Id" : "HGST    ",
+                                "Model Number" : "HUSMM1640ASS200 ",
+                                "NAND Vendor" : "NA",
+                                "WWN" : "5000CCA04E13AD17",
+                                "Firmware Revision" : "A204",
+                                "Firmware Release Number" : "",
+                                "Raw size" : "372.611 GB [0x2e9390b0 Sectors]",
+                                "Coerced size" : "372.093 GB [0x2e830000 Sectors]",
+                                "Non Coerced size" : "372.111 GB [0x2e8390b0 Sectors]",
+                                "Device Speed" : "12.0Gb/s",
+                                "Link Speed" : "12.0Gb/s",
+                                "Write cache" : "N/A",
+                                "Logical Sector Size" : "512B",
+                                "Physical Sector Size" : "4 KB"
+                        },
+                        "Drive /c0/e252/s0 Policies/Settings" : {
+                                "Enclosure position" : 0,
+                                "Connected Port Number" : "5(path0) ",
+                                "Sequence Number" : 5,
+                                "Commissioned Spare" : "No",
+                                "Emergency Spare" : "No",
+                                "Last Predictive Failure Event Sequence Number" : 0,
+                                "Successful diagnostics completion on" : "N/A",
+                                "SED Capable" : "No",
+                                "SED Enabled" : "No",
+                                "Secured" : "No",
+                                "Locked" : "No",
+                                "Needs EKM Attention" : "No",
+                                "PI Eligible" : "No",
+                                "Certified" : "No",
+                                "Wide Port Capable" : "No",
+                                "Port Information" : [
+                                        {
+                                                "Port" : 0,
+                                                "Status" : "Active",
+                                                "Linkspeed" : "12.0Gb/s",
+                                                "SAS address" : "0x5000cca04e13ad15"
+                                        },
+                                        {
+                                                "Port" : 1,
+                                                "Status" : "Active",
+                                                "Linkspeed" : "12.0Gb/s",
+                                                "SAS address" : "0x0"
+                                        }
+                                ]
+                        },
+                        "Inquiry Data" : "00 00 06 12 9f 01 10 02 48 47 53 54 20 20 20 20 48 55 53 4d 4d 31 36 34 30 41 53 53 32 30 30 20 41 32 30 34 30 51 56 41 55 47 34 41 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 43 6f 70 79 72 69 67 68 74 20 28 43 29 20 48 47 53 54 2c 20 61 20 57 65 73 74 65 72 6e 20 44 69 "
+                },
+                "Drive /c0/e252/s1" : [
+                        {
+                                "EID:Slt" : "252:1",
+                                "DID" : 4,
+                                "State" : "UGood",
+                                "DG" : "-",
+                                "Size" : "1.090 TB",
+                                "Intf" : "SAS",
+                                "Med" : "HDD",
+                                "SED" : "N",
+                                "PI" : "N",
+                                "SeSz" : "512B",
+                                "Model" : "HUC101212CSS600 ",
+                                "Sp" : "D"
+                        }
+                ],
+                "Drive /c0/e252/s1 - Detailed Information" : {
+                        "Drive /c0/e252/s1 State" : {
+                                "Shield Counter" : 0,
+                                "Media Error Count" : 0,
+                                "Other Error Count" : 0,
+                                "Drive Temperature" : " 33C (91.40 F)",
+                                "Predictive Failure Count" : 0,
+                                "S.M.A.R.T alert flagged by drive" : "No"
+                        },
+                        "Drive /c0/e252/s1 Device attributes" : {
+                                "SN" : "        L0H8VYJK",
+                                "Manufacturer Id" : "HGST    ",
+                                "Model Number" : "HUC101212CSS600 ",
+                                "NAND Vendor" : "NA",
+                                "WWN" : "5000CCA072487E9B",
+                                "Firmware Revision" : "A469",
+                                "Firmware Release Number" : "",
+                                "Raw size" : "1.090 TB [0x8bba0cb0 Sectors]",
+                                "Coerced size" : "1.090 TB [0x8baa0000 Sectors]",
+                                "Non Coerced size" : "1.090 TB [0x8baa0cb0 Sectors]",
+                                "Device Speed" : "6.0Gb/s",
+                                "Link Speed" : "6.0Gb/s",
+                                "Write cache" : "N/A",
+                                "Logical Sector Size" : "512B",
+                                "Physical Sector Size" : "512B"
+                        },
+                        "Drive /c0/e252/s1 Policies/Settings" : {
+                                "Enclosure position" : 0,
+                                "Connected Port Number" : "4(path0) ",
+                                "Sequence Number" : 5,
+                                "Commissioned Spare" : "No",
+                                "Emergency Spare" : "No",
+                                "Last Predictive Failure Event Sequence Number" : 0,
+                                "Successful diagnostics completion on" : "N/A",
+                                "SED Capable" : "No",
+                                "SED Enabled" : "No",
+                                "Secured" : "No",
+                                "Locked" : "No",
+                                "Needs EKM Attention" : "No",
+                                "PI Eligible" : "No",
+                                "Certified" : "No",
+                                "Wide Port Capable" : "No",
+                                "Port Information" : [
+                                        {
+                                                "Port" : 0,
+                                                "Status" : "Active",
+                                                "Linkspeed" : "6.0Gb/s",
+                                                "SAS address" : "0x5000cca072487e99"
+                                        },
+                                        {
+                                                "Port" : 1,
+                                                "Status" : "Active",
+                                                "Linkspeed" : "6.0Gb/s",
+                                                "SAS address" : "0x0"
+                                        }
+                                ]
+                        },
+                        "Inquiry Data" : "00 00 06 12 9f 01 10 02 48 47 53 54 20 20 20 20 48 55 43 31 30 31 32 31 32 43 53 53 36 30 30 20 41 34 36 39 4c 30 48 38 56 59 4a 4b 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 43 6f 70 79 72 69 67 68 74 20 28 43 29 20 48 47 53 54 2c 20 61 20 57 65 73 74 65 72 6e 20 44 69 "
+                },
+                "Drive /c0/e252/s2" : [
+                        {
+                                "EID:Slt" : "252:2",
+                                "DID" : 3,
+                                "State" : "UGood",
+                                "DG" : "-",
+                                "Size" : "1.090 TB",
+                                "Intf" : "SAS",
+                                "Med" : "HDD",
+                                "SED" : "N",
+                                "PI" : "N",
+                                "SeSz" : "512B",
+                                "Model" : "HUC101212CSS600 ",
+                                "Sp" : "D"
+                        }
+                ],
+                "Drive /c0/e252/s2 - Detailed Information" : {
+                        "Drive /c0/e252/s2 State" : {
+                                "Shield Counter" : 0,
+                                "Media Error Count" : 0,
+                                "Other Error Count" : 0,
+                                "Drive Temperature" : " 33C (91.40 F)",
+                                "Predictive Failure Count" : 0,
+                                "S.M.A.R.T alert flagged by drive" : "No"
+                        },
+                        "Drive /c0/e252/s2 Device attributes" : {
+                                "SN" : "        L0H7PK4K",
+                                "Manufacturer Id" : "HGST    ",
+                                "Model Number" : "HUC101212CSS600 ",
+                                "NAND Vendor" : "NA",
+                                "WWN" : "5000CCA072465C0B",
+                                "Firmware Revision" : "A469",
+                                "Firmware Release Number" : "",
+                                "Raw size" : "1.090 TB [0x8bba0cb0 Sectors]",
+                                "Coerced size" : "1.090 TB [0x8baa0000 Sectors]",
+                                "Non Coerced size" : "1.090 TB [0x8baa0cb0 Sectors]",
+                                "Device Speed" : "6.0Gb/s",
+                                "Link Speed" : "6.0Gb/s",
+                                "Write cache" : "N/A",
+                                "Logical Sector Size" : "512B",
+                                "Physical Sector Size" : "512B"
+                        },
+                        "Drive /c0/e252/s2 Policies/Settings" : {
+                                "Enclosure position" : 0,
+                                "Connected Port Number" : "3(path0) ",
+                                "Sequence Number" : 1,
+                                "Commissioned Spare" : "No",
+                                "Emergency Spare" : "No",
+                                "Last Predictive Failure Event Sequence Number" : 0,
+                                "Successful diagnostics completion on" : "N/A",
+                                "SED Capable" : "No",
+                                "SED Enabled" : "No",
+                                "Secured" : "No",
+                                "Locked" : "No",
+                                "Needs EKM Attention" : "No",
+                                "PI Eligible" : "No",
+                                "Certified" : "No",
+                                "Wide Port Capable" : "No",
+                                "Port Information" : [
+                                        {
+                                                "Port" : 0,
+                                                "Status" : "Active",
+                                                "Linkspeed" : "6.0Gb/s",
+                                                "SAS address" : "0x5000cca072465c09"
+                                        },
+                                        {
+                                                "Port" : 1,
+                                                "Status" : "Active",
+                                                "Linkspeed" : "6.0Gb/s",
+                                                "SAS address" : "0x0"
+                                        }
+                                ]
+                        },
+                        "Inquiry Data" : "00 00 06 12 9f 01 10 02 48 47 53 54 20 20 20 20 48 55 43 31 30 31 32 31 32 43 53 53 36 30 30 20 41 34 36 39 4c 30 48 37 50 4b 34 4b 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 43 6f 70 79 72 69 67 68 74 20 28 43 29 20 48 47 53 54 2c 20 61 20 57 65 73 74 65 72 6e 20 44 69 "
+                },
+                "Drive /c0/e252/s4" : [
+                        {
+                                "EID:Slt" : "252:4",
+                                "DID" : 5,
+                                "State" : "UGood",
+                                "DG" : "-",
+                                "Size" : "1.090 TB",
+                                "Intf" : "SAS",
+                                "Med" : "HDD",
+                                "SED" : "N",
+                                "PI" : "N",
+                                "SeSz" : "512B",
+                                "Model" : "HUC101212CSS600 ",
+                                "Sp" : "D"
+                        }
+                ],
+                "Drive /c0/e252/s4 - Detailed Information" : {
+                        "Drive /c0/e252/s4 State" : {
+                                "Shield Counter" : 0,
+                                "Media Error Count" : 0,
+                                "Other Error Count" : 0,
+                                "Drive Temperature" : " 34C (93.20 F)",
+                                "Predictive Failure Count" : 0,
+                                "S.M.A.R.T alert flagged by drive" : "No"
+                        },
+                        "Drive /c0/e252/s4 Device attributes" : {
+                                "SN" : "        L0H8WUJK",
+                                "Manufacturer Id" : "HGST    ",
+                                "Model Number" : "HUC101212CSS600 ",
+                                "NAND Vendor" : "NA",
+                                "WWN" : "5000CCA072488BAF",
+                                "Firmware Revision" : "A469",
+                                "Firmware Release Number" : "",
+                                "Raw size" : "1.090 TB [0x8bba0cb0 Sectors]",
+                                "Coerced size" : "1.090 TB [0x8baa0000 Sectors]",
+                                "Non Coerced size" : "1.090 TB [0x8baa0cb0 Sectors]",
+                                "Device Speed" : "6.0Gb/s",
+                                "Link Speed" : "6.0Gb/s",
+                                "Write cache" : "N/A",
+                                "Logical Sector Size" : "512B",
+                                "Physical Sector Size" : "512B"
+                        },
+                        "Drive /c0/e252/s4 Policies/Settings" : {
+                                "Enclosure position" : 0,
+                                "Connected Port Number" : "2(path0) ",
+                                "Sequence Number" : 5,
+                                "Commissioned Spare" : "No",
+                                "Emergency Spare" : "No",
+                                "Last Predictive Failure Event Sequence Number" : 0,
+                                "Successful diagnostics completion on" : "N/A",
+                                "SED Capable" : "No",
+                                "SED Enabled" : "No",
+                                "Secured" : "No",
+                                "Locked" : "No",
+                                "Needs EKM Attention" : "No",
+                                "PI Eligible" : "No",
+                                "Certified" : "No",
+                                "Wide Port Capable" : "No",
+                                "Port Information" : [
+                                        {
+                                                "Port" : 0,
+                                                "Status" : "Active",
+                                                "Linkspeed" : "6.0Gb/s",
+                                                "SAS address" : "0x5000cca072488bad"
+                                        },
+                                        {
+                                                "Port" : 1,
+                                                "Status" : "Active",
+                                                "Linkspeed" : "6.0Gb/s",
+                                                "SAS address" : "0x0"
+                                        }
+                                ]
+                        },
+                        "Inquiry Data" : "00 00 06 12 9f 01 10 02 48 47 53 54 20 20 20 20 48 55 43 31 30 31 32 31 32 43 53 53 36 30 30 20 41 34 36 39 4c 30 48 38 57 55 4a 4b 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 43 6f 70 79 72 69 67 68 74 20 28 43 29 20 48 47 53 54 2c 20 61 20 57 65 73 74 65 72 6e 20 44 69 "
+                },
+                "Drive /c0/e252/s5" : [
+                        {
+                                "EID:Slt" : "252:5",
+                                "DID" : 2,
+                                "State" : "UGood",
+                                "DG" : "-",
+                                "Size" : "1.090 TB",
+                                "Intf" : "SAS",
+                                "Med" : "HDD",
+                                "SED" : "N",
+                                "PI" : "N",
+                                "SeSz" : "512B",
+                                "Model" : "HUC101212CSS600 ",
+                                "Sp" : "D"
+                        }
+                ],
+                "Drive /c0/e252/s5 - Detailed Information" : {
+                        "Drive /c0/e252/s5 State" : {
+                                "Shield Counter" : 0,
+                                "Media Error Count" : 0,
+                                "Other Error Count" : 0,
+                                "Drive Temperature" : " 36C (96.80 F)",
+                                "Predictive Failure Count" : 0,
+                                "S.M.A.R.T alert flagged by drive" : "No"
+                        },
+                        "Drive /c0/e252/s5 Device attributes" : {
+                                "SN" : "        L0GYK86G",
+                                "Manufacturer Id" : "HGST    ",
+                                "Model Number" : "HUC101212CSS600 ",
+                                "NAND Vendor" : "NA",
+                                "WWN" : "5000CCA07235BE4B",
+                                "Firmware Revision" : "A469",
+                                "Firmware Release Number" : "",
+                                "Raw size" : "1.090 TB [0x8bba0cb0 Sectors]",
+                                "Coerced size" : "1.090 TB [0x8baa0000 Sectors]",
+                                "Non Coerced size" : "1.090 TB [0x8baa0cb0 Sectors]",
+                                "Device Speed" : "6.0Gb/s",
+                                "Link Speed" : "6.0Gb/s",
+                                "Write cache" : "N/A",
+                                "Logical Sector Size" : "512B",
+                                "Physical Sector Size" : "512B"
+                        },
+                        "Drive /c0/e252/s5 Policies/Settings" : {
+                                "Enclosure position" : 0,
+                                "Connected Port Number" : "1(path0) ",
+                                "Sequence Number" : 5,
+                                "Commissioned Spare" : "No",
+                                "Emergency Spare" : "No",
+                                "Last Predictive Failure Event Sequence Number" : 0,
+                                "Successful diagnostics completion on" : "N/A",
+                                "SED Capable" : "No",
+                                "SED Enabled" : "No",
+                                "Secured" : "No",
+                                "Locked" : "No",
+                                "Needs EKM Attention" : "No",
+                                "PI Eligible" : "No",
+                                "Certified" : "No",
+                                "Wide Port Capable" : "No",
+                                "Port Information" : [
+                                        {
+                                                "Port" : 0,
+                                                "Status" : "Active",
+                                                "Linkspeed" : "6.0Gb/s",
+                                                "SAS address" : "0x5000cca07235be49"
+                                        },
+                                        {
+                                                "Port" : 1,
+                                                "Status" : "Active",
+                                                "Linkspeed" : "6.0Gb/s",
+                                                "SAS address" : "0x0"
+                                        }
+                                ]
+                        },
+                        "Inquiry Data" : "00 00 06 12 9f 01 10 02 48 47 53 54 20 20 20 20 48 55 43 31 30 31 32 31 32 43 53 53 36 30 30 20 41 34 36 39 4c 30 47 59 4b 38 36 47 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 43 6f 70 79 72 69 67 68 74 20 28 43 29 20 48 47 53 54 2c 20 61 20 57 65 73 74 65 72 6e 20 44 69 "
+                },
+                "Drive /c0/e252/s6" : [
+                        {
+                                "EID:Slt" : "252:6",
+                                "DID" : 1,
+                                "State" : "UGood",
+                                "DG" : "-",
+                                "Size" : "1.090 TB",
+                                "Intf" : "SAS",
+                                "Med" : "HDD",
+                                "SED" : "N",
+                                "PI" : "N",
+                                "SeSz" : "512B",
+                                "Model" : "HUC101212CSS600 ",
+                                "Sp" : "D"
+                        }
+                ],
+                "Drive /c0/e252/s6 - Detailed Information" : {
+                        "Drive /c0/e252/s6 State" : {
+                                "Shield Counter" : 0,
+                                "Media Error Count" : 0,
+                                "Other Error Count" : 0,
+                                "Drive Temperature" : " 37C (98.60 F)",
+                                "Predictive Failure Count" : 0,
+                                "S.M.A.R.T alert flagged by drive" : "No"
+                        },
+                        "Drive /c0/e252/s6 Device attributes" : {
+                                "SN" : "        L0H8WXKK",
+                                "Manufacturer Id" : "HGST    ",
+                                "Model Number" : "HUC101212CSS600 ",
+                                "NAND Vendor" : "NA",
+                                "WWN" : "5000CCA072488D27",
+                                "Firmware Revision" : "A469",
+                                "Firmware Release Number" : "",
+                                "Raw size" : "1.090 TB [0x8bba0cb0 Sectors]",
+                                "Coerced size" : "1.090 TB [0x8baa0000 Sectors]",
+                                "Non Coerced size" : "1.090 TB [0x8baa0cb0 Sectors]",
+                                "Device Speed" : "6.0Gb/s",
+                                "Link Speed" : "6.0Gb/s",
+                                "Write cache" : "N/A",
+                                "Logical Sector Size" : "512B",
+                                "Physical Sector Size" : "512B"
+                        },
+                        "Drive /c0/e252/s6 Policies/Settings" : {
+                                "Enclosure position" : 0,
+                                "Connected Port Number" : "0(path0) ",
+                                "Sequence Number" : 5,
+                                "Commissioned Spare" : "No",
+                                "Emergency Spare" : "No",
+                                "Last Predictive Failure Event Sequence Number" : 0,
+                                "Successful diagnostics completion on" : "N/A",
+                                "SED Capable" : "No",
+                                "SED Enabled" : "No",
+                                "Secured" : "No",
+                                "Locked" : "No",
+                                "Needs EKM Attention" : "No",
+                                "PI Eligible" : "No",
+                                "Certified" : "No",
+                                "Wide Port Capable" : "No",
+                                "Port Information" : [
+                                        {
+                                                "Port" : 0,
+                                                "Status" : "Active",
+                                                "Linkspeed" : "6.0Gb/s",
+                                                "SAS address" : "0x5000cca072488d25"
+                                        },
+                                        {
+                                                "Port" : 1,
+                                                "Status" : "Active",
+                                                "Linkspeed" : "6.0Gb/s",
+                                                "SAS address" : "0x0"
+                                        }
+                                ]
+                        },
+                        "Inquiry Data" : "00 00 06 12 9f 01 10 02 48 47 53 54 20 20 20 20 48 55 43 31 30 31 32 31 32 43 53 53 36 30 30 20 41 34 36 39 4c 30 48 38 57 58 4b 4b 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 43 6f 70 79 72 69 67 68 74 20 28 43 29 20 48 47 53 54 2c 20 61 20 57 65 73 74 65 72 6e 20 44 69 "
+                }
+        }
+}
+]
+}
