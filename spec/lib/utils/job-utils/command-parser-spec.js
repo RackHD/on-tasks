@@ -439,8 +439,8 @@ describe("Task Parser", function () {
             .spread(function (result) {
                 expect(result.error).to.be.undefined;
                 expect(result.store).to.be.true;
-                expect(_.isEqual(result.data,
-                    JSON.parse(stdoutMocks.storcliVirtualDiskInfo))).to.be.true;
+                    expect(result.data).to.deep.equal(
+                        JSON.parse(stdoutMocks.storcliVirtualDiskInfo));
                 expect(result.source).to.equal('megaraid-virtual-disks');
             });
         });
@@ -460,8 +460,8 @@ describe("Task Parser", function () {
                 .spread(function (result) {
                     expect(result.error).to.be.undefined;
                     expect(result.store).to.be.true;
-                    expect(_.isEqual(result.data,
-                        JSON.parse(stdoutMocks.storcliPhysicalDiskInfo))).to.be.true;
+                    expect(result.data).to.deep.equal(
+                        JSON.parse(stdoutMocks.storcliPhysicalDiskInfo));
                     expect(result.source).to.equal('megaraid-physical-drives');
                 });
         });
