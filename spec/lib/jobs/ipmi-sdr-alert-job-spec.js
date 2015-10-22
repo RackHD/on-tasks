@@ -125,6 +125,7 @@ describe(require('path').basename(__filename), function () {
                 expect(out[0]).to.have.property('reading').that.equals(badTestSensor);
                 expect(out[0]).to.have.property('host').that.equals(data.host);
                 expect(out[0]).to.have.property('node').that.equals(data.node);
+                expect(out[0]).to.have.property('inCondition').that.equals(true);
                 expect(waterline.workitems.update).to.have.been
                     .calledWith({ id: data.workItemId }, { config: conf });
             });
@@ -156,12 +157,13 @@ describe(require('path').basename(__filename), function () {
                 expect(out[0]).to.have.property('reading').that.equals(goodTestSensor);
                 expect(out[0]).to.have.property('host').that.equals(data.host);
                 expect(out[0]).to.have.property('node').that.equals(data.node);
+                expect(out[0]).to.have.property('inCondition').that.equals(false);
                 expect(waterline.workitems.update).to.have.been
                     .calledWith({ id: data.workItemId }, { config: conf });
             });
         });
 
-        it("should not alert if state has not changed", function() {
+        it("should alert if state has not changed", function() {
             var workitem = {
                 config: {
                     command: 'sdr',
@@ -173,10 +175,28 @@ describe(require('path').basename(__filename), function () {
             };
             waterline.workitems.needByIdentifier.resolves(workitem);
 
+            var conf = {
+                command: 'sdr',
+                inCondition: {
+                    'bad sensor': true,
+                    'good sensor': false
+                }
+            };
 
-             data.sdr = samples.concat(goodTestSensor).concat(badTestSensor);
 
-            return this.determineAlert(data).should.become(undefined);
+            data.sdr = samples.concat(goodTestSensor).concat(badTestSensor);
+
+            return this.determineAlert(data)
+            .then(function(out) {
+                expect(out).to.have.length(1);
+                expect(out[0]).to.have.property('reading').that.equals(badTestSensor);
+                expect(out[0]).to.have.property('host').that.equals(data.host);
+                expect(out[0]).to.have.property('node').that.equals(data.node);
+                expect(out[0]).to.have.property('inCondition').that.equals(true);
+                expect(waterline.workitems.update).to.have.been
+                    .calledWith({ id: data.workItemId }, { config: conf });
+            });
+
         });
 
         it("should not alert if no workitem is found", function() {
