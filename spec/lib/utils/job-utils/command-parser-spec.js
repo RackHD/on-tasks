@@ -941,6 +941,9 @@ describe("Task Parser", function () {
                     expect(elem).property('SMART').to.contain.keys('Attributes',
                         'Self-Assessment', 'Capabilities', 'Identity');
                     expect(elem).property('smartctl Version').to.match(/^\d+\.\d+$/);
+                    expect(elem).property('Controller').that.is.an('object');
+                    expect(elem).property('Controller').to.contain.keys('controller_name',
+                        'controller_ID', 'controller_PCI_BDF');
                 });
 
                 var smart = result.data[0].SMART;

@@ -102,6 +102,10 @@ Selective self-test flags (0x0):
   After scanning selected spans, do NOT read-scan remainder of disk.
 If Selective self-test is pending on power-up, resume after 0 minute delay.
 o
+###HBA Controller Information for /dev/sda scsi
+controller_name= Intel Corporation Wellsburg 6-Port SATA Controller [AHCI mode] (rev 05)
+controller_ID=10
+controller_PCI_BDF=0000:00:1f.2
 ####/dev/sda2 scsi
 smartctl 6.2 2013-07-26 r3841 [x86_64-linux-3.13.0-32-generic] (local build)
 Copyright (C) 2002-13, Bruce Allen, Christian Franke, www.smartmontools.org
@@ -162,6 +166,10 @@ ID# ATTRIBUTE_NAME          FLAG     VALUE WORST THRESH TYPE      UPDATED  WHEN_
 
 SMART Error Log Version: 1
 N
+###HBA Controller Information for /dev/bus/0 megaraid,5
+controller_name= LSI Logic / Symbios Logic MegaRAID SAS-3 3108 [Invader] (rev 02)
+controller_ID=0
+controller_PCI_BDF=0000:07:00.0
 ####/dev/sda0 megaraid,13
 smartctl 6.2 2013-07-26 r3841 [x86_64-linux-3.13.0-32-generic] (local build)
 Copyright (C) 2002-13, Bruce Allen, Christian Franke, www.smartmontools.org
@@ -226,3 +234,7 @@ No Errors Logged
 SMART Self-test log structure revision number 1
 No self-tests have been logged.  [To run self-tests, use: smartctl -t]
  Errors Logged
+###HBA Controller Information for /dev/bus/0 megaraid,5
+controller_name= LSI Logic / Symbios Logic MegaRAID SAS-3 3108 [Invader] (rev 02)
+controller_ID=0
+controller_PCI_BDF=0000:07:00.0
