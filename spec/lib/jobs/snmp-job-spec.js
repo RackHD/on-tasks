@@ -118,9 +118,62 @@ describe(require('path').basename(__filename), function () {
                     try {
                         expect(self.snmp.concurrentRequests.callCount).to.equal(100);
                         expect(Snmptool.prototype.collectHostSnmp.callCount).to.equal(100);
+                        expect(Snmptool.prototype.collectHostSnmp
+                            .alwaysCalledWith(['testoid'], { numeric: true })).to.be.ok;
                         expect(self.snmp._publishSnmpCommandResult.callCount).to.equal(100);
                         expect(self.snmp._publishSnmpCommandResult)
                             .to.have.been.calledWith(self.snmp.routingKey);
+                        done();
+                    } catch (e) {
+                        done(e);
+                    }
+                });
+            });
+        });
+
+        it("should fail on unrecognized pollers", function(done) {
+            var self = this;
+            var workItem = {
+                id: 'bc7dab7e8fb7d6abf8e7d6ad',
+                name: 'Pollers.SNMP',
+                config: {
+                    ip: '1.2.3.4',
+                    communityString: 'community'
+                }
+            };
+            this.sandbox.stub(Snmptool.prototype, 'collectHostSnmp');
+            this.sandbox.stub(this.snmp, 'concurrentRequests').returns(false);
+            this.sandbox.stub(this.snmp, 'addConcurrentRequest');
+            this.sandbox.stub(this.snmp, 'removeConcurrentRequest');
+            Snmptool.prototype.collectHostSnmp.resolves();
+            waterline.workitems.findOne.resolves(workItem);
+            self.snmp._publishSnmpCommandResult = sinon.stub();
+            self.snmp._subscribeRunSnmpCommand = function(routingKey, callback) {
+                testEmitter.on('test-subscribe-snmp-command', function(config) {
+                    callback(config);
+                });
+            };
+
+            return self.snmp._run()
+            .then(function() {
+                    testEmitter.emit('test-subscribe-snmp-command', {
+                        host: 'test',
+                        community: 'test',
+                        node: 'test',
+                        workItemId: 'testWorkItemId',
+                        pollInterval: 60000,
+                        config: {
+                            unknownField: ['testoid']
+                        }
+                });
+
+                setImmediate(function() {
+                    try {
+                        expect(Snmptool.prototype.collectHostSnmp)
+                            .to.not.have.been.called;
+                        expect(self.snmp._publishSnmpCommandResult)
+                            .to.not.have.been.called;
+                        expect(waterline.workitems.setFailed).to.have.been.calledOnce;
                         done();
                     } catch (e) {
                         done(e);
@@ -279,7 +332,6 @@ describe(require('path').basename(__filename), function () {
                         metric: 'unknown'
                     }
                 };
-
                 expect(function() {
                     self.snmp._collectMetricData(data);
                 }).to.throw(/Unknown poller metric name: unknown/);
