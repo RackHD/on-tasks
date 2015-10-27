@@ -119,7 +119,8 @@ describe(require('path').basename(__filename), function () {
                         expect(self.snmp.concurrentRequests.callCount).to.equal(100);
                         expect(Snmptool.prototype.collectHostSnmp.callCount).to.equal(100);
                         expect(Snmptool.prototype.collectHostSnmp
-                            .alwaysCalledWith(['testoid'], { numeric: true })).to.be.ok;
+                                .alwaysCalledWith(['testoid'], { numericOutput: true }))
+                                .to.equal(true);
                         expect(self.snmp._publishSnmpCommandResult.callCount).to.equal(100);
                         expect(self.snmp._publishSnmpCommandResult)
                             .to.have.been.calledWith(self.snmp.routingKey);

@@ -221,24 +221,19 @@ describe('SnmpTool', function() {
                 var self = this;
                 var queryMethods = ['walk', 'get', 'getnext', 'bulkget', 'bulkwalk'];
 
-                _.forEach(queryMethods, function(queryMethod) {
-                    self.sandbox.stub(instance, queryMethod).resolves(results);
-                });
-
-                var promiseArray = _.map(queryMethods, function(queryType) {
+                return Promise.map(queryMethods, function(queryType) {
+                    self.sandbox.stub(instance, queryType).resolves(results);
                     return instance.collectHostSnmp(
                             ['test'],
-                            {snmpQueryType: queryType, numeric: true}
+                            {snmpQueryType: queryType, numericOutput: true}
                     );
-                });
-
-                Promise.all(promiseArray)
+                })
                 .then(function() {
                     try{
                         _.forEach(queryMethods, function(qMeth) {
                             expect(instance[qMeth]).to.have.been.calledWith(
                                     'test',
-                                    {snmpQueryType: qMeth, numeric: true}
+                                    {snmpQueryType: qMeth, numericOutput: true}
                                 );
                         });
                         done();
