@@ -426,6 +426,28 @@ describe("Task", function () {
                 });
             });
 
+            it("should timeout", function() {
+                task.instantiateJob();
+                task.state = 'running';
+
+                sinon.spy(task.job, 'cancel');
+                task.job._run = function() {
+                    return Promise.delay(100);
+                };
+
+                var error = new Errors.TaskTimeoutError('test timeout error');
+                task.cancel(error);
+
+                return task._run()
+                .then(function() {
+                    expect(task.finish).to.have.been.calledOnce;
+                    expect(task.state).to.equal('timeout');
+                    expect(task.error).to.equal(error);
+                    expect(task.job.cancel).to.have.been.calledOnce;
+                    expect(subscriptionStub.dispose).to.have.been.calledTwice;
+                });
+            });
+
             it("should cancel on failure to instantiate a job", function() {
                 var error = new Error('test instantiate job error');
                 task.job = undefined;
