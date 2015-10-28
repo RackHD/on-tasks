@@ -213,7 +213,7 @@ describe(require('path').basename(__filename), function () {
             };
             waterline.workitems.needByIdentifier.resolves(workitem);
             data.sdr = [{
-                'Status': 'ns',
+                'Status': 'ucr',
                 'Sensor Id': 'BB +1.5 P1MEM AB',
                 'Sensor Reading Units': undefined,
                 'Sensor Reading': undefined,
