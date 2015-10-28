@@ -89,4 +89,72 @@ describe('OBM Service', function() {
             });
         });
     });
+
+    describe('Check invalid obm service', function() {
+
+        it('should return empty when no invalid service', function() {
+            var obmSettings = [
+                {
+                    config: {},
+                    service: 'panduit-obm-service'
+                }
+            ];
+            var node = {
+                id: '123',
+                type: 'enclosure'
+            };
+
+            return expect(ObmService.checkInvalidService(node, obmSettings))
+                .to.equal('');
+        });
+
+        it('should return empty when no specified node type', function() {
+            var obmSettings = [
+                {
+                    config: {},
+                    service: 'noop-obm-service'
+                }
+            ];
+            var node = {
+                id: '123',
+            };
+
+            return expect(ObmService.checkInvalidService(node, obmSettings))
+                .to.equal('');
+        });
+
+        it('should return invalid service when only input one obm setting', function() {
+            var obmSettings = {
+                    config: {},
+                    service: 'ipmi-obm-service'
+            };
+            var node = {
+                id: '123',
+                type: 'enclosure'
+            };
+
+            return expect(ObmService.checkInvalidService(node, obmSettings))
+                .to.equal('ipmi-obm-service');
+        });
+
+        it('should return invalid service', function() {
+            var obmSettings = [
+                {
+                    config: {},
+                    service: 'ipmi-obm-service'
+                },
+                {
+                    config: {},
+                    service: 'noop-obm-service'
+                }
+            ];
+            var node = {
+                id: '123',
+                type: 'enclosure'
+            };
+
+            return expect(ObmService.checkInvalidService(node, obmSettings))
+                .to.equal('ipmi-obm-service');
+        });
+    });
 });
