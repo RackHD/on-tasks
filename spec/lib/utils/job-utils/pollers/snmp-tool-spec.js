@@ -9,7 +9,7 @@ describe('SnmpTool', function() {
     before('snmp tool before', function() {
         helper.setupInjector([
             helper.require('/lib/utils/job-utils/net-snmp-tool'),
-            helper.require('/lib/utils/job-utils/net-snmp-parser')
+            helper.require('/lib/utils/job-utils/net-snmp-parser'),
         ]);
 
         SnmpTool = helper.injector.get('JobUtils.Snmptool');
@@ -42,7 +42,7 @@ describe('SnmpTool', function() {
         });
 
         describe('ping', function() {
-            beforeEach(function() {
+            before(function() {
                 this.sandbox = sinon.sandbox.create();
             });
 
@@ -73,7 +73,9 @@ describe('SnmpTool', function() {
 
         describe('collectHostSnmp', function() {
             var results;
+
             before(function() {
+                this.sandbox = sinon.sandbox.create();
                 results = {
                     stdout: 'LLDP-MIB::lldpMessageTxInterval.0 30 seconds\n' +
                             'LLDP-MIB::lldpMessageTxHoldMultiplier.0 4\n' +
@@ -81,10 +83,6 @@ describe('SnmpTool', function() {
                             'LLDP-MIB::lldpTxDelay.0 2 seconds\n' +
                             'LLDP-MIB::lldpNotificationInterval.0 5 seconds\n'
                 };
-            });
-
-            beforeEach(function() {
-                this.sandbox = sinon.sandbox.create();
             });
 
             afterEach(function() {
@@ -169,7 +167,7 @@ describe('SnmpTool', function() {
                 .then(function() {
                     expect(instance.bulkget).to.have.been.calledOnce;
                     expect(instance.bulkget.firstCall.args[0]).to.equal('test0 test1 test2');
-                    expect(instance.bulkget.firstCall.args[1]).to.equal(25);
+                    expect(instance.bulkget.firstCall.args[1].maxRepetitions).to.equal(25);
                 });
             });
 
@@ -196,11 +194,11 @@ describe('SnmpTool', function() {
                 .then(function() {
                     expect(instance.bulkwalk).to.have.been.Thrice;
                     expect(instance.bulkwalk.firstCall.args[0]).to.equal('test0');
-                    expect(instance.bulkwalk.firstCall.args[1]).to.equal(25);
+                    expect(instance.bulkwalk.firstCall.args[1].maxRepetitions).to.equal(25);
                     expect(instance.bulkwalk.secondCall.args[0]).to.equal('test1');
-                    expect(instance.bulkwalk.secondCall.args[1]).to.equal(25);
+                    expect(instance.bulkwalk.secondCall.args[1].maxRepetitions).to.equal(25);
                     expect(instance.bulkwalk.thirdCall.args[0]).to.equal('test2');
-                    expect(instance.bulkwalk.thirdCall.args[1]).to.equal(25);
+                    expect(instance.bulkwalk.thirdCall.args[1].maxRepetitions).to.equal(25);
                 });
             });
 
@@ -216,6 +214,32 @@ describe('SnmpTool', function() {
                     expect(instance.bulkwalk.firstCall.args[0]).to.equal('test0');
                     expect(instance.bulkwalk.secondCall.args[0]).to.equal('test1');
                     expect(instance.bulkwalk.thirdCall.args[0]).to.equal('test2');
+                });
+            });
+
+            it('should optionally run all snmp functions with numeric output', function(done) {
+                var self = this;
+                var queryMethods = ['walk', 'get', 'getnext', 'bulkget', 'bulkwalk'];
+
+                return Promise.map(queryMethods, function(queryType) {
+                    self.sandbox.stub(instance, queryType).resolves(results);
+                    return instance.collectHostSnmp(
+                            ['test'],
+                            {snmpQueryType: queryType, numericOutput: true}
+                    );
+                })
+                .then(function() {
+                    try{
+                        _.forEach(queryMethods, function(qMeth) {
+                            expect(instance[qMeth]).to.have.been.calledWith(
+                                    'test',
+                                    {snmpQueryType: qMeth, numericOutput: true}
+                                );
+                        });
+                        done();
+                    } catch(e) {
+                        done(e);
+                    }
                 });
             });
         });
