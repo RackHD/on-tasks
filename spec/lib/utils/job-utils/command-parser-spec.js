@@ -439,10 +439,31 @@ describe("Task Parser", function () {
             .spread(function (result) {
                 expect(result.error).to.be.undefined;
                 expect(result.store).to.be.true;
-                expect(_.isEqual(result.data,
-                    JSON.parse(stdoutMocks.storcliVirtualDiskInfo))).to.be.true;
+                    expect(result.data).to.deep.equal(
+                        JSON.parse(stdoutMocks.storcliVirtualDiskInfo));
                 expect(result.source).to.equal('megaraid-virtual-disks');
             });
+        });
+
+        it("should parse storcli physical disk info", function () {
+            var storcliCmd = 'sudo /opt/MegaRAID/storcli/storcli64 /c0 /eall /sall show all J';
+            var tasks = [
+                {
+                    cmd: storcliCmd,
+                    stdout: stdoutMocks.storcliPhysicalDiskInfo,
+                    stderr: '',
+                    error: null
+                }
+            ];
+
+            return taskParser.parseTasks(tasks)
+                .spread(function (result) {
+                    expect(result.error).to.be.undefined;
+                    expect(result.store).to.be.true;
+                    expect(result.data).to.deep.equal(
+                        JSON.parse(stdoutMocks.storcliPhysicalDiskInfo));
+                    expect(result.source).to.equal('megaraid-physical-drives');
+                });
         });
     });
 
