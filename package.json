@@ -17,9 +17,9 @@
   },
   "homepage": "https://github.com/RackHD/on-tasks",
   "dependencies": {
-    "di": "git+https://5f5fdee3b5f3bc054cece98ad854c3090043f3c0:x-oauth-basic@github.com/RackHD/di.js.git",
+    "di": "git+https://github.com/RackHD/di.js.git",
     "lodash": "^2.4.1",
-    "on-core": "git+https://5f5fdee3b5f3bc054cece98ad854c3090043f3c0:x-oauth-basic@github.com/RackHD/on-core.git",
+    "on-core": "git+https://github.com/RackHD/on-core.git",
     "xml2js": "^0.4.4"
   },
   "devDependencies": {
