@@ -12,7 +12,8 @@ describe('OBM Service', function() {
         helper.setupInjector([
             helper.require('/lib/services/obm-service'),
             helper.require('/lib/services/ipmi-obm-service'),
-            helper.require('/lib/services/base-obm-service')
+            helper.require('/lib/services/base-obm-service'),
+            helper.di.simpleWrapper({ skus: {} }, 'Services.Waterline')
         ]);
         ObmService = helper.injector.get('Task.Services.OBM');
         Logger = helper.injector.get('Logger');
@@ -86,6 +87,149 @@ describe('OBM Service', function() {
             .then(function() {
                 expect(obmService.runObmCommand.callCount).to.equal(4);
                 expect(obmService._retryObmCommand.callCount).to.equal(4);
+            });
+        });
+    });
+
+    describe('Check invalid obm service', function() {
+        var waterline;
+
+        before('check invalid obm service before', function() {
+            waterline = helper.injector.get('Services.Waterline');
+            waterline.skus.findOne = sinon.stub();
+        });
+
+        beforeEach('check invalid service before each', function() {
+            waterline.skus.findOne.reset();
+        });
+
+        it('should resolve when node matches a single-item rule', function(done) {
+            var obmSettings = [
+                {
+                    config: {},
+                    service: 'panduit-obm-service'
+                },
+                {
+                    config: {},
+                    service: 'test-obm-service'
+                }
+            ];
+            var node = {
+                id: '123',
+                type: 'enclosure'
+            };
+
+            return ObmService.checkValidService(node, obmSettings)
+            .then(function() {
+                done();
+            })
+            .catch(function(e) {
+                done(e);
+            });
+        });
+
+        it('should resolve when node matches a multi-items rule', function(done) {
+            var obmSettings = [
+                {
+                    config: {},
+                    service: 'panduit-obm-service'
+                }
+            ];
+            var node = {
+                id: '123',
+                type: 'compute',
+                sku: '456'
+            };
+
+            waterline.skus.findOne.resolves({ name: 'noop' });
+            return ObmService.checkValidService(node, obmSettings)
+            .then(function() {
+                done();
+            })
+            .catch(function(e) {
+                done(e);
+            });
+        });
+
+        it('should resolve when no specified node type', function(done) {
+            var obmSettings = [
+                {
+                    config: {},
+                    service: 'noop-obm-service'
+                }
+            ];
+            var node = {
+                id: '123',
+            };
+
+            return ObmService.checkValidService(node, obmSettings)
+            .then(function() {
+                done();
+            })
+            .catch(function(e) {
+                done(e);
+            });
+        });
+
+        it('should return invalid service when no sku in node', function(done) {
+            var obmSettings = [
+                {
+                    config: {},
+                    service: 'panduit-obm-service'
+                }
+            ];
+            var node = {
+                id: '123',
+                type: 'compute',
+                sku: null
+            };
+
+            waterline.skus.findOne.rejects('No sku found');
+            return ObmService.checkValidService(node, obmSettings)
+            .then(function() {
+                done(new Error('Expected invalid service'));
+            })
+            .catch(function(e) {
+                try {
+                    expect(e).to.have.property('name').that.equals('BadRequestError');
+                    expect(e).to.have.property('message').that.equals(
+                        'Service panduit-obm-service is not supported in current node'
+                    );
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
+
+        it('should return invalid service when no obm settings are matched', function(done) {
+            var obmSettings = [
+                {
+                    config: {},
+                    service: 'panduit-obm-service'
+                }
+            ];
+            var node = {
+                id: '123',
+                type: 'compute',
+                sku: '456'
+            };
+
+            waterline.skus.findOne.resolves({ name: 'Test' });
+            return ObmService.checkValidService(node, obmSettings)
+            .then(function() {
+                done(new Error('Expected invalid service'));
+            })
+            .catch(function(e) {
+                try {
+                    expect(e).to.have.property('name').that.equals('BadRequestError');
+                    expect(e).to.have.property('message').that.equals(
+                        'Service panduit-obm-service is not supported in current node'
+                    );
+                    done();
+                } catch (e) {
+                    done(e);
+                }
             });
         });
     });
