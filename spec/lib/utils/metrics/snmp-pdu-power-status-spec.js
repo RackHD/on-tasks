@@ -8,7 +8,6 @@ describe("SNMP PDU Power Metric", function () {
     var SnmpPduPowerMetric;
     var metric;
 
-    helper.before();
     before('SNMP PDU Power Metric before', function () {
         helper.setupInjector([
             helper.require('/lib/utils/metrics/base-metric.js'),
