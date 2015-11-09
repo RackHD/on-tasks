@@ -1,8 +1,9 @@
+# on-tasks [![Build Status](https://travis-ci.org/RackHD/on-tasks.svg?branch=master)](https://travis-ci.org/RackHD/on-tasks) [![Code Climate](https://codeclimate.com/github/RackHD/on-tasks/badges/gpa.svg)](https://codeclimate.com/github/RackHD/on-tasks) [![Coverage Status](https://coveralls.io/repos/RackHD/on-tasks/badge.svg?branch=master&service=github)](https://coveralls.io/github/RackHD/on-tasks?branch=master)
+
+
+'on-tasks' are the job code, libraries and definitions (meant as a library of tasks) to be loaded and run by task graphs as needed.
+
 Copyright 2015, EMC, Inc.
-
-# on-tasks
-
-Tasks repository (meant as a library of tasks) to be loaded and run by task graphs as needed.
 
 ## installation
 
