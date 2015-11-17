@@ -218,8 +218,9 @@ describe('Analyze OS Repo Job', function () {
         it('should return empty function if not found handler', function() {
             delete job[handleFnName];
             var result = job._findHandle(randOsName);
+            var emptyfunction = function() {};
             expect(result).to.be.instanceof(Function);
-            expect(result.toString()).to.equal((function() {}).toString());
+            expect(result.toString()).to.equal(emptyfunction.toString());
         });
     });
 });
