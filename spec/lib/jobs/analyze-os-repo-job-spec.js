@@ -219,7 +219,7 @@ describe('Analyze OS Repo Job', function () {
             delete job[handleFnName];
             var result = job._findHandle(randOsName);
             expect(result).to.be.instanceof(Function);
-            expect(result.toString()).to.equal((function() {}).toString());
+            expect(result).to.equal(AnalyzeOsRepoJob.prototype._noop);
         });
     });
 });
