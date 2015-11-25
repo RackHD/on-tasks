@@ -1,6 +1,5 @@
 // Copyright 2015, EMC, Inc.
 /* jshint node:true */
-
 'use strict';
 
 describe("Task", function () {
@@ -12,6 +11,7 @@ describe("Task", function () {
     var noopDefinition;
     var Promise;
     var Constants;
+    var _;
 
     function literalCompare(objA, objB) {
         _.forEach(objA, function(v, k) {
@@ -39,6 +39,7 @@ describe("Task", function () {
         var Logger = helper.injector.get('Logger');
         Logger.prototype.log = sinon.spy();
         Task = helper.injector.get('Task.Task');
+        _ = helper.injector.get('_');
         taskData = taskModule.taskData;
 
         _.forEach(taskData, function(definition) {
@@ -240,6 +241,39 @@ describe("Task", function () {
             expect(task.options.nested1).to.equal(definition.options.sourceValue);
             expect(task.options.nested2).to.equal(definition.options.sourceValue);
             expect(task.options.nested3).to.equal(definition.options.sourceValue);
+        });
+
+        it("should render iteration templates", function() {
+            definition.options = {
+                testList: [
+                    {
+                        name: 'item 1'
+                    },
+                    {
+                        name: 'item 2'
+                    },
+                    {
+                        name: 'item 3'
+                    }
+                ],
+                testVal: '{{#options.testList}}{{ name }}.{{/options.testList}}'
+            };
+            var task = Task.create(definition, {}, {});
+            var tempList = _.transform(definition.options.testList, function (result, n) {
+                result.push(n.name);
+            });
+            expect(task.options.testVal).to.equal(tempList.join('.') + '.');
+        });
+
+        it("should render condition templates", function() {
+            definition.options = {
+                testSrc1: 'Test source 1 exist',
+                testVal1: '{{#options.testSrc1}}{{ options.testSrc1 }}{{/options.testSrc1}}',
+                testVal2: '{{#options.testSrc2}}{{ options.testSrc2 }}{{/options.testSrc2}}'
+            };
+            var task = Task.create(definition, {}, {});
+            expect(task.options.testVal1).to.equal(definition.options.testSrc1);
+            expect(task.options.testVal2).to.equal('');
         });
 
         describe('deferred rendering', function() {
