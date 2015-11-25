@@ -139,7 +139,8 @@ module.exports.lsscsiPlusRotationalOutput =
 '[0:0:61:0]   disk    SEAGATE  ST4000NM0023     GK88  /dev/sdbi       -\n' +
 '[0:0:62:0]   disk    SEAGATE  ST4000NM0023     GK88  /dev/sdbj       -\n' +
 '[0:0:63:0]   enclosu EMC      ESES Enclosure   0001  -               -\n' +
-'[2:0:0:0]    disk    ATA      SATADOM-SL 3ME   S130  /dev/sda   32.0GB\n';
+'[2:0:0:0]    disk    ATA      SATADOM-SL 3ME   S130  /dev/sda   32.0GB\n' +
+'[10:0:0:0]   disk    ATA      32GB SATA Flash  SFDE  /dev/sda   32.0GB';
 
 module.exports.lshwOutput = JSON.stringify(
                                             {
