@@ -370,6 +370,9 @@ describe("Task Parser", function () {
 
                     expect(result.data[10]).to.not.have.property('rotational');
 
+                    expect(result.data[65]).to.have.property('devicePath');
+                    expect(result.data[65].devicePath).to.equal('/dev/sda');
+
                     expect(_.last(result.data)).to.have.property('rotational');
                     expect(_.last(result.data).rotational).to.equal(false);
 
