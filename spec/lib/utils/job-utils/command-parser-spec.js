@@ -1147,5 +1147,85 @@ describe("Task Parser", function () {
             });
         });
     });
+
+    describe("driveId Parsers", function () {
+        it("should parse driveId output", function (done) {
+            var driveidCmd = 'sudo node get_driveid.js';
+
+            var tasks = [
+                {
+                    cmd: driveidCmd,
+                    stdout: stdoutMocks.driveidOutput,
+                    stderr: '',
+                    error: null
+                }
+            ];
+
+            taskParser.parseTasks(tasks)
+                .spread(function (result) {
+                    expect(result.error).to.be.undefined;
+                    expect(result.store).to.be.true;
+                    expect(result.source).to.equal('driveId');
+                    var driveIdLog = result.data;
+                    expect(driveIdLog).that.is.an('array').with.length(3);
+                    _.forEach(driveIdLog, function(elem) {
+                        expect(elem).contain.all.keys('identifier',
+                            'scsiId', 'virtualDisk', 'esxiWwid', 'linuxWwid', 'devName');
+                        expect(elem).property('identifier').to.be.a('number');
+                        expect(elem).property('devName').to.match(/sd[a-z]|hd[a-z]/);
+                        expect(elem).property('esxiWwid').to.match(/^naa.|^t10./);
+                        expect(elem).property('virtualDisk').to.match(/^$|\/c\d\/v\d/);
+                        expect(elem).property('scsiId').to.match(/\d+\:+\d+\:+\d/);
+                        expect(elem).property('linuxWwid').to.match(/^(\/dev\/disk\/by\-id\/)/);
+                    });
+                        done();
+                })
+                .catch(function (err) {
+                    done(err);
+                });
+        });
+        it("should throw error true", function (done) {
+            var driveidCmd = 'sudo node get_driveid.js';
+            var tasks = [
+                {
+                    cmd: driveidCmd,
+                    stdout: stdoutMocks.driveidOutput,
+                    stderr: '',
+                    error: true
+                }
+            ];
+
+            taskParser.parseTasks(tasks)
+                .spread(function (result) {
+                    expect(result.error).to.be.true;
+                    expect(result.source).to.equal('driveId');
+                    done();
+                })
+                .catch(function (err) {
+                    done(err);
+                });
+        });
+        it("should throw Error: No data", function (done) {
+            var driveidCmd = 'sudo node get_driveid.js';
+            var tasks = [
+                {
+                    cmd: driveidCmd,
+                    stdout: '',
+                    stderr: '',
+                    error: null
+                }
+            ];
+
+            taskParser.parseTasks(tasks)
+                .spread(function (result) {
+                    expect(result.error.toString()).to.equal('Error: No data');
+                    expect(result.source).to.equal('driveId');
+                    done();
+                })
+                .catch(function (err) {
+                    done(err);
+                });
+        });
+    });
 });
 

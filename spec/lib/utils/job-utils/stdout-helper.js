@@ -3678,3 +3678,7 @@ module.exports.snmp = fs
 module.exports.lldpOutput = fs
     .readFileSync(__dirname+"/samplefiles/lldp.txt")
     .toString();
+
+module.exports.driveidOutput = fs
+    .readFileSync(__dirname+"/samplefiles/driveid.txt")
+    .toString();
