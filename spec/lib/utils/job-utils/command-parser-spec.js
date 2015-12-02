@@ -1167,18 +1167,24 @@ describe("Task Parser", function () {
                     expect(result.store).to.be.true;
                     expect(result.source).to.equal('driveId');
                     var driveIdLog = result.data;
-                    expect(driveIdLog).that.is.an('array').with.length(3);
-                    _.forEach(driveIdLog, function(elem) {
-                        expect(elem).contain.all.keys('identifier',
-                            'scsiId', 'virtualDisk', 'esxiWwid', 'linuxWwid', 'devName');
-                        expect(elem).property('identifier').to.be.a('number');
-                        expect(elem).property('devName').to.match(/sd[a-z]|hd[a-z]/);
-                        expect(elem).property('esxiWwid').to.match(/^naa.|^t10./);
-                        expect(elem).property('virtualDisk').to.match(/^$|\/c\d\/v\d/);
-                        expect(elem).property('scsiId').to.match(/\d+\:+\d+\:+\d/);
-                        expect(elem).property('linuxWwid').to.match(/^(\/dev\/disk\/by\-id\/)/);
-                    });
-                        done();
+                    expect(driveIdLog).that.is.an('array').with.length(2);
+                    expect(driveIdLog[0]).property('identifier').to.equal(0);
+                    expect(driveIdLog[0]).property('esxiWwid').to.equal
+                    ("t10.ATA_____SATADOM2DSV_3SE__________________________20150522AA9992050074");
+                    expect(driveIdLog[0]).property('devName').to.equal("sdg");
+                    expect(driveIdLog[0]).property('virtualDisk').to.equal("");
+                    expect(driveIdLog[0]).property('scsiId').to.equal("10:0:0:0");
+                    expect(driveIdLog[0]).property('linuxWwid').to.equal
+                    ("/dev/disk/by-id/ata-SATADOM-SV_3SE_20150522AA9992050074");
+                    expect(driveIdLog[1]).property('identifier').to.equal(1);
+                    expect(driveIdLog[1]).property('esxiWwid').to.equal
+                    ("naa.6001636001940a481ddebecb45264d4a");
+                    expect(driveIdLog[1]).property('devName').to.equal("sda");
+                    expect(driveIdLog[1]).property('virtualDisk').to.equal("/c0/v0");
+                    expect(driveIdLog[1]).property('scsiId').to.equal("0:2:0:0");
+                    expect(driveIdLog[1]).property('linuxWwid').to.equal
+                    ("/dev/disk/by-id/scsi-36001636001940a481ddebecb45264d4a");
+                    done();
                 })
                 .catch(function (err) {
                     done(err);
