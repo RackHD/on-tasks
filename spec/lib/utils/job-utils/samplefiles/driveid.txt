@@ -1,0 +1,18 @@
+[
+    {
+        "devName": "sdg",
+        "esxiWwid": "t10.ATA_____SATADOM2DSV_3SE__________________________20150522AA9992050074",
+        "identifier": 0,
+        "linuxWwid": "/dev/disk/by-id/ata-SATADOM-SV_3SE_20150522AA9992050074",
+        "scsiId": "10:0:0:0",
+        "virtualDisk": ""
+    },
+    {
+        "devName": "sda",
+        "esxiWwid": "naa.6001636001940a481ddebecb45264d4a",
+        "identifier": 1,
+        "linuxWwid": "/dev/disk/by-id/scsi-36001636001940a481ddebecb45264d4a",
+        "scsiId": "0:2:0:0",
+        "virtualDisk": "/c0/v0"
+    }
+]

@@ -1150,5 +1150,91 @@ describe("Task Parser", function () {
             });
         });
     });
+
+    describe("driveId Parsers", function () {
+        it("should parse driveId output", function (done) {
+            var driveidCmd = 'sudo node get_driveid.js';
+
+            var tasks = [
+                {
+                    cmd: driveidCmd,
+                    stdout: stdoutMocks.driveidOutput,
+                    stderr: '',
+                    error: null
+                }
+            ];
+
+            taskParser.parseTasks(tasks)
+                .spread(function (result) {
+                    expect(result.error).to.be.undefined;
+                    expect(result.store).to.be.true;
+                    expect(result.source).to.equal('driveId');
+                    var driveIdLog = result.data;
+                    expect(driveIdLog).that.is.an('array').with.length(2);
+                    expect(driveIdLog[0]).property('identifier').to.equal(0);
+                    expect(driveIdLog[0]).property('esxiWwid').to.equal
+                    ("t10.ATA_____SATADOM2DSV_3SE__________________________20150522AA9992050074");
+                    expect(driveIdLog[0]).property('devName').to.equal("sdg");
+                    expect(driveIdLog[0]).property('virtualDisk').to.equal("");
+                    expect(driveIdLog[0]).property('scsiId').to.equal("10:0:0:0");
+                    expect(driveIdLog[0]).property('linuxWwid').to.equal
+                    ("/dev/disk/by-id/ata-SATADOM-SV_3SE_20150522AA9992050074");
+                    expect(driveIdLog[1]).property('identifier').to.equal(1);
+                    expect(driveIdLog[1]).property('esxiWwid').to.equal
+                    ("naa.6001636001940a481ddebecb45264d4a");
+                    expect(driveIdLog[1]).property('devName').to.equal("sda");
+                    expect(driveIdLog[1]).property('virtualDisk').to.equal("/c0/v0");
+                    expect(driveIdLog[1]).property('scsiId').to.equal("0:2:0:0");
+                    expect(driveIdLog[1]).property('linuxWwid').to.equal
+                    ("/dev/disk/by-id/scsi-36001636001940a481ddebecb45264d4a");
+                    done();
+                })
+                .catch(function (err) {
+                    done(err);
+                });
+        });
+        it("should throw error true", function (done) {
+            var driveidCmd = 'sudo node get_driveid.js';
+            var tasks = [
+                {
+                    cmd: driveidCmd,
+                    stdout: stdoutMocks.driveidOutput,
+                    stderr: '',
+                    error: true
+                }
+            ];
+
+            taskParser.parseTasks(tasks)
+                .spread(function (result) {
+                    expect(result.error).to.be.true;
+                    expect(result.source).to.equal('driveId');
+                    done();
+                })
+                .catch(function (err) {
+                    done(err);
+                });
+        });
+        it("should throw Error: No data", function (done) {
+            var driveidCmd = 'sudo node get_driveid.js';
+            var tasks = [
+                {
+                    cmd: driveidCmd,
+                    stdout: '',
+                    stderr: '',
+                    error: null
+                }
+            ];
+
+            taskParser.parseTasks(tasks)
+                .spread(function (result) {
+                    expect(result.error.toString()).to.equal('Error: No data');
+                    expect(result.source).to.equal('driveId');
+                    done();
+                })
+                .catch(function (err) {
+                    done(err);
+                });
+        });
+    });
 });
 
