@@ -194,16 +194,12 @@ describe('Install OS Job', function () {
         it('should not convert if installDisk is not either string or number', function() {
             job.options.osType = 'linux';
             job.options.installDisk = [1, 2];
-            expect(function() {
-                job._convertInstallDisk();
-            }).to.throw(Error);
+            return expect(job._convertInstallDisk()).to.be.rejectedWith(Error);
         });
 
         it('should do nothing if installDisk is not specified', function() {
             job.options.installDisk = null;
-            expect(function() {
-                job._convertInstallDisk();
-            }).to.not.throw(Error);
+            return expect(job._convertInstallDisk()).to.not.be.rejected;
         });
 
         it('should do conversion if installDisk is 0 (for ESXi)', function() {
