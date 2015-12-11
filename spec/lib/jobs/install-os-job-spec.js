@@ -47,6 +47,7 @@ describe('Install OS Job', function () {
                 repo: 'http://127.0.0.1:8080/myrepo/7.0/x86_64',
                 rootPassword: 'rackhd',
                 rootSshKey: null,
+                kvm: null,
                 users: [
                     {
                         name: 'test',
@@ -86,6 +87,39 @@ describe('Install OS Job', function () {
         expect(job.options).to.not.have.property('rootSshKey');
         expect(job.options.users[0]).to.not.have.property('sshKey');
     });
+
+    it("should remove empty kvm flag", function() {
+        expect(job.options).to.not.have.property('kvm');
+    });
+
+    it("should preserve an existing/positive kvm flag", function() {
+        var jobWithKVM = new InstallOsJob(
+            {
+                profile: 'testprofile',
+                completionUri: '',
+                version: '7.0',
+                repo: 'http://127.0.0.1:8080/myrepo/7.0/x86_64',
+                rootPassword: 'rackhd',
+                rootSshKey: null,
+                kvm: true,
+                users: [
+                    {
+                        name: 'test',
+                        password: 'testPassword',
+                        uid: 100,
+                        sshKey: ''
+                    }
+                ],
+                dnsServers: null
+            },
+            {
+                target: 'testid'
+            },
+            uuid.v4());
+        expect(jobWithKVM.options).to.have.property('kvm');
+        expect(jobWithKVM.options.kvm).to.equal(true);
+    });
+
 
     it("should convert some option to empty array", function() {
         expect(job.options.dnsServers).to.have.length(0);
@@ -223,4 +257,3 @@ describe('Install OS Job', function () {
         });
     });
 });
-
