@@ -201,7 +201,7 @@ describe('Analyze OS Repo Job', function () {
             sinon.spy(job, '_esxHandle');
             return job._run().then(function() {
                 expect(job[handleFnName]).to.have.been.called;
-                expect(job['_esxHandle']).to.not.have.been.called;
+                expect(job._esxHandle).to.not.have.been.called;
             });
         });
 
