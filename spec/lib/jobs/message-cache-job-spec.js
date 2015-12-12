@@ -108,7 +108,8 @@ describe("Message Cache Job", function () {
             this.sandbox.stub(job, 'createSetIpmiCommandResultCallback').returns('fn return stub');
             job._run();
             expect(job._subscribeIpmiCommandResult.callCount).to.equal(5);
-            _.forEach(['sdr', 'selInformation', 'sel', 'chassis', 'driveHealth'], function(command) {
+            _.forEach(['sdr', 'selInformation', 'sel', 'chassis', 'driveHealth'],
+            function(command) {
                 expect(job._subscribeIpmiCommandResult).to.have.been.calledWith(
                     job.routingKey,
                     command,

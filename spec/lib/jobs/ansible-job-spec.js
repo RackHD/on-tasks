@@ -3,8 +3,7 @@
 
 'use strict';
 
-var uuid = require('node-uuid'),
-    events = require('events');
+var uuid = require('node-uuid');
 
 describe(require('path').basename(__filename), function () {
     var base = require('./base-spec');
@@ -33,8 +32,6 @@ describe(require('path').basename(__filename), function () {
     });
 
     describe("ansible-job", function() {
-        var Snmptool;
-        var Constants;
         before(function() {
         });
 
