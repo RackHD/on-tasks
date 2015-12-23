@@ -19,7 +19,7 @@ describe('Job.Local.Catalog', function () {
     afterEach(function () {
         this.sandbox.restore();
     });
-    
+
     before(function() {
         this.sandbox = sinon.sandbox.create();
         helper.setupInjector(
@@ -47,15 +47,15 @@ describe('Job.Local.Catalog', function () {
     describe('input validation', function(){
         var job;
         beforeEach('Local catalog job input validation', function(){
-            job = new LocalCatalogJob(options, context, uuid.v4());    
+            job = new LocalCatalogJob(options, context, uuid.v4());
             mockWaterline.nodes.findByIdentifier = function(){};
             this.sandbox.stub(job, '_subscribeActiveTaskExists').resolves();
             this.sandbox.stub(mockWaterline.nodes,'findByIdentifier');
         });
-        
+
         it('should fail if node does not exist', function(done) {
-            mockWaterline.nodes.findByIdentifier.resolves(null);           
-            
+            mockWaterline.nodes.findByIdentifier.resolves(null);
+
             job.run()
             .then(function() {
                 done(new Error("Expected job to fail"));
@@ -76,13 +76,13 @@ describe('Job.Local.Catalog', function () {
     describe('run command', function(){
         var job;
         beforeEach('Local catalog job run command', function(){
-            job = new LocalCatalogJob(options, context, uuid.v4());    
+            job = new LocalCatalogJob(options, context, uuid.v4());
             mockWaterline.nodes.findByIdentifier = function(){};
             this.sandbox.stub(mockWaterline.nodes,'findByIdentifier');
             this.sandbox.stub(parser, 'validateParser');
             this.sandbox.stub(job, '_subscribeActiveTaskExists').resolves();
         });
-        
+
         it('should run command and process response', function() {
             parser.validateParser.returns(Promise.resolve({
                 command: options.commands[0]
@@ -99,7 +99,7 @@ describe('Job.Local.Catalog', function () {
             });
         });
 
-        it('should run command and fail to validate parser', function() { 
+        it('should run command and fail to validate parser', function() {
             job.commands = ['fooey'];
             var error = new Error("Command parser does not exist");
             parser.validateParser.returns(Promise.reject({
@@ -119,15 +119,15 @@ describe('Job.Local.Catalog', function () {
     describe('handle response', function() {
         var job;
         beforeEach('Local Catalog Job handle response beforeEach', function() {
-            job = new LocalCatalogJob(options, context, uuid.v4());   
+            job = new LocalCatalogJob(options, context, uuid.v4());
             mockWaterline.nodes.findByIdentifier = function(){};
             mockWaterline.catalogs.create = function(){};
 
             this.sandbox.stub(mockWaterline.nodes,'findByIdentifier');
             this.sandbox.stub(mockWaterline.catalogs,'create');
-            this.sandbox.stub(parser, 'parseTasks'); 
+            this.sandbox.stub(parser, 'parseTasks');
         });
-        
+
         it('should create catalog entries for response data', function() {
             parser.parseTasks.resolves([
                 {
@@ -150,7 +150,7 @@ describe('Job.Local.Catalog', function () {
                     source: 'test-error-source'
                 }
             ]);
-            
+
             return job.handleResponse([])
             .then(function() {
                 // Make sure we only catalog objects with store: true and no error
