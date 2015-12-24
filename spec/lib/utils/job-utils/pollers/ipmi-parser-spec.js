@@ -78,7 +78,7 @@ describe("ipmi-parser", function() {
                     }
                 } else {
                     var expectedValue = _.has(expectedThresholds, sensor.sensorId) ?
-                        expectedThresholds[sensor.sensorId] : 'ok'
+                        expectedThresholds[sensor.sensorId] : 'ok';
                     expect(sensor.status).to.equal(expectedValue);
                 }
             });

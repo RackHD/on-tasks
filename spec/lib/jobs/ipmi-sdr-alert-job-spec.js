@@ -156,7 +156,7 @@ describe(require('path').basename(__filename), function () {
                 thresholdReadMask: 'unc ucr',
                 assertionsEnabled: [ 'unc+ ucr+' ],
                 deassertionsEnabled: [ 'unc+ ucr+' ]
-            }
+            };
 
             badThresholdTestSensor= {
                 sensorId: 'bad threshold sensor',
@@ -177,7 +177,7 @@ describe(require('path').basename(__filename), function () {
                 thresholdReadMask: 'unc ucr',
                 assertionsEnabled: [ 'unc+ ucr+' ],
                 deassertionsEnabled: [ 'unc+ ucr+' ]
-            }
+            };
 
 
             data = {
@@ -326,13 +326,13 @@ describe(require('path').basename(__filename), function () {
             };
             var expectedStateAsserted = ['Power Supply AC lost', 'Failure detected'];
 
-            badDiscreteTestSensor.statesAsserted.push('Failure detected')
+            badDiscreteTestSensor.statesAsserted.push('Failure detected');
             data.sdr = samples.concat(badDiscreteTestSensor);
 
             return this.determineAlert(data)
             .then(function(out) {
                 expect(out).to.have.length(2);
-                for (var i in out) {
+                for (var i = 0; i < out.length; i+=1) {
                     expectedReading.stateAsserted = expectedStateAsserted[i];
                     expect(out[i]).to.have.property('reading')
                         .that.deep.equals(expectedReading);
@@ -341,11 +341,12 @@ describe(require('path').basename(__filename), function () {
                     expect(out[i]).to.have.property('inCondition').that.equals(true);
                 }
                 expect(waterline.workitems.update).to.have.been
-                    .calledWith({ id: data.workItemId }, { config: conf })
+                    .calledWith({ id: data.workItemId }, { config: conf });
             });
         });
 
-        it("should alert and update the db when multiple discrete states are asserted and one is deasserted", function() {
+        it("should alert and update the db when multiple discrete " +
+                "states are asserted and one is deasserted", function() {
             var workitem = {
                 config: {
                     command: 'sdr',
@@ -422,19 +423,21 @@ describe(require('path').basename(__filename), function () {
 
             return this.determineAlert(data).then(function(out) {
                 expect(out).to.have.length(2);
-                for (var i = 0; i < out.length; i++) {
+                for (var i = 0; i < out.length; i+=1) {
                     expect(out[i]).to.have.property('reading')
                         .that.deep.equals(expectedReading[i]);
                     expect(out[i]).to.have.property('host').that.equals(data.host);
                     expect(out[i]).to.have.property('node').that.equals(data.node);
-                    expect(out[i]).to.have.property('inCondition').that.equals(expectedInCondition[i]);
+                    expect(out[i]).to.have.property('inCondition')
+                        .that.equals(expectedInCondition[i]);
                 }
                 expect(waterline.workitems.update).to.have.been
                     .calledWith({ id: data.workItemId }, { config: conf });
             });
         });
 
-        it("should alert and update the db when multiple discrete states are deasserted", function() {
+        it("should alert and update the db when multiple discrete states are deasserted",
+            function() {
             var workitem = {
                 config: {
                     command: 'sdr',
@@ -511,7 +514,7 @@ describe(require('path').basename(__filename), function () {
 
             return this.determineAlert(data).then(function(out) {
                 expect(out).to.have.length(2);
-                for (var i in out) {
+                for (var i = 0; i < out.length; i+=1) {
                     expect(out[i]).to.have.property('reading')
                         .that.deep.equals(expectedReading[i]);
                     expect(out[i]).to.have.property('host').that.equals(data.host);
@@ -519,7 +522,7 @@ describe(require('path').basename(__filename), function () {
                     expect(out[i]).to.have.property('inCondition').that.equals(false);
                 }
                 expect(waterline.workitems.update).to.have.been
-                    .calledWith({ id: data.workItemId }, { config: conf })
+                    .calledWith({ id: data.workItemId }, { config: conf });
             });
         });
 
@@ -622,12 +625,13 @@ describe(require('path').basename(__filename), function () {
 
             return this.determineAlert(data).then(function(out) {
                 expect(out).to.have.length(3);
-                for (var i = 0; i < out.length; i++) {
+                for (var i = 0; i < out.length; i+=1) {
                     expect(out[i]).to.have.property('reading')
                         .that.deep.equals(expectedReading[i]);
                     expect(out[i]).to.have.property('host').that.equals(data.host);
                     expect(out[i]).to.have.property('node').that.equals(data.node);
-                    expect(out[i]).to.have.property('inCondition').that.equals(expectedInCondition[i]);
+                    expect(out[i]).to.have.property('inCondition')
+                        .that.equals(expectedInCondition[i]);
                 }
                 expect(waterline.workitems.update).to.have.been
                     .calledWith({ id: data.workItemId }, { config: conf });
@@ -926,7 +930,7 @@ describe(require('path').basename(__filename), function () {
             data.sdr = samples.concat(goodDiscreteTestSensor);
 
             return this.determineAlert(data)
-                .then(function(out) {
+                .then(function() {
                     expect(waterline.workitems.update).to.have.been
                         .calledWith({ id: data.workItemId }, { config: conf });
                 });
