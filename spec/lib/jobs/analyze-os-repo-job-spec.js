@@ -98,7 +98,7 @@ describe('Analyze OS Repo Job', function () {
 
             it('should throw error if both boot.cfg and BOOT.CFG is not avaiable', function() {
                 repoTool.downloadViaHttp.rejects();
-                return expect(job._esxHandle(repo)).eventually.be.rejected;
+                return expect(job._esxHandle(repo)).to.be.rejected;
             });
 
             describe('test the behavior if boot.cfg misses some required options', function() {
@@ -109,7 +109,7 @@ describe('Analyze OS Repo Job', function () {
                         delete data[key];
                         repoTool.downloadViaHttp.resolves();
                         repoTool.parseEsxBootCfgFile.returns(data);
-                        return expect(job._esxHandle(repo)).eventually.be.rejected;
+                        return expect(job._esxHandle(repo)).to.be.rejected;
                     });
                 });
             });

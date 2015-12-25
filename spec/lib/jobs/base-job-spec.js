@@ -120,7 +120,7 @@ describe("Base Job", function () {
 
         it("should resolve cleanup() if it is not subclassed", function() {
             job._cleanup = null;
-            return expect(job.cleanup()).to.eventually.be.fulfilled;
+            return expect(job.cleanup()).to.be.fulfilled;
         });
     });
 
