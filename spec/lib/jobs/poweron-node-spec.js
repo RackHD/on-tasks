@@ -11,11 +11,11 @@ describe(require('path').basename(__filename), function () {
         //var logger = Logger.initialize(mockChildProcessFactory);
         function MockChildProcess() {}
         MockChildProcess.prototype.run = function run (command, args) {
-            // logger.info("CHILD PROCESS MOCK!");
-            // logger.info("command: "+command);
-            // logger.info("args: "+args);
-            // logger.info("env: "+env);
-            // logger.info("code: "+code);
+            // logger.debug("CHILD PROCESS MOCK!");
+            // logger.debug("command: "+command);
+            // logger.debug("args: "+args);
+            // logger.debug("env: "+env);
+            // logger.debug("code: "+code);
             if ((command === 'ipmitool') && _.contains(args, 'status')) {
                 // power status call, return a "success"
                 return Promise.resolve({
