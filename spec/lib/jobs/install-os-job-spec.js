@@ -200,18 +200,14 @@ describe('Install OS Job', function () {
         });
 
         it('should set correct installDisk esxi wwid', function() {
-            return Promise.resolve().then(function() {
-                return job._convertInstallDisk();
-            }).then(function() {
+            return job._convertInstallDisk().then(function() {
                 expect(job.options.installDisk).to.equal('naa.rstuvw');
             });
         });
 
         it('should set correct installDisk linux wwid', function() {
             job.options.osType = 'linux';
-            return Promise.resolve().then(function() {
-                return job._convertInstallDisk();
-            }).then(function() {
+            return job._convertInstallDisk().then(function() {
                 expect(job.options.installDisk).to.equal('/dev/test1');
             });
         });
@@ -219,9 +215,7 @@ describe('Install OS Job', function () {
         it('should not convert if installDisk is string', function() {
             job.options.osType = 'linux';
             job.options.installDisk = 'wwidabcd';
-            return Promise.resolve().then(function() {
-                return job._convertInstallDisk();
-            }).then(function() {
+            return job._convertInstallDisk().then(function() {
                 expect(job.options.installDisk).to.equal('wwidabcd');
             });
         });
@@ -234,9 +228,7 @@ describe('Install OS Job', function () {
 
         it('should set SATADOM wwid as default if installDisk is not specified', function() {
             job.options.installDisk = null;
-            return Promise.resolve().then(function() {
-                return job._convertInstallDisk();
-            }).then(function() {
+            return job._convertInstallDisk().then(function() {
                 expect(job.options.installDisk).to.equal('t10.abcde');
             });
         });
@@ -244,9 +236,7 @@ describe('Install OS Job', function () {
         it('should do conversion if installDisk is 0 (for ESXi)', function() {
             job.options.osType = 'esx';
             job.options.installDisk = 0;
-            return Promise.resolve().then(function() {
-                return job._convertInstallDisk();
-            }).then(function() {
+            return job._convertInstallDisk().then(function() {
                 expect(job.options.installDisk).to.equal('t10.abcde');
             });
         });
@@ -254,9 +244,7 @@ describe('Install OS Job', function () {
         it('should do conversion if installDisk is 0 (for Linux)', function() {
             job.options.osType = 'linux';
             job.options.installDisk = 0;
-            return Promise.resolve().then(function() {
-                return job._convertInstallDisk();
-            }).then(function() {
+            return job._convertInstallDisk().then(function() {
                 expect(job.options.installDisk).to.equal('/dev/test0');
             });
         });
@@ -270,9 +258,7 @@ describe('Install OS Job', function () {
             job.options.osType = 'linux';
             job.options.installDisk = null;
             waterline.catalogs.findMostRecent = sinon.stub().resolves({});
-            return Promise.resolve().then(function() {
-                return job._convertInstallDisk();
-            }).then(function() {
+            return job._convertInstallDisk().then(function() {
                 expect(job.options.installDisk).to.equal('sda');
             });
         });
@@ -281,9 +267,7 @@ describe('Install OS Job', function () {
             job.options.osType = 'esx';
             job.options.installDisk = null;
             waterline.catalogs.findMostRecent = sinon.stub().resolves({});
-            return Promise.resolve().then(function() {
-                return job._convertInstallDisk();
-            }).then(function() {
+            return job._convertInstallDisk().then(function() {
                 expect(job.options.installDisk).to.equal('firstdisk');
             });
         });
