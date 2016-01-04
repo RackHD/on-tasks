@@ -23,7 +23,7 @@ describe('Job.Local.Catalog', function () {
     before(function() {
         this.sandbox = sinon.sandbox.create();
         helper.setupInjector(
-            _.flatten([
+            _.flattenDeep([
                 helper.require('/lib/jobs/base-job'),
                 helper.require('/lib/jobs/local-catalog'),
                 helper.require('/lib/utils/job-utils/command-parser'),

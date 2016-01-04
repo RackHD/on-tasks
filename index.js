@@ -7,7 +7,7 @@ var di = require('di'),
     core = require('on-core')(di);
 
 module.exports = {
-    injectables: _.flatten([
+    injectables: _.flattenDeep([
         require('./lib/task'),
         core.helper.requireGlob(__dirname + '/lib/jobs/*.js'),
         core.helper.requireGlob(__dirname + '/lib/utils/**/*.js'),
