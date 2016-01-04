@@ -127,6 +127,7 @@ describe('Install OS Job', function () {
 
     it("should set up message subscribers", function() {
         var cb;
+        waterline.catalogs.findMostRecent = sinon.stub().resolves({});
         return job._run().then(function() {
             expect(subscribeRequestProfileStub).to.have.been.called;
             expect(subscribeRequestPropertiesStub).to.have.been.called;
@@ -199,18 +200,14 @@ describe('Install OS Job', function () {
         });
 
         it('should set correct installDisk esxi wwid', function() {
-            return Promise.resolve().then(function() {
-                return job._convertInstallDisk();
-            }).then(function() {
+            return job._convertInstallDisk().then(function() {
                 expect(job.options.installDisk).to.equal('naa.rstuvw');
             });
         });
 
         it('should set correct installDisk linux wwid', function() {
             job.options.osType = 'linux';
-            return Promise.resolve().then(function() {
-                return job._convertInstallDisk();
-            }).then(function() {
+            return job._convertInstallDisk().then(function() {
                 expect(job.options.installDisk).to.equal('/dev/test1');
             });
         });
@@ -218,9 +215,7 @@ describe('Install OS Job', function () {
         it('should not convert if installDisk is string', function() {
             job.options.osType = 'linux';
             job.options.installDisk = 'wwidabcd';
-            return Promise.resolve().then(function() {
-                return job._convertInstallDisk();
-            }).then(function() {
+            return job._convertInstallDisk().then(function() {
                 expect(job.options.installDisk).to.equal('wwidabcd');
             });
         });
@@ -231,17 +226,17 @@ describe('Install OS Job', function () {
             return expect(job._convertInstallDisk()).to.be.rejectedWith(Error);
         });
 
-        it('should do nothing if installDisk is not specified', function() {
+        it('should set SATADOM wwid as default if installDisk is not specified', function() {
             job.options.installDisk = null;
-            return expect(job._convertInstallDisk()).to.not.be.rejected;
+            return job._convertInstallDisk().then(function() {
+                expect(job.options.installDisk).to.equal('t10.abcde');
+            });
         });
 
         it('should do conversion if installDisk is 0 (for ESXi)', function() {
             job.options.osType = 'esx';
             job.options.installDisk = 0;
-            return Promise.resolve().then(function() {
-                return job._convertInstallDisk();
-            }).then(function() {
+            return job._convertInstallDisk().then(function() {
                 expect(job.options.installDisk).to.equal('t10.abcde');
             });
         });
@@ -249,10 +244,31 @@ describe('Install OS Job', function () {
         it('should do conversion if installDisk is 0 (for Linux)', function() {
             job.options.osType = 'linux';
             job.options.installDisk = 0;
-            return Promise.resolve().then(function() {
-                return job._convertInstallDisk();
-            }).then(function() {
+            return job._convertInstallDisk().then(function() {
                 expect(job.options.installDisk).to.equal('/dev/test0');
+            });
+        });
+
+        it('should reject when installDisk is Number but not exist', function() {
+            job.options.installDisk = 100;
+            return expect(job._convertInstallDisk()).to.be.rejectedWith(Error);
+        });
+
+        it('should set sda if installDisk is null and catalog is empty (Linux)', function() {
+            job.options.osType = 'linux';
+            job.options.installDisk = null;
+            waterline.catalogs.findMostRecent = sinon.stub().resolves({});
+            return job._convertInstallDisk().then(function() {
+                expect(job.options.installDisk).to.equal('sda');
+            });
+        });
+
+        it('should set firstdisk if installDisk is null and catalog is empty (ESXi)', function() {
+            job.options.osType = 'esx';
+            job.options.installDisk = null;
+            waterline.catalogs.findMostRecent = sinon.stub().resolves({});
+            return job._convertInstallDisk().then(function() {
+                expect(job.options.installDisk).to.equal('firstdisk');
             });
         });
     });
