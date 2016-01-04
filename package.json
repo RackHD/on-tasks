@@ -18,7 +18,7 @@
   "homepage": "https://github.com/RackHD/on-tasks",
   "dependencies": {
     "di": "git+https://github.com/RackHD/di.js.git",
-    "lodash": "^2.4.1",
+    "lodash": "^3.10.1",
     "on-core": "git+https://github.com/RackHD/on-core.git",
     "xml2js": "^0.4.4"
   },
