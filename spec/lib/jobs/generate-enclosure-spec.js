@@ -9,11 +9,14 @@ describe(require('path').basename(__filename), function () {
     var nodeId = '561885426cb1f2ea4486589d';
     var mockWaterline;
     var job;
+    var _;
+
     mockWaterline = {
         nodes: {
             find: function(){},
             create: function(){},
-            updateByIdentifier: function(){}
+            updateByIdentifier: function(){},
+            findByIdentifier: function(){}
         },
         catalogs: {
             findMostRecent: function(){}
@@ -27,6 +30,7 @@ describe(require('path').basename(__filename), function () {
             helper.require('/lib/utils/job-utils/catalog-searcher.js'),
             helper.di.simpleWrapper(mockWaterline, 'Services.Waterline')
         ]);
+        _ = helper.injector.get('_');
 
         GenerateEnclJob = helper.injector.get('Job.Catalog.GenerateEnclosure');
     });
@@ -230,13 +234,14 @@ describe(require('path').basename(__filename), function () {
         });
 
         it('Should create enclosure node and update when no match found', function() {
-            var enclInput ={
+            var node = {
+                id: nodeId,
+                relations: []
+            };
+            var enclInput = {
                 name: 'Enclosure Node ABC123',
                 type: 'enclosure',
-                relations: [{
-                    relationType: 'encloses',
-                    targets: []
-                }]
+                relations: []
             };
             var enclOutput = _.cloneDeep(enclInput);
             var enclId = uuid.v4();
@@ -257,6 +262,7 @@ describe(require('path').basename(__filename), function () {
 
             this.sandbox.stub(mockWaterline.nodes,'find').resolves();
             this.sandbox.stub(mockWaterline.nodes,'create').resolves(enclOutput);
+            this.sandbox.stub(mockWaterline.nodes,'findByIdentifier').resolves(node);
 
             return job.run()
             .then(function() {
@@ -270,6 +276,10 @@ describe(require('path').basename(__filename), function () {
         });
 
         it('Should update enclosure and node when match found', function() {
+            var node = {
+                id: nodeId,
+                relations: []
+            };
             var enclId = uuid.v4();
             var otherNodeId = uuid.v4();
             var encl = [
@@ -308,6 +318,7 @@ describe(require('path').basename(__filename), function () {
 
             this.sandbox.stub(mockWaterline.nodes,'create');
             this.sandbox.stub(mockWaterline.nodes,'find').resolves(encl);
+            this.sandbox.stub(mockWaterline.nodes,'findByIdentifier').resolves(node);
             return job.run()
             .then(function() {
                 expect(mockWaterline.nodes.create).to.not.have.been.called;
@@ -318,6 +329,115 @@ describe(require('path').basename(__filename), function () {
             });
         });
 
+        it('Should update enclosure node when it does not have targets', function() {
+            var node = {
+                id: nodeId,
+                relations: []
+            };
+            var enclId = uuid.v4();
+            var encl = [
+                {
+                    id: enclId,
+                    name: 'Enclosure Node ABC123',
+                    type: 'enclosure',
+                    relations: []
+                },
+            ];
+
+            var enclRelation = {
+                relations: [{
+                    relationType: 'encloses',
+                    targets: [nodeId]
+                }]
+            };
+
+            this.sandbox.stub(mockWaterline.nodes,'create');
+            this.sandbox.stub(mockWaterline.nodes,'find').resolves(encl);
+            this.sandbox.stub(mockWaterline.nodes,'findByIdentifier').resolves(node);
+            return job.run()
+            .then(function() {
+                expect(mockWaterline.nodes.create).to.not.have.been.called;
+                expect(mockWaterline.nodes.updateByIdentifier)
+                    .to.have.been.calledWith(enclId, enclRelation);
+            });
+        });
+
+        it('Should not override other relations when update node', function() {
+            var node = {
+                id: nodeId,
+                relations: [
+                    {
+                        relationType: 'poweredBy',
+                        targets: 'bbb'
+                    }
+                ]
+            };
+            var enclId = uuid.v4();
+            var encl = [
+                {
+                    id: enclId,
+                    name: 'Enclosure Node ABC123',
+                    type: 'enclosure',
+                    relations: [
+                        {
+                           relationType: 'poweredBy',
+                           targets: 'aaa'
+                        }
+                    ]
+                },
+            ];
+            var enclRelation = _.cloneDeep(encl[0].relations);
+            enclRelation.push({
+                relationType: 'encloses',
+                targets: [nodeId]
+            });
+            var nodeRelation = _.cloneDeep(node.relations);
+            nodeRelation.push({
+                relationType: 'enclosedBy',
+                targets: [enclId]
+            });
+
+            this.sandbox.stub(mockWaterline.nodes,'create');
+            this.sandbox.stub(mockWaterline.nodes,'find').resolves(encl);
+            this.sandbox.stub(mockWaterline.nodes,'findByIdentifier').resolves(node);
+            return job.run()
+            .then(function() {
+                expect(mockWaterline.nodes.create).to.not.have.been.called;
+                expect(mockWaterline.nodes.updateByIdentifier)
+                    .to.have.been.calledWith(enclId, {relations: enclRelation});
+                expect(mockWaterline.nodes.updateByIdentifier)
+                    .to.have.been.calledWith(nodeId, {relations: nodeRelation});
+            });
+        });
+
+        it('Should throw error when cannot find compute node', function(done) {
+            var encl = [
+                {
+                    id: 'aaa',
+                    name: 'Enclosure Node ABC123',
+                    type: 'enclosure',
+                    relations: []
+                },
+            ];
+
+            this.sandbox.stub(mockWaterline.nodes,'create').resolves();
+            this.sandbox.stub(mockWaterline.nodes,'find').resolves(encl);
+            this.sandbox.stub(mockWaterline.nodes,'findByIdentifier').resolves();
+            return job.run()
+            .then(function() {
+                done(new Error("Expected job to fail"));
+            })
+            .catch(function(e) {
+                try {
+                    expect(e).to.equal('Could not find node with identifier ' + nodeId);
+                    expect(mockWaterline.nodes.updateByIdentifier).to.not.have.been
+                        .calledWith(nodeId);
+                    done();
+                } catch (e) {
+                    done(e);
+                }
+            });
+        });
     });
 
     describe('Actions when the job ran on node more than once', function() {
@@ -358,8 +478,15 @@ describe(require('path').basename(__filename), function () {
             this.sandbox.restore();
         });
 
-        it('Should not update enclosure node if ran more than once', function() {
+        it('Should not update node if ran more than once', function() {
             var enclId = uuid.v4();
+            var node = {
+                id: nodeId,
+                relations: [{
+                    relationType: 'enclosedBy',
+                    targets: [enclId]
+                }]
+            };
             var encl = [{
                 id: enclId,
                 name: 'Enclosure Node ABC123',
@@ -371,12 +498,12 @@ describe(require('path').basename(__filename), function () {
             }];
 
             this.sandbox.stub(mockWaterline.nodes,'find').resolves(encl);
+            this.sandbox.stub(mockWaterline.nodes,'findByIdentifier').resolves(node);
 
             return job.run()
             .then(function() {
                 expect(mockWaterline.nodes.create).to.not.have.been.called;
-                expect(mockWaterline.nodes.updateByIdentifier)
-                .to.not.have.been.calledWith(enclId);
+                expect(mockWaterline.nodes.updateByIdentifier).to.not.have.been.called;
             });
         });
     });
