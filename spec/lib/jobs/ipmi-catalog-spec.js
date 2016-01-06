@@ -14,7 +14,7 @@ describe('LocalIpmi Catalog Job', function () {
 
     before(function() {
         helper.setupInjector(
-            _.flatten([
+            _.flattenDeep([
                 helper.require('/lib/jobs/base-job'),
                 helper.require('/lib/jobs/ipmi-catalog'),
                 helper.require('/lib/utils/job-utils/command-parser'),
@@ -42,14 +42,14 @@ describe('LocalIpmi Catalog Job', function () {
             this.sandbox.stub(job, '_subscribeActiveTaskExists').resolves();
             this.sandbox.stub(mockWaterline.nodes,'findByIdentifier');
         });
-        
+
         afterEach('Ipmi catalog job input validation', function(){
             this.sandbox = sinon.sandbox.restore();
         });
 
         it('should fail if node does not exist', function(done) {
-            mockWaterline.nodes.findByIdentifier.resolves(null);           
-            
+            mockWaterline.nodes.findByIdentifier.resolves(null);
+
             job.run()
             .then(function() {
                 done(new Error("Expected job to fail"));
@@ -77,7 +77,7 @@ describe('LocalIpmi Catalog Job', function () {
                 ]
             };
             mockWaterline.nodes.findByIdentifier.resolves(node);
- 
+
             job.run()
             .then(function() {
                 done(new Error("Expected job to fail"));
@@ -97,7 +97,7 @@ describe('LocalIpmi Catalog Job', function () {
 
     describe('run command', function(){
         var job;
-  
+
         beforeEach('Ipmi catalog job run command', function(){
             var options = {
                 commands: [
@@ -113,7 +113,7 @@ describe('LocalIpmi Catalog Job', function () {
             this.sandbox.stub(mockWaterline.nodes,'findByIdentifier');
             this.sandbox.stub(job, '_subscribeActiveTaskExists').resolves();
         });
-        
+
         afterEach('Ipmi catalog job input validation', function(){
             this.sandbox = sinon.sandbox.restore();
         });
@@ -129,7 +129,7 @@ describe('LocalIpmi Catalog Job', function () {
             _.forEach(job.commands, function(cmd){
                 cmds.push(job.formatCmd(config, cmd));
             });
-            
+
             expect(cmds).to.deep.equal([
                 ['-U', 'admin', '-P', 'password', '-H', '1.2.3.4', 'sdr'],
                 ['-U', 'admin', '-P', 'password', '-H', '1.2.3.4', 'lan', 'print'],
@@ -193,7 +193,7 @@ describe('LocalIpmi Catalog Job', function () {
             this.sandbox.stub(mockWaterline.catalogs,'create');
             this.sandbox.stub(parser, 'parseTasks');
         });
-        
+
         afterEach('Ipmi catalog job input validation', function(){
             this.sandbox = sinon.sandbox.restore();
         });
@@ -220,7 +220,7 @@ describe('LocalIpmi Catalog Job', function () {
                     source: 'test-error-source'
                 }
             ]);
-            
+
             return job.handleResponse([])
             .then(function() {
                 // Make sure we only catalog objects with store: true and no error

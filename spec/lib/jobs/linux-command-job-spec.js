@@ -11,7 +11,7 @@ describe('Linux Command Job', function () {
 
     before(function() {
         helper.setupInjector(
-            _.flatten([
+            _.flattenDeep([
                 helper.require('/lib/jobs/base-job'),
                 helper.require('/lib/jobs/linux-command'),
                 helper.require('/lib/utils/job-utils/command-parser'),

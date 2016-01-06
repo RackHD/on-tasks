@@ -26,7 +26,7 @@ describe('Analyze OS Repo Job', function () {
 
     before(function() {
         helper.setupInjector(
-            _.flatten([
+            _.flattenDeep([
                 helper.require('/lib/jobs/base-job'),
                 helper.require('/lib/jobs/analyze-os-repo-job.js'),
                 helper.require('/lib/utils/job-utils/os-repo-tool.js')

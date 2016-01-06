@@ -16,7 +16,7 @@ describe('Install OS Job', function () {
 
     before(function() {
         helper.setupInjector(
-            _.flatten([
+            _.flattenDeep([
                 helper.require('/lib/jobs/base-job'),
                 helper.require('/lib/jobs/install-os'),
                 helper.require('/lib/utils/job-utils/catalog-searcher'),
