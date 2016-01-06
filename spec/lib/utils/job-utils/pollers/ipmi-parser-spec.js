@@ -8,6 +8,7 @@ var fs = require('fs');
 describe("ipmi-parser", function() {
     var parser;
     var ipmiOutMock;
+    var corruptIpmiOutMock;
     var ipmiDriveHealthOutMock;
 
     before('ipmi parser before', function() {
@@ -18,7 +19,11 @@ describe("ipmi-parser", function() {
         parser = helper.injector.get('JobUtils.IpmiCommandParser');
 
         ipmiOutMock = fs
-            .readFileSync(__dirname+'/ipmi-sdr-c-output')
+            .readFileSync(__dirname+'/ipmi-sdr-v-output')
+            .toString();
+
+        corruptIpmiOutMock = fs
+            .readFileSync(__dirname+'/corrupt-ipmi-sdr-v-output')
             .toString();
 
         ipmiDriveHealthOutMock = fs
@@ -28,97 +33,61 @@ describe("ipmi-parser", function() {
 
     describe("IPMI extraction", function() {
         it("should parse ipmitool -v sdr output", function() {
-            var samples = parser.parseSdrData(ipmiOutMock);
+            var sensors = parser.parseSdrData(ipmiOutMock);
+            sensors.should.have.length(ipmiOutMock.match(/Sensor\ ID/g).length);
 
-            /*
-                [
-                    // Long format
-                    {
-                        'Entity Id': '7.18',
-                        'Status': 'ok',
-                        'Sensor Id': 'VBAT',
-                        'Normal Minimum': '8.928',
-                        'Lower non-critical': '2.688',
-                        'Upper critical': '3.456',
-                        'Sensor Reading': '3.168',
-                        'Upper non-critical': '3.312',
-                        'Lower critical': '2.544',
-                        'Sensor Type': 'Voltage',
-                        'Normal Maximum': '11.424',
-                        'Entry Id Name': 'System Board',
-                        'Sensor Reading Units': 'Volts',
-                        'Nominal Reading': '9.216'
-                    },
-                    // Short format
-                    {
-                        'Entity Id': '10.1',
-                        'Status': 'ok',
-                        'Sensor Id': 'PS1 Status',
-                        'States Asserted': 'Presence detected'
+            var expectedAssertions = {
+                'PSU1 Status (0xe0)': ['Power Supply AC lost'],
+                'HDD2 (0x47)': ['Hot Spare', 'In Critical Array']
+            };
+
+            var expectedThresholds = {
+                'Temp_DIMM_CD (0xad)': 'Upper Critical',
+                'Fan_SYS0_1 (0xc0)': 'Lower Critical',
+            };
+
+            var expectedProps = [
+                'sensorId',
+                'entityId',
+                'sdrType',
+                'sensorType',
+                'sensorReading'
+            ];
+
+            _.forEach(sensors, function(sensor) {
+                //Make sure all expected keys are present.
+                _.forEach(expectedProps, function(property) {
+                    expect(sensor).to.have.property(property);
+                });
+
+                //Make sure sdrType is either Discrete or Threshold
+                expect(sensor).to.have.property('sdrType')
+                    .and.to.satisfy(function(val) {
+                        return val === 'Discrete' || val === 'Threshold';
+                    });
+
+                if (sensor.sdrType === 'Discrete') {
+                    if (_.has(expectedAssertions, sensor.sensorId)) {
+                        expect(sensor).to.have.property('statesAsserted');
+                        _.forEach(expectedAssertions[sensor.sensorId], 
+                        function(assertion) {
+                            expect(sensor.statesAsserted).to.include(assertion);
+                            expect(sensor.statesAsserted)
+                                .not.to.include(sensor.sensorType);
+                        });
                     }
-                ]
-            */
-
-            // Make the array an object with keys to make testing assertions easier below
-            // Run assertions on the objects while we transform as well as an optimization.
-            var samplesObj = _.transform(samples, function(result, sample) {
-                var length = _.keys(sample).length;
-                expect(['ok', 'ns']).to.include(sample.Status);
-                expect([4, 14]).to.contain(length);
-                if (length === 4) {
-                    expect(sample).to.have.property('States Asserted');
                 } else {
-                    expect(parseFloat(sample['Sensor Reading'])).to.be.a('number');
-                }
-
-                result[sample['Sensor Id']] = sample;
-            }, {});
-
-            // Long format parsing assertions
-            var columnsLongKeys = [
-                "Sensor Id",
-                "Sensor Reading",
-                "Sensor Reading Units",
-                "Status",
-                "Entity Id",
-                "Entry Id Name",
-                "Sensor Type",
-                "Nominal Reading",
-                "Normal Minimum",
-                "Normal Maximum",
-                "Upper critical",
-                "Upper non-critical",
-                "Lower critical",
-                "Lower non-critical"
-            ];
-            var vrdimm = samplesObj['Temp_VR_DIMM_CD.'];
-            _.forEach(columnsLongKeys, function(key) {
-                try {
-                    expect(vrdimm).to.have.property(key);
-                } catch (e) {
-                    key, vrdimm;
+                    var expectedValue = _.has(expectedThresholds, sensor.sensorId) ?
+                        expectedThresholds[sensor.sensorId] : 'ok'
+                    expect(sensor.status).to.equal(expectedValue);
                 }
             });
+        });
 
-            // Short format parsing assertions
-            var columnsShortKeys = [
-                "Sensor Id",
-                "Status",
-                "Entity Id",
-                "States Asserted"
-            ];
-            var button = samplesObj.Button;
-            _.forEach(columnsShortKeys, function(key) {
-                expect(button).to.have.property(key);
-            });
-            _.forEach(_.range(0, 5), function(i) {
-                expect(samplesObj).to.have.deep.property('HDD%s.States Asserted'.format(i))
-                    .that.equals('Drive Present');
-                expect(samplesObj).to.have.deep.property('HDD%s.Entity Id'.format(i))
-                    .that.equals('26.' + i);
-            });
-            expect(samplesObj).to.have.deep.property('CMC_LINK_BRD_STA.States Asserted')
-                .that.equals('');
+        it("should omit corrupt sdr entries", function() {
+            var sensors = parser.parseSdrData(corruptIpmiOutMock);
+            // There are exactly 91 valid SDRs in the 'corrupt' output
+            sensors.should.have.length(91);
         });
 
         it('should parse ipmitool chassis status raw data output', function() {
