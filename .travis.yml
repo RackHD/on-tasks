@@ -8,9 +8,15 @@ matrix:
   allow_failures:
    - node_js: "4"
 
+env:
+  global:
+    - secure: "HSE0zTiE+r0o/NlXs2YIENC5QPzYcZm19ZHk+ScgC8T5R+ma5/72srAfE8v6rdp29R65nC+vKYhEN/wzf57kVfsQBihEaG0lLaFTG3BwEBGYmAFFhhjO8cERZW21N/IAak8lUADFviLW63kWI//pSw2KM3+7rr5QYdIMDyuTzsbU6As5esWbXDsdXn7Nh3yj+qu4UkEjDcjP1uJh4jpKiycHRqSz0Y1VS6iW6aCwM9dMHu87IZkHtAeJ2brjdsTs4R7iK32y3yA/g72dtjbqxlzVpi6e3SNxVOylSWk/OZN7zQeg6LKV+aov9O9cm2xj7Zfhtrbxa6cAnEMWz6QoyWjnUBmyrJBX+ZJ3o0HAKpr8/nIw+PHw9GRwhUrRoga55bXMe/9X+DDeUGzX6FwqEsroL7kxxCjB6PHxEWNY9cLxYn7anbkTGEXMkUdkF548XWtDaxZKX9Sc1Fzjc5gjxRzw2X0gjb+IC09iM7gHFG3LnXql1fjfISaoz84vqX8muLYWQaxB1DTzqpBFu+4PkwE50uWbYmLDNWpbgcG3UdgTLv5tlHhi0OyoxVqtQjvucNRBIJ1lIZFpRznGJG23VdxfuBCN9H+UuHCf9YLjKRUE55JRibnqlwIOmhrVhpZZ0r/o+RENbWOns92akfUjtgkdKRhrZ4mZDZGpjf4d6k8="
+
 after_success:
  - ./node_modules/.bin/istanbul cover -x "**/spec/**" ./node_modules/.bin/_mocha --report lcovonly -- $(find spec -name '*-spec.js') -R spec --require spec/helper.js
  - cat ./coverage/lcov.info | node_modules/.bin/coveralls
+ - chmod 755 ./build_children.sh
+ - ./build_children.sh
 
 notifications:
   slack:
