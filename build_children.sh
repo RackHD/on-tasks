@@ -10,9 +10,12 @@ GetMasterBuild () {
 
 # Get last child project build number
 BUILD_NUM_TASKGRAPH=$(GetMasterBuild on-taskgraph)
+BUILD_NUM_HTTP=$(GetMasterBuild on-http)
 
 # Restart last child project build
 curl -X POST https://api.travis-ci.org/builds/$BUILD_NUM_TASKGRAPH/restart --header "Authorization: token "$AUTH_TOKEN
+curl -X POST https://api.travis-ci.org/builds/$BUILD_NUM_HTTP/restart --header "Authorization: token "$AUTH_TOKEN
 
 #Echo out what builds where restarted
 echo Restarted on-taskgraph Build = $BUILD_NUM_TASKGRAPH
+echo Restarted on-http Build = $BUILD_NUM_HTTP
