@@ -11,6 +11,7 @@ describe('LocalIpmi Catalog Job', function () {
         nodes: {},
         catalogs: {}
     };
+    var childProcess;
 
     before(function() {
         helper.setupInjector(
@@ -25,6 +26,7 @@ describe('LocalIpmi Catalog Job', function () {
         Promise = helper.injector.get('Promise');
         IpmiCatalogJob = helper.injector.get('Job.LocalIpmi.Catalog');
         uuid = helper.injector.get('uuid');
+        childProcess = helper.injector.get('ChildProcess');
     });
 
     describe('input validation', function(){
@@ -40,11 +42,11 @@ describe('LocalIpmi Catalog Job', function () {
 
             this.sandbox = sinon.sandbox.create();
             this.sandbox.stub(job, '_subscribeActiveTaskExists').resolves();
-            this.sandbox.stub(mockWaterline.nodes,'findByIdentifier');
+            this.sandbox.stub(mockWaterline.nodes, 'findByIdentifier');
         });
 
         afterEach('Ipmi catalog job input validation', function(){
-            this.sandbox = sinon.sandbox.restore();
+            this.sandbox.restore();
         });
 
         it('should fail if node does not exist', function(done) {
@@ -102,7 +104,7 @@ describe('LocalIpmi Catalog Job', function () {
             var options = {
                 commands: [
                     'sdr',
-                    'lan print'
+                    'lan print || true'
                 ],
                 acceptedResponseCodes: [1]
             };
@@ -115,7 +117,7 @@ describe('LocalIpmi Catalog Job', function () {
         });
 
         afterEach('Ipmi catalog job input validation', function(){
-            this.sandbox = sinon.sandbox.restore();
+            this.sandbox.restore();
         });
 
         it('should transform command correctly', function() {
@@ -131,8 +133,16 @@ describe('LocalIpmi Catalog Job', function () {
             });
 
             expect(cmds).to.deep.equal([
-                ['-U', 'admin', '-P', 'password', '-H', '1.2.3.4', 'sdr'],
-                ['-U', 'admin', '-P', 'password', '-H', '1.2.3.4', 'lan', 'print'],
+                {
+                    command: ['-I', 'lanplus', '-U', 'admin', '-P',
+                        'password', '-H', '1.2.3.4', 'sdr'],
+                    ignoreFailure: false
+                },
+                {
+                    command: ['-I', 'lanplus','-U', 'admin', '-P', 'password',
+                        '-H', '1.2.3.4', 'lan', 'print'],
+                    ignoreFailure: true
+                }
             ]);
         });
 
@@ -160,6 +170,65 @@ describe('LocalIpmi Catalog Job', function () {
             .then(function() {
                 expect(job.runCommand).to.have.been.called;
                 expect(job.handleResponse).to.have.been.called;
+            });
+        });
+
+        it('should not process response if don\'t ignore failure', function() {
+            var node = {
+                id: 'bc7dab7e8fb7d6abf8e7d6ac',
+                obmSettings: [
+                    {
+                        service: 'ipmi-obm-service',
+                        config: {
+                            host: '1.2.3.4',
+                            user: 'admin',
+                            password: 'password'
+                        }
+                    }
+                ]
+            };
+            job.commands = ['lan print'];
+
+            this.sandbox.spy(job,'runCommand');
+            this.sandbox.spy(job,'handleResponse');
+            this.sandbox.stub(childProcess.prototype,'run').rejects();
+
+            mockWaterline.nodes.findByIdentifier.resolves(node);
+
+            return job.run()
+            .then(function() {
+                expect(job.runCommand).to.have.been.called;
+                expect(job.handleResponse).to.not.have.been.called;
+            });
+        });
+
+        it('should process response if ignore failure', function() {
+            var node = {
+                id: 'bc7dab7e8fb7d6abf8e7d6ac',
+                obmSettings: [
+                    {
+                        service: 'ipmi-obm-service',
+                        config: {
+                            host: '1.2.3.4',
+                            user: 'admin',
+                            password: 'password'
+                        }
+                    }
+                ]
+            };
+            job.commands = ['lan print || true'];
+
+            this.sandbox.stub(childProcess.prototype,'run').rejects('process error');
+            this.sandbox.spy(job,'handleResponse');
+            mockWaterline.nodes.findByIdentifier.resolves(node);
+
+            return job.run()
+            .then(function() {
+                expect(job.handleResponse).to.have.been
+                    .calledWith([{
+                        cmd: "sudo ipmitool lan print || true",
+                        error: "process error"
+                    }]);
             });
         });
 
@@ -195,7 +264,7 @@ describe('LocalIpmi Catalog Job', function () {
         });
 
         afterEach('Ipmi catalog job input validation', function(){
-            this.sandbox = sinon.sandbox.restore();
+            this.sandbox.restore();
         });
 
         it('should create catalog entries for response data', function() {
