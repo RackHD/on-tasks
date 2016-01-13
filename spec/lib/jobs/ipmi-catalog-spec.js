@@ -13,13 +13,23 @@ describe('LocalIpmi Catalog Job', function () {
     };
     var childProcess;
 
+    // mock up the ChildProcess injectable to override constructor and mock run function
+    // Otherwise the constructor will try to find the path of the file (like impitool),
+    // which might not exist in the test machine and error is thrown in unittest
+    var mockChildProcessFactory = function() {
+        function MockChildProcess() {}
+        MockChildProcess.prototype.run = function (){};
+        return MockChildProcess;
+    };
+
     before(function() {
         helper.setupInjector(
             _.flattenDeep([
                 helper.require('/lib/jobs/base-job'),
                 helper.require('/lib/jobs/ipmi-catalog'),
                 helper.require('/lib/utils/job-utils/command-parser'),
-                helper.di.simpleWrapper(mockWaterline, 'Services.Waterline')
+                helper.di.simpleWrapper(mockWaterline, 'Services.Waterline'),
+                helper.di.simpleWrapper(mockChildProcessFactory(), 'ChildProcess')
             ])
         );
 
