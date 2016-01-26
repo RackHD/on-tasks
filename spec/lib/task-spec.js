@@ -3,7 +3,6 @@
 'use strict';
 
 describe("Task", function () {
-    var events = require('events');
     var Task;
     var taskData;
     var noopTask;
@@ -11,6 +10,7 @@ describe("Task", function () {
     var noopDefinition;
     var Promise;
     var Constants;
+    var taskProtocol = {};
     var _;
 
     function literalCompare(objA, objB) {
@@ -32,7 +32,7 @@ describe("Task", function () {
         helper.setupInjector([
             taskModule.injectables,
             helper.di.simpleWrapper({}, 'Protocol.Events'),
-            helper.di.simpleWrapper({}, 'Protocol.Task')
+            helper.di.simpleWrapper(taskProtocol, 'Protocol.Task')
         ]);
         Constants = helper.injector.get('Constants');
         Promise = helper.injector.get('Promise');
@@ -40,7 +40,7 @@ describe("Task", function () {
         Logger.prototype.log = sinon.spy();
         Task = helper.injector.get('Task.Task');
         _ = helper.injector.get('_');
-        taskData = taskModule.taskData;
+        taskData = helper.injector.get('Task.taskLibrary');
 
         _.forEach(taskData, function(definition) {
             if (definition.injectableName === 'Task.noop') {
@@ -62,19 +62,6 @@ describe("Task", function () {
 
     afterEach('task-spec beforeEach', function() {
         this.sandbox.restore();
-    });
-
-    it("should create subscriptions on start", function() {
-        var task = Task.create(noopDefinition, {}, {});
-        var taskProtocol = helper.injector.get('Protocol.Task');
-        taskProtocol.subscribeRun = sinon.stub().resolves('test run subscription');
-        taskProtocol.subscribeCancel = sinon.stub().resolves('test cancel subscription');
-
-        return task.start()
-        .then(function() {
-            expect(task.subscriptions.run).to.equal('test run subscription');
-            expect(task.subscriptions.cancel).to.equal('test cancel subscription');
-        });
     });
 
     describe("option rendering", function() {
@@ -276,50 +263,6 @@ describe("Task", function () {
             expect(task.options.testVal2).to.equal('');
         });
 
-        describe('deferred rendering', function() {
-            it("should defer renders for special values", function() {
-                definition.options = {
-                    value: 'source value',
-                    defer: '{{ context.defer.value }}',
-                    noDefer: '{{ options.value }}'
-                };
-                var task = Task.create(definition, {}, {});
-                expect(task.options.defer).to.equal(definition.options.defer);
-                expect(task.options.noDefer).to.equal(definition.options.value);
-            });
-
-            it("should render deferred renders at specified task states", function() {
-                this.sandbox.stub(Task.prototype, 'instantiateJob');
-                this.sandbox.stub(Task.prototype, '_run');
-                this.sandbox.stub(Task.prototype, 'finish');
-                definition.options = {
-                    value: 'source value',
-                    defer: '{{ context.defer.value }}',
-                    noDefer: '{{ options.value }}'
-                };
-                var task = Task.create(definition, {}, {});
-                task.context.defer = { value: 'source context value' };
-                task.run();
-                expect(task.options.defer).to.equal(task.context.defer.value);
-            });
-
-            it("should respect fallbacks for deferred renders", function() {
-                this.sandbox.stub(Task.prototype, 'instantiateJob');
-                this.sandbox.stub(Task.prototype, '_run');
-                this.sandbox.stub(Task.prototype, 'finish');
-                definition.options = {
-                    value: 'source value',
-                    defer: '{{ context.defer.value || options.value }}',
-                    noDefer: '{{ options.value }}'
-                };
-                var task = Task.create(definition, {}, {});
-                expect(task.options.defer).to.equal(definition.options.defer);
-                task.context.defer = null;
-                task.run();
-                expect(task.options.defer).to.equal(definition.options.value);
-            });
-        });
-
         describe('errors', function() {
             var TemplateRenderError;
 
@@ -407,19 +350,10 @@ describe("Task", function () {
                 cancel: subscriptionStub
             };
             sinon.spy(task, 'cancel');
-            sinon.spy(task, 'finish');
+            sinon.spy(task, 'stop');
         });
 
         describe("of task", function() {
-            it("should clean up resources on finish", function() {
-                sinon.spy(task, 'cleanup');
-                return task.finish()
-                .then(function() {
-                    expect(task.cleanup).to.have.been.calledOnce;
-                    expect(eventsProtocol.publishTaskFinished)
-                        .to.have.been.calledWith(task.instanceId);
-                });
-            });
 
             it("should cancel before it has been set to run", function(done) {
                 var error = new Errors.TaskCancellationError('test error');
@@ -427,10 +361,8 @@ describe("Task", function () {
 
                 setImmediate(function() {
                     try {
-                        expect(task.finish).to.have.been.calledOnce;
                         expect(task.state).to.equal('cancelled');
                         expect(task.error).to.equal(error);
-                        expect(subscriptionStub.dispose).to.have.been.calledTwice;
                         done();
                     } catch (e) {
                         done(e);
@@ -440,45 +372,41 @@ describe("Task", function () {
 
             it("should cancel", function() {
                 task.instantiateJob();
-                task.state = 'running';
+                var error = new Errors.TaskCancellationError('test error');
+                task.instantiateJob = function() {
+                    task.cancel(error);
+                };
 
                 sinon.spy(task.job, 'cancel');
                 task.job._run = function() {
-                    return Promise.delay(100);
+                    return Promise.delay(1000);
                 };
 
-                var error = new Errors.TaskCancellationError('test error');
-                task.cancel(error);
-
-                return task._run()
+                return task.run()
                 .then(function() {
-                    expect(task.finish).to.have.been.calledOnce;
                     expect(task.state).to.equal('cancelled');
                     expect(task.error).to.equal(error);
                     expect(task.job.cancel).to.have.been.calledOnce;
-                    expect(subscriptionStub.dispose).to.have.been.calledTwice;
                 });
             });
 
             it("should timeout", function() {
                 task.instantiateJob();
-                task.state = 'running';
+                var error = new Errors.TaskTimeoutError('test timeout error');
+                task.instantiateJob = function() {
+                    task.cancel(error);
+                };
 
                 sinon.spy(task.job, 'cancel');
                 task.job._run = function() {
                     return Promise.delay(100);
                 };
 
-                var error = new Errors.TaskTimeoutError('test timeout error');
-                task.cancel(error);
-
-                return task._run()
+                return task.run()
                 .then(function() {
-                    expect(task.finish).to.have.been.calledOnce;
                     expect(task.state).to.equal('timeout');
                     expect(task.error).to.equal(error);
                     expect(task.job.cancel).to.have.been.calledOnce;
-                    expect(subscriptionStub.dispose).to.have.been.calledTwice;
                 });
             });
 
@@ -489,7 +417,6 @@ describe("Task", function () {
 
                 return task.run()
                 .then(function() {
-                    expect(task.finish).to.have.been.calledOnce;
                     expect(task.state).to.equal('failed');
                     expect(task.error).to.equal(error);
                 });
@@ -499,7 +426,6 @@ describe("Task", function () {
         describe("of job", function() {
             beforeEach('task-spec-job-cancellation beforeEach', function() {
                 task.instantiateJob();
-                task.state = 'running';
                 sinon.spy(task.job, 'cancel');
                 sinon.spy(task.job, '_done');
                 task.job._run = function() {
@@ -509,9 +435,11 @@ describe("Task", function () {
 
             it("should cancel a job", function() {
                 var error = new Errors.TaskCancellationError('test error');
-                task.cancel(error);
+                task.instantiateJob = function() {
+                    task.cancel(error);
+                };
 
-                return task._run()
+                return task.run()
                 .then(function() {
                     expect(task.job.cancel).to.have.been.calledOnce;
                     expect(task.job.cancel).to.have.been.calledWith(error);
@@ -521,40 +449,24 @@ describe("Task", function () {
             });
 
             it("should manage subscription resource creation and deletion", function() {
+                task.instantiateJob = function() {
+                    task.cancel(new Errors.TaskCancellationError('test error'));
+                };
                 task.job.context.target = 'testtarget';
+                var subscription = {dispose: this.sandbox.stub()};
+                taskProtocol.subscribeActiveTaskExists = sinon.stub()
+                    .resolves(subscription);
                 task.job._subscribeActiveTaskExists = sinon.stub().resolves();
                 var jobSubscriptionStub = { dispose: sinon.stub().resolves() };
                 task.job.subscriptions = [
                     jobSubscriptionStub, jobSubscriptionStub, jobSubscriptionStub
                 ];
 
-                task.cancel(new Errors.TaskCancellationError('test error'));
 
-                return task._run()
+                return task.run()
                 .then(function() {
                     expect(task.job._subscribeActiveTaskExists).to.have.been.calledOnce;
                     expect(jobSubscriptionStub.dispose).to.have.been.calledThrice;
-                });
-            });
-        });
-
-        it("should cancel on receipt of a cancel message from AMQP", function(done) {
-            var protocolStub = new events.EventEmitter();
-            var taskProtocol = helper.injector.get('Protocol.Task');
-            taskProtocol.subscribeRun = sinon.stub().resolves(subscriptionStub);
-            taskProtocol.subscribeCancel = function(taskId, callback) {
-                protocolStub.on('cancel.' + taskId, function() {
-                    callback.call(task);
-                });
-                return Promise.resolve(subscriptionStub);
-            };
-
-            return task.start()
-            .then(function() {
-                protocolStub.emit('cancel.' + task.instanceId);
-                setImmediate(function() {
-                    expect(task.cancel).to.have.been.calledOnce;
-                    done();
                 });
             });
         });
