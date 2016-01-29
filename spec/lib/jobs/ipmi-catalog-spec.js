@@ -102,9 +102,14 @@ describe('LocalIpmi Catalog Job', function () {
             var options = {
                 commands: [
                     'sdr',
-                    'lan print'
-                ],
-                acceptedResponseCodes: [1]
+                    {
+                        command: 'lan print',
+                        acceptedResponseCodes: [1]
+                    },
+                    {
+                        test: undefined
+                    }
+                ]
             };
             job = new IpmiCatalogJob(options, { target: 'bc7dab7e8fb7d6abf8e7d6ac' }, uuid.v4());
 
@@ -131,8 +136,23 @@ describe('LocalIpmi Catalog Job', function () {
             });
 
             expect(cmds).to.deep.equal([
-                ['-U', 'admin', '-P', 'password', '-H', '1.2.3.4', 'sdr'],
-                ['-U', 'admin', '-P', 'password', '-H', '1.2.3.4', 'lan', 'print'],
+                {
+                    oriCmd: 'sdr',
+                    newCmd: [ '-I', 'lanplus',
+                              '-U', 'admin',
+                              '-P', 'password',
+                              '-H', '1.2.3.4',
+                              'sdr']
+                },
+                {
+                    oriCmd: 'lan print',
+                    newCmd: [ '-I', 'lanplus',
+                              '-U', 'admin',
+                              '-P', 'password',
+                              '-H', '1.2.3.4',
+                              'lan', 'print']
+                },
+                null
             ]);
         });
 
