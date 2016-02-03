@@ -7,7 +7,32 @@ describe('ISC DHCP Poller Job', function () {
     var base = require('./base-spec');
     var uuid;
 
+    /// create a future end date
+    var todayDate = new Date();
+    // add 30 seconds
+    var newdate = new Date(todayDate.getTime() + (10000));
+    // use toISOString, it's the closest to Y-m-d H:i:s
+    newdate = newdate.toISOString();
+    // modify ISO string to get Y-m-d H:i:s
+    newdate = newdate.split('.')[0].replace('T', ' ').replace(/-/g, '/');
+
     var leaseData = new Buffer(
+        "# The format of this file is documented in the dhcpd.leases(5) manual page.\n" +
+        "# This lease file was written by isc-dhcp-4.3.2\n" +
+        "\n\n" +
+        "lease 10.1.1.3 {\n" +
+        "  starts 1 2015/04/20 21:14:52;\n" +
+        "  ends 1 " + newdate +";\n" + //this has to be a future date to not be expired.
+        "  cltt 1 2015/04/20 21:14:52;\n" +
+        "  binding state active;\n" +
+        "  next binding state free;\n" +
+        "  rewind binding state free;\n" +
+        "  hardware ethernet 08:00:27:9b:d9:f8;\n" +
+        "  set vendor-class-identifier = \"PXEClient:Arch:00000:UNDI:002001\";\n" +
+        "}\n"
+    );
+
+    var expiredLeaseData = new Buffer(
         "# The format of this file is documented in the dhcpd.leases(5) manual page.\n" +
         "# This lease file was written by isc-dhcp-4.3.2\n" +
         "\n\n" +
@@ -19,6 +44,32 @@ describe('ISC DHCP Poller Job', function () {
         "  next binding state free;\n" +
         "  rewind binding state free;\n" +
         "  hardware ethernet 08:00:27:9b:d9:f8;\n" +
+        "  set vendor-class-identifier = \"PXEClient:Arch:00000:UNDI:002001\";\n" +
+        "}\n"
+    );
+
+    var multipleLeaseDate = new Buffer(
+        "# The format of this file is documented in the dhcpd.leases(5) manual page.\n" +
+        "# This lease file was written by isc-dhcp-4.3.2\n" +
+        "\n\n" +
+        "lease 10.1.1.3 {\n" +
+        "  starts 1 2015/04/20 21:14:52;\n" +
+        "  ends 1 " + newdate +";\n" + //this has to be a future date to not be expired.
+        "  cltt 1 2015/04/20 21:14:52;\n" +
+        "  binding state active;\n" +
+        "  next binding state free;\n" +
+        "  rewind binding state free;\n" +
+        "  hardware ethernet 08:00:27:9b:d9:f8;\n" +
+        "  set vendor-class-identifier = \"PXEClient:Arch:00000:UNDI:002001\";\n" +
+        "}\n" +
+        "lease 10.1.1.4 {\n" +
+        "  starts 1 2015/04/20 21:14:52;\n" +
+        "  ends 1 2015/04/20 21:24:52;\n" +
+        "  cltt 1 2015/04/20 21:14:52;\n" +
+        "  binding state active;\n" +
+        "  next binding state free;\n" +
+        "  rewind binding state free;\n" +
+        "  hardware ethernet 09:00:27:9b:d9:f9;\n" +
         "  set vendor-class-identifier = \"PXEClient:Arch:00000:UNDI:002001\";\n" +
         "}\n"
     );
@@ -75,12 +126,35 @@ describe('ISC DHCP Poller Job', function () {
         });
     });
 
-    it('should parse lease data', function() {
-        var job = new this.Jobclass({}, {}, uuid.v4());
-        var parsed = job.parseLeaseData(leaseData.toString());
-        expect(parsed).to.deep.equal({
-            ip: '10.1.1.3',
-            mac: '08:00:27:9b:d9:f8'
+
+    describe("Parse Lease Data", function(){
+        it('should parse lease data', function() {
+            var job = new this.Jobclass({}, {}, uuid.v4());
+            var parsed = job.parseLeaseData(leaseData.toString());
+            expect(parsed).to.deep.equal({
+                ip: '10.1.1.3',
+                mac: '08:00:27:9b:d9:f8'
+            });
         });
+
+        it('should not parse an expired lease', function() {
+            var job = new this.Jobclass({}, {}, uuid.v4());
+            var parsed = job.parseLeaseData(expiredLeaseData.toString());
+
+            expect(parsed).to.be.undefined;
+        });
+
+        it('should only parse leases that are not expired', function() {
+            var job = new this.Jobclass({}, {}, uuid.v4());
+            var parsed = job.parseLeaseData(multipleLeaseDate.toString());
+
+            expect(parsed).to.deep.equal({
+                ip: '10.1.1.3',
+                mac: '08:00:27:9b:d9:f8'
+            });
+            expect(parsed).to.not.have.property('ip', '10.1.1.4');
+            expect(parsed).to.not.have.property('mac', '09:00:27:9b:d9:f9');
+        });
+
     });
 });
