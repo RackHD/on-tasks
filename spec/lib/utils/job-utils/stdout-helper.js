@@ -3499,35 +3499,35 @@ module.exports.ipmiLanPrintOutput = 'Set in Progress         : Set Complete\n' +
                                     '                        :     O=OEM' +
                                     '';
 
-module.exports.ipmiLanPrintOutputStatic = 'Set in Progress         : Set Complete\n' +
-                                          'Auth Type Support       : NONE MD2 MD5 PASSWORD\n' +
-                                          'Auth Type Enable        : Callback : MD2 MD5 PASSWORD\n' +
-                                          '                        : User     : MD2 MD5 PASSWORD\n' +
-                                          '                        : Operator : MD2 MD5 PASSWORD\n' +
-                                          '                        : Admin    : MD2 MD5 PASSWORD\n' +
-                                          '                        : OEM      : MD2 MD5 PASSWORD\n' +
-                                          'IP Address Source       : Static Address\n' +
-                                          'IP Address              : 10.1.1.24\n' +
-                                          'Subnet Mask             : 255.255.255.0\n' +
-                                          'MAC Address             : 00:25:90:83:d4:4c\n' +
-                                          'SNMP Community String   : public\n' +
-                                          'IP Header               : TTL=0x00 Flags=0x00 Precedence=0x00 TOS=0x00\n' +
-                                          'BMC ARP Control         : ARP Responses Enabled, Gratuitous ARP Disabled\n' +
-                                          'Default Gateway IP      : 0.0.0.0\n' +
-                                          'Default Gateway MAC     : 00:00:00:00:00:00\n' +
-                                          'Backup Gateway IP       : 0.0.0.0\n' +
-                                          'Backup Gateway MAC      : 00:00:00:00:00:00\n' +
-                                          '802.1q VLAN ID          : Disabled\n' +
-                                          '802.1q VLAN Priority    : 0\n' +
-                                          'RMCP+ Cipher Suites     : 1,2,3,6,7,8,11,12\n' +
-                                          'Cipher Suite Priv Max   : aaaaXXaaaXXaaXX\n' +
-                                          '                        :     X=Cipher Suite Unused\n' +
-                                          '                        :     c=CALLBACK\n' +
-                                          '                        :     u=USER\n' +
-                                          '                        :     o=OPERATOR\n' +
-                                          '                        :     a=ADMIN\n' +
-                                          '                        :     O=OEM' +
-                                          '';
+module.exports.ipmiLanPrintOutputValidIp = 'Set in Progress         : Set Complete\n' +
+                                           'Auth Type Support       : NONE MD2 MD5 PASSWORD\n' +
+                                           'Auth Type Enable        : Callback : MD2 MD5 PASSWORD\n' +
+                                           '                        : User     : MD2 MD5 PASSWORD\n' +
+                                           '                        : Operator : MD2 MD5 PASSWORD\n' +
+                                           '                        : Admin    : MD2 MD5 PASSWORD\n' +
+                                           '                        : OEM      : MD2 MD5 PASSWORD\n' +
+                                           'IP Address Source       : Static Address\n' +
+                                           'IP Address              : 10.1.1.24\n' +
+                                           'Subnet Mask             : 255.255.255.0\n' +
+                                           'MAC Address             : 00:25:90:83:d4:4c\n' +
+                                           'SNMP Community String   : public\n' +
+                                           'IP Header               : TTL=0x00 Flags=0x00 Precedence=0x00 TOS=0x00\n' +
+                                           'BMC ARP Control         : ARP Responses Enabled, Gratuitous ARP Disabled\n' +
+                                           'Default Gateway IP      : 0.0.0.0\n' +
+                                           'Default Gateway MAC     : 00:00:00:00:00:00\n' +
+                                           'Backup Gateway IP       : 0.0.0.0\n' +
+                                           'Backup Gateway MAC      : 00:00:00:00:00:00\n' +
+                                           '802.1q VLAN ID          : Disabled\n' +
+                                           '802.1q VLAN Priority    : 0\n' +
+                                           'RMCP+ Cipher Suites     : 1,2,3,6,7,8,11,12\n' +
+                                           'Cipher Suite Priv Max   : aaaaXXaaaXXaaXX\n' +
+                                           '                        :     X=Cipher Suite Unused\n' +
+                                           '                        :     c=CALLBACK\n' +
+                                           '                        :     u=USER\n' +
+                                           '                        :     o=OPERATOR\n' +
+                                           '                        :     a=ADMIN\n' +
+                                           '                        :     O=OEM' +
+                                           '';
 
 module.exports.ipmiLanPrintOutputUnused = 'Set in Progress         : Set Complete\n' +
                                           'Auth Type Support       : NONE MD2 MD5 PASSWORD\n' +
