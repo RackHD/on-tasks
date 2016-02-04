@@ -563,16 +563,17 @@ describe("Task Parser", function () {
                     cipherSuitePrivMax)).to.be.true;
 
                 expect(result.source).to.equal('bmc');
+                expect(result).to.not.have.property('lookups');
+
             });
         });
 
-        it("should add a lookup field if the BMC IP is statically configured", function () {
+        it("should add a lookup field if the BMC IP is valid", function () {
             var ipmiCmd = 'sudo ipmitool lan print';
-
             var tasks = [
                 {
                     cmd: ipmiCmd,
-                    stdout: stdoutMocks.ipmiLanPrintOutputStatic,
+                    stdout: stdoutMocks.ipmiLanPrintOutputValidIp,
                     stderr: '',
                     error: null
                 }
