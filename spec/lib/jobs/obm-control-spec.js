@@ -183,7 +183,42 @@ describe("Job.Obm.Node", function () {
             });
         });
 
-        it('should fail to run OBM command if no target or nodeId was specified', function() {
+        it('should create new Job with node selected from target (when node specified in both target and options)', function() {
+            // local options with nodeId set
+            var options = {
+                action: 'reboot',
+                obmServiceName: 'ipmi-obm-service',
+                nodeId: 'not_this_one'
+            };
+
+            var newJob = new Job(options, { target: 'pick_me' }, uuid.v4());
+            expect(newJob.nodeId).to.equal('pick_me');
+        });
+
+        it('should create a new Job with node selected from target', function() {
+            // local options with no nodeId
+            var options = {
+                action: 'reboot',
+                obmServiceName: 'ipmi-obm-service'
+            };
+
+            var newJob = new Job(options, { target: 'pick_me'}, uuid.v4());
+            expect(newJob.nodeId).to.equal('pick_me');
+        });
+
+        it('should create a new Job with node selected from options', function() {
+            // local options with nodeId
+            var options = {
+                nodeId: 'pick_me',
+                action: 'reboot',
+                obmServiceName: 'ipmi-obm-service'
+            };
+
+            var newJob = new Job(options, { target: 'pick_me'}, uuid.v4());
+            expect(newJob.nodeId).to.equal('pick_me');
+        });
+
+        it('should fail to create a new Job if node is missing (from options and target)', function() {
 
             // local options with no nodeId field
             var options = {
