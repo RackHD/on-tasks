@@ -157,7 +157,7 @@ describe(require('path').basename(__filename), function () {
             var catalog = {
                     "data": {
                         "Builtin FRU Device (ID 0)": {
-                            "Product Serial": "..............",
+                            "Product Serial": "... aa",
                             "Product Version": "FFF"
                         }
                     },
@@ -185,7 +185,7 @@ describe(require('path').basename(__filename), function () {
                     expect(e).to.have.property('name').that.equals('AggregateError');
                     expect(e).to.have.property('length').that.equals(2);
                     expect(e[0]).to.have.property('message').that
-                        .equal('No valid serial number in SN: ..............');
+                        .equal('No valid serial number in SN: ... aa');
                     expect(e[1]).to.have.property('message').that.equals('empty catalog');
                     expect(mockWaterline.nodes.updateByIdentifier).to.not.have.been.called;
                     done();
