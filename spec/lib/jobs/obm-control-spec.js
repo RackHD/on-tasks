@@ -185,7 +185,8 @@ describe("Job.Obm.Node", function () {
             });
         });
 
-        it('should create new Job with node selected from target (when node specified in both target and options)', function() {
+        it('should create new Job with node selected from target ' +
+           '(when node specified in both target and options)', function() {
             // local options with nodeId set
             var options = {
                 action: 'reboot',
@@ -220,7 +221,8 @@ describe("Job.Obm.Node", function () {
             expect(newJob.nodeId).to.equal('pick_me');
         });
 
-        it('should fail to create a new Job if node is missing (from options and target)', function() {
+        it('should fail to create a new Job if node is missing ' +
+           '(from options and target)', function() {
 
             // local options with no nodeId field
             var options = {
