@@ -8,6 +8,7 @@ var uuid = require('node-uuid');
 describe("Job.Obm.Node", function () {
     var base = require('./base-spec');
     var Job;
+    var Errors;
 
     var mockWaterline = {
         nodes: {
@@ -26,6 +27,7 @@ describe("Job.Obm.Node", function () {
             helper.di.simpleWrapper(mockWaterline, 'Services.Waterline')
         ]);
         Job = helper.injector.get('Job.Obm.Node');
+        Errors = helper.injector.get('Errors');
         context.Jobclass = Job;
     });
 
@@ -214,7 +216,7 @@ describe("Job.Obm.Node", function () {
                 obmServiceName: 'ipmi-obm-service'
             };
 
-            var newJob = new Job(options, { target: 'pick_me'}, uuid.v4());
+            var newJob = new Job(options, { }, uuid.v4());
             expect(newJob.nodeId).to.equal('pick_me');
         });
 
@@ -228,7 +230,7 @@ describe("Job.Obm.Node", function () {
 
             expect(function() {
                 return new Job(options, {}, uuid.v4());
-            }).to.throw('nodeId (string) is required');
+            }).to.throw(Errors.AssertionError, /nodeId/);
         });
     });
 
