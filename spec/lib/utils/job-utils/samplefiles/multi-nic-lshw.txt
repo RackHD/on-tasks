@@ -1,0 +1,4430 @@
+{
+  "id" : "monorail-micro",
+  "class" : "system",
+  "claimed" : true,
+  "handle" : "DMI:0100",
+  "description" : "Rack Mount Chassis",
+  "product" : "(SKU=NotProvided;ModelName=)",
+  "serial" : "5BC2082",
+  "width" : 64,
+  "configuration" : {
+    "boot" : "normal",
+    "chassis" : "rackmount",
+    "sku" : "SKU=NotProvided;ModelName=",
+    "uuid" : "44454C4C-4200-1043-8032-B5C04F303832"
+  },
+  "capabilities" : {
+    "smbios-2.8" : "SMBIOS version 2.8",
+    "dmi-2.8" : "DMI version 2.8",
+    "ldt16" : true,
+    "vsyscall32" : "32-bit processes"
+  },
+  "children" : [
+    {
+      "id" : "core",
+      "class" : "bus",
+      "claimed" : true,
+      "handle" : "DMI:0200",
+      "description" : "Motherboard",
+      "product" : "0CNCJW",
+      "physid" : "0",
+      "version" : "A08",
+      "serial" : ".5BC2082.CN7475157P0567.",
+      "children" : [
+        {
+          "id" : "firmware",
+          "class" : "memory",
+          "claimed" : true,
+          "description" : "BIOS",
+          "physid" : "0",
+          "version" : "1.3.6",
+          "date" : "06/03/2015",
+          "units" : "bytes",
+          "size" : 65536,
+          "capacity" : 16711680,
+          "capabilities" : {
+            "isa" : "ISA bus",
+            "pci" : "PCI bus",
+            "pnp" : "Plug-and-Play",
+            "upgrade" : "BIOS EEPROM can be upgraded",
+            "shadowing" : "BIOS shadowing",
+            "cdboot" : "Booting from CD-ROM/DVD",
+            "bootselect" : "Selectable boot path",
+            "edd" : "Enhanced Disk Drive extensions",
+            "int13floppytoshiba" : "Toshiba floppy",
+            "int13floppy360" : "5.25\" 360KB floppy",
+            "int13floppy1200" : "5.25\" 1.2MB floppy",
+            "int13floppy720" : "3.5\" 720KB floppy",
+            "int9keyboard" : "i8042 keyboard controller",
+            "int14serial" : "INT14 serial line control",
+            "int10video" : "INT10 CGA/Mono video",
+            "acpi" : "ACPI",
+            "usb" : "USB legacy emulation",
+            "biosbootspecification" : "BIOS boot specification",
+            "netboot" : "Function-key initiated network service boot",
+            "uefi" : "UEFI specification is supported"
+          }
+        },
+        {
+          "id" : "cpu:0",
+          "class" : "processor",
+          "claimed" : true,
+          "handle" : "DMI:0400",
+          "description" : "CPU",
+          "product" : "Intel(R) Xeon(R) CPU E5-2699 v3 @ 2.30GHz",
+          "vendor" : "Intel Corp.",
+          "physid" : "400",
+          "businfo" : "cpu@0",
+          "version" : "Intel(R) Xeon(R) CPU E5-2699 v3 @ 2.30GHz",
+          "slot" : "CPU1",
+          "units" : "Hz",
+          "size" : 2300000000,
+          "capacity" : 4000000000,
+          "width" : 64,
+          "clock" : 1010065408,
+          "configuration" : {
+            "cores" : "18",
+            "enabledcores" : "18",
+            "threads" : "36"
+          },
+          "capabilities" : {
+            "x86-64" : "64bits extensions (x86-64)",
+            "fpu" : "mathematical co-processor",
+            "fpu_exception" : "FPU exceptions reporting",
+            "wp" : true,
+            "vme" : "virtual mode extensions",
+            "de" : "debugging extensions",
+            "pse" : "page size extensions",
+            "tsc" : "time stamp counter",
+            "msr" : "model-specific registers",
+            "pae" : "4GB+ memory addressing (Physical Address Extension)",
+            "mce" : "machine check exceptions",
+            "cx8" : "compare and exchange 8-byte",
+            "apic" : "on-chip advanced programmable interrupt controller (APIC)",
+            "sep" : "fast system calls",
+            "mtrr" : "memory type range registers",
+            "pge" : "page global enable",
+            "mca" : "machine check architecture",
+            "cmov" : "conditional move instruction",
+            "pat" : "page attribute table",
+            "pse36" : "36-bit page size extensions",
+            "clflush" : true,
+            "dts" : "debug trace and EMON store MSRs",
+            "acpi" : "thermal control (ACPI)",
+            "mmx" : "multimedia extensions (MMX)",
+            "fxsr" : "fast floating point save/restore",
+            "sse" : "streaming SIMD extensions (SSE)",
+            "sse2" : "streaming SIMD extensions (SSE2)",
+            "ss" : "self-snoop",
+            "ht" : "HyperThreading",
+            "tm" : "thermal interrupt and status",
+            "pbe" : "pending break event",
+            "syscall" : "fast system calls",
+            "nx" : "no-execute bit (NX)",
+            "pdpe1gb" : true,
+            "rdtscp" : true,
+            "constant_tsc" : true,
+            "arch_perfmon" : true,
+            "pebs" : true,
+            "bts" : true,
+            "rep_good" : true,
+            "nopl" : true,
+            "xtopology" : true,
+            "nonstop_tsc" : true,
+            "aperfmperf" : true,
+            "eagerfpu" : true,
+            "pni" : true,
+            "pclmulqdq" : true,
+            "dtes64" : true,
+            "monitor" : true,
+            "ds_cpl" : true,
+            "vmx" : true,
+            "smx" : true,
+            "est" : true,
+            "tm2" : true,
+            "ssse3" : true,
+            "fma" : true,
+            "cx16" : true,
+            "xtpr" : true,
+            "pdcm" : true,
+            "pcid" : true,
+            "dca" : true,
+            "sse4_1" : true,
+            "sse4_2" : true,
+            "x2apic" : true,
+            "movbe" : true,
+            "popcnt" : true,
+            "tsc_deadline_timer" : true,
+            "aes" : true,
+            "xsave" : true,
+            "avx" : true,
+            "f16c" : true,
+            "rdrand" : true,
+            "lahf_lm" : true,
+            "abm" : true,
+            "ida" : true,
+            "arat" : true,
+            "epb" : true,
+            "xsaveopt" : true,
+            "pln" : true,
+            "pts" : true,
+            "dtherm" : true,
+            "tpr_shadow" : true,
+            "vnmi" : true,
+            "flexpriority" : true,
+            "ept" : true,
+            "vpid" : true,
+            "fsgsbase" : true,
+            "tsc_adjust" : true,
+            "bmi1" : true,
+            "avx2" : true,
+            "smep" : true,
+            "bmi2" : true,
+            "erms" : true,
+            "invpcid" : true
+          },
+          "children" : [
+            {
+              "id" : "cache:0",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:0700",
+              "description" : "L1 cache",
+              "physid" : "700",
+              "units" : "bytes",
+              "size" : 1179648,
+              "capacity" : 1179648,
+              "capabilities" : {
+                "internal" : "Internal",
+                "write-back" : "Write-back",
+                "unified" : "Unified cache"
+              }
+            },
+            {
+              "id" : "cache:1",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:0701",
+              "description" : "L2 cache",
+              "physid" : "701",
+              "units" : "bytes",
+              "size" : 4718592,
+              "capacity" : 4718592,
+              "capabilities" : {
+                "internal" : "Internal",
+                "write-back" : "Write-back",
+                "unified" : "Unified cache"
+              }
+            },
+            {
+              "id" : "cache:2",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:0702",
+              "description" : "L3 cache",
+              "physid" : "702",
+              "units" : "bytes",
+              "size" : 47185920,
+              "capacity" : 47185920,
+              "capabilities" : {
+                "internal" : "Internal",
+                "write-back" : "Write-back",
+                "unified" : "Unified cache"
+              }
+            }
+          ]
+        },
+        {
+          "id" : "cpu:1",
+          "class" : "processor",
+          "claimed" : true,
+          "handle" : "DMI:0401",
+          "description" : "CPU",
+          "product" : "Intel(R) Xeon(R) CPU E5-2699 v3 @ 2.30GHz",
+          "vendor" : "Intel Corp.",
+          "physid" : "401",
+          "businfo" : "cpu@1",
+          "version" : "Intel(R) Xeon(R) CPU E5-2699 v3 @ 2.30GHz",
+          "slot" : "CPU2",
+          "units" : "Hz",
+          "size" : 2300000000,
+          "capacity" : 4000000000,
+          "width" : 64,
+          "clock" : 1010065408,
+          "configuration" : {
+            "cores" : "18",
+            "enabledcores" : "18",
+            "threads" : "36"
+          },
+          "capabilities" : {
+            "x86-64" : "64bits extensions (x86-64)",
+            "fpu" : "mathematical co-processor",
+            "fpu_exception" : "FPU exceptions reporting",
+            "wp" : true,
+            "vme" : "virtual mode extensions",
+            "de" : "debugging extensions",
+            "pse" : "page size extensions",
+            "tsc" : "time stamp counter",
+            "msr" : "model-specific registers",
+            "pae" : "4GB+ memory addressing (Physical Address Extension)",
+            "mce" : "machine check exceptions",
+            "cx8" : "compare and exchange 8-byte",
+            "apic" : "on-chip advanced programmable interrupt controller (APIC)",
+            "sep" : "fast system calls",
+            "mtrr" : "memory type range registers",
+            "pge" : "page global enable",
+            "mca" : "machine check architecture",
+            "cmov" : "conditional move instruction",
+            "pat" : "page attribute table",
+            "pse36" : "36-bit page size extensions",
+            "clflush" : true,
+            "dts" : "debug trace and EMON store MSRs",
+            "acpi" : "thermal control (ACPI)",
+            "mmx" : "multimedia extensions (MMX)",
+            "fxsr" : "fast floating point save/restore",
+            "sse" : "streaming SIMD extensions (SSE)",
+            "sse2" : "streaming SIMD extensions (SSE2)",
+            "ss" : "self-snoop",
+            "ht" : "HyperThreading",
+            "tm" : "thermal interrupt and status",
+            "pbe" : "pending break event",
+            "syscall" : "fast system calls",
+            "nx" : "no-execute bit (NX)",
+            "pdpe1gb" : true,
+            "rdtscp" : true,
+            "constant_tsc" : true,
+            "arch_perfmon" : true,
+            "pebs" : true,
+            "bts" : true,
+            "rep_good" : true,
+            "nopl" : true,
+            "xtopology" : true,
+            "nonstop_tsc" : true,
+            "aperfmperf" : true,
+            "eagerfpu" : true,
+            "pni" : true,
+            "pclmulqdq" : true,
+            "dtes64" : true,
+            "monitor" : true,
+            "ds_cpl" : true,
+            "vmx" : true,
+            "smx" : true,
+            "est" : true,
+            "tm2" : true,
+            "ssse3" : true,
+            "fma" : true,
+            "cx16" : true,
+            "xtpr" : true,
+            "pdcm" : true,
+            "pcid" : true,
+            "dca" : true,
+            "sse4_1" : true,
+            "sse4_2" : true,
+            "x2apic" : true,
+            "movbe" : true,
+            "popcnt" : true,
+            "tsc_deadline_timer" : true,
+            "aes" : true,
+            "xsave" : true,
+            "avx" : true,
+            "f16c" : true,
+            "rdrand" : true,
+            "lahf_lm" : true,
+            "abm" : true,
+            "ida" : true,
+            "arat" : true,
+            "epb" : true,
+            "xsaveopt" : true,
+            "pln" : true,
+            "pts" : true,
+            "dtherm" : true,
+            "tpr_shadow" : true,
+            "vnmi" : true,
+            "flexpriority" : true,
+            "ept" : true,
+            "vpid" : true,
+            "fsgsbase" : true,
+            "tsc_adjust" : true,
+            "bmi1" : true,
+            "avx2" : true,
+            "smep" : true,
+            "bmi2" : true,
+            "erms" : true,
+            "invpcid" : true
+          },
+          "children" : [
+            {
+              "id" : "cache:0",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:0703",
+              "description" : "L1 cache",
+              "physid" : "703",
+              "units" : "bytes",
+              "size" : 1179648,
+              "capacity" : 1179648,
+              "capabilities" : {
+                "internal" : "Internal",
+                "write-back" : "Write-back",
+                "unified" : "Unified cache"
+              }
+            },
+            {
+              "id" : "cache:1",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:0704",
+              "description" : "L2 cache",
+              "physid" : "704",
+              "units" : "bytes",
+              "size" : 4718592,
+              "capacity" : 4718592,
+              "capabilities" : {
+                "internal" : "Internal",
+                "write-back" : "Write-back",
+                "unified" : "Unified cache"
+              }
+            },
+            {
+              "id" : "cache:2",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:0705",
+              "description" : "L3 cache",
+              "physid" : "705",
+              "units" : "bytes",
+              "size" : 47185920,
+              "capacity" : 47185920,
+              "capabilities" : {
+                "internal" : "Internal",
+                "write-back" : "Write-back",
+                "unified" : "Unified cache"
+              }
+            }
+          ]
+        },
+        {
+          "id" : "memory",
+          "class" : "memory",
+          "claimed" : true,
+          "handle" : "DMI:1000",
+          "description" : "System Memory",
+          "physid" : "1000",
+          "slot" : "System board or motherboard",
+          "units" : "bytes",
+          "size" : 549739036672,
+          "children" : [
+            {
+              "id" : "bank:0",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:1100",
+              "description" : "DIMM Synchronous 2133 MHz (0.5 ns)",
+              "product" : "M393A4K40BB0-CPB",
+              "vendor" : "00CE063200CE",
+              "physid" : "0",
+              "serial" : "40E8C2B9",
+              "slot" : "A1",
+              "units" : "bytes",
+              "size" : 34358689792,
+              "width" : 64,
+              "clock" : 2133000000
+            },
+            {
+              "id" : "bank:1",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:1101",
+              "description" : "DIMM Synchronous 2133 MHz (0.5 ns)",
+              "product" : "M393A4K40BB0-CPB",
+              "vendor" : "00CE063200CE",
+              "physid" : "1",
+              "serial" : "40E8B394",
+              "slot" : "A2",
+              "units" : "bytes",
+              "size" : 34358689792,
+              "width" : 64,
+              "clock" : 2133000000
+            },
+            {
+              "id" : "bank:2",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:1102",
+              "description" : "DIMM Synchronous 2133 MHz (0.5 ns)",
+              "product" : "M393A4K40BB0-CPB",
+              "vendor" : "00CE063200CE",
+              "physid" : "2",
+              "serial" : "40E8BCB4",
+              "slot" : "A3",
+              "units" : "bytes",
+              "size" : 34358689792,
+              "width" : 64,
+              "clock" : 2133000000
+            },
+            {
+              "id" : "bank:3",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:1103",
+              "description" : "DIMM Synchronous 2133 MHz (0.5 ns)",
+              "product" : "M393A4K40BB0-CPB",
+              "vendor" : "00CE063200CE",
+              "physid" : "3",
+              "serial" : "40E8BC21",
+              "slot" : "A4",
+              "units" : "bytes",
+              "size" : 34358689792,
+              "width" : 64,
+              "clock" : 2133000000
+            },
+            {
+              "id" : "bank:4",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:1104",
+              "description" : "DIMM Synchronous 2133 MHz (0.5 ns)",
+              "product" : "M393A4K40BB0-CPB",
+              "vendor" : "00CE063200CE",
+              "physid" : "4",
+              "serial" : "40E8BCA5",
+              "slot" : "A5",
+              "units" : "bytes",
+              "size" : 34358689792,
+              "width" : 64,
+              "clock" : 2133000000
+            },
+            {
+              "id" : "bank:5",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:1105",
+              "description" : "DIMM Synchronous 2133 MHz (0.5 ns)",
+              "product" : "M393A4K40BB0-CPB",
+              "vendor" : "00CE063200CE",
+              "physid" : "5",
+              "serial" : "40E8B365",
+              "slot" : "A6",
+              "units" : "bytes",
+              "size" : 34358689792,
+              "width" : 64,
+              "clock" : 2133000000
+            },
+            {
+              "id" : "bank:6",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:1106",
+              "description" : "DIMM Synchronous 2133 MHz (0.5 ns)",
+              "product" : "M393A4K40BB0-CPB",
+              "vendor" : "00CE063200CE",
+              "physid" : "6",
+              "serial" : "40E8B38F",
+              "slot" : "A7",
+              "units" : "bytes",
+              "size" : 34358689792,
+              "width" : 64,
+              "clock" : 2133000000
+            },
+            {
+              "id" : "bank:7",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:1107",
+              "description" : "DIMM Synchronous 2133 MHz (0.5 ns)",
+              "product" : "M393A4K40BB0-CPB",
+              "vendor" : "00CE063200CE",
+              "physid" : "7",
+              "serial" : "40E8BC1E",
+              "slot" : "A8",
+              "units" : "bytes",
+              "size" : 34358689792,
+              "width" : 64,
+              "clock" : 2133000000
+            },
+            {
+              "id" : "bank:8",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:1108",
+              "description" : "[empty]",
+              "physid" : "8",
+              "slot" : "A9"
+            },
+            {
+              "id" : "bank:9",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:1109",
+              "description" : "[empty]",
+              "physid" : "9",
+              "slot" : "A10"
+            },
+            {
+              "id" : "bank:10",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:110A",
+              "description" : "[empty]",
+              "physid" : "a",
+              "slot" : "A11"
+            },
+            {
+              "id" : "bank:11",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:110B",
+              "description" : "[empty]",
+              "physid" : "b",
+              "slot" : "A12"
+            },
+            {
+              "id" : "bank:12",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:110C",
+              "description" : "DIMM Synchronous 2133 MHz (0.5 ns)",
+              "product" : "M393A4K40BB0-CPB",
+              "vendor" : "00CE063200CE",
+              "physid" : "c",
+              "serial" : "40E8C2D9",
+              "slot" : "B1",
+              "units" : "bytes",
+              "size" : 34358689792,
+              "width" : 64,
+              "clock" : 2133000000
+            },
+            {
+              "id" : "bank:13",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:110D",
+              "description" : "DIMM Synchronous 2133 MHz (0.5 ns)",
+              "product" : "M393A4K40BB0-CPB",
+              "vendor" : "00CE063200CE",
+              "physid" : "d",
+              "serial" : "40E8B602",
+              "slot" : "B2",
+              "units" : "bytes",
+              "size" : 34358689792,
+              "width" : 64,
+              "clock" : 2133000000
+            },
+            {
+              "id" : "bank:14",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:110E",
+              "description" : "DIMM Synchronous 2133 MHz (0.5 ns)",
+              "product" : "M393A4K40BB0-CPB",
+              "vendor" : "00CE063200CE",
+              "physid" : "e",
+              "serial" : "40E8C25D",
+              "slot" : "B3",
+              "units" : "bytes",
+              "size" : 34358689792,
+              "width" : 64,
+              "clock" : 2133000000
+            },
+            {
+              "id" : "bank:15",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:110F",
+              "description" : "DIMM Synchronous 2133 MHz (0.5 ns)",
+              "product" : "M393A4K40BB0-CPB",
+              "vendor" : "00CE063200CE",
+              "physid" : "f",
+              "serial" : "40E8C25E",
+              "slot" : "B4",
+              "units" : "bytes",
+              "size" : 34358689792,
+              "width" : 64,
+              "clock" : 2133000000
+            },
+            {
+              "id" : "bank:16",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:1110",
+              "description" : "DIMM Synchronous 2133 MHz (0.5 ns)",
+              "product" : "M393A4K40BB0-CPB",
+              "vendor" : "00CE063200CE",
+              "physid" : "10",
+              "serial" : "40E8BCA7",
+              "slot" : "B5",
+              "units" : "bytes",
+              "size" : 34358689792,
+              "width" : 64,
+              "clock" : 2133000000
+            },
+            {
+              "id" : "bank:17",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:1111",
+              "description" : "DIMM Synchronous 2133 MHz (0.5 ns)",
+              "product" : "M393A4K40BB0-CPB",
+              "vendor" : "00CE063200CE",
+              "physid" : "11",
+              "serial" : "40E8BD12",
+              "slot" : "B6",
+              "units" : "bytes",
+              "size" : 34358689792,
+              "width" : 64,
+              "clock" : 2133000000
+            },
+            {
+              "id" : "bank:18",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:1112",
+              "description" : "DIMM Synchronous 2133 MHz (0.5 ns)",
+              "product" : "M393A4K40BB0-CPB",
+              "vendor" : "00CE063200CE",
+              "physid" : "12",
+              "serial" : "40E8C2BB",
+              "slot" : "B7",
+              "units" : "bytes",
+              "size" : 34358689792,
+              "width" : 64,
+              "clock" : 2133000000
+            },
+            {
+              "id" : "bank:19",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:1113",
+              "description" : "DIMM Synchronous 2133 MHz (0.5 ns)",
+              "product" : "M393A4K40BB0-CPB",
+              "vendor" : "00CE063200CE",
+              "physid" : "13",
+              "serial" : "40E8C2B7",
+              "slot" : "B8",
+              "units" : "bytes",
+              "size" : 34358689792,
+              "width" : 64,
+              "clock" : 2133000000
+            },
+            {
+              "id" : "bank:20",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:1114",
+              "description" : "[empty]",
+              "physid" : "14",
+              "slot" : "B9"
+            },
+            {
+              "id" : "bank:21",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:1115",
+              "description" : "[empty]",
+              "physid" : "15",
+              "slot" : "B10"
+            },
+            {
+              "id" : "bank:22",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:1116",
+              "description" : "[empty]",
+              "physid" : "16",
+              "slot" : "B11"
+            },
+            {
+              "id" : "bank:23",
+              "class" : "memory",
+              "claimed" : true,
+              "handle" : "DMI:1117",
+              "description" : "[empty]",
+              "physid" : "17",
+              "slot" : "B12"
+            }
+          ]
+        },
+        {
+          "id" : "pci:0",
+          "class" : "bridge",
+          "claimed" : true,
+          "handle" : "PCIBUS:0000:00",
+          "description" : "Host bridge",
+          "product" : "Haswell-E DMI2",
+          "vendor" : "Intel Corporation",
+          "physid" : "100",
+          "businfo" : "pci@0000:00:00.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "children" : [
+            {
+              "id" : "pci:0",
+              "class" : "bridge",
+              "claimed" : true,
+              "handle" : "PCIBUS:0000:02",
+              "description" : "PCI bridge",
+              "product" : "Haswell-E PCI Express Root Port 1",
+              "vendor" : "Intel Corporation",
+              "physid" : "1",
+              "businfo" : "pci@0000:00:01.0",
+              "version" : "02",
+              "width" : 32,
+              "clock" : 33000000,
+              "configuration" : {
+                "driver" : "pcieport"
+              },
+              "capabilities" : {
+                "pci" : true,
+                "msi" : "Message Signalled Interrupts",
+                "pciexpress" : "PCI Express",
+                "pm" : "Power Management",
+                "normal_decode" : true,
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              },
+              "children" : [
+                {
+                  "id" : "storage",
+                  "class" : "storage",
+                  "claimed" : true,
+                  "handle" : "PCI:0000:02:00.0",
+                  "description" : "RAID bus controller",
+                  "product" : "MegaRAID SAS-3 3108 [Invader]",
+                  "vendor" : "LSI Logic / Symbios Logic",
+                  "physid" : "0",
+                  "businfo" : "pci@0000:02:00.0",
+                  "logicalname" : "scsi0",
+                  "version" : "02",
+                  "width" : 64,
+                  "clock" : 33000000,
+                  "configuration" : {
+                    "driver" : "megaraid_sas",
+                    "latency" : "0"
+                  },
+                  "capabilities" : {
+                    "storage" : true,
+                    "pm" : "Power Management",
+                    "pciexpress" : "PCI Express",
+                    "vpd" : "Vital Product Data",
+                    "msi" : "Message Signalled Interrupts",
+                    "msix" : "MSI-X",
+                    "bus_master" : "bus mastering",
+                    "cap_list" : "PCI capabilities listing",
+                    "rom" : "extension ROM"
+                  },
+                  "children" : [
+                    {
+                      "id" : "disk:0",
+                      "class" : "disk",
+                      "claimed" : true,
+                      "handle" : "SCSI:00:00:00:00",
+                      "description" : "ATA Disk",
+                      "product" : "INTEL SSDSC2BX80",
+                      "physid" : "0.0.0",
+                      "businfo" : "scsi@0:0.0.0",
+                      "logicalname" : "/dev/sda",
+                      "dev" : "8:0",
+                      "version" : "DL22",
+                      "serial" : "BTHC536205Y9800NGN",
+                      "units" : "bytes",
+                      "size" : 800166076416,
+                      "capacity" : 800166248448,
+                      "configuration" : {
+                        "ansiversion" : "6",
+                        "sectorsize" : "4096",
+                        "signature" : "0008413a"
+                      },
+                      "capabilities" : {
+                        "partitioned" : "Partitioned disk",
+                        "partitioned:dos" : "MS-DOS partition table"
+                      },
+                      "children" : [
+                        {
+                          "id" : "volume:0",
+                          "class" : "volume",
+                          "claimed" : true,
+                          "description" : "Linux filesystem partition",
+                          "physid" : "1",
+                          "businfo" : "scsi@0:0.0.0,1",
+                          "logicalname" : "/dev/sda1",
+                          "dev" : "8:1",
+                          "capacity" : 524288000,
+                          "capabilities" : {
+                            "primary" : "Primary partition",
+                            "bootable" : "Bootable partition (active)"
+                          }
+                        },
+                        {
+                          "id" : "volume:1",
+                          "class" : "volume",
+                          "claimed" : true,
+                          "description" : "Linux LVM Physical Volume partition",
+                          "physid" : "2",
+                          "businfo" : "scsi@0:0.0.0,2",
+                          "logicalname" : "/dev/sda2",
+                          "dev" : "8:2",
+                          "serial" : "U2sBKr-tkrD-jMBX-QCaD-wQl3-IhET-mCHcpH",
+                          "size" : 799639863296,
+                          "capacity" : 799639863296,
+                          "capabilities" : {
+                            "primary" : "Primary partition",
+                            "multi" : "Multi-volumes",
+                            "lvm2" : true
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id" : "disk:1",
+                      "class" : "disk",
+                      "claimed" : true,
+                      "handle" : "SCSI:00:00:01:00",
+                      "description" : "ATA Disk",
+                      "product" : "INTEL SSDSC2BX80",
+                      "physid" : "0.1.0",
+                      "businfo" : "scsi@0:0.1.0",
+                      "logicalname" : "/dev/sdb",
+                      "dev" : "8:16",
+                      "version" : "DL22",
+                      "serial" : "BTHC536205KX800NGN",
+                      "units" : "bytes",
+                      "size" : 800166076416,
+                      "capacity" : 800166248448,
+                      "configuration" : {
+                        "ansiversion" : "6",
+                        "sectorsize" : "4096",
+                        "signature" : "000633a3"
+                      },
+                      "capabilities" : {
+                        "partitioned" : "Partitioned disk",
+                        "partitioned:dos" : "MS-DOS partition table"
+                      },
+                      "children" : [
+                        {
+                          "id" : "volume:0",
+                          "class" : "volume",
+                          "claimed" : true,
+                          "description" : "Linux filesystem partition",
+                          "physid" : "1",
+                          "businfo" : "scsi@0:0.1.0,1",
+                          "logicalname" : "/dev/sdb1",
+                          "dev" : "8:17",
+                          "capacity" : 524288000,
+                          "capabilities" : {
+                            "primary" : "Primary partition",
+                            "bootable" : "Bootable partition (active)"
+                          }
+                        },
+                        {
+                          "id" : "volume:1",
+                          "class" : "volume",
+                          "claimed" : true,
+                          "description" : "Linux LVM Physical Volume partition",
+                          "physid" : "2",
+                          "businfo" : "scsi@0:0.1.0,2",
+                          "logicalname" : "/dev/sdb2",
+                          "dev" : "8:18",
+                          "serial" : "WohQGe-423h-jHOH-UVjY-LF2y-jbEO-0PV06U",
+                          "size" : 799639863296,
+                          "capacity" : 799639863296,
+                          "capabilities" : {
+                            "primary" : "Primary partition",
+                            "multi" : "Multi-volumes",
+                            "lvm2" : true
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "id" : "enclosure",
+                      "class" : "generic",
+                      "handle" : "SCSI:00:00:32:00",
+                      "description" : "SCSI Enclosure",
+                      "product" : "BP13G+",
+                      "vendor" : "DP",
+                      "physid" : "0.20.0",
+                      "businfo" : "scsi@0:0.32.0",
+                      "version" : "2.23",
+                      "configuration" : {
+                        "ansiversion" : "5"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id" : "pci:1",
+              "class" : "bridge",
+              "claimed" : true,
+              "handle" : "PCIBUS:0000:03",
+              "description" : "PCI bridge",
+              "product" : "Haswell-E PCI Express Root Port 2",
+              "vendor" : "Intel Corporation",
+              "physid" : "2",
+              "businfo" : "pci@0000:00:02.0",
+              "version" : "02",
+              "width" : 32,
+              "clock" : 33000000,
+              "configuration" : {
+                "driver" : "pcieport"
+              },
+              "capabilities" : {
+                "pci" : true,
+                "msi" : "Message Signalled Interrupts",
+                "pciexpress" : "PCI Express",
+                "pm" : "Power Management",
+                "normal_decode" : true,
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              }
+            },
+            {
+              "id" : "pci:2",
+              "class" : "bridge",
+              "claimed" : true,
+              "handle" : "PCIBUS:0000:01",
+              "description" : "PCI bridge",
+              "product" : "Haswell-E PCI Express Root Port 3",
+              "vendor" : "Intel Corporation",
+              "physid" : "3",
+              "businfo" : "pci@0000:00:03.0",
+              "version" : "02",
+              "width" : 32,
+              "clock" : 33000000,
+              "configuration" : {
+                "driver" : "pcieport"
+              },
+              "capabilities" : {
+                "pci" : true,
+                "msi" : "Message Signalled Interrupts",
+                "pciexpress" : "PCI Express",
+                "pm" : "Power Management",
+                "normal_decode" : true,
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              },
+              "children" : [
+                {
+                  "id" : "network:0",
+                  "class" : "network",
+                  "handle" : "PCI:0000:01:00.0",
+                  "description" : "Ethernet controller",
+                  "product" : "Ethernet 10G 2P X710 Adapter",
+                  "vendor" : "Intel Corporation",
+                  "physid" : "0",
+                  "businfo" : "pci@0000:01:00.0",
+                  "version" : "01",
+                  "width" : 64,
+                  "clock" : 33000000,
+                  "configuration" : {
+                    "latency" : "0"
+                  },
+                  "capabilities" : {
+                    "pm" : "Power Management",
+                    "msi" : "Message Signalled Interrupts",
+                    "msix" : "MSI-X",
+                    "pciexpress" : "PCI Express",
+                    "vpd" : "Vital Product Data",
+                    "cap_list" : "PCI capabilities listing"
+                  }
+                },
+                {
+                  "id" : "network:1",
+                  "class" : "network",
+                  "handle" : "PCI:0000:01:00.1",
+                  "description" : "Ethernet controller",
+                  "product" : "Ethernet 10G 2P X710 Adapter",
+                  "vendor" : "Intel Corporation",
+                  "physid" : "0.1",
+                  "businfo" : "pci@0000:01:00.1",
+                  "version" : "01",
+                  "width" : 64,
+                  "clock" : 33000000,
+                  "configuration" : {
+                    "latency" : "0"
+                  },
+                  "capabilities" : {
+                    "pm" : "Power Management",
+                    "msi" : "Message Signalled Interrupts",
+                    "msix" : "MSI-X",
+                    "pciexpress" : "PCI Express",
+                    "vpd" : "Vital Product Data",
+                    "cap_list" : "PCI capabilities listing"
+                  }
+                }
+              ]
+            },
+            {
+              "id" : "generic:0",
+              "class" : "generic",
+              "handle" : "PCI:0000:00:05.0",
+              "description" : "System peripheral",
+              "product" : "Haswell-E Address Map, VTd_Misc, System Management",
+              "vendor" : "Intel Corporation",
+              "physid" : "5",
+              "businfo" : "pci@0000:00:05.0",
+              "version" : "02",
+              "width" : 32,
+              "clock" : 33000000,
+              "configuration" : {
+                "latency" : "0"
+              },
+              "capabilities" : {
+                "pciexpress" : "PCI Express",
+                "cap_list" : "PCI capabilities listing"
+              }
+            },
+            {
+              "id" : "generic:1",
+              "class" : "generic",
+              "handle" : "PCI:0000:00:05.1",
+              "description" : "System peripheral",
+              "product" : "Haswell-E Hot Plug",
+              "vendor" : "Intel Corporation",
+              "physid" : "5.1",
+              "businfo" : "pci@0000:00:05.1",
+              "version" : "02",
+              "width" : 32,
+              "clock" : 33000000,
+              "configuration" : {
+                "latency" : "0"
+              },
+              "capabilities" : {
+                "pciexpress" : "PCI Express",
+                "msi" : "Message Signalled Interrupts",
+                "cap_list" : "PCI capabilities listing"
+              }
+            },
+            {
+              "id" : "generic:2",
+              "class" : "generic",
+              "handle" : "PCI:0000:00:05.2",
+              "description" : "System peripheral",
+              "product" : "Haswell-E RAS, Control Status and Global Errors",
+              "vendor" : "Intel Corporation",
+              "physid" : "5.2",
+              "businfo" : "pci@0000:00:05.2",
+              "version" : "02",
+              "width" : 32,
+              "clock" : 33000000,
+              "configuration" : {
+                "latency" : "0"
+              },
+              "capabilities" : {
+                "pciexpress" : "PCI Express",
+                "cap_list" : "PCI capabilities listing"
+              }
+            },
+            {
+              "id" : "generic:3",
+              "class" : "generic",
+              "handle" : "PCI:0000:00:05.4",
+              "description" : "PIC",
+              "product" : "Haswell-E I/O Apic",
+              "vendor" : "Intel Corporation",
+              "physid" : "5.4",
+              "businfo" : "pci@0000:00:05.4",
+              "version" : "02",
+              "width" : 32,
+              "clock" : 33000000,
+              "configuration" : {
+                "latency" : "0"
+              },
+              "capabilities" : {
+                "pciexpress" : "PCI Express",
+                "pm" : "Power Management",
+                "io_x_-apic" : true,
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              }
+            },
+            {
+              "id" : "generic:4",
+              "class" : "generic",
+              "handle" : "PCI:0000:00:11.0",
+              "description" : "Unassigned class",
+              "product" : "Wellsburg SPSR",
+              "vendor" : "Intel Corporation",
+              "physid" : "11",
+              "businfo" : "pci@0000:00:11.0",
+              "version" : "05",
+              "width" : 32,
+              "clock" : 33000000,
+              "configuration" : {
+                "latency" : "0"
+              },
+              "capabilities" : {
+                "pciexpress" : "PCI Express",
+                "pm" : "Power Management",
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              }
+            },
+            {
+              "id" : "storage:0",
+              "class" : "storage",
+              "claimed" : true,
+              "handle" : "PCI:0000:00:11.4",
+              "description" : "SATA controller",
+              "product" : "Wellsburg sSATA Controller [AHCI mode]",
+              "vendor" : "Intel Corporation",
+              "physid" : "11.4",
+              "businfo" : "pci@0000:00:11.4",
+              "version" : "05",
+              "width" : 32,
+              "clock" : 66000000,
+              "configuration" : {
+                "driver" : "ahci",
+                "latency" : "0"
+              },
+              "capabilities" : {
+                "storage" : true,
+                "msi" : "Message Signalled Interrupts",
+                "pm" : "Power Management",
+                "ahci_1.0" : true,
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              }
+            },
+            {
+              "id" : "communication:0",
+              "class" : "communication",
+              "handle" : "PCI:0000:00:16.0",
+              "description" : "Communication controller",
+              "product" : "Wellsburg MEI Controller #1",
+              "vendor" : "Intel Corporation",
+              "physid" : "16",
+              "businfo" : "pci@0000:00:16.0",
+              "version" : "05",
+              "width" : 64,
+              "clock" : 33000000,
+              "configuration" : {
+                "latency" : "0"
+              },
+              "capabilities" : {
+                "pm" : "Power Management",
+                "msi" : "Message Signalled Interrupts",
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              }
+            },
+            {
+              "id" : "communication:1",
+              "class" : "communication",
+              "handle" : "PCI:0000:00:16.1",
+              "description" : "Communication controller",
+              "product" : "Wellsburg MEI Controller #2",
+              "vendor" : "Intel Corporation",
+              "physid" : "16.1",
+              "businfo" : "pci@0000:00:16.1",
+              "version" : "05",
+              "width" : 64,
+              "clock" : 33000000,
+              "configuration" : {
+                "latency" : "0"
+              },
+              "capabilities" : {
+                "pm" : "Power Management",
+                "msi" : "Message Signalled Interrupts",
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              }
+            },
+            {
+              "id" : "usb:0",
+              "class" : "bus",
+              "claimed" : true,
+              "handle" : "PCI:0000:00:1a.0",
+              "description" : "USB controller",
+              "product" : "Wellsburg USB Enhanced Host Controller #2",
+              "vendor" : "Intel Corporation",
+              "physid" : "1a",
+              "businfo" : "pci@0000:00:1a.0",
+              "version" : "05",
+              "width" : 32,
+              "clock" : 33000000,
+              "configuration" : {
+                "driver" : "ehci-pci",
+                "latency" : "0"
+              },
+              "capabilities" : {
+                "pm" : "Power Management",
+                "debug" : "Debug port",
+                "ehci" : "Enhanced Host Controller Interface (USB2)",
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              }
+            },
+            {
+              "id" : "pci:3",
+              "class" : "bridge",
+              "claimed" : true,
+              "handle" : "PCIBUS:0000:04",
+              "description" : "PCI bridge",
+              "product" : "Wellsburg PCI Express Root Port #1",
+              "vendor" : "Intel Corporation",
+              "physid" : "1c",
+              "businfo" : "pci@0000:00:1c.0",
+              "version" : "d5",
+              "width" : 32,
+              "clock" : 33000000,
+              "configuration" : {
+                "driver" : "pcieport"
+              },
+              "capabilities" : {
+                "pci" : true,
+                "pciexpress" : "PCI Express",
+                "msi" : "Message Signalled Interrupts",
+                "pm" : "Power Management",
+                "normal_decode" : true,
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              }
+            },
+            {
+              "id" : "pci:4",
+              "class" : "bridge",
+              "claimed" : true,
+              "handle" : "PCIBUS:0000:05",
+              "description" : "PCI bridge",
+              "product" : "Wellsburg PCI Express Root Port #5",
+              "vendor" : "Intel Corporation",
+              "physid" : "1c.4",
+              "businfo" : "pci@0000:00:1c.4",
+              "version" : "d5",
+              "width" : 32,
+              "clock" : 33000000,
+              "configuration" : {
+                "driver" : "pcieport"
+              },
+              "capabilities" : {
+                "pci" : true,
+                "pciexpress" : "PCI Express",
+                "msi" : "Message Signalled Interrupts",
+                "pm" : "Power Management",
+                "normal_decode" : true,
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              },
+              "children" : [
+                {
+                  "id" : "network:0",
+                  "class" : "network",
+                  "claimed" : true,
+                  "handle" : "PCI:0000:05:00.0",
+                  "description" : "Ethernet interface",
+                  "product" : "I350 Gigabit Network Connection",
+                  "vendor" : "Intel Corporation",
+                  "physid" : "0",
+                  "businfo" : "pci@0000:05:00.0",
+                  "logicalname" : "em3",
+                  "version" : "01",
+                  "serial" : "f8:bc:12:0b:0b:40",
+                  "units" : "bit/s",
+                  "size" : 1000000000,
+                  "capacity" : 1000000000,
+                  "width" : 32,
+                  "clock" : 33000000,
+                  "configuration" : {
+                    "autonegotiation" : "on",
+                    "broadcast" : "yes",
+                    "driver" : "igb",
+                    "driverversion" : "5.0.5-k",
+                    "duplex" : "full",
+                    "firmware" : "1.67, 0x80000d6b, 16.5.20",
+                    "ip" : "172.31.128.19",
+                    "latency" : "0",
+                    "link" : "yes",
+                    "multicast" : "yes",
+                    "port" : "twisted pair",
+                    "speed" : "1Gbit/s"
+                  },
+                  "capabilities" : {
+                    "pm" : "Power Management",
+                    "msi" : "Message Signalled Interrupts",
+                    "msix" : "MSI-X",
+                    "pciexpress" : "PCI Express",
+                    "vpd" : "Vital Product Data",
+                    "bus_master" : "bus mastering",
+                    "cap_list" : "PCI capabilities listing",
+                    "rom" : "extension ROM",
+                    "ethernet" : true,
+                    "physical" : "Physical interface",
+                    "tp" : "twisted pair",
+                    "10bt" : "10Mbit/s",
+                    "10bt-fd" : "10Mbit/s (full duplex)",
+                    "100bt" : "100Mbit/s",
+                    "100bt-fd" : "100Mbit/s (full duplex)",
+                    "1000bt-fd" : "1Gbit/s (full duplex)",
+                    "autonegotiation" : "Auto-negotiation"
+                  }
+                },
+                {
+                  "id" : "network:1",
+                  "class" : "network",
+                  "disabled" : true,
+                  "claimed" : true,
+                  "handle" : "PCI:0000:05:00.1",
+                  "description" : "Ethernet interface",
+                  "product" : "I350 Gigabit Network Connection",
+                  "vendor" : "Intel Corporation",
+                  "physid" : "0.1",
+                  "businfo" : "pci@0000:05:00.1",
+                  "logicalname" : "em4",
+                  "version" : "01",
+                  "serial" : "f8:bc:12:0b:0b:41",
+                  "units" : "bit/s",
+                  "capacity" : 1000000000,
+                  "width" : 32,
+                  "clock" : 33000000,
+                  "configuration" : {
+                    "autonegotiation" : "on",
+                    "broadcast" : "yes",
+                    "driver" : "igb",
+                    "driverversion" : "5.0.5-k",
+                    "firmware" : "1.67, 0x80000d6b, 16.5.20",
+                    "latency" : "0",
+                    "link" : "no",
+                    "multicast" : "yes",
+                    "port" : "twisted pair"
+                  },
+                  "capabilities" : {
+                    "pm" : "Power Management",
+                    "msi" : "Message Signalled Interrupts",
+                    "msix" : "MSI-X",
+                    "pciexpress" : "PCI Express",
+                    "vpd" : "Vital Product Data",
+                    "bus_master" : "bus mastering",
+                    "cap_list" : "PCI capabilities listing",
+                    "rom" : "extension ROM",
+                    "ethernet" : true,
+                    "physical" : "Physical interface",
+                    "tp" : "twisted pair",
+                    "10bt" : "10Mbit/s",
+                    "10bt-fd" : "10Mbit/s (full duplex)",
+                    "100bt" : "100Mbit/s",
+                    "100bt-fd" : "100Mbit/s (full duplex)",
+                    "1000bt-fd" : "1Gbit/s (full duplex)",
+                    "autonegotiation" : "Auto-negotiation"
+                  }
+                }
+              ]
+            },
+            {
+              "id" : "pci:5",
+              "class" : "bridge",
+              "claimed" : true,
+              "handle" : "PCIBUS:0000:06",
+              "description" : "PCI bridge",
+              "product" : "Wellsburg PCI Express Root Port #8",
+              "vendor" : "Intel Corporation",
+              "physid" : "1c.7",
+              "businfo" : "pci@0000:00:1c.7",
+              "version" : "d5",
+              "width" : 32,
+              "clock" : 33000000,
+              "configuration" : {
+                "driver" : "pcieport"
+              },
+              "capabilities" : {
+                "pci" : true,
+                "pciexpress" : "PCI Express",
+                "msi" : "Message Signalled Interrupts",
+                "pm" : "Power Management",
+                "normal_decode" : true,
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              },
+              "children" : [
+                {
+                  "id" : "pci",
+                  "class" : "bridge",
+                  "claimed" : true,
+                  "handle" : "PCIBUS:0000:07",
+                  "description" : "PCI bridge",
+                  "product" : "Renesas Technology Corp.",
+                  "vendor" : "Renesas Technology Corp.",
+                  "physid" : "0",
+                  "businfo" : "pci@0000:06:00.0",
+                  "version" : "00",
+                  "width" : 32,
+                  "clock" : 33000000,
+                  "configuration" : {
+                    "driver" : "pcieport"
+                  },
+                  "capabilities" : {
+                    "pci" : true,
+                    "pm" : "Power Management",
+                    "msi" : "Message Signalled Interrupts",
+                    "pciexpress" : "PCI Express",
+                    "normal_decode" : true,
+                    "bus_master" : "bus mastering",
+                    "cap_list" : "PCI capabilities listing"
+                  },
+                  "children" : [
+                    {
+                      "id" : "pci",
+                      "class" : "bridge",
+                      "claimed" : true,
+                      "handle" : "PCIBUS:0000:08",
+                      "description" : "PCI bridge",
+                      "product" : "Renesas Technology Corp.",
+                      "vendor" : "Renesas Technology Corp.",
+                      "physid" : "0",
+                      "businfo" : "pci@0000:07:00.0",
+                      "version" : "00",
+                      "width" : 32,
+                      "clock" : 33000000,
+                      "configuration" : {
+                        "driver" : "pcieport"
+                      },
+                      "capabilities" : {
+                        "pci" : true,
+                        "pm" : "Power Management",
+                        "msi" : "Message Signalled Interrupts",
+                        "pciexpress" : "PCI Express",
+                        "normal_decode" : true,
+                        "bus_master" : "bus mastering",
+                        "cap_list" : "PCI capabilities listing"
+                      },
+                      "children" : [
+                        {
+                          "id" : "pci",
+                          "class" : "bridge",
+                          "claimed" : true,
+                          "handle" : "PCIBUS:0000:09",
+                          "description" : "PCI bridge",
+                          "product" : "Renesas Technology Corp.",
+                          "vendor" : "Renesas Technology Corp.",
+                          "physid" : "0",
+                          "businfo" : "pci@0000:08:00.0",
+                          "version" : "00",
+                          "width" : 32,
+                          "clock" : 33000000,
+                          "capabilities" : {
+                            "pci" : true,
+                            "pm" : "Power Management",
+                            "msi" : "Message Signalled Interrupts",
+                            "pciexpress" : "PCI Express",
+                            "normal_decode" : true,
+                            "bus_master" : "bus mastering",
+                            "cap_list" : "PCI capabilities listing"
+                          },
+                          "children" : [
+                            {
+                              "id" : "display",
+                              "class" : "display",
+                              "handle" : "PCI:0000:09:00.0",
+                              "description" : "VGA compatible controller",
+                              "product" : "G200eR2",
+                              "vendor" : "Matrox Electronics Systems Ltd.",
+                              "physid" : "0",
+                              "businfo" : "pci@0000:09:00.0",
+                              "version" : "01",
+                              "width" : 32,
+                              "clock" : 33000000,
+                              "configuration" : {
+                                "latency" : "0",
+                                "maxlatency" : "32",
+                                "mingnt" : "16"
+                              },
+                              "capabilities" : {
+                                "pm" : "Power Management",
+                                "vga_controller" : true,
+                                "bus_master" : "bus mastering",
+                                "cap_list" : "PCI capabilities listing"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "id" : "usb:1",
+              "class" : "bus",
+              "claimed" : true,
+              "handle" : "PCI:0000:00:1d.0",
+              "description" : "USB controller",
+              "product" : "Wellsburg USB Enhanced Host Controller #1",
+              "vendor" : "Intel Corporation",
+              "physid" : "1d",
+              "businfo" : "pci@0000:00:1d.0",
+              "version" : "05",
+              "width" : 32,
+              "clock" : 33000000,
+              "configuration" : {
+                "driver" : "ehci-pci",
+                "latency" : "0"
+              },
+              "capabilities" : {
+                "pm" : "Power Management",
+                "debug" : "Debug port",
+                "ehci" : "Enhanced Host Controller Interface (USB2)",
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              }
+            },
+            {
+              "id" : "isa",
+              "class" : "bridge",
+              "claimed" : true,
+              "handle" : "PCI:0000:00:1f.0",
+              "description" : "ISA bridge",
+              "product" : "Wellsburg LPC Controller",
+              "vendor" : "Intel Corporation",
+              "physid" : "1f",
+              "businfo" : "pci@0000:00:1f.0",
+              "version" : "05",
+              "width" : 32,
+              "clock" : 33000000,
+              "configuration" : {
+                "latency" : "0"
+              },
+              "capabilities" : {
+                "isa" : true,
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              }
+            },
+            {
+              "id" : "storage:1",
+              "class" : "storage",
+              "claimed" : true,
+              "handle" : "PCI:0000:00:1f.2",
+              "description" : "SATA controller",
+              "product" : "Wellsburg 6-Port SATA Controller [AHCI mode]",
+              "vendor" : "Intel Corporation",
+              "physid" : "1f.2",
+              "businfo" : "pci@0000:00:1f.2",
+              "version" : "05",
+              "width" : 32,
+              "clock" : 66000000,
+              "configuration" : {
+                "driver" : "ahci",
+                "latency" : "0"
+              },
+              "capabilities" : {
+                "storage" : true,
+                "msi" : "Message Signalled Interrupts",
+                "pm" : "Power Management",
+                "ahci_1.0" : true,
+                "bus_master" : "bus mastering",
+                "cap_list" : "PCI capabilities listing"
+              }
+            }
+          ]
+        },
+        {
+          "id" : "generic:0",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:08.0",
+          "description" : "System peripheral",
+          "product" : "Haswell-E QPI Link 0",
+          "vendor" : "Intel Corporation",
+          "physid" : "2",
+          "businfo" : "pci@0000:7f:08.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:1",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:08.2",
+          "description" : "Performance counters",
+          "product" : "Haswell-E QPI Link 0",
+          "vendor" : "Intel Corporation",
+          "physid" : "4",
+          "businfo" : "pci@0000:7f:08.2",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:2",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:08.3",
+          "description" : "System peripheral",
+          "product" : "Haswell-E QPI Link 0",
+          "vendor" : "Intel Corporation",
+          "physid" : "6",
+          "businfo" : "pci@0000:7f:08.3",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:3",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:09.0",
+          "description" : "System peripheral",
+          "product" : "Haswell-E QPI Link 1",
+          "vendor" : "Intel Corporation",
+          "physid" : "7",
+          "businfo" : "pci@0000:7f:09.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:4",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:09.2",
+          "description" : "Performance counters",
+          "product" : "Haswell-E QPI Link 1",
+          "vendor" : "Intel Corporation",
+          "physid" : "8",
+          "businfo" : "pci@0000:7f:09.2",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:5",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:09.3",
+          "description" : "System peripheral",
+          "product" : "Haswell-E QPI Link 1",
+          "vendor" : "Intel Corporation",
+          "physid" : "9",
+          "businfo" : "pci@0000:7f:09.3",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:6",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:0b.0",
+          "description" : "System peripheral",
+          "product" : "Haswell-E R3 QPI Link 0 & 1 Monitoring",
+          "vendor" : "Intel Corporation",
+          "physid" : "a",
+          "businfo" : "pci@0000:7f:0b.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:7",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:0b.1",
+          "description" : "Performance counters",
+          "product" : "Haswell-E R3 QPI Link 0 & 1 Monitoring",
+          "vendor" : "Intel Corporation",
+          "physid" : "b",
+          "businfo" : "pci@0000:7f:0b.1",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:8",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:0b.2",
+          "description" : "Performance counters",
+          "product" : "Haswell-E R3 QPI Link 0 & 1 Monitoring",
+          "vendor" : "Intel Corporation",
+          "physid" : "c",
+          "businfo" : "pci@0000:7f:0b.2",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:9",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:0c.0",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "d",
+          "businfo" : "pci@0000:7f:0c.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:10",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:0c.1",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "e",
+          "businfo" : "pci@0000:7f:0c.1",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:11",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:0c.2",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "f",
+          "businfo" : "pci@0000:7f:0c.2",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:12",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:0c.3",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "10",
+          "businfo" : "pci@0000:7f:0c.3",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:13",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:0c.4",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "11",
+          "businfo" : "pci@0000:7f:0c.4",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:14",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:0c.5",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "12",
+          "businfo" : "pci@0000:7f:0c.5",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:15",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:0c.6",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "13",
+          "businfo" : "pci@0000:7f:0c.6",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:16",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:0c.7",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "14",
+          "businfo" : "pci@0000:7f:0c.7",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:17",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:0d.0",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "15",
+          "businfo" : "pci@0000:7f:0d.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:18",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:0d.1",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "16",
+          "businfo" : "pci@0000:7f:0d.1",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:19",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:0d.2",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "17",
+          "businfo" : "pci@0000:7f:0d.2",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:20",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:0d.3",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "18",
+          "businfo" : "pci@0000:7f:0d.3",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:21",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:0d.4",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "19",
+          "businfo" : "pci@0000:7f:0d.4",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:22",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:0d.5",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "1a",
+          "businfo" : "pci@0000:7f:0d.5",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:23",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:0d.6",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "1b",
+          "businfo" : "pci@0000:7f:0d.6",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:24",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:0d.7",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "1c",
+          "businfo" : "pci@0000:7f:0d.7",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:25",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:0e.0",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "1d",
+          "businfo" : "pci@0000:7f:0e.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:26",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:0e.1",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "1e",
+          "businfo" : "pci@0000:7f:0e.1",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:27",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:0f.0",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Buffered Ring Agent",
+          "vendor" : "Intel Corporation",
+          "physid" : "1f",
+          "businfo" : "pci@0000:7f:0f.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:28",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:0f.1",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Buffered Ring Agent",
+          "vendor" : "Intel Corporation",
+          "physid" : "20",
+          "businfo" : "pci@0000:7f:0f.1",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:29",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:0f.2",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Buffered Ring Agent",
+          "vendor" : "Intel Corporation",
+          "physid" : "21",
+          "businfo" : "pci@0000:7f:0f.2",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:30",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:0f.3",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Buffered Ring Agent",
+          "vendor" : "Intel Corporation",
+          "physid" : "22",
+          "businfo" : "pci@0000:7f:0f.3",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:31",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:0f.4",
+          "description" : "System peripheral",
+          "product" : "Haswell-E System Address Decoder & Broadcast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "23",
+          "businfo" : "pci@0000:7f:0f.4",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:32",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:0f.5",
+          "description" : "System peripheral",
+          "product" : "Haswell-E System Address Decoder & Broadcast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "24",
+          "businfo" : "pci@0000:7f:0f.5",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:33",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:0f.6",
+          "description" : "System peripheral",
+          "product" : "Haswell-E System Address Decoder & Broadcast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "25",
+          "businfo" : "pci@0000:7f:0f.6",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:34",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:10.0",
+          "description" : "System peripheral",
+          "product" : "Haswell-E PCIe Ring Interface",
+          "vendor" : "Intel Corporation",
+          "physid" : "26",
+          "businfo" : "pci@0000:7f:10.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:35",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:10.1",
+          "description" : "Performance counters",
+          "product" : "Haswell-E PCIe Ring Interface",
+          "vendor" : "Intel Corporation",
+          "physid" : "27",
+          "businfo" : "pci@0000:7f:10.1",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:36",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:10.5",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Scratchpad & Semaphore Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "28",
+          "businfo" : "pci@0000:7f:10.5",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:37",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:10.6",
+          "description" : "Performance counters",
+          "product" : "Haswell-E Scratchpad & Semaphore Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "29",
+          "businfo" : "pci@0000:7f:10.6",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:38",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:10.7",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Scratchpad & Semaphore Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "2a",
+          "businfo" : "pci@0000:7f:10.7",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:39",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:12.0",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Home Agent 0",
+          "vendor" : "Intel Corporation",
+          "physid" : "2b",
+          "businfo" : "pci@0000:7f:12.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:40",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:12.1",
+          "description" : "Performance counters",
+          "product" : "Haswell-E Home Agent 0",
+          "vendor" : "Intel Corporation",
+          "physid" : "2c",
+          "businfo" : "pci@0000:7f:12.1",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:41",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:12.2",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Home Agent 0 Debug",
+          "vendor" : "Intel Corporation",
+          "physid" : "2d",
+          "businfo" : "pci@0000:7f:12.2",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:42",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:12.4",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Home Agent 1",
+          "vendor" : "Intel Corporation",
+          "physid" : "2e",
+          "businfo" : "pci@0000:7f:12.4",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:43",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:12.5",
+          "description" : "Performance counters",
+          "product" : "Haswell-E Home Agent 1",
+          "vendor" : "Intel Corporation",
+          "physid" : "2f",
+          "businfo" : "pci@0000:7f:12.5",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:44",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:12.6",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Home Agent 1 Debug",
+          "vendor" : "Intel Corporation",
+          "physid" : "30",
+          "businfo" : "pci@0000:7f:12.6",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:45",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:13.0",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 0 Target Address, Thermal & RAS Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "31",
+          "businfo" : "pci@0000:7f:13.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:46",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:13.1",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 0 Target Address, Thermal & RAS Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "32",
+          "businfo" : "pci@0000:7f:13.1",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:47",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:13.2",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 0 Channel Target Address Decoder",
+          "vendor" : "Intel Corporation",
+          "physid" : "33",
+          "businfo" : "pci@0000:7f:13.2",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:48",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:13.3",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 0 Channel Target Address Decoder",
+          "vendor" : "Intel Corporation",
+          "physid" : "34",
+          "businfo" : "pci@0000:7f:13.3",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:49",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:13.6",
+          "description" : "System peripheral",
+          "product" : "Haswell-E DDRIO Channel 0/1 Broadcast",
+          "vendor" : "Intel Corporation",
+          "physid" : "35",
+          "businfo" : "pci@0000:7f:13.6",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:50",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:13.7",
+          "description" : "System peripheral",
+          "product" : "Haswell-E DDRIO Global Broadcast",
+          "vendor" : "Intel Corporation",
+          "physid" : "36",
+          "businfo" : "pci@0000:7f:13.7",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:51",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:14.0",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 0 Channel 0 Thermal Control",
+          "vendor" : "Intel Corporation",
+          "physid" : "37",
+          "businfo" : "pci@0000:7f:14.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:52",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:14.1",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 0 Channel 1 Thermal Control",
+          "vendor" : "Intel Corporation",
+          "physid" : "38",
+          "businfo" : "pci@0000:7f:14.1",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:53",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:14.2",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 0 Channel 0 ERROR Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "39",
+          "businfo" : "pci@0000:7f:14.2",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:54",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:14.3",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 0 Channel 1 ERROR Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "3a",
+          "businfo" : "pci@0000:7f:14.3",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:55",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:14.4",
+          "description" : "System peripheral",
+          "product" : "Haswell-E DDRIO (VMSE) 0 & 1",
+          "vendor" : "Intel Corporation",
+          "physid" : "3b",
+          "businfo" : "pci@0000:7f:14.4",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:56",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:14.5",
+          "description" : "System peripheral",
+          "product" : "Haswell-E DDRIO (VMSE) 0 & 1",
+          "vendor" : "Intel Corporation",
+          "physid" : "3c",
+          "businfo" : "pci@0000:7f:14.5",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:57",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:14.6",
+          "description" : "System peripheral",
+          "product" : "Haswell-E DDRIO (VMSE) 0 & 1",
+          "vendor" : "Intel Corporation",
+          "physid" : "3d",
+          "businfo" : "pci@0000:7f:14.6",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:58",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:14.7",
+          "description" : "System peripheral",
+          "product" : "Haswell-E DDRIO (VMSE) 0 & 1",
+          "vendor" : "Intel Corporation",
+          "physid" : "3e",
+          "businfo" : "pci@0000:7f:14.7",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:59",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:16.0",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 1 Target Address, Thermal & RAS Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "3f",
+          "businfo" : "pci@0000:7f:16.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:60",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:16.1",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 1 Target Address, Thermal & RAS Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "40",
+          "businfo" : "pci@0000:7f:16.1",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:61",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:16.2",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 1 Channel Target Address Decoder",
+          "vendor" : "Intel Corporation",
+          "physid" : "41",
+          "businfo" : "pci@0000:7f:16.2",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:62",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:16.3",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 1 Channel Target Address Decoder",
+          "vendor" : "Intel Corporation",
+          "physid" : "42",
+          "businfo" : "pci@0000:7f:16.3",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:63",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:16.6",
+          "description" : "System peripheral",
+          "product" : "Haswell-E DDRIO Channel 2/3 Broadcast",
+          "vendor" : "Intel Corporation",
+          "physid" : "43",
+          "businfo" : "pci@0000:7f:16.6",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:64",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:16.7",
+          "description" : "System peripheral",
+          "product" : "Haswell-E DDRIO Global Broadcast",
+          "vendor" : "Intel Corporation",
+          "physid" : "44",
+          "businfo" : "pci@0000:7f:16.7",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:65",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:17.0",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 1 Channel 0 Thermal Control",
+          "vendor" : "Intel Corporation",
+          "physid" : "45",
+          "businfo" : "pci@0000:7f:17.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:66",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:17.1",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 1 Channel 1 Thermal Control",
+          "vendor" : "Intel Corporation",
+          "physid" : "46",
+          "businfo" : "pci@0000:7f:17.1",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:67",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:17.2",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 1 Channel 0 ERROR Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "47",
+          "businfo" : "pci@0000:7f:17.2",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:68",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:17.3",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 1 Channel 1 ERROR Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "48",
+          "businfo" : "pci@0000:7f:17.3",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:69",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:17.4",
+          "description" : "System peripheral",
+          "product" : "Haswell-E DDRIO (VMSE) 2 & 3",
+          "vendor" : "Intel Corporation",
+          "physid" : "49",
+          "businfo" : "pci@0000:7f:17.4",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:70",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:17.5",
+          "description" : "System peripheral",
+          "product" : "Haswell-E DDRIO (VMSE) 2 & 3",
+          "vendor" : "Intel Corporation",
+          "physid" : "4a",
+          "businfo" : "pci@0000:7f:17.5",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:71",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:17.6",
+          "description" : "System peripheral",
+          "product" : "Haswell-E DDRIO (VMSE) 2 & 3",
+          "vendor" : "Intel Corporation",
+          "physid" : "4b",
+          "businfo" : "pci@0000:7f:17.6",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:72",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:17.7",
+          "description" : "System peripheral",
+          "product" : "Haswell-E DDRIO (VMSE) 2 & 3",
+          "vendor" : "Intel Corporation",
+          "physid" : "4c",
+          "businfo" : "pci@0000:7f:17.7",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:73",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:1e.0",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Power Control Unit",
+          "vendor" : "Intel Corporation",
+          "physid" : "4d",
+          "businfo" : "pci@0000:7f:1e.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:74",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:1e.1",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Power Control Unit",
+          "vendor" : "Intel Corporation",
+          "physid" : "4e",
+          "businfo" : "pci@0000:7f:1e.1",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:75",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:1e.2",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Power Control Unit",
+          "vendor" : "Intel Corporation",
+          "physid" : "4f",
+          "businfo" : "pci@0000:7f:1e.2",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:76",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:1e.3",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Power Control Unit",
+          "vendor" : "Intel Corporation",
+          "physid" : "50",
+          "businfo" : "pci@0000:7f:1e.3",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:77",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:1e.4",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Power Control Unit",
+          "vendor" : "Intel Corporation",
+          "physid" : "51",
+          "businfo" : "pci@0000:7f:1e.4",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:78",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:1f.0",
+          "description" : "System peripheral",
+          "product" : "Haswell-E VCU",
+          "vendor" : "Intel Corporation",
+          "physid" : "52",
+          "businfo" : "pci@0000:7f:1f.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:79",
+          "class" : "generic",
+          "handle" : "PCI:0000:7f:1f.2",
+          "description" : "System peripheral",
+          "product" : "Haswell-E VCU",
+          "vendor" : "Intel Corporation",
+          "physid" : "53",
+          "businfo" : "pci@0000:7f:1f.2",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "pci:1",
+          "class" : "bridge",
+          "claimed" : true,
+          "handle" : "PCIBUS:0000:81",
+          "description" : "PCI bridge",
+          "product" : "Haswell-E PCI Express Root Port 1",
+          "vendor" : "Intel Corporation",
+          "physid" : "1",
+          "businfo" : "pci@0000:80:01.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "driver" : "pcieport"
+          },
+          "capabilities" : {
+            "pci" : true,
+            "msi" : "Message Signalled Interrupts",
+            "pciexpress" : "PCI Express",
+            "pm" : "Power Management",
+            "normal_decode" : true,
+            "bus_master" : "bus mastering",
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "pci:2",
+          "class" : "bridge",
+          "claimed" : true,
+          "handle" : "PCIBUS:0000:82",
+          "description" : "PCI bridge",
+          "product" : "Haswell-E PCI Express Root Port 3",
+          "vendor" : "Intel Corporation",
+          "physid" : "3",
+          "businfo" : "pci@0000:80:03.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "driver" : "pcieport"
+          },
+          "capabilities" : {
+            "pci" : true,
+            "msi" : "Message Signalled Interrupts",
+            "pciexpress" : "PCI Express",
+            "pm" : "Power Management",
+            "normal_decode" : true,
+            "bus_master" : "bus mastering",
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:80",
+          "class" : "generic",
+          "handle" : "PCI:0000:80:05.0",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Address Map, VTd_Misc, System Management",
+          "vendor" : "Intel Corporation",
+          "physid" : "5",
+          "businfo" : "pci@0000:80:05.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "pciexpress" : "PCI Express",
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:81",
+          "class" : "generic",
+          "handle" : "PCI:0000:80:05.1",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Hot Plug",
+          "vendor" : "Intel Corporation",
+          "physid" : "5.1",
+          "businfo" : "pci@0000:80:05.1",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "pciexpress" : "PCI Express",
+            "msi" : "Message Signalled Interrupts",
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:82",
+          "class" : "generic",
+          "handle" : "PCI:0000:80:05.2",
+          "description" : "System peripheral",
+          "product" : "Haswell-E RAS, Control Status and Global Errors",
+          "vendor" : "Intel Corporation",
+          "physid" : "5.2",
+          "businfo" : "pci@0000:80:05.2",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "pciexpress" : "PCI Express",
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:83",
+          "class" : "generic",
+          "handle" : "PCI:0000:80:05.4",
+          "description" : "PIC",
+          "product" : "Haswell-E I/O Apic",
+          "vendor" : "Intel Corporation",
+          "physid" : "5.4",
+          "businfo" : "pci@0000:80:05.4",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "pciexpress" : "PCI Express",
+            "pm" : "Power Management",
+            "io_x_-apic" : true,
+            "bus_master" : "bus mastering",
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:84",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:08.0",
+          "description" : "System peripheral",
+          "product" : "Haswell-E QPI Link 0",
+          "vendor" : "Intel Corporation",
+          "physid" : "54",
+          "businfo" : "pci@0000:ff:08.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:85",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:08.2",
+          "description" : "Performance counters",
+          "product" : "Haswell-E QPI Link 0",
+          "vendor" : "Intel Corporation",
+          "physid" : "55",
+          "businfo" : "pci@0000:ff:08.2",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:86",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:08.3",
+          "description" : "System peripheral",
+          "product" : "Haswell-E QPI Link 0",
+          "vendor" : "Intel Corporation",
+          "physid" : "56",
+          "businfo" : "pci@0000:ff:08.3",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:87",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:09.0",
+          "description" : "System peripheral",
+          "product" : "Haswell-E QPI Link 1",
+          "vendor" : "Intel Corporation",
+          "physid" : "57",
+          "businfo" : "pci@0000:ff:09.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:88",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:09.2",
+          "description" : "Performance counters",
+          "product" : "Haswell-E QPI Link 1",
+          "vendor" : "Intel Corporation",
+          "physid" : "58",
+          "businfo" : "pci@0000:ff:09.2",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:89",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:09.3",
+          "description" : "System peripheral",
+          "product" : "Haswell-E QPI Link 1",
+          "vendor" : "Intel Corporation",
+          "physid" : "59",
+          "businfo" : "pci@0000:ff:09.3",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:90",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:0b.0",
+          "description" : "System peripheral",
+          "product" : "Haswell-E R3 QPI Link 0 & 1 Monitoring",
+          "vendor" : "Intel Corporation",
+          "physid" : "5a",
+          "businfo" : "pci@0000:ff:0b.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:91",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:0b.1",
+          "description" : "Performance counters",
+          "product" : "Haswell-E R3 QPI Link 0 & 1 Monitoring",
+          "vendor" : "Intel Corporation",
+          "physid" : "5b",
+          "businfo" : "pci@0000:ff:0b.1",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:92",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:0b.2",
+          "description" : "Performance counters",
+          "product" : "Haswell-E R3 QPI Link 0 & 1 Monitoring",
+          "vendor" : "Intel Corporation",
+          "physid" : "5c",
+          "businfo" : "pci@0000:ff:0b.2",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:93",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:0c.0",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "5d",
+          "businfo" : "pci@0000:ff:0c.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:94",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:0c.1",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "5e",
+          "businfo" : "pci@0000:ff:0c.1",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:95",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:0c.2",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "5f",
+          "businfo" : "pci@0000:ff:0c.2",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:96",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:0c.3",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "60",
+          "businfo" : "pci@0000:ff:0c.3",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:97",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:0c.4",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "61",
+          "businfo" : "pci@0000:ff:0c.4",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:98",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:0c.5",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "62",
+          "businfo" : "pci@0000:ff:0c.5",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:99",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:0c.6",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "63",
+          "businfo" : "pci@0000:ff:0c.6",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:100",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:0c.7",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "64",
+          "businfo" : "pci@0000:ff:0c.7",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:101",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:0d.0",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "65",
+          "businfo" : "pci@0000:ff:0d.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:102",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:0d.1",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "66",
+          "businfo" : "pci@0000:ff:0d.1",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:103",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:0d.2",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "67",
+          "businfo" : "pci@0000:ff:0d.2",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:104",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:0d.3",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "68",
+          "businfo" : "pci@0000:ff:0d.3",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:105",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:0d.4",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "69",
+          "businfo" : "pci@0000:ff:0d.4",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:106",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:0d.5",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "6a",
+          "businfo" : "pci@0000:ff:0d.5",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:107",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:0d.6",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "6b",
+          "businfo" : "pci@0000:ff:0d.6",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:108",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:0d.7",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "6c",
+          "businfo" : "pci@0000:ff:0d.7",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:109",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:0e.0",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "6d",
+          "businfo" : "pci@0000:ff:0e.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:110",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:0e.1",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Unicast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "6e",
+          "businfo" : "pci@0000:ff:0e.1",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:111",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:0f.0",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Buffered Ring Agent",
+          "vendor" : "Intel Corporation",
+          "physid" : "6f",
+          "businfo" : "pci@0000:ff:0f.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:112",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:0f.1",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Buffered Ring Agent",
+          "vendor" : "Intel Corporation",
+          "physid" : "70",
+          "businfo" : "pci@0000:ff:0f.1",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:113",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:0f.2",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Buffered Ring Agent",
+          "vendor" : "Intel Corporation",
+          "physid" : "71",
+          "businfo" : "pci@0000:ff:0f.2",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:114",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:0f.3",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Buffered Ring Agent",
+          "vendor" : "Intel Corporation",
+          "physid" : "72",
+          "businfo" : "pci@0000:ff:0f.3",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:115",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:0f.4",
+          "description" : "System peripheral",
+          "product" : "Haswell-E System Address Decoder & Broadcast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "73",
+          "businfo" : "pci@0000:ff:0f.4",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:116",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:0f.5",
+          "description" : "System peripheral",
+          "product" : "Haswell-E System Address Decoder & Broadcast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "74",
+          "businfo" : "pci@0000:ff:0f.5",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:117",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:0f.6",
+          "description" : "System peripheral",
+          "product" : "Haswell-E System Address Decoder & Broadcast Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "75",
+          "businfo" : "pci@0000:ff:0f.6",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:118",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:10.0",
+          "description" : "System peripheral",
+          "product" : "Haswell-E PCIe Ring Interface",
+          "vendor" : "Intel Corporation",
+          "physid" : "76",
+          "businfo" : "pci@0000:ff:10.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:119",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:10.1",
+          "description" : "Performance counters",
+          "product" : "Haswell-E PCIe Ring Interface",
+          "vendor" : "Intel Corporation",
+          "physid" : "77",
+          "businfo" : "pci@0000:ff:10.1",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:120",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:10.5",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Scratchpad & Semaphore Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "78",
+          "businfo" : "pci@0000:ff:10.5",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:121",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:10.6",
+          "description" : "Performance counters",
+          "product" : "Haswell-E Scratchpad & Semaphore Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "79",
+          "businfo" : "pci@0000:ff:10.6",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:122",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:10.7",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Scratchpad & Semaphore Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "7a",
+          "businfo" : "pci@0000:ff:10.7",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:123",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:12.0",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Home Agent 0",
+          "vendor" : "Intel Corporation",
+          "physid" : "7b",
+          "businfo" : "pci@0000:ff:12.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:124",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:12.1",
+          "description" : "Performance counters",
+          "product" : "Haswell-E Home Agent 0",
+          "vendor" : "Intel Corporation",
+          "physid" : "7c",
+          "businfo" : "pci@0000:ff:12.1",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:125",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:12.2",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Home Agent 0 Debug",
+          "vendor" : "Intel Corporation",
+          "physid" : "7d",
+          "businfo" : "pci@0000:ff:12.2",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:126",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:12.4",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Home Agent 1",
+          "vendor" : "Intel Corporation",
+          "physid" : "7e",
+          "businfo" : "pci@0000:ff:12.4",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:127",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:12.5",
+          "description" : "Performance counters",
+          "product" : "Haswell-E Home Agent 1",
+          "vendor" : "Intel Corporation",
+          "physid" : "7f",
+          "businfo" : "pci@0000:ff:12.5",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:128",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:12.6",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Home Agent 1 Debug",
+          "vendor" : "Intel Corporation",
+          "physid" : "80",
+          "businfo" : "pci@0000:ff:12.6",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:129",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:13.0",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 0 Target Address, Thermal & RAS Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "81",
+          "businfo" : "pci@0000:ff:13.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:130",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:13.1",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 0 Target Address, Thermal & RAS Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "82",
+          "businfo" : "pci@0000:ff:13.1",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:131",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:13.2",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 0 Channel Target Address Decoder",
+          "vendor" : "Intel Corporation",
+          "physid" : "83",
+          "businfo" : "pci@0000:ff:13.2",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:132",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:13.3",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 0 Channel Target Address Decoder",
+          "vendor" : "Intel Corporation",
+          "physid" : "84",
+          "businfo" : "pci@0000:ff:13.3",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:133",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:13.6",
+          "description" : "System peripheral",
+          "product" : "Haswell-E DDRIO Channel 0/1 Broadcast",
+          "vendor" : "Intel Corporation",
+          "physid" : "85",
+          "businfo" : "pci@0000:ff:13.6",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:134",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:13.7",
+          "description" : "System peripheral",
+          "product" : "Haswell-E DDRIO Global Broadcast",
+          "vendor" : "Intel Corporation",
+          "physid" : "86",
+          "businfo" : "pci@0000:ff:13.7",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:135",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:14.0",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 0 Channel 0 Thermal Control",
+          "vendor" : "Intel Corporation",
+          "physid" : "87",
+          "businfo" : "pci@0000:ff:14.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:136",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:14.1",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 0 Channel 1 Thermal Control",
+          "vendor" : "Intel Corporation",
+          "physid" : "88",
+          "businfo" : "pci@0000:ff:14.1",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:137",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:14.2",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 0 Channel 0 ERROR Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "89",
+          "businfo" : "pci@0000:ff:14.2",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:138",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:14.3",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 0 Channel 1 ERROR Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "8a",
+          "businfo" : "pci@0000:ff:14.3",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:139",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:14.4",
+          "description" : "System peripheral",
+          "product" : "Haswell-E DDRIO (VMSE) 0 & 1",
+          "vendor" : "Intel Corporation",
+          "physid" : "8b",
+          "businfo" : "pci@0000:ff:14.4",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:140",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:14.5",
+          "description" : "System peripheral",
+          "product" : "Haswell-E DDRIO (VMSE) 0 & 1",
+          "vendor" : "Intel Corporation",
+          "physid" : "8c",
+          "businfo" : "pci@0000:ff:14.5",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:141",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:14.6",
+          "description" : "System peripheral",
+          "product" : "Haswell-E DDRIO (VMSE) 0 & 1",
+          "vendor" : "Intel Corporation",
+          "physid" : "8d",
+          "businfo" : "pci@0000:ff:14.6",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:142",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:14.7",
+          "description" : "System peripheral",
+          "product" : "Haswell-E DDRIO (VMSE) 0 & 1",
+          "vendor" : "Intel Corporation",
+          "physid" : "8e",
+          "businfo" : "pci@0000:ff:14.7",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:143",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:16.0",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 1 Target Address, Thermal & RAS Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "8f",
+          "businfo" : "pci@0000:ff:16.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:144",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:16.1",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 1 Target Address, Thermal & RAS Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "90",
+          "businfo" : "pci@0000:ff:16.1",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:145",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:16.2",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 1 Channel Target Address Decoder",
+          "vendor" : "Intel Corporation",
+          "physid" : "91",
+          "businfo" : "pci@0000:ff:16.2",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:146",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:16.3",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 1 Channel Target Address Decoder",
+          "vendor" : "Intel Corporation",
+          "physid" : "92",
+          "businfo" : "pci@0000:ff:16.3",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:147",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:16.6",
+          "description" : "System peripheral",
+          "product" : "Haswell-E DDRIO Channel 2/3 Broadcast",
+          "vendor" : "Intel Corporation",
+          "physid" : "93",
+          "businfo" : "pci@0000:ff:16.6",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:148",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:16.7",
+          "description" : "System peripheral",
+          "product" : "Haswell-E DDRIO Global Broadcast",
+          "vendor" : "Intel Corporation",
+          "physid" : "94",
+          "businfo" : "pci@0000:ff:16.7",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:149",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:17.0",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 1 Channel 0 Thermal Control",
+          "vendor" : "Intel Corporation",
+          "physid" : "95",
+          "businfo" : "pci@0000:ff:17.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:150",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:17.1",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 1 Channel 1 Thermal Control",
+          "vendor" : "Intel Corporation",
+          "physid" : "96",
+          "businfo" : "pci@0000:ff:17.1",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:151",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:17.2",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 1 Channel 0 ERROR Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "97",
+          "businfo" : "pci@0000:ff:17.2",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:152",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:17.3",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Integrated Memory Controller 1 Channel 1 ERROR Registers",
+          "vendor" : "Intel Corporation",
+          "physid" : "98",
+          "businfo" : "pci@0000:ff:17.3",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          },
+          "capabilities" : {
+            "cap_list" : "PCI capabilities listing"
+          }
+        },
+        {
+          "id" : "generic:153",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:17.4",
+          "description" : "System peripheral",
+          "product" : "Haswell-E DDRIO (VMSE) 2 & 3",
+          "vendor" : "Intel Corporation",
+          "physid" : "99",
+          "businfo" : "pci@0000:ff:17.4",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:154",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:17.5",
+          "description" : "System peripheral",
+          "product" : "Haswell-E DDRIO (VMSE) 2 & 3",
+          "vendor" : "Intel Corporation",
+          "physid" : "9a",
+          "businfo" : "pci@0000:ff:17.5",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:155",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:17.6",
+          "description" : "System peripheral",
+          "product" : "Haswell-E DDRIO (VMSE) 2 & 3",
+          "vendor" : "Intel Corporation",
+          "physid" : "9b",
+          "businfo" : "pci@0000:ff:17.6",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:156",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:17.7",
+          "description" : "System peripheral",
+          "product" : "Haswell-E DDRIO (VMSE) 2 & 3",
+          "vendor" : "Intel Corporation",
+          "physid" : "9c",
+          "businfo" : "pci@0000:ff:17.7",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:157",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:1e.0",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Power Control Unit",
+          "vendor" : "Intel Corporation",
+          "physid" : "9d",
+          "businfo" : "pci@0000:ff:1e.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:158",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:1e.1",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Power Control Unit",
+          "vendor" : "Intel Corporation",
+          "physid" : "9e",
+          "businfo" : "pci@0000:ff:1e.1",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:159",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:1e.2",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Power Control Unit",
+          "vendor" : "Intel Corporation",
+          "physid" : "9f",
+          "businfo" : "pci@0000:ff:1e.2",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:160",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:1e.3",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Power Control Unit",
+          "vendor" : "Intel Corporation",
+          "physid" : "a0",
+          "businfo" : "pci@0000:ff:1e.3",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:161",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:1e.4",
+          "description" : "System peripheral",
+          "product" : "Haswell-E Power Control Unit",
+          "vendor" : "Intel Corporation",
+          "physid" : "a1",
+          "businfo" : "pci@0000:ff:1e.4",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:162",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:1f.0",
+          "description" : "System peripheral",
+          "product" : "Haswell-E VCU",
+          "vendor" : "Intel Corporation",
+          "physid" : "a2",
+          "businfo" : "pci@0000:ff:1f.0",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        },
+        {
+          "id" : "generic:163",
+          "class" : "generic",
+          "handle" : "PCI:0000:ff:1f.2",
+          "description" : "System peripheral",
+          "product" : "Haswell-E VCU",
+          "vendor" : "Intel Corporation",
+          "physid" : "a3",
+          "businfo" : "pci@0000:ff:1f.2",
+          "version" : "02",
+          "width" : 32,
+          "clock" : 33000000,
+          "configuration" : {
+            "latency" : "0"
+          }
+        }
+      ]
+    }
+  ]
+}
