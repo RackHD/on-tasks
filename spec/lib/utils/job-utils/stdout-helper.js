@@ -3683,3 +3683,7 @@ module.exports.lldpOutput = fs
 module.exports.driveidOutput = fs
     .readFileSync(__dirname+"/samplefiles/driveid.txt")
     .toString();
+
+module.exports.lshwOutputMultiNic = fs
+    .readFileSync(__dirname+"/samplefiles/multi-nic-lshw.txt")
+    .toString();
