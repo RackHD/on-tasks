@@ -1,0 +1,70 @@
+onrack@onrack:~$ racadm -r 192.168.188.103 -u admin -p admin swinventory
+Security Alert: Certificate is invalid - self signed certificate
+Continuing execution. Use -S option for racadm to stop execution on certificate-related errors.
+
+
+
+
+-------------------------SOFTWARE INVENTORY------------------------
+
+ComponentType = FIRMWARE
+ElementName = Integrated Dell Remote Access Controller
+FQDD = iDRAC.Embedded.1-1
+InstallationDate = NA
+Rollback Version = 2.20.20.20
+-------------------------------------------------------------------
+
+ComponentType = FIRMWARE
+ElementName = Integrated Dell Remote Access Controller
+FQDD = iDRAC.Embedded.1-1
+InstallationDate = 2016-01-11T21:55:32Z
+Current Version = 2.23.23.21
+-------------------------------------------------------------------
+
+ComponentType = FIRMWARE
+ElementName = Intel(R) Ethernet 10G X520 LOM - 00:8C:FA:F3:78:30
+FQDD = NIC.Embedded.1-1-1
+InstallationDate = 2015-11-26T06:54:17Z
+Current Version = 16.5.0
+-------------------------------------------------------------------
+
+ComponentType = FIRMWARE
+ElementName = Intel(R) Ethernet 10G X520 LOM - 00:8C:FA:F3:78:32
+FQDD = NIC.Embedded.2-1-1
+InstallationDate = 2015-11-26T06:54:20Z
+Current Version = 16.5.0
+-------------------------------------------------------------------
+
+ComponentType = BIOS
+ElementName = BIOS
+FQDD = BIOS.Setup.1-1
+InstallationDate = NA
+Rollback Version = 1.0.3
+-------------------------------------------------------------------
+
+ComponentType = BIOS
+ElementName = BIOS
+FQDD = BIOS.Setup.1-1
+InstallationDate = NA
+Available Version = 1.0.3
+-------------------------------------------------------------------
+
+ComponentType = BIOS
+ElementName = BIOS
+FQDD = BIOS.Setup.1-1
+InstallationDate = 2015-11-26T06:54:10Z
+Current Version = 1.0.3
+-------------------------------------------------------------------
+
+ComponentType = FIRMWARE
+ElementName = Disk 1 in Backplane 0 of RAID Controller in Slot 1
+FQDD = Disk.Bay.1:Enclosure.Internal.0-0:RAID.Slot.1-1
+InstallationDate = 2015-11-26T07:28:09Z
+Current Version = TS04
+-------------------------------------------------------------------
+
+ComponentType = FIRMWARE
+ElementName = Disk 2 in Backplane 0 of RAID Controller in Slot 1
+FQDD = Disk.Bay.2:Enclosure.Internal.0-0:RAID.Slot.1-1
+InstallationDate = 2015-11-26T07:28:09Z
+Current Version = TS04

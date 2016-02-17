@@ -3621,6 +3621,27 @@ module.exports.sas2flashList = '*** *********** **** ***** *******\n' +
                                '	Exiting SAS2Flash.\n' +
                                '\n';
 
+module.exports.racadmJobIdData = 'Security Alert: Certificate is invalid - self signed certificate\n' +
+                                'Continuing execution. Use -S option for racadm to stop execution on ' +
+                                'certificate-related errors.\n' +
+                                'RAC977: Import configuration XML file operation initiated.\n' +
+                                'Use the "racadm jobqueue view -i JID_541335487816" command to view the status\n' +
+                                'of the operation.\n' +
+                                '\n';
+module.exports.racadmJobStatusData = 'Security Alert: Certificate is invalid - self signed certificate\n' +
+                                    'Continuing execution. Use -S option for racadm to stop ' +
+                                    'execution on certificate-related errors.\n' +
+                                    '---------------------------- JOB -------------------------\n' +
+                                    '[Job ID=JID_541347990377]\n' +
+                                    'Job Name=Configure: Import system configuration XML file\n' +
+                                    'Status=Completed\n' +
+                                    'Start Time=[Not Applicable]\n' +
+                                    'Expiration Time=[Not Applicable]\n' +
+                                    'Message=[SYS054: No configuration changes requiring a system ' +
+                                    'restart need to be applied.]\n' +
+                                    'Percent Complete=[100]\n' +
+                                    '----------------------------------------------------------\n' +
+                                    '\n';
 
 var fs = require('fs');
 
@@ -3686,4 +3707,7 @@ module.exports.driveidOutput = fs
 
 module.exports.lshwOutputMultiNic = fs
     .readFileSync(__dirname+"/samplefiles/multi-nic-lshw.txt")
+
+module.exports.racadmSoftwareInventory = fs
+    .readFileSync(__dirname+"/samplefiles/racadm-software-inventory.txt")
     .toString();
