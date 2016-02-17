@@ -272,12 +272,50 @@ describe("racadm-tool", function() {
 
         });
 
-        describe('setBiosConfig', function(){
-            var runCommandStub, getJobIdStub, waitJobDoneStub, getPathFilenameStub;
-            beforeEach('setBiosConfig before', function() {
+        describe('run async commands', function(){
+            var runCommandStub, getJobIdStub, waitJobDoneStub;
+            beforeEach('run async commands before', function() {
                 runCommandStub = this.sandbox.stub(instance, 'runCommand');
                 getJobIdStub = this.sandbox.stub(parser, 'getJobId');
-                waitJobDoneStub =  this.sandbox.stub(instance, 'waitJobDone');
+                waitJobDoneStub = this.sandbox.stub(instance, 'waitJobDone');
+            });
+
+            afterEach('run async commands after', function() {
+                this.sandbox.restore();
+            });
+
+            it('should run commands and get completion status', function(){
+                var command = "set -f bios.xml -t xml -u " +
+                        "onrack -p onrack -l //192.168.188.113/share";
+                runCommandStub.resolves();
+                getJobIdStub.returns();
+                waitJobDoneStub.resolves();
+                return instance.runAsynCommands('192.168.188.113','admin', 'admin',
+                    command, 0, 1000)
+                    .then(function(){
+                        expect(instance.runCommand).to.be.calledWith('192.168.188.113',
+                            'admin', 'admin', command);
+                        expect(parser.getJobId).to.have.been.calledOnce;
+                        expect(instance.waitJobDone).to.have.been.called;
+                    });
+            });
+
+            it('should report errors if promise failure', function(){
+                var command = "set -f bios.xml -t xml -u " +
+                    "onrack -p onrack -l //192.168.188.113/share";
+                runCommandStub.resolves();
+                getJobIdStub.returns();
+                waitJobDoneStub.rejects({error: "Error happend"});
+                return instance.runAsynCommands('192.168.188.113','admin', 'admin',
+                    command, 0, 1000).should.be.rejectedWith({error: "Error happend"});
+            });
+
+        });
+
+        describe('setBiosConfig', function(){
+            var runAsyncCommandsStub, getPathFilenameStub;
+            beforeEach('setBiosConfig before', function() {
+                runAsyncCommandsStub = this.sandbox.stub(instance, 'runAsynCommands');
                 getPathFilenameStub = this.sandbox.stub(parser, 'getPathFilename');
                 this.cifsConfig = {
                     user: 'onrack',
@@ -295,47 +333,39 @@ describe("racadm-tool", function() {
                 this.sandbox.restore();
             });
 
-            it('should set BIOS configure via local file', function(){
+            it('should set BIOS configure via remote file', function(){
                 var self = this,
                     command = "set -f bios.xml -t xml -u " +
                         "onrack -p onrack -l //192.168.188.113/share";
                 getPathFilenameStub.returns(self.fileInfo);
-                runCommandStub.resolves();
-                getJobIdStub.returns();
-                waitJobDoneStub.resolves();
+                runAsyncCommandsStub.resolves();
                 return instance.setBiosConfig('192.168.188.113','admin', 'admin', self.cifsConfig)
                     .then(function(){
-                        expect(instance.runCommand).to.be.calledWith('192.168.188.113',
-                            'admin', 'admin', command);
+                        expect(instance.runAsynCommands).to.be.calledWith('192.168.188.113',
+                            'admin', 'admin', command, 0, 1000);
                         expect(parser.getPathFilename).to.have.been.calledOnce;
-                        expect(instance.runCommand).to.have.been.called;
-                        expect(parser.getJobId).to.have.been.calledOnce;
-                        expect(instance.waitJobDone).to.have.been.called;
                     });
             });
 
-            it('should set BIOS configure via remote file', function(){
+            it('should set BIOS configure via local file', function(){
                 var self = this,
                     command = "set -f /home/share/bios.xml -t xml";
                 self.fileInfo.path = '/home/share';
                 self.fileInfo.style = 'local';
                 getPathFilenameStub.returns(self.fileInfo);
-                runCommandStub.resolves();
-                getJobIdStub.returns();
-                waitJobDoneStub.resolves();
+                runAsyncCommandsStub.resolves();
                 return instance.setBiosConfig('192.168.188.113','admin', 'admin', self.cifsConfig)
                     .then(function(){
-                        expect(instance.runCommand).to.be.calledWith('192.168.188.113',
-                            'admin', 'admin', command);
+                        expect(instance.runAsynCommands).to.be.calledWith('192.168.188.113',
+                            'admin', 'admin', command, 0, 1000);
+                        expect(parser.getPathFilename).to.have.been.calledOnce;
                     });
             });
 
             it('should failed if get promise failure', function(){
                 var self = this;
                 getPathFilenameStub.returns(self.fileInfo);
-                runCommandStub.resolves();
-                getJobIdStub.returns();
-                waitJobDoneStub.rejects({error: "Error happend"});
+                runAsyncCommandsStub.rejects({error: "Error happend"});
                 return instance.setBiosConfig('192.168.188.103','admin', 'admin', self.cifsConfig).
                     should.be.rejectedWith({error: "Error happend"});
             });
@@ -346,6 +376,85 @@ describe("racadm-tool", function() {
                 getPathFilenameStub.returns(self.fileInfo);
                 return instance.setBiosConfig('192.168.188.103','admin', 'admin', self.cifsConfig).
                     should.be.rejectedWith({ error: 'XML file path is invalid'});
+            });
+
+        });
+
+        describe('updateIdracImage', function(){
+            var runAsyncCommandsStub, getPathFilenameStub;
+            beforeEach('updateIdracImage before', function() {
+                runAsyncCommandsStub = this.sandbox.stub(instance, 'runAsynCommands');
+                getPathFilenameStub = this.sandbox.stub(parser, 'getPathFilename');
+                this.cifsConfig = {
+                    user: 'onrack',
+                    password: 'onrack',
+                    filePath: '//192.168.188.113/share/firmimg.d7'
+                };
+                this.fileInfo = {
+                    name: 'firmimg.d7',
+                    path: '//192.168.188.113/share',
+                    style: 'remote'
+                };
+            });
+
+            afterEach('updateIdracImage after', function() {
+                this.sandbox.restore();
+            });
+
+            it('should update idrac image via remote file', function(){
+                var self = this,
+                    command = "update -f firmimg.d7 -u onrack -p onrack -l //192.168.188.113/share";
+                getPathFilenameStub.returns(self.fileInfo);
+                runAsyncCommandsStub.resolves();
+                return instance.updateIdracImage('192.168.188.113','admin', 'admin',
+                    self.cifsConfig)
+                    .then(function(){
+                        expect(instance.runAsynCommands).to.be.calledWith('192.168.188.113',
+                            'admin', 'admin', command, 0, 1000);
+                        expect(parser.getPathFilename).to.have.been.calledOnce;
+                    });
+            });
+
+            it('should set BIOS configure via local file', function(){
+                var self = this,
+                    command = "update -f /home/share/firmimg.d7";
+                self.fileInfo.path = '/home/share';
+                self.fileInfo.style = 'local';
+                getPathFilenameStub.returns(self.fileInfo);
+                runAsyncCommandsStub.resolves();
+                return instance.updateIdracImage('192.168.188.113','admin', 'admin',
+                    self.cifsConfig)
+                    .then(function(){
+                        expect(instance.runAsynCommands).to.be.calledWith('192.168.188.113',
+                            'admin', 'admin', command, 0, 1000);
+                        expect(parser.getPathFilename).to.have.been.calledOnce;
+                    });
+            });
+
+            it('should failed if get promise failure', function(){
+                var self = this;
+                getPathFilenameStub.returns(self.fileInfo);
+                runAsyncCommandsStub.rejects({error: "Error happend"});
+                return instance.runAsynCommands('192.168.188.103','admin', 'admin',
+                    self.cifsConfig).should.be.rejectedWith({error: "Error happend"});
+            });
+
+            it('should throw error if image file is not in .d7', function(){
+                var self = this;
+                self.fileInfo.name = 'firmimg';
+                getPathFilenameStub.returns(self.fileInfo);
+                expect( function() {
+                    return instance.runAsynCommands('192.168.188.103', 'admin', 'admin',
+                        self.cifsConfig);
+                }).should.throw.Error;
+            });
+
+            it('should failed if get invalid image file path', function(){
+                var self = this;
+                self.fileInfo.style = '';
+                getPathFilenameStub.returns(self.fileInfo);
+                return instance.setBiosConfig('192.168.188.103','admin', 'admin', self.cifsConfig).
+                    should.be.rejectedWith({error: 'iDRAC image file path is invalid'});
             });
 
         });
