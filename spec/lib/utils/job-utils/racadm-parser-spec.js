@@ -70,18 +70,14 @@ describe("racadm-parser", function() {
                 rollbackVersion: ''
             });
         });
-    });
 
-/*
-    describe("XML to Json Parser", function() {
-        it("should convert XML file to Json format", function() {
-            var data = racadmOutMock.racadmXml;
-            console.log(typeof data);
-            var result = parser.xmlToJson(data);
-
+        it("should report errors", function() {
+            var tasks = 'anything = for test';
+            expect(function(){
+                parser.getSoftwareList(tasks);
+            }).to.throw(Error, "software list data is not aligned in correct way");
         });
     });
-*/
 
     describe("Parse file path", function() {
         it("should parse  remote filename and path", function() {
@@ -104,7 +100,7 @@ describe("racadm-parser", function() {
             var data = "home/share/bios.xml";
             expect(function() {
                 parser.getPathFilename(data);
-            }).to.throw(Error);
+            }).to.throw(Error, 'file path format is incorrect');
         });
 
     });
@@ -119,8 +115,8 @@ describe("racadm-parser", function() {
         it("should report can't parser JID", function() {
             var data = 'any string';
             expect(function() {
-                parser.getPathFilename(data);
-            }).to.throw(Error);
+                parser.getJobId(data);
+            }).to.throw(Error, 'can not find JID_ index in console standard output message');
         });
 
     });
@@ -143,7 +139,7 @@ describe("racadm-parser", function() {
             var data = 'any string';
             expect(function() {
                 parser.getJobStatus(data);
-            }).to.throw(Error);
+            }).to.throw(Error, 'job status format is not correct');
         });
 
     });

@@ -205,8 +205,10 @@ describe("racadm-tool", function() {
                         done(new Error("Expected getJobStatus to throw errors"));
                     })
                     .catch(function(err){
-                        expect(err.error).to.equals('Job Failed during process');
-                        expect(err.jobStatus).to.deep.equals(self.jobStatus);
+                        expect(err).to.deep.equals(
+                            new Error('Job Failed during process, jobStatus: ' +
+                            JSON.stringify(self.jobStatus))
+                        );
                         expect(instance.getJobStatus).to.be.calledOnce;
                         done();
                     });
@@ -247,8 +249,10 @@ describe("racadm-tool", function() {
                     .catch(function(err) {
                         expect(instance.waitJobDone.callCount).to.equal(11);
                         expect(instance.getJobStatus.callCount).to.equal(11);
-                        expect(err.error).to.equals('Job Timeout');
-                        expect(err.jobStatus).to.deep.equals(self.jobStatus);
+                        expect(err).to.deep.equals(
+                            new Error('Job Timeout, jobStatus: ' +
+                            JSON.stringify(self.jobStatus))
+                        );
                         done();
                     });
             });
@@ -264,8 +268,10 @@ describe("racadm-tool", function() {
                     .catch(function(err) {
                         expect(instance.waitJobDone.callCount).to.equal(1);
                         expect(instance.getJobStatus.callCount).to.equal(1);
-                        expect(err.error).to.equals('Job status is incorrect');
-                        expect(err.jobStatus).to.deep.equals(self.jobStatus);
+                        expect(err).to.deep.equals(
+                            new Error('Job status is incorrect, jobStatus: ' +
+                            JSON.stringify(self.jobStatus))
+                        );
                         done();
                     });
             });
@@ -374,8 +380,10 @@ describe("racadm-tool", function() {
                 var self = this;
                 self.fileInfo.style = '';
                 getPathFilenameStub.returns(self.fileInfo);
-                return instance.setBiosConfig('192.168.188.103','admin', 'admin', self.cifsConfig).
-                    should.be.rejectedWith({ error: 'XML file path is invalid'});
+                expect(function(){
+                    return instance.setBiosConfig('192.168.188.103','admin', 'admin',
+                        self.cifsConfig);
+                }).to.throw(Error, 'XML file path is invalid');
             });
 
         });
@@ -435,7 +443,7 @@ describe("racadm-tool", function() {
                 var self = this;
                 getPathFilenameStub.returns(self.fileInfo);
                 runAsyncCommandsStub.rejects({error: "Error happend"});
-                return instance.runAsynCommands('192.168.188.103','admin', 'admin',
+                return instance.updateIdracImage('192.168.188.103','admin', 'admin',
                     self.cifsConfig).should.be.rejectedWith({error: "Error happend"});
             });
 
@@ -444,17 +452,19 @@ describe("racadm-tool", function() {
                 self.fileInfo.name = 'firmimg';
                 getPathFilenameStub.returns(self.fileInfo);
                 expect( function() {
-                    return instance.runAsynCommands('192.168.188.103', 'admin', 'admin',
+                    return instance.updateIdracImage('192.168.188.103', 'admin', 'admin',
                         self.cifsConfig);
-                }).should.throw.Error;
+                }).throw(Error, 'iDRAC image format is not supported');
             });
 
             it('should failed if get invalid image file path', function(){
                 var self = this;
                 self.fileInfo.style = '';
                 getPathFilenameStub.returns(self.fileInfo);
-                return instance.setBiosConfig('192.168.188.103','admin', 'admin', self.cifsConfig).
-                    should.be.rejectedWith({error: 'iDRAC image file path is invalid'});
+                expect( function() {
+                    return instance.updateIdracImage('192.168.188.103', 'admin', 'admin',
+                        self.cifsConfig);
+                }).throw(Error, 'iDRAC image file path is invalid');
             });
 
         });
