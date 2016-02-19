@@ -9,6 +9,7 @@ describe("ipmi fru Task Parser", function () {
     var taskParser;
 
     before('fru task parser before', function () {
+        this.timeout(5000);
         stdoutMocks = require('./stdout-helper');
         // create a child injector with on-core and the base pieces we need to test this
         helper.setupInjector([
