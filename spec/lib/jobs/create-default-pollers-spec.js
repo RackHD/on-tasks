@@ -28,7 +28,7 @@ describe("Job.Pollers.CreateDefault", function () {
 
     beforeEach(function () {
         waterline.workitems = {
-            create: sinon.stub().resolves()
+            findOrCreate: sinon.stub().resolves()
         };
         waterline.catalogs = {
             findMostRecent: sinon.stub().resolves({
@@ -65,8 +65,9 @@ describe("Job.Pollers.CreateDefault", function () {
                 .to.have.property('node', nodeId);
             expect(waterline.catalogs.findMostRecent.firstCall.args[0])
                 .to.have.property('source', 'bmc');
-            expect(waterline.workitems.create).to.have.been.calledOnce;
-            expect(waterline.workitems.create).to.have.been.calledWith(pollers[0]);
+            expect(waterline.workitems.findOrCreate).to.have.been.calledOnce;
+            expect(waterline.workitems.findOrCreate).to.have.been.calledWith(
+                { node: nodeId, config: { command: pollers[0].config.command } }, pollers[0]);
         });
     });
 
@@ -86,8 +87,9 @@ describe("Job.Pollers.CreateDefault", function () {
                 .to.have.property('node', nodeId);
             expect(waterline.catalogs.findMostRecent.firstCall.args[0])
                 .to.have.property('source', 'bmc');
-            expect(waterline.workitems.create).to.have.been.calledOnce;
-            expect(waterline.workitems.create).to.have.been.calledWith(pollers[0]);
+            expect(waterline.workitems.findOrCreate).to.have.been.calledOnce;
+            expect(waterline.workitems.findOrCreate).to.have.been.calledWith(
+                { node: nodeId, config: { command: pollers[0].config.command } }, pollers[0]);
         });
     });
 
@@ -109,7 +111,7 @@ describe("Job.Pollers.CreateDefault", function () {
                 .to.have.property('node', nodeId);
             expect(waterline.catalogs.findMostRecent.firstCall.args[0])
                 .to.have.property('source', 'bmc');
-            expect(waterline.workitems.create).to.not.have.been.called;
+            expect(waterline.workitems.findOrCreate).to.not.have.been.called;
         });
     });
 
@@ -141,9 +143,11 @@ describe("Job.Pollers.CreateDefault", function () {
                 .to.have.property('node', nodeId);
             expect(waterline.catalogs.findMostRecent.secondCall.args[0])
                 .to.have.property('source', 'snmp-1');
-            expect(waterline.workitems.create).to.have.been.calledTwice;
-            expect(waterline.workitems.create).to.have.been.calledWith(pollers[0]);
-            expect(waterline.workitems.create).to.have.been.calledWith(pollers[1]);
+            expect(waterline.workitems.findOrCreate).to.have.been.calledTwice;
+            expect(waterline.workitems.findOrCreate).to.have.been.calledWith(
+                { node: nodeId, config: { command: pollers[0].config.command } }, pollers[0]);
+            expect(waterline.workitems.findOrCreate).to.have.been.calledWith(
+                { node: nodeId, config: { command: pollers[1].config.command } }, pollers[1]);
         });
     });
 });
