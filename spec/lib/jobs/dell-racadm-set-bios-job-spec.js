@@ -11,6 +11,7 @@ describe(require('path').basename(__filename), function () {
     var encryption;
     var lookup;
     var racadmTool;
+    var Errors;
     var mockWaterline = {
         nodes: {},
         catalogs: {}
@@ -30,45 +31,35 @@ describe(require('path').basename(__filename), function () {
         uuid = helper.injector.get('uuid');
         lookup = helper.injector.get('Services.Lookup');
         encryption = helper.injector.get('Services.Encryption');
+        Errors = helper.injector.get('Errors');
     });
 
     describe('Input validation', function() {
         beforeEach('Dell Racadm Tool Set BIOS Validation', function() {
             var options = {
-                username:"onrack",
+                username: "onrack",
                 password: "onrack",
-                filePath:"//1.2.3.4/src/bios.xml"
+                filePath: "//1.2.3.4/src/bios.xml"
             };
             job = new RacadmSetBiosJob(options, {}, uuid.v4());
-            mockWaterline.nodes.findByIdentifier = function(){};
+            mockWaterline.nodes.findByIdentifier = function() {
+            };
             this.sandbox = sinon.sandbox.create();
             this.sandbox.stub(job, '_subscribeActiveTaskExists').resolves();
-            this.sandbox.stub(mockWaterline.nodes,'findByIdentifier');
+            this.sandbox.stub(mockWaterline.nodes, 'findByIdentifier');
         });
 
         afterEach('Dell Racadm Tool Set BIOS Validation', function() {
             this.sandbox.restore();
         });
 
-        it('should fail if node does not exist', function(done) {
+        it('should fail if node does not exist', function() {
             mockWaterline.nodes.findByIdentifier.resolves(null);
-            job.run()
-                .then(function() {
-                    done(new Error("Expected job to fail"));
-                })
-                .catch(function(e) {
-                    try {
-                        expect(e).to.have.property('name').that.equals('AssertionError');
-                        expect(e).to.have.property('message').that.equals('No node for dell' +
-                            ' racadm set bios');
-                        done();
-                    } catch (e) {
-                        done(e);
-                    }
-                });
+            return expect(job.run()).to.be.rejectedWith(Errors.AssertionError,
+                'No node for dell racadm set bios');
         });
 
-        it('should fail if ipmi obmSetting does not exist', function(done) {
+        it('should fail if ipmi obmSetting does not exist', function() {
             var node = {
                 id: 'bc7dab7e8fb7d6abf8e7d6ac',
                 obmSettings: [
@@ -79,20 +70,8 @@ describe(require('path').basename(__filename), function () {
                 ]
             };
             mockWaterline.nodes.findByIdentifier.resolves(node);
-            job.run()
-                .then(function() {
-                    done(new Error("Expected job to fail"));
-                })
-                .catch(function(e) {
-                    try {
-                        expect(e).to.have.property('name').that.equals('AssertionError');
-                        expect(e).to.have.property('message').that.equals('No ipmi obmSetting for' +
-                            ' dell racadm set bios');
-                        done();
-                    } catch (e) {
-                        done(e);
-                    }
-                });
+            return expect(job.run()).to.be.rejectedWith(Errors.AssertionError,
+                'No ipmi obmSetting for dell racadm set bios');
         });
     });
 
@@ -126,12 +105,7 @@ describe(require('path').basename(__filename), function () {
             var data = {
                 host: '7a:c0:7a:c0:be:ef'
             };
-            return job.lookupHost(data)
-                .then(function(result){
-                    expect(result).to.deep.equal({
-                        host: '10.1.1.2'
-                    });
-                });
+            return job.lookupHost(data).should.become({ host: '10.1.1.2'});
         });
     });
 
@@ -177,14 +151,11 @@ describe(require('path').basename(__filename), function () {
             mockWaterline.nodes.findByIdentifier.resolves(node);
             setBiosStub.resolves(
                 {
-                    jobStatus:{
-                        status:"Completed"
-                    }
+                    status:"Completed"
                 }
             );
             return job.run()
                 .then(function() {
-                    expect(setBiosStub).to.have.been.called;
                     expect(setBiosStub).to.have.been.calledWith(
                         node.obmSettings[0].config.host, node.obmSettings[0].config.user,
                         node.obmSettings[0].config.password,cifsInfo);
@@ -192,3 +163,4 @@ describe(require('path').basename(__filename), function () {
         });
     });
 });
+
