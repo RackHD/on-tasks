@@ -204,6 +204,11 @@ describe("racadm-parser", function() {
             this.sandbox.restore();
         });
 
+        it("should report error if path is incorrect", function(){
+            var nullFilePath = __dirname + '/samplefiles/racadm-raid-1.xml';
+            return parser.xmlToJson(nullFilePath).should.be.rejected;
+        });
+
         it("should parser xml file correctly", function(){
             return parser.xmlToJson(xmlFilePath)
                 .then(function(result){
@@ -244,30 +249,30 @@ describe("racadm-parser", function() {
         });
 
         it("should report error if given file is not in correct xml format", function(){
-            this.sandbox.stub(fs, 'readFileSync')
-                .returns('<SystemConfiguration Model=r\n</SystemConfiguration>\r\n');
+            this.sandbox.stub(fs, 'readFile').withArgs(xmlFilePath, 'utf8').callsArgWith(2, null,
+                '<SystemConfiguration Model=r\n</SystemConfiguration>\r\n');
             return parser.xmlToJson(xmlFilePath).should.be.rejected;
         });
 
         it("should report error there is no SystemConfiguration attribute", function(){
-            this.sandbox.stub(fs, 'readFileSync')
-                .returns('<System >\r\n<Component FQDD=\"EventFilters.WorkNotes.1\"' +
+            this.sandbox.stub(fs, 'readFile').withArgs(xmlFilePath, 'utf8').callsArgWith(2, null,
+                '<System >\r\n<Component FQDD=\"EventFilters.WorkNotes.1\"' +
                 '/>\r\n\r\n</System>\r\n');
             return parser.xmlToJson(xmlFilePath).should.be.rejectedWith(Error,
                 'Can not find SystemConfiguration attribute');
         });
 
         it("should report error there is no SystemConfiguration description", function(){
-            this.sandbox.stub(fs, 'readFileSync')
-                .returns('<SystemConfiguration >\r\n<Component FQDD=\"EventFilters.WorkNotes.1\"' +
+            this.sandbox.stub(fs, 'readFile').withArgs(xmlFilePath, 'utf8').callsArgWith(2, null,
+                '<SystemConfiguration >\r\n<Component FQDD=\"EventFilters.WorkNotes.1\"' +
                 '/>\r\n\r\n</SystemConfiguration>\r\n');
             return parser.xmlToJson(xmlFilePath).should.be.rejectedWith(Error,
                 'SystemConfiguration attribute is null');
         });
 
         it("should report error there is no components", function(){
-            this.sandbox.stub(fs, 'readFileSync')
-                .returns('<SystemConfiguration Model=\"PowerEdge C6320\">\r\n<Attribute>' +
+            this.sandbox.stub(fs, 'readFile').withArgs(xmlFilePath, 'utf8').callsArgWith(2, null,
+                '<SystemConfiguration Model=\"PowerEdge C6320\">\r\n<Attribute>' +
                 '</Attribute>\r\n\r\n</SystemConfiguration>\r\n');
             return parser.xmlToJson(xmlFilePath).should.be.rejectedWith(Error,
                 'Can not find components');
