@@ -3628,6 +3628,7 @@ module.exports.racadmJobIdData = 'Security Alert: Certificate is invalid - self 
                                 'Use the "racadm jobqueue view -i JID_541335487816" command to view the status\n' +
                                 'of the operation.\n' +
                                 '\n';
+
 module.exports.racadmJobStatusData = 'Security Alert: Certificate is invalid - self signed certificate\n' +
                                     'Continuing execution. Use -S option for racadm to stop ' +
                                     'execution on certificate-related errors.\n' +

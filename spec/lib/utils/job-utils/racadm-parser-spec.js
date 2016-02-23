@@ -144,4 +144,135 @@ describe("racadm-parser", function() {
 
     });
 
+    describe("_xmlJson", function() {
+        var mockComponent;
+        before("_xmlJson before", function(){
+            mockComponent =
+                [{
+                    "$":{"FQDD":"Enclosure.Internal.0-0:RAID.Slot.1-1"},
+                    "Component":
+                        [{
+                            "$": {"FQDD":"Disk.Bay.5:Enclosure.Internal.0-0:RAID.Slot.1-1"},
+                            "Attribute":
+                                [{"$":{"Name":"RAIDPD"}}],
+                            "commentedAttribute":
+                                [
+                                    {"_":"No","$":{"Name":"RAIDHotSpareStatus"}},
+                                    {"_":"Non-RAID","$":{"Name":"RAIDPDState"}}
+                                ]
+                        }]
+                }];
+        });
+
+        it("should convert XML file to Json format", function() {
+            var result = parser._xmlToJson(mockComponent);
+            expect(result).deep.equals([{
+                "FQDD": "Enclosure.Internal.0-0:RAID.Slot.1-1",
+                "attribute": [],
+                "commentedAttribute": [],
+                "components": [{
+                    "FQDD": "Disk.Bay.5:Enclosure.Internal.0-0:RAID.Slot.1-1",
+                    "attribute": [{"RAIDPD": "NA"}],
+                    "commentedAttribute": [
+                        {
+                            "RAIDHotSpareStatus": "No"
+                        },
+                        {
+                            "RAIDPDState": "Non-RAID"
+                        }
+                    ]
+                }]
+            }]);
+        });
+
+        it("should throw error", function() {
+            mockComponent[0].$ = '';
+            expect(function(){
+                parser._xmlToJson(mockComponent);
+            }).throw(Error, 'FQDD or component attribute does not exist');
+        });
+    });
+
+    describe("xmlToJson", function() {
+        var xmlFilePath = __dirname + '/samplefiles/racadm-raid.xml', fs;
+        before('setBiosConfig after', function(){
+            this.sandbox = sinon.sandbox.create();
+            fs = helper.injector.get('fs');
+        });
+
+        afterEach('setBiosConfig after', function() {
+            this.sandbox.restore();
+        });
+
+        it("should parser xml file correctly", function(){
+            return parser.xmlToJson(xmlFilePath)
+                .then(function(result){
+                    expect(result.components).to.have.length(2);
+                    expect(result.components[0]).to.deep.equal(
+                        {
+                            "FQDD": "EventFilters.WorkNotes.1",
+                            "attribute": [],
+                            "commentedAttribute": []
+                        }
+                    );
+                    expect(result.components[1].FQDD).to.equal("RAID.Slot.1-1");
+                    expect(result.components[1].attribute).to.deep.equal([
+                        {"RAIDresetConfig": "False"},
+                        {"RAIDremoveControllerKey": "False"}
+                    ]);
+                    expect(result.components[1].commentedAttribute).to.deep.equal([
+                        {"CurrentControllerMode": "RAID"}
+                    ]);
+                    expect(result.components[1].components).to.deep.equal([{
+                        "FQDD": "Enclosure.Internal.0-0:RAID.Slot.1-1",
+                        "attribute": [],
+                        "commentedAttribute": [],
+                        "components": [{
+                            "FQDD": "Disk.Bay.5:Enclosure.Internal.0-0:RAID.Slot.1-1",
+                            "attribute": [{"OnlyDebug": "NA"}],
+                            "commentedAttribute": [
+                                {"RAIDHotSpareStatus": "No"},
+                                {"RAIDPDState": "Non-RAID"}]
+                        }]
+                    }]);
+                    expect(result.systemInfo).to.deep.equal({
+                        "Model": "PowerEdge C6320",
+                        "ServiceTag": "18D3182",
+                        "TimeStamp": "Tue Jan 12 07:48:19 2016"
+                    });
+                });
+        });
+
+        it("should report error if given file is not in correct xml format", function(){
+            this.sandbox.stub(fs, 'readFileSync')
+                .returns('<SystemConfiguration Model=r\n</SystemConfiguration>\r\n');
+            return parser.xmlToJson(xmlFilePath).should.be.rejected;
+        });
+
+        it("should report error there is no SystemConfiguration attribute", function(){
+            this.sandbox.stub(fs, 'readFileSync')
+                .returns('<System >\r\n<Component FQDD=\"EventFilters.WorkNotes.1\"' +
+                '/>\r\n\r\n</System>\r\n');
+            return parser.xmlToJson(xmlFilePath).should.be.rejectedWith(Error,
+                'Can not find SystemConfiguration attribute');
+        });
+
+        it("should report error there is no SystemConfiguration description", function(){
+            this.sandbox.stub(fs, 'readFileSync')
+                .returns('<SystemConfiguration >\r\n<Component FQDD=\"EventFilters.WorkNotes.1\"' +
+                '/>\r\n\r\n</SystemConfiguration>\r\n');
+            return parser.xmlToJson(xmlFilePath).should.be.rejectedWith(Error,
+                'SystemConfiguration attribute is null');
+        });
+
+        it("should report error there is no components", function(){
+            this.sandbox.stub(fs, 'readFileSync')
+                .returns('<SystemConfiguration Model=\"PowerEdge C6320\">\r\n<Attribute>' +
+                '</Attribute>\r\n\r\n</SystemConfiguration>\r\n');
+            return parser.xmlToJson(xmlFilePath).should.be.rejectedWith(Error,
+                'Can not find components');
+        });
+
+    });
+
 });
