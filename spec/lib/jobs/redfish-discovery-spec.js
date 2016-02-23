@@ -26,7 +26,13 @@ describe('Redfish Discovery Job', function () {
             
         var redfish = require('redfish-node'); 
         redfishApi = Promise.promisifyAll(new redfish.RedfishvApi());
-        
+    });
+    
+    afterEach(function() {
+        sandbox.restore();
+    });
+    
+    beforeEach(function() {
         var Job = helper.injector.get('Job.Redfish.Discovery');
         redfishJob = new Job({
             uri:'fake',
@@ -35,14 +41,8 @@ describe('Redfish Discovery Job', function () {
         }, {}, graphId);
         
         redfishJob.redfishApi = redfishApi;
-    });
-    
-    afterEach(function() {
-        sandbox.restore();
-    });
-    
-    beforeEach(function() {
         sandbox.stub(redfishJob.redfishApi);
+        
         listChassisData = [
             null,
             { 
@@ -98,7 +98,8 @@ describe('Redfish Discovery Job', function () {
             redfishApi.getChassisAsync.resolves(getChassisData);
             redfishApi.listSystemsAsync.resolves(listSystemData);
             redfishApi.getSystemAsync.resolves(getSystemData);
-            return redfishJob._run()
+            redfishJob._run();
+            return redfishJob._deferred
             .then(function() {
                 expect(waterline.nodes.findOrCreate).to.be.called.twice;
             });
@@ -107,7 +108,8 @@ describe('Redfish Discovery Job', function () {
         it('should fail to run job', function() { 
             var err = new Error('some error');
             redfishApi.listChassisAsync.rejects(err);
-            return redfishJob._run().should.be.rejectedWith(err);
+            redfishJob._run();
+            return redfishJob._deferred.should.be.rejectedWith(err);
         });
         
         it('should construct without credentials', function() { 

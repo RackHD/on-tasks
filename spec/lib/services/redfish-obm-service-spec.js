@@ -53,7 +53,7 @@ describe('Redfish OBM Service', function() {
         sandbox.restore();
     });
     
-    describe('redfish service force false', function() {     
+    describe('redfish service force is false', function() {     
         base.before('before', servicePath, function(self) {
             self.serviceOptions = testOptions;
             self.Service = helper.injector.get('redfish-obm-service');
@@ -72,7 +72,7 @@ describe('Redfish OBM Service', function() {
         ]);
     });
     
-    describe('redfish service force true', function() {  
+    describe('redfish service force is true', function() {  
         base.before('before', servicePath, function(self) {
             testOptions.params.force = true;
             self.serviceOptions = testOptions;
@@ -95,7 +95,7 @@ describe('Redfish OBM Service', function() {
             baseObm = helper.injector.get('OBM.base');
         });  
         
-        it ('should with credentials', function() {
+        it ('should construct client with credentials', function() {
             redfishService.create(testOptions);
             expect(redfishService).to.be.ok;
             expect(baseObm).to.be.ok;
@@ -110,7 +110,7 @@ describe('Redfish OBM Service', function() {
             baseObm = helper.injector.get('OBM.base');
         });  
         
-        it ('should with no credentials', function() {
+        it ('should construct client without credentials', function() {
             delete testOptions.config.username;
             delete testOptions.config.password;
             redfishService.create(testOptions);

@@ -89,7 +89,7 @@ var base = {
                     .finally(function() {
                         // exclude noop and redfish services that don't use run()
                         if (service.constructor.name !== 'NoopObmService' &&
-                            service.constructor.name !== 'redfishObmService') {
+                            service.constructor.name !== 'RedfishObmService') {
                             expect(service.run.callCount).to.be.above(0);
                         }
                         _.forEach(_.range(service.run.callCount), function(call) {
