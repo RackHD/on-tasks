@@ -3712,3 +3712,7 @@ module.exports.lshwOutputMultiNic = fs
 module.exports.racadmSoftwareInventory = fs
     .readFileSync(__dirname+"/samplefiles/racadm-software-inventory.txt")
     .toString();
+
+module.exports.racadmJobqueueData = fs
+    .readFileSync(__dirname+"/samplefiles/racadm-jobqueue-data.txt")
+    .toString();

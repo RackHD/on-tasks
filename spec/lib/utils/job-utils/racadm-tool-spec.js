@@ -127,6 +127,43 @@ describe("racadm-tool", function() {
             });
         });
 
+        describe('getLatestJobId', function(){
+            var jobqueueMock = require('./stdout-helper').racadmJobqueueData;
+            var runCommandStub;
+
+            beforeEach('getLatestJobId before', function() {
+                runCommandStub = this.sandbox.stub(instance, 'runCommand');
+            });
+
+            afterEach('getLatestJobId before', function() {
+                runCommandStub = this.sandbox.restore();
+            });
+
+            it('should get latest job Id', function() {
+                runCommandStub.resolves(jobqueueMock);
+                return instance.getLatestJobId('0.0.0.0', 'admin', 'admin')
+                    .then(function(ret){
+                        expect(instance.runCommand).to.be.calledWith('0.0.0.0', 'admin',
+                            'admin', "jobqueue view");
+                        expect(ret).to.equals("JID_561449281852");
+                    });
+            });
+
+            it('should throw error if JID format is not correct', function(done){
+                runCommandStub.resolves("");
+                this.sandbox.stub(parser, "getJobStatus").returns({});
+                return instance.getLatestJobId('192.168.188.103', 'admin', 'admin')
+                    .then(function(){
+                        done(new Error("Expected getLatestJobId to fail"));
+                    })
+                    .catch(function(err){
+                        expect(parser.getJobStatus).to.be.calledOnce;
+                        expect(err.message).to.equal('Job ID is not correct');
+                        done();
+                    });
+            });
+        });
+
         describe('getJobStatus', function(){
             before('setBiosConfig before', function() {
                 this.jobId = 'JID_927008261880';
@@ -257,25 +294,6 @@ describe("racadm-tool", function() {
                     });
             });
 
-            it('should report error if status is undefined', function(done) {
-                var self = this ;
-                self.jobStatus.status = 'Anything';
-                getJobStatusStub.resolves(self.jobStatus);
-                return instance.waitJobDone('192.168.188.103','admin', 'admin', self.jobId, 0, 0)
-                    .then(function() {
-                        done(new Error("Expected waitJobDone to fail"));
-                    })
-                    .catch(function(err) {
-                        expect(instance.waitJobDone.callCount).to.equal(1);
-                        expect(instance.getJobStatus.callCount).to.equal(1);
-                        expect(err).to.deep.equals(
-                            new Error('Job status is incorrect, jobStatus: ' +
-                            JSON.stringify(self.jobStatus))
-                        );
-                        done();
-                    });
-            });
-
         });
 
         describe('run async commands', function(){
@@ -385,11 +403,13 @@ describe("racadm-tool", function() {
 
         });
 
-        describe('updateIdracImage', function(){
-            var runAsyncCommandsStub, getPathFilenameStub;
-            beforeEach('updateIdracImage before', function() {
-                runAsyncCommandsStub = this.sandbox.stub(instance, 'runAsyncCommands');
+        describe('updateFirmware', function(){
+            var runCommandStub, getPathFilenameStub, getLatestJobIdStub, waitJobDoneStub;
+            beforeEach('updateFirmware before', function() {
+                runCommandStub = this.sandbox.stub(instance, 'runCommand');
                 getPathFilenameStub = this.sandbox.stub(parser, 'getPathFilename');
+                getLatestJobIdStub = this.sandbox.stub(instance, 'getLatestJobId');
+                waitJobDoneStub = this.sandbox.stub(instance, 'waitJobDone');
                 this.cifsConfig = {
                     user: 'onrack',
                     password: 'onrack',
@@ -402,13 +422,13 @@ describe("racadm-tool", function() {
                 };
             });
 
-            afterEach('updateIdracImage after', function() {
+            afterEach('updateFirmware after', function() {
                 this.sandbox.restore();
             });
 
             it('should throw Error if no pathFile is found', function(){
                 expect( function() {
-                    return instance.updateIdracImage('192.168.188.103', 'admin', 'admin');
+                    return instance.updateFirmware('192.168.188.103', 'admin', 'admin');
                 }).throw(Error, 'Can not find file path required for iDRAC image update');
             });
 
@@ -416,13 +436,14 @@ describe("racadm-tool", function() {
                 var self = this,
                     command = "update -f firmimg.d7 -u onrack -p onrack -l //192.168.188.113/share";
                 getPathFilenameStub.returns(self.fileInfo);
-                runAsyncCommandsStub.resolves();
-                return instance.updateIdracImage('192.168.188.113','admin', 'admin',
+                runCommandStub.resolves();
+                getLatestJobIdStub.returns('JID_xxxxxxxx');
+                waitJobDoneStub.resolves();
+                return instance.updateFirmware('192.168.188.113','admin', 'admin',
                     self.cifsConfig)
                     .then(function(){
-                        expect(instance.runAsyncCommands).to.be.calledWith('192.168.188.113',
+                        expect(instance.runCommand).to.be.calledWith('192.168.188.113',
                             'admin', 'admin', command, 0, 1000);
-                        expect(parser.getPathFilename).to.have.been.calledOnce;
                     });
             });
 
@@ -432,32 +453,37 @@ describe("racadm-tool", function() {
                 self.fileInfo.path = '/home/share';
                 self.fileInfo.style = 'local';
                 getPathFilenameStub.returns(self.fileInfo);
-                runAsyncCommandsStub.resolves();
-                return instance.updateIdracImage('192.168.188.113','admin', 'admin',
+                runCommandStub.resolves();
+                getLatestJobIdStub.returns('JID_xxxxxxxx');
+                waitJobDoneStub.resolves();
+                return instance.updateFirmware('192.168.188.113','admin', 'admin',
                     {filePath: "/home/share/firmimg.d7"})
                     .then(function(){
-                        expect(instance.runAsyncCommands).to.be.calledWith('192.168.188.113',
+                        expect(instance.runCommand).to.be.calledWith('192.168.188.113',
                             'admin', 'admin', command, 0, 1000);
+                        expect(instance.runCommand).to.be.calledTwice;
                         expect(parser.getPathFilename).to.have.been.calledOnce;
+                        expect(instance.getLatestJobId).to.have.been.calledOnce;
+                        expect(instance.waitJobDone).to.have.been.calledOnce;
                     });
             });
 
             it('should failed if get promise failure', function(){
                 var self = this;
                 getPathFilenameStub.returns(self.fileInfo);
-                runAsyncCommandsStub.rejects({error: "Error happend"});
-                return instance.updateIdracImage('192.168.188.103','admin', 'admin',
+                runCommandStub.rejects({error: "Error happend"}).onFirstCall();
+                return instance.updateFirmware('192.168.188.103','admin', 'admin',
                     self.cifsConfig).should.be.rejectedWith({error: "Error happend"});
             });
 
-            it('should throw error if image file is not in .d7', function(){
+            it('should throw error if image file is not in .d7, .exe or .EXE format', function(){
                 var self = this;
                 self.fileInfo.name = 'firmimg';
                 getPathFilenameStub.returns(self.fileInfo);
                 expect( function() {
-                    return instance.updateIdracImage('192.168.188.103', 'admin', 'admin',
+                    return instance.updateFirmware('192.168.188.103', 'admin', 'admin',
                         self.cifsConfig);
-                }).throw(Error, 'iDRAC image format is not supported');
+                }).throw(Error, 'Image format is not supported');
             });
 
         });
@@ -469,7 +495,7 @@ describe("racadm-tool", function() {
                 getSoftwareListStub = this.sandbox.stub(parser, 'getSoftwareList');
             });
 
-            afterEach('updateIdracImage after', function() {
+            afterEach('updateFirmware after', function() {
                 this.sandbox.restore();
             });
 
@@ -489,7 +515,7 @@ describe("racadm-tool", function() {
 
         describe('getBiosConfig', function(){
             var runAsyncCommandsStub, getPathFilenameStub, getSoftwareListStub;
-            beforeEach('updateIdracImage before', function() {
+            beforeEach('updateFirmware before', function() {
                 runAsyncCommandsStub = this.sandbox.stub(instance, 'runAsyncCommands');
                 getPathFilenameStub = this.sandbox.stub(parser, 'getPathFilename');
                 getSoftwareListStub = this.sandbox.stub(instance, 'getSoftwareList');
@@ -504,7 +530,7 @@ describe("racadm-tool", function() {
                     style: 'remote'};
             });
 
-            afterEach('updateIdracImage after', function() {
+            afterEach('updateFirmware after', function() {
                 this.sandbox.restore();
             });
 
