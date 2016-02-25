@@ -34,9 +34,10 @@ describe('OBM Service', function() {
                     "host": "10.0.0.254"
                 }
             };
+            var options = { delay: 0, retries: 3 };
             var ipmiObmServiceFactory = helper.injector.get('ipmi-obm-service');
             obmService = ObmService.create('54da9d7bf33e0405c75f7000',
-                ipmiObmServiceFactory, obmSettings, 0, 3);
+                ipmiObmServiceFactory, obmSettings, options);
 
             sinon.stub(obmService, 'runObmCommand');
             sinon.spy(obmService, '_retryObmCommand');

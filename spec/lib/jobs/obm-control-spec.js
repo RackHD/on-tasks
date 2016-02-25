@@ -8,7 +8,13 @@ var uuid = require('node-uuid');
 describe("Job.Obm.Node", function () {
     var base = require('./base-spec');
     var Job;
-    var Errors;
+    var Errors,
+        testOptions = {
+            action: 'reboot',
+            obmServiceName: 'ipmi-obm-service',
+            delay: 1,
+            retries: 1
+        };
 
     var mockWaterline = {
         nodes: {
@@ -44,11 +50,6 @@ describe("Job.Obm.Node", function () {
         var job;
         var ObmService;
         var ObmServiceSpy;
-        var options = {
-            nodeId: '',
-            action: 'reboot',
-            obmServiceName: 'ipmi-obm-service'
-        };
 
         before('Job.Obm.Node run before', function() {
             ObmService = helper.injector.get('Task.Services.OBM');
@@ -57,7 +58,7 @@ describe("Job.Obm.Node", function () {
         });
 
         beforeEach('Job.Obm.Node run beforeEach', function() {
-            job = new Job(options, { target: '54da9d7bf33e0405c75f7111' }, uuid.v4());
+            job = new Job(testOptions, { target: '54da9d7bf33e0405c75f7111' }, uuid.v4());
             job._subscribeActiveTaskExists = sinon.stub().resolves();
             job.killObm = sinon.stub().resolves();
             ObmService.prototype.reboot.reset();
@@ -145,8 +146,8 @@ describe("Job.Obm.Node", function () {
             };
             mockWaterline.nodes.findByIdentifier.resolves(node);
 
-            options.nodeId = job.context.target;
-            job = new Job(options, { }, uuid.v4());
+            testOptions.nodeId = job.context.target;
+            job = new Job(testOptions, { }, uuid.v4());
             job._subscribeActiveTaskExists = sinon.stub().resolves();
             job.killObm = sinon.stub().resolves();
 
@@ -154,8 +155,7 @@ describe("Job.Obm.Node", function () {
             .then(function() {
                 var ipmiObmServiceFactory = helper.injector.get('ipmi-obm-service');
                 expect(ObmServiceSpy).to.have.been.calledWith(
-                    job.nodeId, ipmiObmServiceFactory, node.obmSettings[0],
-                    undefined, undefined);
+                    job.nodeId, ipmiObmServiceFactory, node.obmSettings[0], testOptions);
                 expect(ObmService.prototype.reboot).to.have.been.calledOnce;
             });
         });
@@ -179,8 +179,8 @@ describe("Job.Obm.Node", function () {
             .then(function() {
                 var ipmiObmServiceFactory = helper.injector.get('ipmi-obm-service');
                 expect(ObmServiceSpy).to.have.been.calledWith(
-                    job.nodeId, ipmiObmServiceFactory, node.obmSettings[0],
-                    undefined, undefined);
+                    job.nodeId, ipmiObmServiceFactory, node.obmSettings[0], 
+                    testOptions);
                 expect(ObmService.prototype.reboot).to.have.been.calledOnce;
             });
         });
