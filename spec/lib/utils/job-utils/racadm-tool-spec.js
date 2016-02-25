@@ -4,7 +4,7 @@
 'use strict';
 
 describe("racadm-tool", function() {
-    var instance, parser;
+    var instance, parser, fs;
 
     var mockChildProcessFactory = function() {
         function MockChildProcess(command, args, env) {
@@ -28,15 +28,15 @@ describe("racadm-tool", function() {
 
             //remote racadm command case
             if( subCommandIndex !== -1) {
-                    if (pwdIndex !== -1) {
-                        return Promise.resolve({
-                            stdout: 'Get BIOS Correctly'
-                        });
-                    } else {
-                        return Promise.reject({
-                            stderr: 'ERROR: Login failed - invalid username or password\n'
-                        });
-                    }
+                if (pwdIndex !== -1) {
+                    return Promise.resolve({
+                        stdout: 'Get BIOS Correctly'
+                    });
+                } else {
+                    return Promise.reject({
+                        stderr: 'ERROR: Login failed - invalid username or password\n'
+                    });
+                }
             }
         };
         return MockChildProcess;
@@ -50,6 +50,7 @@ describe("racadm-tool", function() {
         ]);
         instance = helper.injector.get('JobUtils.RacadmTool');
         parser = helper.injector.get('JobUtils.RacadmCommandParser');
+        fs = helper.injector.get('fs');
 
     });
 
@@ -244,7 +245,7 @@ describe("racadm-tool", function() {
                     .catch(function(err){
                         expect(err).to.deep.equals(
                             new Error('Job Failed during process, jobStatus: ' +
-                            JSON.stringify(self.jobStatus))
+                                JSON.stringify(self.jobStatus))
                         );
                         expect(instance.getJobStatus).to.be.calledOnce;
                         done();
@@ -260,8 +261,8 @@ describe("racadm-tool", function() {
                         startTime: 'Not Applicable',
                         expirationTime: 'Not Applicable',
                         message:
-                            'SYS053: Successfully imported and applied system ' +
-                            'configuration XML file.',
+                        'SYS053: Successfully imported and applied system ' +
+                        'configuration XML file.',
                         percentComplete: '100'
                     };
 
@@ -288,7 +289,7 @@ describe("racadm-tool", function() {
                         expect(instance.getJobStatus.callCount).to.equal(11);
                         expect(err).to.deep.equals(
                             new Error('Job Timeout, jobStatus: ' +
-                            JSON.stringify(self.jobStatus))
+                                JSON.stringify(self.jobStatus))
                         );
                         done();
                     });
@@ -310,7 +311,7 @@ describe("racadm-tool", function() {
 
             it('should run commands and get completion status', function(){
                 var command = "set -f bios.xml -t xml -u " +
-                        "onrack -p onrack -l //192.168.188.113/share";
+                    "onrack -p onrack -l //192.168.188.113/share";
                 runCommandStub.resolves();
                 getJobIdStub.returns();
                 waitJobDoneStub.resolves();
@@ -523,7 +524,7 @@ describe("racadm-tool", function() {
                     user: 'onrack',
                     password: 'onrack',
                     filePath: '//192.168.188.113/share/bios.xml'
-                    };
+                };
                 this.fileInfo = {
                     name: 'bios.xml',
                     path: '//192.168.188.113/share',
@@ -571,6 +572,47 @@ describe("racadm-tool", function() {
                     .should.be.rejectedWith(Error, 'Can not get BIOS FQDD');
             });
 
+        });
+
+        describe("getConfigCatalog", function(){
+            var runCommandStub, fsStub, xmlToJsonStub ;
+            beforeEach('getConfigCatalog before', function() {
+                runCommandStub = this.sandbox.stub(instance, 'runCommand');
+                fsStub = this.sandbox.stub(fs, 'exists');
+                xmlToJsonStub = this.sandbox.stub(parser, 'xmlToJson');
+            });
+
+            afterEach('getConfigCatalog after', function() {
+                this.sandbox.restore();
+            });
+
+            it("should get configure", function(){
+                runCommandStub.resolves();
+                fsStub.callsArgWith(1, true);
+                xmlToJsonStub.returns('anything');
+                return instance.getConfigCatalog("0.0.0.0", "user", "password")
+                    .then(function(ret){
+                        expect(instance.runCommand).to.be.calledWith("0.0.0.0",
+                            "user", "password", 'get -f /tmp/idrac_configure.xml -t xml');
+                        expect(fs.exists).to.be.calledOnce;
+                        expect(parser.xmlToJson).to.be.calledOnce;
+                        expect(ret).to.deep.equal({data: 'anything',
+                            source: 'idrac-racadm-configure', store: true});
+                    });
+            });
+
+            it("should throw error", function(){
+                runCommandStub.resolves();
+                fsStub.callsArgWith(1, false);
+                return instance.getConfigCatalog("0.0.0.0", "user", "password")
+                    .then(function(e){
+                        expect(e.source).to.equal('idrac-racadm-configure');
+                        expect(e.error.message).to.equal(
+                            'File /tmp/idra_configure.xml does not exist'
+                        );
+                        expect(instance.runCommand).to.be.calledOnce;
+                    });
+            });
         });
 
     });
