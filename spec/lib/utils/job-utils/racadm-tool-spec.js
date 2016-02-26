@@ -359,9 +359,9 @@ describe("racadm-tool", function() {
             });
 
             it('should throw Error if no pathFile is found', function(){
-                expect( function() {
-                    return instance.setBiosConfig('192.168.188.103', 'admin', 'admin');
-                }).throw(Error, 'Can not find file path required for set BIOS configuration');
+                return instance.setBiosConfig('192.168.188.103', 'admin', 'admin')
+                    .should.to.be.rejectedWith(Error,
+                    'Can not find file path required for set BIOS configuration');
             });
 
             it('should set BIOS configure via remote file', function(){
@@ -428,9 +428,9 @@ describe("racadm-tool", function() {
             });
 
             it('should throw Error if no pathFile is found', function(){
-                expect( function() {
-                    return instance.updateFirmware('192.168.188.103', 'admin', 'admin');
-                }).throw(Error, 'Can not find file path required for iDRAC image update');
+                return instance.updateFirmware('192.168.188.103', 'admin', 'admin')
+                    .should.be.rejectedWith(Error,
+                    'Can not find file path required for iDRAC image update');
             });
 
             it('should update idrac image via remote file', function(){
@@ -481,10 +481,8 @@ describe("racadm-tool", function() {
                 var self = this;
                 self.fileInfo.name = 'firmimg';
                 getPathFilenameStub.returns(self.fileInfo);
-                expect( function() {
-                    return instance.updateFirmware('192.168.188.103', 'admin', 'admin',
-                        self.cifsConfig);
-                }).throw(Error, 'Image format is not supported');
+                return instance.updateFirmware('192.168.188.103', 'admin', 'admin',self.cifsConfig)
+                    .should.be.rejectedWith(Error, 'Image format is not supported');
             });
 
         });
@@ -516,7 +514,7 @@ describe("racadm-tool", function() {
 
         describe('getBiosConfig', function(){
             var runAsyncCommandsStub, getPathFilenameStub, getSoftwareListStub;
-            beforeEach('updateFirmware before', function() {
+            beforeEach('getBiosConfig before', function() {
                 runAsyncCommandsStub = this.sandbox.stub(instance, 'runAsyncCommands');
                 getPathFilenameStub = this.sandbox.stub(parser, 'getPathFilename');
                 getSoftwareListStub = this.sandbox.stub(instance, 'getSoftwareList');
@@ -531,7 +529,7 @@ describe("racadm-tool", function() {
                     style: 'remote'};
             });
 
-            afterEach('updateFirmware after', function() {
+            afterEach('getBiosConfig after', function() {
                 this.sandbox.restore();
             });
 
