@@ -36,6 +36,14 @@ describe('Redfish OBM Service', function() {
                     'PushPowerButton'
                 ]}
             }
+        ],
+        testSystem = [
+            null,
+            {
+                body: {
+                PowerState : 'On'
+                }
+            }
         ];
         
     before(function() {
@@ -47,6 +55,7 @@ describe('Redfish OBM Service', function() {
             null,
             { body: {'@odata.id': 'abc123'} }
         ]);
+        redfishApi.getSystemAsync.resolves(testSystem);
     });
     
     after(function() {
