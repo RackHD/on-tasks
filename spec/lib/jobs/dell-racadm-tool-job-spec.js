@@ -5,7 +5,7 @@
 
 describe(require('path').basename(__filename), function () {
     var uuid;
-    var racadmToolJob;
+    var RacadmToolJob;
     var Promise;
     var job;
     var encryption;
@@ -26,7 +26,7 @@ describe(require('path').basename(__filename), function () {
             helper.di.simpleWrapper(mockWaterline, 'Services.Waterline')
         ]);
         Promise = helper.injector.get('Promise');
-        racadmToolJob = helper.injector.get('Job.Dell.RacadmTool');
+        RacadmToolJob = helper.injector.get('Job.Dell.RacadmTool');
         racadmTool = helper.injector.get('JobUtils.RacadmTool');
         uuid = helper.injector.get('uuid');
         lookup = helper.injector.get('Services.Lookup');
@@ -35,14 +35,14 @@ describe(require('path').basename(__filename), function () {
     });
 
     describe('Input validation', function() {
-        beforeEach('Dell Racadm Tool Set BIOS Validation', function() {
+        beforeEach('Dell Racadm Tool Input Validation', function() {
             var options = {
-                server_username: "onrack",
-                server_password: "onrack",
-                server_filePath: "//1.2.3.4/src/bios.xml",
-                action: "SetBIOS"
+                serverUsername: "onrack",
+                serverPassword: "onrack",
+                serverFilePath: "//1.2.3.4/src/bios.xml",
+                action: "setBiosConfig"
             };
-            job = new racadmToolJob(options, {}, uuid.v4());
+            job = new RacadmToolJob(options, {}, uuid.v4());
             mockWaterline.nodes.findByIdentifier = function() {
             };
             this.sandbox = sinon.sandbox.create();
@@ -50,14 +50,14 @@ describe(require('path').basename(__filename), function () {
             this.sandbox.stub(mockWaterline.nodes, 'findByIdentifier');
         });
 
-        afterEach('Dell Racadm Tool Set BIOS Validation', function() {
+        afterEach('Dell Racadm Tool Input Validation', function() {
             this.sandbox.restore();
         });
 
         it('should fail if node does not exist', function() {
             mockWaterline.nodes.findByIdentifier.resolves(null);
             return expect(job.run()).to.be.rejectedWith(Errors.AssertionError,
-                'No node for dell racadm set bios');
+                'No node for dell racadm tool');
         });
 
         it('should fail if ipmi obmSetting does not exist', function() {
@@ -72,7 +72,7 @@ describe(require('path').basename(__filename), function () {
             };
             mockWaterline.nodes.findByIdentifier.resolves(node);
             return expect(job.run()).to.be.rejectedWith(Errors.AssertionError,
-                'No ipmi obmSetting for dell racadm set bios');
+                'No ipmi obmSetting for dell racadm tool');
         });
     });
 
@@ -115,12 +115,12 @@ describe(require('path').basename(__filename), function () {
 
         beforeEach('Dell Racadm Tool Set BIOS Validation', function() {
             options = {
-                server_username: "onrack",
-                server_password: "onrack",
-                server_filePath: "//1.2.3.4/src/bios.xml",
-                action: "SetBIOS"
+                serverUsername: "onrack",
+                serverPassword: "onrack",
+                serverFilePath: "//1.2.3.4/src/bios.xml",
+                action: "setBiosConfig"
             };
-            job = new racadmToolJob(options, {}, uuid.v4());
+            job = new RacadmToolJob(options, {}, uuid.v4());
             mockWaterline.nodes.findByIdentifier = function(){};
 
             this.sandbox = sinon.sandbox.create();
@@ -148,8 +148,8 @@ describe(require('path').basename(__filename), function () {
             };
 
             var setBiosStub = this.sandbox.stub(racadmTool,'setBiosConfig');
-            var cifsInfo = {user: options.server_username, password: options.server_password ,
-                filePath: options.server_filePath};
+            var cifsInfo = {user: options.serverUsername, password: options.serverPassword ,
+                filePath: options.serverFilePath};
             mockWaterline.nodes.findByIdentifier.resolves(node);
             setBiosStub.resolves(
                 {
@@ -170,12 +170,12 @@ describe(require('path').basename(__filename), function () {
 
         beforeEach('Dell Racadm Tool Update Firmware', function() {
             options = {
-                server_username: "onrack",
-                server_password: "onrack",
-                server_filePath: "//1.2.3.4/src/firming.d7",
-                action: "UpdateFirmware"
+                serverUsername: "onrack",
+                serverPassword: "onrack",
+                serverFilePath: "//1.2.3.4/src/firming.d7",
+                action: "updateFirmware"
             };
-            job = new racadmToolJob(options, {}, uuid.v4());
+            job = new RacadmToolJob(options, {}, uuid.v4());
             mockWaterline.nodes.findByIdentifier = function(){};
 
             this.sandbox = sinon.sandbox.create();
@@ -203,8 +203,8 @@ describe(require('path').basename(__filename), function () {
             };
 
             var updateFirmwareStub = this.sandbox.stub(racadmTool,'updateFirmware');
-            var cifsInfo = {user: options.server_username, password: options.server_password ,
-                filePath: options.server_filePath};
+            var cifsInfo = {user: options.serverUsername, password: options.serverPassword ,
+                filePath: options.serverFilePath};
             mockWaterline.nodes.findByIdentifier.resolves(node);
             updateFirmwareStub.resolves(
                 {
@@ -225,12 +225,12 @@ describe(require('path').basename(__filename), function () {
 
         beforeEach('Dell Racadm Tool Get BIOS Validation', function() {
             options = {
-                server_username: "onrack",
-                server_password: "onrack",
-                server_filePath: "//1.2.3.4/src/bios.xml",
-                action: "GetBIOS"
+                serverUsername: "onrack",
+                serverPassword: "onrack",
+                serverFilePath: "//1.2.3.4/src/bios.xml",
+                action: "getBiosConfig"
             };
-            job = new racadmToolJob(options, {}, uuid.v4());
+            job = new RacadmToolJob(options, {}, uuid.v4());
             mockWaterline.nodes.findByIdentifier = function(){};
 
             this.sandbox = sinon.sandbox.create();
@@ -258,8 +258,8 @@ describe(require('path').basename(__filename), function () {
             };
 
             var getBiosStub = this.sandbox.stub(racadmTool,'getBiosConfig');
-            var cifsInfo = {user: options.server_username, password: options.server_password ,
-                filePath: options.server_filePath};
+            var cifsInfo = {user: options.serverUsername, password: options.serverPassword ,
+                filePath: options.serverFilePath};
             mockWaterline.nodes.findByIdentifier.resolves(node);
             getBiosStub.resolves(
                 {
@@ -280,12 +280,12 @@ describe(require('path').basename(__filename), function () {
 
         beforeEach('Dell Racadm Tool failed with unsupported action validation ', function() {
             options = {
-                server_username: "onrack",
-                server_password: "onrack",
-                server_filePath: "//1.2.3.4/src/bios.xml",
+                serverUsername: "onrack",
+                serverPassword: "onrack",
+                serverFilePath: "//1.2.3.4/src/bios.xml",
                 action: "Unsupported_Action"
             };
-            job = new racadmToolJob(options, {}, uuid.v4());
+            job = new RacadmToolJob(options, {}, uuid.v4());
             mockWaterline.nodes.findByIdentifier = function(){};
 
             this.sandbox = sinon.sandbox.create();
@@ -313,8 +313,6 @@ describe(require('path').basename(__filename), function () {
             };
 
             var getBiosStub = this.sandbox.stub(racadmTool,'getBiosConfig');
-            var cifsInfo = {user: options.server_username, password: options.server_password ,
-                filePath: options.server_filePath};
             var spy = this.sandbox.spy(job, '_done');
             mockWaterline.nodes.findByIdentifier.resolves(node);
             getBiosStub.resolves(
