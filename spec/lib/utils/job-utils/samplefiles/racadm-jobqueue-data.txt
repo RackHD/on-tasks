@@ -1,0 +1,36 @@
+Security Alert: Certificate is invalid - self signed certificate
+Continuing execution. Use -S option for racadm to stop execution on certificate-related errors.
+-------------------------JOB QUEUE------------------------
+[Job ID=JID_561235100730]
+Job Name=Export: System configuration XML file
+Status=Completed
+Start Time=[Not Applicable]
+Expiration Time=[Not Applicable]
+Message=[SYS043: Successfully exported system configuration XML file.]
+Percent Complete=[100]
+----------------------------------------------------------
+[Job ID=JID_561252202357]
+Job Name=Export: System configuration XML file
+Status=Completed
+Start Time=[Not Applicable]
+Expiration Time=[Not Applicable]
+Message=[SYS043: Successfully exported system configuration XML file.]
+Percent Complete=[100]
+----------------------------------------------------------
+[Job ID=JID_561425959190]
+Job Name=Firmware Update: BIOS
+Status=Completed
+Start Time=[Next Reboot]
+Expiration Time=[Not Applicable]
+Message=[PR19: Job completed successfully.]
+Percent Complete=[NA]
+----------------------------------------------------------
+[Job ID=JID_561449281852]
+Job Name=Firmware Update: BIOS
+Status=Completed
+Start Time=[Next Reboot]
+Expiration Time=[Not Applicable]
+Message=[PR19: Job completed successfully.]
+Percent Complete=[NA]
+----------------------------------------------------------
+

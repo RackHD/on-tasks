@@ -1,0 +1,21 @@
+<SystemConfiguration Model="PowerEdge C6320" ServiceTag="18D3182" TimeStamp="Tue Jan 12 07:48:19 2016">
+<!--Export type is Normal-->
+<!--Exported configuration may contain commented attributes. Attributes may be commented due to dependency, destructive nature, preserving server identity or for security reasons.-->
+<!--Exported configuration does not contain FC-HBA data as the presence of the appropriate cards could not be detected!-->
+
+<Component FQDD="EventFilters.WorkNotes.1"/>
+
+<Component FQDD="RAID.Slot.1-1">
+    <Attribute Name="RAIDresetConfig">False</Attribute>
+    <!-- <Attribute Name="CurrentControllerMode">RAID</Attribute> -->
+    <Component FQDD="Enclosure.Internal.0-0:RAID.Slot.1-1">        
+        <Component FQDD="Disk.Bay.5:Enclosure.Internal.0-0:RAID.Slot.1-1">
+            <!-- <Attribute Name="RAIDHotSpareStatus">No</Attribute> -->
+            <Attribute Name="OnlyDebug"></Attribute>
+            <!-- <Attribute Name="RAIDPDState">Non-RAID</Attribute> -->
+        </Component>
+    </Component>
+    <Attribute Name="RAIDremoveControllerKey">False</Attribute>
+</Component>
+
+</SystemConfiguration>
