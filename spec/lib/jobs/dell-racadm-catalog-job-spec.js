@@ -113,12 +113,7 @@ describe(require('path').basename(__filename), function () {
             var cifsInfo = {user: options.serverUsername, password: options.serverPassword ,
                 filePath: options.serverFilePath};
             mockWaterline.nodes.findByIdentifier.resolves(node);
-            /*
-            getConfigCatalog.resolves(
-                {
-                    status:"Completed"
-                }
-            );*/
+
             return job.run()
                 .then(function() {
                     expect(getConfigCatalog).to.have.been.calledWith(
@@ -130,23 +125,19 @@ describe(require('path').basename(__filename), function () {
 
     describe('handle response', function() {
         var waterline;
-        var parser;
         var job;
 
         before('Dell Racadm Catalog Job handle response before', function() {
             waterline = helper.injector.get('Services.Waterline');
-            parser = helper.injector.get('JobUtils.CommandParser');
         });
 
         beforeEach('Dell Racadm Catalog Job handle response beforeEach', function() {
             var options = {
-                commands: [
-                    'sdr',
-                    'lan print'
-                ],
-                acceptedResponseCodes: [1]
+                serverUsername: "onrack",
+                serverPassword: "onrack",
+                serverFilePath: "//1.2.3.4/src/bios.xml"
             };
-            job = new RacadmCatalogJob(options, { target: 'bc7dab7e8fb7d6abf8e7d6ac' }, uuid.v4());
+            job = new RacadmCatalogJob(options, {}, uuid.v4());
 
             mockWaterline.nodes.findByIdentifier = function(){};
             mockWaterline.catalogs.create = function(){};
@@ -154,52 +145,60 @@ describe(require('path').basename(__filename), function () {
             this.sandbox = sinon.sandbox.create();
             this.sandbox.stub(mockWaterline.nodes,'findByIdentifier');
             this.sandbox.stub(mockWaterline.catalogs,'create');
-            this.sandbox.stub(parser, 'parseTasks');
         });
 
         afterEach('Dell Racadm Catalog Job input validation', function(){
             this.sandbox = sinon.sandbox.restore();
         });
 
-        it('should create catalog entries for response data', function() {
-            parser.parseTasks.resolves([
-                {
-                    store: true,
-                    source: 'test-source-1',
-                    data: 'test data 1'
-                },
-                {
-                    store: true,
-                    source: undefined,
-                    data: 'test data 2'
-                },
-                {
-                    store: false,
-                    source: 'test-source-3',
-                    data: 'test data 3'
-                },
-                {
-                    error: {},
-                    source: 'test-error-source'
-                }
-            ]);
+        it('should create catalog entries for response data if store is set to true', function() {
+            var catalog;
+            catalog = {
+                store: true,
+                source: 'idrac-racadm-configure',
+                data: 'test data 1'
+            };
 
-            return job.handleResponse([])
+            return job.handleResponse(catalog)
                 .then(function() {
                     // Make sure we only catalog objects with store: true and no error
-                    expect(waterline.catalogs.create).to.have.been.calledTwice;
+                    expect(waterline.catalogs.create).to.have.been.calledOnce;
                     expect(waterline.catalogs.create).to.have.been.calledWith({
                         node: job.nodeId,
-                        source: 'test-source-1',
+                        source: 'idrac-racadm-configure',
                         data: 'test data 1'
-                    });
-                    expect(waterline.catalogs.create).to.have.been.calledWith({
-                        node: job.nodeId,
-                        source: undefined,
-                        data: 'test data 2'
                     });
                 });
         });
+
+        it('should not create catalog entries for response data with store set to false',
+            function() {
+                var catalog;
+                catalog = {
+                    store: false,
+                    source: 'idrac-racadm-configure',
+                    data: 'test data 2'
+                };
+                return job.handleResponse(catalog)
+                    .then(function() {
+                        // Make sure we only catalog objects with store: true and no error
+                        expect(waterline.catalogs.create).to.not.have.been.called;
+                    });
+            });
+
+        it('should not create catalog entries for response data with error', function() {
+            var catalog;
+            catalog = {
+                error: {},
+                source: 'idrac-racadm-configure',
+                data: 'test data 3'
+            };
+            return job.handleResponse(catalog)
+                .then(function() {
+                    expect(waterline.catalogs.create).to.not.have.been.called;
+                });
+        });
+
     });
 
 });
