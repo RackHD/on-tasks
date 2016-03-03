@@ -11,6 +11,7 @@ describe("Base Job", function () {
     var MockJob;
     var taskProtocol;
     var eventsProtocol;
+    var messenger;
 
     before('Base Job before', function () {
         // create a child injector with on-core and the base pieces we need to test this
@@ -18,8 +19,7 @@ describe("Base Job", function () {
             helper.require('/lib/jobs/base-job.js')
         ]);
 
-        helper.injector.get('Services.Messenger').subscribe = sinon.stub().resolves({});
-
+        messenger = helper.injector.get('Services.Messenger');
         BaseJob = helper.injector.get('Job.Base');
 
         taskProtocol = helper.injector.get('Protocol.Task');
@@ -123,6 +123,42 @@ describe("Base Job", function () {
             return expect(job.cleanup()).to.be.fulfilled;
         });
     });
+    
+    describe('Publish', function() {
+        var job;
+        
+        before('Base Job Publish before', function() {
+            sinon.spy(MockJob.prototype, '_run');
+        });
+        
+        beforeEach('Base Job Publish beforeEach', function() {
+            sinon.stub(messenger, 'publish').resolves();
+            MockJob.prototype._run.reset();
+            job = new MockJob();
+        });
+        
+        afterEach('Base Job Publish afterEach', function() {
+            messenger.publish.restore();
+        });
+        
+        after('Base Job Publish after', function() {
+            MockJob.prototype._run.restore();
+        });
+    
+        it ('should publish a redfish command result data', function() {
+            return job._publishRedfishCommandResult(uuid.v4(), '123', 'data')
+            .then(function() {
+                expect(messenger.publish).to.be.calledOnce;
+            });
+        });
+        
+        it ('should publish a redfish command', function() {
+            return job._publishRunRedfishCommand(uuid.v4(), 'data')
+            .then(function() {
+                expect(messenger.publish).to.be.calledOnce;
+            });
+        });
+    });
 
     describe('Subscriptions', function() {
         var job;
@@ -132,12 +168,22 @@ describe("Base Job", function () {
         });
 
         beforeEach('Base Job Subscriptions beforeEach', function() {
+            sinon.stub(messenger, 'subscribe', function(name,id,callback) {
+                callback({value:'test'})
+                return Promise.resolve({
+                    dispose: sinon.stub().resolves()
+                });
+            });
             MockJob.prototype._run.reset();
             job = new MockJob();
         });
 
         after('Base Job Subscriptions after', function() {
             MockJob.prototype._run.restore();
+        });
+        
+        afterEach('Base Job Subscription afterEach', function() {
+            messenger.subscribe.restore();
         });
 
         it("should respond to activeTaskExists requests", function() {
@@ -159,7 +205,7 @@ describe("Base Job", function () {
                 expect(job.subscriptions[0].toString()).to.equal('subscribeActiveTaskExists');
             });
         });
-
+        
         it("should clean up subscriptions for every subscriber helper method", function() {
             var numSubscriberMethods = 0;
             // Call every AMQP subscriber helper method
@@ -195,7 +241,7 @@ describe("Base Job", function () {
                 });
             });
         });
-
+        
         describe("poller callbacks", function() {
             var encryption;
             var lookup;

@@ -30,6 +30,14 @@ describe("Job.Pollers.CreateDefault", function () {
         waterline.workitems = {
             findOrCreate: sinon.stub().resolves()
         };
+        waterline.nodes = {
+            needByIdentifier: sinon.stub().resolves({
+                obmSettings: [{
+                    service: 'redfish-obm-service',
+                    config: {}
+                }]
+            })
+        };
         waterline.catalogs = {
             findMostRecent: sinon.stub().resolves({
                 id: 'bc7dab7e8fb7d6abf8e7d6a1'
@@ -123,7 +131,15 @@ describe("Job.Pollers.CreateDefault", function () {
             "pollInterval": 60000,
             "config": {
                 "metric": "snmp-interface-bandwidth-utilization"
-            }
+            },
+        });
+
+        pollers.push({
+            "type": "redfish",
+            "pollInterval": 60000,
+            "config": {
+                "command": "thermal"
+            },
         });
 
         var job = new CreateDefaultPollers(
@@ -143,13 +159,44 @@ describe("Job.Pollers.CreateDefault", function () {
                 .to.have.property('node', nodeId);
             expect(waterline.catalogs.findMostRecent.secondCall.args[0])
                 .to.have.property('source', 'snmp-1');
-            expect(waterline.workitems.findOrCreate).to.have.been.calledTwice;
+            expect(waterline.workitems.findOrCreate).to.have.been.calledThrice;
             expect(waterline.workitems.findOrCreate).to.have.been.calledWith(
                 { node: nodeId, config: { command: pollers[0].config.command } }, pollers[0]);
             expect(waterline.workitems.findOrCreate).to.have.been.calledWith(
                 { node: nodeId, config: { command: pollers[1].config.command } }, pollers[1]);
         });
     });
+    
+    
+    it('should fail on missing redfish service', function () {
+        var nodeId = 'bc7dab7e8fb7d6abf8e7d6ad';
+        pollers = [{
+            "type": "redfish",
+            "pollInterval": 60000,
+            "config": {
+                "command": "thermal"
+            }
+        }];
+        
+        waterline.nodes = {
+            needByIdentifier: sinon.stub().resolves({
+                obmSettings: []
+            })
+        };
+
+        var job = new CreateDefaultPollers(
+            { nodeId: nodeId, pollers: pollers },
+            { graphId: uuid.v4() },
+            uuid.v4()
+        );
+
+        return job.run()
+        .catch(function(err) {
+            expect(err.message)
+            .to.equal('Required redfish-obm-service settings are missing.');
+        });
+    });
+    
 });
 
 

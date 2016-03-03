@@ -21,9 +21,10 @@ describe("Job.Catalog.RunWorkItem", function () {
 
         RunWorkItems = helper.injector.get('Job.WorkItems.Run');
         uuid = helper.injector.get('uuid');
-
+        
         taskProtocol.publishRunIpmiCommand = sinon.stub().resolves();
         taskProtocol.publishRunSnmpCommand = sinon.stub().resolves();
+        
         waterline.workitems = {
             startNextScheduled: sinon.stub().resolves(),
             setSucceeded: sinon.stub(),
@@ -170,6 +171,41 @@ describe("Job.Catalog.RunWorkItem", function () {
             }
         });
     });
+    
+    it('should run a Redfish Poller work item', function(done) {
+        var workItem = {
+            id: 'bc7dab7e8fb7d6abf8e7d6ad',
+            name: 'Pollers.Redfish',
+            config: {
+                uri: 'http://testapi',
+                username: 'user',
+                password: 'password',
+                command: 'power'
+            }
+        };
+
+        var job = new RunWorkItems({}, { graphId: uuid.v4() }, uuid.v4());
+        waterline.workitems.startNextScheduled.onCall(0).resolves(workItem);
+        job._publishRunRedfishCommand = sinon.stub().resolves();
+        
+        job.run();
+        setImmediate(function () {
+            try {
+                expect(job._publishRunRedfishCommand).to.have.been.calledOnce;
+                expect(job._publishRunRedfishCommand.firstCall.args[1].config)
+                    .to.have.property('uri', 'http://testapi');
+                expect(job._publishRunRedfishCommand.firstCall.args[1].config)
+                    .to.have.property('username', 'user');
+                expect(job._publishRunRedfishCommand.firstCall.args[1].config)
+                    .to.have.property('password', 'password');
+                job.cancel();
+                done();
+            } catch (e) {
+                done(e);
+            }
+        });
+    });
+
 
     it('should mark an unknown work item as failed', function(done) {
         var workItem = {
