@@ -90,14 +90,14 @@ describe("Job Helper", function () {
             var data = {
                 ip: '7a:c0:7a:c0:be:ef'
             };
-            expect (jobHelper.lookupHost(data)).to.deep.equal({ ip: '7a:c0:7a:c0:be:ef'});
+            return jobHelper.lookupHost(data).should.become({ ip: '7a:c0:7a:c0:be:ef'});
         });
 
         it("should not convert a none-mac address with the key host to an IP", function() {
             var data = {
                 host: '1.2;3.4'
             };
-            expect (jobHelper.lookupHost(data)).to.deep.equal({ host: '1.2;3.4'});
+            return jobHelper.lookupHost(data).should.become({ host: '1.2;3.4'});
         });
 
     });

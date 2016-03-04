@@ -34,12 +34,7 @@ describe(require('path').basename(__filename), function () {
 
     describe('Input validation', function() {
         beforeEach('Dell Racadm Catalog Input Validation', function() {
-            var options = {
-                serverUsername: "onrack",
-                serverPassword: "onrack",
-                serverFilePath: "//1.2.3.4/src/bios.xml"
-            };
-            job = new RacadmCatalogJob(options, {}, uuid.v4());
+            job = new RacadmCatalogJob({action: 'getConfigCatalog'}, {}, uuid.v4());
             mockWaterline.nodes.findByIdentifier = function() {
             };
             this.sandbox = sinon.sandbox.create();
@@ -74,15 +69,8 @@ describe(require('path').basename(__filename), function () {
     });
 
     describe('Dell Racadm getConfigCatalog', function() {
-        var options;
-
         beforeEach('Dell Racadm getConfigCatalog', function() {
-            options = {
-                serverUsername: "onrack",
-                serverPassword: "onrack",
-                serverFilePath: "//1.2.3.4/src/bios.xml"
-            };
-            job = new RacadmCatalogJob(options, {}, uuid.v4());
+            job = new RacadmCatalogJob({action: 'getConfigCatalog'}, {}, uuid.v4());
             mockWaterline.nodes.findByIdentifier = function(){};
 
             this.sandbox = sinon.sandbox.create();
@@ -110,15 +98,13 @@ describe(require('path').basename(__filename), function () {
             };
 
             var getConfigCatalog = this.sandbox.stub(racadmTool,'getConfigCatalog');
-            var cifsInfo = {user: options.serverUsername, password: options.serverPassword ,
-                filePath: options.serverFilePath};
             mockWaterline.nodes.findByIdentifier.resolves(node);
 
             return job.run()
                 .then(function() {
                     expect(getConfigCatalog).to.have.been.calledWith(
                         node.obmSettings[0].config.host, node.obmSettings[0].config.user,
-                        node.obmSettings[0].config.password,cifsInfo);
+                        node.obmSettings[0].config.password);
                 });
         });
     });
@@ -132,12 +118,7 @@ describe(require('path').basename(__filename), function () {
         });
 
         beforeEach('Dell Racadm Catalog Job handle response beforeEach', function() {
-            var options = {
-                serverUsername: "onrack",
-                serverPassword: "onrack",
-                serverFilePath: "//1.2.3.4/src/bios.xml"
-            };
-            job = new RacadmCatalogJob(options, {}, uuid.v4());
+            job = new RacadmCatalogJob({action: 'getConfigCatalog'}, {}, uuid.v4());
 
             mockWaterline.nodes.findByIdentifier = function(){};
             mockWaterline.catalogs.create = function(){};
