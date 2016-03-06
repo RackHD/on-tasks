@@ -79,7 +79,6 @@ describe('Job.Redfish', function () {
         });
 
         it("should listen for redfish command requests", function(done) {
-            var self = this;
             var data = {
                 config: { command: 'power' },
                 uri: 'http://testuri',

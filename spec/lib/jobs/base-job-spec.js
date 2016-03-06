@@ -169,7 +169,7 @@ describe("Base Job", function () {
 
         beforeEach('Base Job Subscriptions beforeEach', function() {
             sinon.stub(messenger, 'subscribe', function(name,id,callback) {
-                callback({value:'test'})
+                callback({value:'test'});
                 return Promise.resolve({
                     dispose: sinon.stub().resolves()
                 });
