@@ -12,12 +12,14 @@ describe('Redfish Discovery Job', function () {
         listSystemData,
         getSystemData,
         waterline = {},
+        redfishTool = {},
         sandbox = sinon.sandbox.create();
         
     before(function() { 
         helper.setupInjector([
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/redfish-discovery.js'),
+            helper.di.simpleWrapper(redfishTool,'JobUtils.RedfishTool'),
             helper.di.simpleWrapper(waterline,'Services.Waterline')
         ]);
         waterline.nodes = {
@@ -42,6 +44,8 @@ describe('Redfish Discovery Job', function () {
         
         redfishJob.redfishApi = redfishApi;
         sandbox.stub(redfishJob.redfishApi);
+        redfishTool.clientInit = sinon.stub().resolves(redfishApi);
+        redfishTool.clientDone = sinon.stub().resolves();
         
         listChassisData = [
             null,
@@ -128,7 +132,7 @@ describe('Redfish Discovery Job', function () {
         it('should create chassis node', function() { 
             redfishApi.listChassisAsync.resolves(listChassisData);
             redfishApi.getChassisAsync.resolves(getChassisData);
-            return redfishJob.createChassis()
+            return redfishJob.createChassis(redfishApi)
             .then(function() {
                 expect(waterline.nodes.findOrCreate).to.be.called.once;
             });
@@ -138,7 +142,7 @@ describe('Redfish Discovery Job', function () {
             delete getChassisData[1].body.Links.ComputerSystems;
             redfishApi.listChassisAsync.resolves(listChassisData);
             redfishApi.getChassisAsync.resolves(getChassisData);
-            return expect(redfishJob.createChassis()).to.be.rejected;
+            return expect(redfishJob.createChassis(redfishApi)).to.be.rejected;
         });
     });
     
@@ -146,7 +150,7 @@ describe('Redfish Discovery Job', function () {
         it('should create system node', function() { 
             redfishApi.listSystemsAsync.resolves(listSystemData);
             redfishApi.getSystemAsync.resolves(getSystemData);
-            return redfishJob.createSystems()
+            return redfishJob.createSystems(redfishApi)
             .then(function() {
                 expect(waterline.nodes.findOrCreate).to.be.called.once;
             });
@@ -156,7 +160,7 @@ describe('Redfish Discovery Job', function () {
             delete getSystemData[1].body.Links.Chassis;
             redfishApi.listSystemsAsync.resolves(listSystemData);
             redfishApi.getSystemAsync.resolves(getSystemData);
-            return expect(redfishJob.createSystems()).to.be.rejected;
+            return expect(redfishJob.createSystems(redfishApi)).to.be.rejected;
         });
         
     });

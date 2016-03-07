@@ -9,6 +9,7 @@ var uuid = require('node-uuid'),
     redfishApi,
     sandbox = sinon.sandbox.create(),
     redfishJob,
+    redfishTool = {},
     listChassisData = [
         null,
         { 
@@ -33,7 +34,8 @@ describe('Job.Redfish', function () {
             helper.requireGlob('/lib/services/*.js'),
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/redfish-job.js'),
-            helper.di.simpleWrapper(waterline,'Services.Waterline')
+            helper.di.simpleWrapper(waterline,'Services.Waterline'),
+            helper.di.simpleWrapper(redfishTool,'JobUtils.RedfishTool')
         ]);
 
         context.Jobclass = helper.injector.get('Job.Redfish');
@@ -65,6 +67,9 @@ describe('Job.Redfish', function () {
                     }]
                 })
             };
+            redfishTool.clientInit = sinon.stub().resolves(redfishApi);
+            redfishTool.clientDone = sinon.stub().resolves();
+            
             var graphId = uuid.v4();
             redfishJob = new this.Jobclass({}, { graphId: graphId }, uuid.v4());
             expect(redfishJob.routingKey).to.equal(graphId);
@@ -87,7 +92,7 @@ describe('Job.Redfish', function () {
                 workItemId: 'testworkitemid',
                 node: 'xyz'
             };
-            redfishJob.initClient = sinon.stub().resolves(redfishApi);
+            
             redfishJob.collectChassisData = sinon.stub().resolves(chassisData[1].body);
             redfishJob._publishRedfishCommandResult = sinon.stub();
             redfishJob._subscribeRedfishCommand = function(routingKey, callback) {
@@ -110,14 +115,6 @@ describe('Job.Redfish', function () {
             });
         });
         
-        it("should initialize redfish client", function() {
-            return expect(redfishJob.initClient({
-                username:'user', 
-                password:'password',
-                uri: 'http://testapi'
-            })).to.be.fullfilled;
-        });
-        
         it("should run collectChassis for each command", function() {
             redfishApi.listChassisAsync = sandbox.stub().resolves(listChassisData);
             redfishApi.getPowerAsync = sandbox.stub().resolves(chassisData);
@@ -132,28 +129,22 @@ describe('Job.Redfish', function () {
         
         it("should fail collectChassis for unknown command", function() {
             redfishApi.listChassisAsync = sandbox.stub().resolves(listChassisData);
-            return redfishJob.collectChassisData(redfishApi, 'unknown')
-            .catch(function(data) {
-                expect(data.message).to.equal('Unsupported Chassis Command: unknown');
-            });
+            return expect(redfishJob.collectChassisData(redfishApi, 'unknown'))
+                .to.be.rejectedWith('Unsupported Chassis Command: unknown');
         });
         
         it("should fail collectChassis with no data", function() {
             redfishApi.listChassisAsync = sandbox.stub().resolves(listChassisData);
             redfishApi.getPowerAsync = sandbox.stub().resolves([null, {body: undefined}]);
-            return redfishJob.collectChassisData(redfishApi, 'power')
-            .catch(function(data) {
-                expect(data.message).to.equal('No Data Found For Command: power');
-            });
+            return expect(redfishJob.collectChassisData(redfishApi, 'power'))
+                .to.be.rejectedWith('No Data Found For Command: power');
         });
         
         it("should fail getPowerAsync with error", function() {
             redfishApi.listChassisAsync = sandbox.stub().resolves(listChassisData);
             redfishApi.getPowerAsync = sandbox.stub().rejects({response: {text : 'error text'}});
-            return redfishJob.collectChassisData(redfishApi, 'power')
-            .catch(function(data) {
-                expect(data.message).to.equal('error text');
-            });
+            return expect(redfishJob.collectChassisData(redfishApi, 'power'))
+                .to.be.rejectedWith('error text');
         });
         
         it("should add a concurrent request", function() {

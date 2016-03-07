@@ -190,11 +190,8 @@ describe("Job.Pollers.CreateDefault", function () {
             uuid.v4()
         );
 
-        return job.run()
-        .catch(function(err) {
-            expect(err.message)
-            .to.equal('Required redfish-obm-service settings are missing.');
-        });
+        return expect(job.run())
+            .to.be.rejectedWith('Required redfish-obm-service settings are missing.');
     });
     
 });
