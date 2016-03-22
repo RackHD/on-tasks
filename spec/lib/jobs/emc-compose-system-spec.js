@@ -21,14 +21,6 @@ describe('Emc Redfish Compose System Job', function () {
                 Systems: { '@odata.id':'/redfish/v1/Systems' }
             }
         },
-        elementMembers = {
-            body: {
-                Members: [
-                    { '@odata.id':'/redfish/v1/Chassis/0/Elements/0'},
-                    { '@odata.id':'/redfish/v1/Chassis/0/Elements/' }
-                ]
-            }
-        },
         catalogData = {
             data: [
                 { 

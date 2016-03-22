@@ -74,7 +74,7 @@ describe('Emc Redfish Catalog Job', function () {
             redfishJob._run();
             return redfishJob._deferred
             .then(function() {
-                expect(waterline.catalogs.create).to.be.called.once
+                expect(waterline.catalogs.create).to.be.called.once;
             });
         });
         

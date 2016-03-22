@@ -13,8 +13,8 @@ describe("JobUtils.RedfishTool", function() {
             helper.require('/lib/utils/job-utils/redfish-tool.js'),
             helper.di.simpleWrapper(waterline,'Services.Waterline')
         ]);
-        var tool = helper.injector.get('JobUtils.RedfishTool');
-        redfishTool = new tool();
+        var Tool = helper.injector.get('JobUtils.RedfishTool');
+        redfishTool = new Tool();
     });
     
     beforeEach(function() {
@@ -102,7 +102,6 @@ describe("JobUtils.RedfishTool", function() {
             return expect(redfishTool.request({method:method}, 'http', {}))
                 .to.be.fullfilled;
         });
-        redfishTool.requireHttpLib.reset();
     });
     
     it("should fail to http request", function() {
@@ -125,7 +124,6 @@ describe("JobUtils.RedfishTool", function() {
         });
         return expect(redfishTool.request())
             .to.be.rejectedWith('some error');
-        redfishTool.requireHttpLib.reset();
     });
     
     it("should send client request", function() {
@@ -133,7 +131,7 @@ describe("JobUtils.RedfishTool", function() {
             root: '/', 
             username:'user', 
             password: 'pass'
-        }
+        };
         redfishTool.request = sandbox.stub().resolves({
             httpStatusCode:200, 
             body: '{"data":"true"}'
@@ -143,7 +141,6 @@ describe("JobUtils.RedfishTool", function() {
             expect(res.httpStatusCode).to.equal(200);
             expect(res.body).to.deep.equal({data:'true'});
         }); 
-        redfishTool.request.reset();
     });
     
     it("should fail to send client request", function() {
@@ -152,6 +149,5 @@ describe("JobUtils.RedfishTool", function() {
         });
         return expect(redfishTool.clientRequest())
             .to.be.rejectedWith('Unknown Error');
-        redfishTool.request.reset();
     });
 });

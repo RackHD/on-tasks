@@ -6,7 +6,6 @@ describe('Redfish Discovery Job', function () {
     var uuid = require('node-uuid'),
         graphId = uuid.v4(),
         redfishJob,
-        redfishApi,
         redfishTool,
         rootData,
         listChassisData,
