@@ -7,12 +7,13 @@ describe('ISC DHCP Poller Job', function () {
     var base = require('./base-spec');
     var uuid;
 
-    /// create a future end date
-    var todayDate = new Date();
-    // add 30 seconds
-    var newdate = new Date(todayDate.getTime() + (10000));
+    // create a future end date
+    // consider different timezone and the daylight saving, add 2 days bases on now will always
+    // generate a future date if discard timezone while parsing.
+    var futureDate = new Date();
+    futureDate.setDate(futureDate.getDate() + 2); //add 2 days to current
     // use toISOString, it's the closest to Y-m-d H:i:s
-    newdate = newdate.toISOString();
+    var newdate = futureDate.toISOString();
     // modify ISO string to get Y-m-d H:i:s
     newdate = newdate.split('.')[0].replace('T', ' ').replace(/-/g, '/');
 
