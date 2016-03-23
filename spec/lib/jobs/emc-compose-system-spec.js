@@ -108,8 +108,9 @@ describe('Emc Redfish Compose System Job', function () {
         
         it('should fail to run job with invalid action', function() { 
             redfishJob.action = 'invalid';
-            return expect(redfishJob._run.bind(redfishJob))
-                .to.throw('Unknown Action Type: invalid');
+            redfishJob._run();
+            return expect(redfishJob._deferred)
+                .to.be.rejectedWith('Unknown Action Type: invalid');
         });
     });
 });
