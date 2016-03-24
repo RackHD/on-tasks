@@ -21,19 +21,15 @@ describe('Emc Redfish Compose System Job', function () {
                 Systems: { '@odata.id':'/redfish/v1/Systems' }
             }
         },
-        catalogData = {
-            data: [
-                { 
-                    Allocated: { systemId: 'NewSystem', value: true },
-                    Id: '1', 
-                    Type: 'ComputeElement'
-                },
-                { 
-                    Allocated: { systemId: null, value: false },
-                    Id: '2', 
-                    Type: 'StorageElement'
-                }
-            ]
+        systemsData = {
+            body: {
+                Systems: { '@odata.id':'/redfish/v1/Systems'  },
+                Members: [
+                    {'@odata.id':'/redfish/v1/Systems/1'}
+                ],
+                Oem: { Emc: { EndPoints: [ 'Element0' ] } },
+                Id: 'SystemId'
+            }
         };
     
     before(function() { 
@@ -49,8 +45,7 @@ describe('Emc Redfish Compose System Job', function () {
             helper.di.simpleWrapper(redfishTool,'JobUtils.RedfishTool')
         ]);
         waterline.catalogs = {
-            updateOne: sandbox.stub().resolves(),
-            findMostRecent: sandbox.stub().resolves(catalogData)
+            updateOne: sandbox.stub().resolves()
         };
     });
     
@@ -68,16 +63,22 @@ describe('Emc Redfish Compose System Job', function () {
             }, {target:'abc'}, graphId);
             redfishTool = redfishJob.redfish;
             redfishTool.settings = {root:'/', uri:'http://fake/uri'};
+            redfishTool.clientRequest.reset();
         });
 
         it('should successfully compose system', function() { 
             redfishTool.clientRequest.onCall(0).resolves(rootData);
-            redfishTool.clientRequest.onCall(1).resolves();
+            redfishTool.clientRequest.onCall(1).resolves(systemsData);
+            redfishTool.clientRequest.onCall(2).resolves(systemsData);
+            redfishTool.clientRequest.onCall(3).resolves(rootData);
+            redfishTool.clientRequest.onCall(4).resolves(systemsData);
+            redfishTool.clientRequest.onCall(5).resolves(systemsData);
+            redfishTool.clientRequest.onCall(6).resolves(rootData);
+            redfishTool.clientRequest.onCall(7).resolves();
             redfishJob._run();
             return redfishJob._deferred
             .then(function() {
-                expect(waterline.catalogs.findMostRecent).to.be.called.twice;
-                expect(waterline.catalogs.updateOne).to.be.called.once;
+                expect(redfishTool.clientRequest.callCount).to.equal(8);
             });
         });
         
@@ -89,8 +90,7 @@ describe('Emc Redfish Compose System Job', function () {
             redfishJob._run();
             return redfishJob._deferred
             .then(function() {
-                expect(waterline.catalogs.findMostRecent).to.be.called.twice;
-                expect(waterline.catalogs.updateOne).to.be.called.once;
+                expect(redfishTool.clientRequest.callCount).to.equal(2);
             });
         });
         
@@ -101,9 +101,18 @@ describe('Emc Redfish Compose System Job', function () {
             redfishJob._run();
             return redfishJob._deferred
             .then(function() {
-                expect(waterline.catalogs.findMostRecent).to.be.called.twice;
-                expect(waterline.catalogs.updateOne).to.be.called.once;
+                expect(redfishTool.clientRequest.callCount).to.equal(2);
             });
+        });
+        
+        it('should fail with duplicated systemId', function() { 
+            redfishTool.clientRequest.onCall(0).resolves(rootData);
+            redfishTool.clientRequest.onCall(1).resolves(systemsData);
+            redfishTool.clientRequest.onCall(2).resolves(systemsData);
+            redfishJob.action = 'compose';
+            redfishJob.name = 'SystemId';
+            redfishJob._run();
+            return expect(redfishJob._deferred).to.be.rejected;
         });
         
         it('should fail to run job with invalid action', function() { 
