@@ -8,9 +8,14 @@ var base = {
         before(description, function () {
             var overrides = [
                 helper.require('/lib/services/obm-service'),
-                helper.require('/lib/services/base-obm-service'),
-                helper.require(servicePath)
+                helper.require('/lib/services/base-obm-service')
             ];
+            if (!Array.isArray(servicePath)) {
+                servicePath = [ servicePath ];
+            }
+            _.forEach(servicePath, function(path) {
+                overrides.push(helper.require(path));
+            });
             helper.setupInjector(overrides);
 
             this.BaseObmService = helper.injector.get('OBM.base');

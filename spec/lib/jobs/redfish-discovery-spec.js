@@ -6,28 +6,46 @@ describe('Redfish Discovery Job', function () {
     var uuid = require('node-uuid'),
         graphId = uuid.v4(),
         redfishJob,
-        redfishApi,
+        redfishTool,
+        rootData,
         listChassisData,
         getChassisData,
         listSystemData,
         getSystemData,
         waterline = {},
-        redfishTool = {},
+        Error,
         sandbox = sinon.sandbox.create();
         
+    var node = {
+        id: 'abc',
+        type: 'enclosure',
+        name: 'Node',
+        identifiers: [],
+        obmSettings: [{
+            service: 'redfish-obm-service',
+            config: { root: '/fake' }
+        }],
+        relations: [
+            { relationType: 'encloses', 
+              targets: [ '/fake' ] },
+            { relationType: 'enclosedBy', 
+              targets: [ '/fake' ]}
+        ]
+    };
+    
     before(function() { 
         helper.setupInjector([
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/redfish-discovery.js'),
-            helper.di.simpleWrapper(redfishTool,'JobUtils.RedfishTool'),
+            helper.require('/lib/utils/job-utils/redfish-tool.js'),
             helper.di.simpleWrapper(waterline,'Services.Waterline')
         ]);
         waterline.nodes = {
-            findOrCreate: sandbox.stub().resolves()
+            create: sandbox.stub().resolves(),
+            needOne: sandbox.stub().resolves(node),
+            updateOne: sandbox.stub().resolves(node)
         };
-            
-        var redfish = require('redfish-node'); 
-        redfishApi = Promise.promisifyAll(new redfish.RedfishvApi());
+        Error = helper.injector.get('Errors');
     });
     
     afterEach(function() {
@@ -42,78 +60,69 @@ describe('Redfish Discovery Job', function () {
             password:'pass'
         }, {}, graphId);
         
-        redfishJob.redfishApi = redfishApi;
-        sandbox.stub(redfishJob.redfishApi);
-        redfishTool.clientInit = sinon.stub().resolves(redfishApi);
-        redfishTool.clientDone = sinon.stub().resolves();
+        sandbox.stub(redfishJob.redfish);
+        redfishTool = redfishJob.redfish;
         
-        listChassisData = [
-            null,
-            { 
-                body: {
-                    Members: [
-                        {'@odata.id':'/redfish/v1/Chassis/abc123'}
-                    ]
-                }
+        rootData = {
+            body: { 
+                Chassis: { '@odata.id':'/redfish/v1/Chassis/abc123' }, 
+                Systems: { '@odata.id':'/redfish/v1/Systems/abc123' } 
             }
-        ];
-        getChassisData = [
-            null,
-            {
-                body: {
-                    Links: {
-                        ComputerSystems: [
-                            {'@odata.id':'/redfish/v1/Systems/abc123'}
-                        ]
-                    },
-                    Name: 'Chassis'
-                }
-            } 
-        ];
-        
-        listSystemData = [
-            null,
-            { 
-                body: {
-                    Members: [
+        };
+        listChassisData = { 
+            body: {
+                Members: [
+                    {'@odata.id':'/redfish/v1/Chassis/abc123'}
+                ]
+            }
+        };
+        getChassisData = {
+            body: {
+                Links: {
+                    ComputerSystems: [
                         {'@odata.id':'/redfish/v1/Systems/abc123'}
                     ]
-                }
+                },
+                Name: 'Chassis'
             }
-        ];
-        getSystemData = [
-            null,
-            {
-                body: {
-                    Links: {
-                        Chassis: [
-                            {'@odata.id':'/redfish/v1/Chassis/abc123'}
-                        ]
-                    },
-                    Name: 'System'
-                }
-            } 
-        ];
+        };
+        listSystemData = { 
+            body: {
+                Members: [
+                    {'@odata.id':'/redfish/v1/Systems/abc123'}
+                ]
+            }
+        };
+        getSystemData = {
+            body: {
+                Links: {
+                    Chassis: [
+                        {'@odata.id':'/redfish/v1/Chassis/abc123'}
+                    ]
+                },
+                Name: 'System'
+            }
+        };
     });
     
     describe('redfish discovery', function() {
         it('should successfully run job', function() { 
-            redfishApi.listChassisAsync.resolves(listChassisData);
-            redfishApi.getChassisAsync.resolves(getChassisData);
-            redfishApi.listSystemsAsync.resolves(listSystemData);
-            redfishApi.getSystemAsync.resolves(getSystemData);
+            redfishTool.clientRequest.onCall(0).resolves(rootData);
+            redfishTool.clientRequest.onCall(1).resolves(listChassisData);
+            redfishTool.clientRequest.onCall(2).resolves(getChassisData);
+            redfishTool.clientRequest.onCall(3).resolves(listSystemData);
+            redfishTool.clientRequest.onCall(4).resolves(getSystemData);
             redfishJob._run();
             return redfishJob._deferred
             .then(function() {
-                expect(waterline.nodes.findOrCreate).to.be.called.twice;
+                expect(waterline.nodes.updateOne).to.be.called.twice;
             });
         });
         
         it('should fail to run job', function() { 
-            var err = new Error('some error');
-            redfishApi.listChassisAsync.rejects(err);
+            redfishTool.clientRequest.rejects('some error');
             redfishJob._run();
-            return redfishJob._deferred.should.be.rejectedWith(err);
+            return redfishJob._deferred.should.be.rejectedWith('some error');
         });
         
         it('should construct without credentials', function() { 
@@ -130,39 +139,77 @@ describe('Redfish Discovery Job', function () {
 
     describe('redfish chassis', function() {
         it('should create chassis node', function() { 
-            redfishApi.listChassisAsync.resolves(listChassisData);
-            redfishApi.getChassisAsync.resolves(getChassisData);
-            return redfishJob.createChassis(redfishApi)
+            redfishTool.clientRequest.onCall(0).resolves(listChassisData);
+            redfishTool.clientRequest.onCall(1).resolves(getChassisData);
+            return redfishJob.createChassis(rootData.body)
             .then(function() {
-                expect(waterline.nodes.findOrCreate).to.be.called.once;
+                expect(waterline.nodes.updateOne).to.be.called.once;
             });
         });
         
+        it('should log no system members found warning', function() { 
+            delete getChassisData.body.Links;
+            redfishTool.clientRequest.onCall(0).resolves(listChassisData);
+            redfishTool.clientRequest.onCall(1).resolves(getChassisData);
+            return redfishJob.createChassis(rootData.body)
+            .then(function() {
+                expect(waterline.nodes.updateOne).to.be.called.once;
+            });
+        });  
+             
         it('should fail to create chassis node', function() { 
-            delete getChassisData[1].body.Links.ComputerSystems;
-            redfishApi.listChassisAsync.resolves(listChassisData);
-            redfishApi.getChassisAsync.resolves(getChassisData);
-            return expect(redfishJob.createChassis(redfishApi)).to.be.rejected;
+            return expect(redfishJob.createChassis.bind(redfishJob,{}))
+                .to.throw('No Chassis Members Found');
         });
     });
     
     describe('redfish system', function() {
         it('should create system node', function() { 
-            redfishApi.listSystemsAsync.resolves(listSystemData);
-            redfishApi.getSystemAsync.resolves(getSystemData);
-            return redfishJob.createSystems(redfishApi)
+            redfishTool.clientRequest.onCall(0).resolves(listSystemData);
+            redfishTool.clientRequest.onCall(1).resolves(getSystemData);
+            return redfishJob.createSystems(rootData.body)
             .then(function() {
-                expect(waterline.nodes.findOrCreate).to.be.called.once;
+                expect(waterline.nodes.updateOne).to.be.called.once;
             });
         });
         
+        it('should log no chassis members found warning', function() { 
+            delete getSystemData.body.Links;
+            redfishTool.clientRequest.onCall(0).resolves(listSystemData);
+            redfishTool.clientRequest.onCall(1).resolves(getSystemData);
+            return redfishJob.createSystems(rootData.body)
+            .then(function() {
+                expect(waterline.nodes.updateOne).to.be.called.once;
+            });
+        });
+        
+        it('should skip create system node', function() { 
+            return expect(redfishJob.createSystems({})).to.be.fullfilled;
+        });
+        
         it('should fail to create system node', function() { 
-            delete getSystemData[1].body.Links.Chassis;
-            redfishApi.listSystemsAsync.resolves(listSystemData);
-            redfishApi.getSystemAsync.resolves(getSystemData);
-            return expect(redfishJob.createSystems(redfishApi)).to.be.rejected;
+            redfishTool.clientRequest.onCall(0).rejects('some error');
+            return expect(redfishJob.createSystems(rootData.body))
+                .to.be.rejectedWith('some error');
+                
+        });
+    });
+    
+    describe('redfish discovery upserts', function() {
+        it('should create new node', function() { 
+            var error = new Error.NotFoundError();
+            waterline.nodes.needOne.rejects(error);
+            return redfishJob.upsertRelations(node,[])
+            .then(function() {
+                expect(waterline.nodes.create).to.be.called.once;  
+            });
+        });
+        
+        it('should reject', function() { 
+            waterline.nodes.needOne.rejects('some error');
+            return expect(redfishJob.upsertRelations(node,[]))
+                .to.be.rejectedWith('some error');
         });
         
     });
-    
 });

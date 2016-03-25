@@ -6,9 +6,8 @@
 var base = require('./base-obm-services-spec');
 
 describe('Redfish OBM Service', function() {
-    var servicePath = ['/lib/services/redfish-obm-service'],
-        redfish = require('redfish-node'),
-        redfishApi,
+    var servicePath = [ '/lib/services/redfish-obm-service', 
+                        '/lib/utils/job-utils/redfish-tool' ],
         sandbox = sinon.sandbox.create(),
         testOptions = {
             config: {
@@ -21,54 +20,43 @@ describe('Redfish OBM Service', function() {
                 force: false
             }
         },
-        testData = [
-            null,
-            { 
-                body: { 
-                'reset_type@Redfish.AllowableValues': [
-                    'On',
-                    'ForceOn',
-                    'GracefulShutdown',
-                    'ForceOff',
-                    'GracefulRestart',
-                    'ForceRestart',
-                    'Nmi',
-                    'PushPowerButton'
-                ]}
-            }
-        ],
-        testSystem = [
-            null,
-            {
-                body: {
+        testSystem = {
+            body: {
                 PowerState : 'On'
+            }
+        },
+        testActions = {
+            body: {
+                Actions: { 
+                    "#ComputerSystem.Reset": {
+                            'target': '/redfish/reset/path',
+                            "ResetType@Redfish.AllowableValues": [
+                            "On",
+                            "ForceOff",
+                            "ForceRestart",
+                            "Nmi",
+                            "PushPowerButton" 
+                        ]
+                    }
                 }
             }
-        ];
-        
-    before(function() {
-        redfishApi = Promise.promisifyAll(new redfish.RedfishvApi());
-        sandbox.stub(redfishApi);
-
-        redfishApi.listResetTypesAsync.resolves(testData);
-        redfishApi.doResetAsync.resolves([
-            null,
-            { body: {'@odata.id': 'abc123'} }
-        ]);
-        redfishApi.getSystemAsync.resolves(testSystem);
-    });
+        };
     
     after(function() {
         sandbox.restore();
     });
     
+    var tool = {
+        clientRequest: sandbox.stub()
+    };
+    
     describe('redfish service force is false', function() {     
-        base.before('before', servicePath, function(self) {
+        base.before('before', servicePath, function(self) { 
             self.serviceOptions = testOptions;
             self.Service = helper.injector.get('redfish-obm-service');
-            sandbox.stub(self.Service.prototype, '_initClient');
-            self.Service.prototype._initClient.returns(redfishApi)
-                .returns(redfishApi);
+            sandbox.stub(self.Service.prototype, 'initClient')
+                .returns(tool);
+            tool.clientRequest.resolves(testSystem);
         });
         
         base.runInterfaceTestCases([
@@ -86,8 +74,9 @@ describe('Redfish OBM Service', function() {
             testOptions.params.force = true;
             self.serviceOptions = testOptions;
             self.Service = helper.injector.get('redfish-obm-service');
-            sandbox.stub(self.Service.prototype, '_initClient')
-                .returns(redfishApi);
+            sandbox.stub(self.Service.prototype, 'initClient')
+                .returns(tool);
+            tool.clientRequest.resolves(testSystem);
         });
         
         base.runInterfaceTestCases([
@@ -96,36 +85,46 @@ describe('Redfish OBM Service', function() {
             'reboot'
         ]);
     });
+
+    describe('redfish service with reset resource', function() {  
+        base.before('before', servicePath, function(self) {
+            self.serviceOptions = testOptions;
+            self.Service = helper.injector.get('redfish-obm-service');
+            sandbox.stub(self.Service.prototype, 'initClient')
+                .returns(tool);
+            tool.clientRequest.resolves(testActions);
+        });
+        base.runInterfaceTestCases();
+    });
     
-    describe('redfish service initialize client', function() {  
+    describe('redfish service with schema reset definitions', function() {  
+        base.before('before', servicePath, function(self) {
+            self.serviceOptions = testOptions;
+            self.Service = helper.injector.get('redfish-obm-service');
+            sandbox.stub(self.Service.prototype, 'initClient')
+                .returns(tool);
+            tool.clientRequest.resolves({ 
+                body: { 
+                    Actions: { "#ComputerSystem.Reset": { 'target': '/redfish/reset/path' } 
+                } 
+            }});   
+        });
+        base.runInterfaceTestCases();
+    });
+    
+    
+    describe('redfish http client', function() {
         var redfishService, baseObm;
         base.before('before', servicePath, function(self) {
             redfishService = helper.injector.get('redfish-obm-service');
             baseObm = helper.injector.get('OBM.base');
-        });  
-        
-        it ('should construct client with credentials', function() {
+        });
+
+        it ('should construct client', function() {
             redfishService.create(testOptions);
             expect(redfishService).to.be.ok;
             expect(baseObm).to.be.ok;
             expect(baseObm.create).to.have.been.calledWith(redfishService);
         });
-    }); 
-    
-    describe('redfish service initialize client', function() {  
-        var redfishService, baseObm;
-        base.before('before', servicePath, function(self) {
-            redfishService = helper.injector.get('redfish-obm-service');
-            baseObm = helper.injector.get('OBM.base');
-        });  
-        
-        it ('should construct client without credentials', function() {
-            delete testOptions.config.username;
-            delete testOptions.config.password;
-            redfishService.create(testOptions);
-            expect(redfishService).to.be.ok;
-            expect(baseObm).to.be.ok;
-            expect(baseObm.create).to.have.been.calledWith(redfishService);
-        });
-    }); 
+    });
 });

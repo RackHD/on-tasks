@@ -21,7 +21,7 @@
     "lodash": "^3.10.1",
     "on-core": "git+https://github.com/RackHD/on-core.git",
     "xml2js": "^0.4.4",
-    "redfish-client-node": "git+https://github.com/RackHD/redfish-client-node.git"
+    "url-parse": "~1.0.5"
   },
   "devDependencies": {
     "chai": "^2.0.0",
