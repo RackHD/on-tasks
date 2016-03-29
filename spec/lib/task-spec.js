@@ -11,6 +11,9 @@ describe("Task", function () {
     var Promise;
     var Constants;
     var taskProtocol = {};
+    var waterline;
+    var Errors;
+    var catalogSearch;
     var _;
 
     function literalCompare(objA, objB) {
@@ -41,6 +44,9 @@ describe("Task", function () {
         Task = helper.injector.get('Task.Task');
         _ = helper.injector.get('_');
         taskData = helper.injector.get('Task.taskLibrary');
+        waterline = helper.injector.get('Services.Waterline');
+        Errors = helper.injector.get("Errors");
+        catalogSearch = helper.injector.get('JobUtils.CatalogSearchHelpers');
 
         _.forEach(taskData, function(definition) {
             if (definition.injectableName === 'Task.noop') {
@@ -301,10 +307,27 @@ describe("Task", function () {
 
         describe('errors', function() {
             var TemplateRenderError;
+            var definition;
+            var task;
+
+            beforeEach(function () {
+                definition = _.cloneDeep(noopDefinition);
+                task = Task.create(noopDefinition, {}, {});
+            });
 
             before('Task option rendering errors', function() {
                 TemplateRenderError = helper.injector.get('Errors').TemplateRenderError;
             });
+
+            it("should throw an error if the render key does not exist in context", function() {
+                definition.options = {
+                    nonExistantValue: '{{ options.doesNotExist }}'
+                };
+                expect(function(){
+                    task.renderOwnOptions(definition.options);
+                }).to.throw(TemplateRenderError, /Value does not exist/);
+            });
+
         });
     });
 
@@ -343,7 +366,59 @@ describe("Task", function () {
             expect(task.serialize().job).to.deep.equal(task.job.serialize());
         });
     });
-    describe("sku rendering", function() {
+
+    describe("getSkuId", function() {
+        var definition;
+        var _nodeId;
+
+        beforeEach(function () {
+            definition = _.cloneDeep(noopDefinition);
+        });
+
+        it("should get undefined from getSkuId if nodeId is null", function () {
+            _nodeId = null;
+            var task = Task.create(definition, {}, {target: _nodeId});
+            expect(task).to.have.property('getSkuId').that.is.a('function');
+            return task.getSkuId(_nodeId).then(function (node) {
+                expect(typeof(node)).to.equal('undefined');
+            });
+        });
+
+        it("should get error if nodeId exists but node doesn't exists", function () {
+            _nodeId = '47bd8fb80abc5a6b5e7b10df';
+            var task = Task.create(definition, {}, {target: _nodeId});
+            expect(task).to.have.property('getSkuId').that.is.a('function');
+
+            waterline.nodes = {
+                needByIdentifier: sinon.stub()
+            };
+            waterline.nodes.needByIdentifier.resolves(null);
+            return expect(task.getSkuId(_nodeId)).to.be.rejectedWith(Errors.NotFoundError,
+                'Could not find the node with the node id:' + _nodeId);
+        });
+
+        it("should get sku Id if node.sku exists", function() {
+            var node = {
+                "id": "47bd8fb80abc5a6b5e7b10df",
+                "sku": "56f8db46c6dc1d8e2e562bdd"
+            };
+            _nodeId = '47bd8fb80abc5a6b5e7b10df';
+            var task = Task.create(definition, {}, {target: _nodeId});
+            expect(task).to.have.property('getSkuId').that.is.a('function');
+
+            waterline.nodes = {
+                needByIdentifier: sinon.stub()
+            };
+            waterline.nodes.needByIdentifier.resolves(node);
+            return task.getSkuId(_nodeId).
+                then(function (node) {
+                    expect(waterline.nodes.needByIdentifier).to.have.been.calledWith(_nodeId);
+                    expect(node.sku).to.equal(node.sku);
+                });
+        });
+    });
+
+    describe("sku and envrendering", function() {
         var definition;
         var _nodeId;
 
@@ -389,12 +464,12 @@ describe("Task", function () {
             var env = helper.injector.get('Services.Environment');
             definition.options = {
                 testRenderVal: 'test rendered',
-                vendor:'{{envConfig.vendorName}}',
-                partNumber:'{{envConfig.detailedInfo.partNumber}}',
-                userName:'{{envConfig.detailedInfo.users.name}}',
-                productName:'{{skuConfig.productName}}',
-                chassisType:'{{skuConfig.chassisInfo.chassisType}}',
-                diskNumber:'{{skuConfig.chassisInfo.diskInfo.diskNumber}}'
+                vendor:'{{env.vendorName}}',
+                partNumber:'{{env.detailedInfo.partNumber}}',
+                userName:'{{env.detailedInfo.users.name}}',
+                productName:'{{sku.productName}}',
+                chassisType:'{{sku.chassisInfo.chassisType}}',
+                diskNumber:'{{sku.chassisInfo.diskInfo.diskNumber}}'
 
             };
             _nodeId = '47bd8fb80abc5a6b5e7b10df';
