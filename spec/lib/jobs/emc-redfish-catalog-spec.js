@@ -6,7 +6,6 @@ describe('Emc Redfish Catalog Job', function () {
     var uuid = require('node-uuid'),
         graphId = uuid.v4(),
         redfishJob,
-        redfishTool,
         waterline = {},
         sandbox = sinon.sandbox.create(),
         rootData = {

@@ -34,8 +34,8 @@ describe('Emc Redfish Compose System Job', function () {
     
     before(function() { 
         function redfishTool() {
-            this.setup = sandbox.stub().resolves();
-            this.clientRequest = sandbox.stub();
+            this.setup = sandbox.stub().resolves(); // jshint ignore:line
+            this.clientRequest = sandbox.stub(); // jshint ignore:line
         }
         helper.setupInjector([
             helper.require('/lib/jobs/base-job.js'),

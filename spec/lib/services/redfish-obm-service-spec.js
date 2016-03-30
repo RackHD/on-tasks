@@ -115,7 +115,7 @@ describe('Redfish OBM Service', function() {
     
     describe('redfish http client', function() {
         var redfishService, baseObm;
-        base.before('before', servicePath, function(self) {
+        base.before('before', servicePath, function(self) { // jshint ignore:line
             redfishService = helper.injector.get('redfish-obm-service');
             baseObm = helper.injector.get('OBM.base');
         });
