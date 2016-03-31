@@ -384,19 +384,6 @@ describe("Task", function () {
             });
         });
 
-        it("should get error if nodeId exists but node doesn't exists", function () {
-            _nodeId = '47bd8fb80abc5a6b5e7b10df';
-            var task = Task.create(definition, {}, {target: _nodeId});
-            expect(task).to.have.property('getSkuId').that.is.a('function');
-
-            waterline.nodes = {
-                needByIdentifier: sinon.stub()
-            };
-            waterline.nodes.needByIdentifier.resolves(null);
-            return expect(task.getSkuId(_nodeId)).to.be.rejectedWith(Errors.NotFoundError,
-                'Could not find the node with the node id:' + _nodeId);
-        });
-
         it("should get sku Id if node.sku exists", function() {
             var node = {
                 "id": "47bd8fb80abc5a6b5e7b10df",
@@ -410,15 +397,14 @@ describe("Task", function () {
                 needByIdentifier: sinon.stub()
             };
             waterline.nodes.needByIdentifier.resolves(node);
-            return task.getSkuId(_nodeId).
-                then(function (node) {
+            return task.getSkuId(_nodeId).then(function (node) {
                     expect(waterline.nodes.needByIdentifier).to.have.been.calledWith(_nodeId);
                     expect(node.sku).to.equal(node.sku);
                 });
         });
     });
 
-    describe("sku and envrendering", function() {
+    describe("sku and env rendering", function() {
         var definition;
         var _nodeId;
 
@@ -439,8 +425,8 @@ describe("Task", function () {
             var getSkuId = this.sandbox.stub(task,'getSkuId');
             getSkuId.resolves();
             this.sandbox.stub(env,'get').withArgs(
-                'config',{},['global']).resolves(
-                {"vendorName":'emc',
+                'config',{},['global']).resolves({
+                    "vendorName":'emc',
                     "detailedInfo":{
                         "partNumber":"PN12345",
                         "serialNumber": "SN12345",
@@ -451,8 +437,8 @@ describe("Task", function () {
                     }
                 }
             );
-            return task.run().then(function()
-            {   expect(task.getSkuId).to.have.been.calledOnce;
+            return task.run().then(function() {
+                expect(task.getSkuId).to.have.been.calledOnce;
                 expect(env.get).to.have.been.calledOnce;
                 expect(task.options.vendor).to.equal('emc');
                 expect(task.options.partNumber).to.equal('PN12345');
@@ -478,7 +464,8 @@ describe("Task", function () {
             getSkuId.resolves('sku12345');
             var envGetStub = this.sandbox.stub(env, 'get');
             envGetStub.withArgs('config',{},['sku12345']).resolves(
-                {"productName":'viper',
+                {
+                    "productName":'viper',
                     "chassisInfo": {
                         "chassisType": 'DAE',
                         "diskInfo":
@@ -490,7 +477,8 @@ describe("Task", function () {
                 }
             );
             envGetStub.withArgs('config',{},['sku12345','global']).resolves(
-                {"vendorName":'emc',
+                {
+                    "vendorName":'emc',
                     "detailedInfo":{
                         "partNumber":"PN12345",
                         "serialNumber": "SN12345",
@@ -501,8 +489,8 @@ describe("Task", function () {
                     }
                 }
             );
-            return task.run().then(function()
-            {   expect(task.getSkuId).to.have.been.calledOnce;
+            return task.run().then(function() {
+                expect(task.getSkuId).to.have.been.calledOnce;
                 expect(env.get).to.have.been.calledTwice;
                 expect(task.options.vendor).to.equal('emc');
                 expect(task.options.partNumber).to.equal('PN12345');
@@ -534,12 +522,12 @@ describe("Task", function () {
 
             var env = helper.injector.get('Services.Environment');
             task = Task.create(noopDefinition, {}, {});
-            var getSkuId = sinon.stub(task,'getSkuId');
+            var getSkuId = sinon.stub(task, 'getSkuId');
             var subscription = {dispose: sinon.stub()};
             taskProtocol.subscribeActiveTaskExists = sinon.stub().resolves(subscription);
             getSkuId.resolves();
-            this.sandbox.stub(env,'get').withArgs(
-                'config',{},['global']).resolves();
+            this.sandbox.stub(env, 'get').withArgs(
+                'config', {}, ['global']).resolves();
 
             task.subscriptions = {
                 run: subscriptionStub,
@@ -578,8 +566,7 @@ describe("Task", function () {
                     return Promise.delay(1000);
                 };
 
-                return task.run()
-                    .then(function() {
+                return task.run().then(function() {
                         expect(task.state).to.equal('cancelled');
                         expect(task.error).to.equal(error);
                         expect(task.job.cancel).to.have.been.calledOnce;
@@ -598,8 +585,7 @@ describe("Task", function () {
                     return Promise.delay(100);
                 };
 
-                return task.run()
-                    .then(function() {
+                return task.run().then(function() {
                         expect(task.state).to.equal('timeout');
                         expect(task.error).to.equal(error);
                         expect(task.job.cancel).to.have.been.calledOnce;
@@ -611,8 +597,7 @@ describe("Task", function () {
                 task.job = undefined;
                 task.instantiateJob = sinon.stub().throws(error);
 
-                return task.run()
-                    .then(function() {
+                return task.run().then(function() {
                         expect(task.state).to.equal('failed');
                         expect(task.error).to.equal(error);
                     });
@@ -635,8 +620,7 @@ describe("Task", function () {
                     task.cancel(error);
                 };
 
-                return task.run()
-                    .then(function() {
+                return task.run().then(function() {
                         expect(task.job.cancel).to.have.been.calledOnce;
                         expect(task.job.cancel).to.have.been.calledWith(error);
                         expect(task.job._done).to.have.been.calledOnce;
@@ -658,8 +642,7 @@ describe("Task", function () {
                 ];
 
 
-                return task.run()
-                    .then(function() {
+                return task.run().then(function() {
                         expect(task.job._subscribeActiveTaskExists).to.have.been.calledOnce;
                         expect(jobSubscriptionStub.dispose).to.have.been.calledThrice;
                     });
