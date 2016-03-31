@@ -61,22 +61,21 @@ describe('Run a UEFI Application', function () {
 
     it("should set up message subscribers", function () {
         var cb;
-        return job._run().then(function () {
-            expect(subscribeRequestProfileStub).to.have.been.called;
-            expect(subscribeRequestPropertiesStub).to.have.been.called;
-            expect(subscribeHttpResponseStub).to.have.been.called;
+        job._run();
+        expect(subscribeRequestProfileStub).to.have.been.called;
+        expect(subscribeRequestPropertiesStub).to.have.been.called;
+        expect(subscribeHttpResponseStub).to.have.been.called;
 
-            cb = subscribeRequestProfileStub.firstCall.args[0];
-            expect(cb).to.be.a.function;
-            expect(cb.call(job)).to.equal(job.profile);
+        cb = subscribeRequestProfileStub.firstCall.args[0];
+        expect(cb).to.be.a.function;
+        expect(cb.call(job)).to.equal(job.profile);
 
-            cb = subscribeRequestPropertiesStub.firstCall.args[0];
-            expect(cb).to.be.a.function;
-            expect(cb.call(job)).to.equal(job.options);
+        cb = subscribeRequestPropertiesStub.firstCall.args[0];
+        expect(cb).to.be.a.function;
+        expect(cb.call(job)).to.equal(job.options);
 
-            cb = subscribeHttpResponseStub.firstCall.args[0];
-            expect(cb).to.be.a.function;
-        });
+        cb = subscribeHttpResponseStub.firstCall.args[0];
+        expect(cb).to.be.a.function;
     });
 
 });
