@@ -210,12 +210,12 @@ describe("Task", function () {
             };
             var env = helper.injector.get('Services.Environment');
             var task = Task.create(definition, {}, { target: 'testnodeid' });
-            var getSkuId = this.sandbox.stub(task,'getSkuId');
+            var getSkuId = this.sandbox.stub(task, 'getSkuId');
             var subscription = {dispose: this.sandbox.stub()};
             taskProtocol.subscribeActiveTaskExists = this.sandbox.stub().resolves(subscription);
             getSkuId.resolves();
-            this.sandbox.stub(env,'get').withArgs(
-                'config',{},['global']).resolves();
+            this.sandbox.stub(env, 'get').withArgs(
+                'config', {}, ['global']).resolves();
             return task.run().then(function() {
                 expect(task.options.instanceId).to.be.ok.and.to.equal(task.instanceId);
                 expect(task.options.nodeId).to.be.ok.and.to.equal(task.nodeId);
@@ -398,9 +398,9 @@ describe("Task", function () {
             };
             waterline.nodes.needByIdentifier.resolves(node);
             return task.getSkuId(_nodeId).then(function (node) {
-                    expect(waterline.nodes.needByIdentifier).to.have.been.calledWith(_nodeId);
-                    expect(node.sku).to.equal(node.sku);
-                });
+                expect(waterline.nodes.needByIdentifier).to.have.been.calledWith(_nodeId);
+                expect(node.sku).to.equal(node.sku);
+            });
         });
     });
 
@@ -415,24 +415,27 @@ describe("Task", function () {
         it("should render env options if sku id isn't valid", function() {
             var env = helper.injector.get('Services.Environment');
             definition.options = {
-                testRenderVal: 'test rendered',
-                vendor:'{{env.vendorName}}',
-                partNumber:'{{env.detailedInfo.partNumber}}',
-                userName:'{{env.detailedInfo.users.name}}'
+                testRenderVal:  'test rendered',
+                vendor: '{{env.vendorName}}',
+                partNumber: '{{env.detailedInfo.partNumber}}',
+                userName: '{{env.detailedInfo.users.name}}'
             };
             _nodeId = '47bd8fb80abc5a6b5e7b10df';
             var task = Task.create(definition, {}, {target: _nodeId});
-            var getSkuId = this.sandbox.stub(task,'getSkuId');
+            var getSkuId = this.sandbox.stub(task, 'getSkuId');
             getSkuId.resolves();
-            this.sandbox.stub(env,'get').withArgs(
-                'config',{},['global']).resolves({
-                    "vendorName":'emc',
-                    "detailedInfo":{
-                        "partNumber":"PN12345",
-                        "serialNumber": "SN12345",
-                        "users":{
-                            "sex":"male",
-                            "name":"Frank"
+            this.sandbox.stub(env, 'get').withArgs(
+                'config', {}, ['global']).resolves(
+                {
+                    "vendorName": 'emc',
+                    "detailedInfo":
+                    {
+                        "partNumber": "PN12345",
+                        "serialNumber":  "SN12345",
+                        "users":
+                        {
+                            "sex": "male",
+                            "name": "Frank"
                         }
                     }
                 }
@@ -450,20 +453,20 @@ describe("Task", function () {
             var env = helper.injector.get('Services.Environment');
             definition.options = {
                 testRenderVal: 'test rendered',
-                vendor:'{{env.vendorName}}',
-                partNumber:'{{env.detailedInfo.partNumber}}',
-                userName:'{{env.detailedInfo.users.name}}',
-                productName:'{{sku.productName}}',
-                chassisType:'{{sku.chassisInfo.chassisType}}',
-                diskNumber:'{{sku.chassisInfo.diskInfo.diskNumber}}'
+                vendor: '{{env.vendorName}}',
+                partNumber:  '{{env.detailedInfo.partNumber}}',
+                userName: '{{env.detailedInfo.users.name}}',
+                productName: '{{sku.productName}}',
+                chassisType: '{{sku.chassisInfo.chassisType}}',
+                diskNumber: '{{sku.chassisInfo.diskInfo.diskNumber}}'
 
             };
             _nodeId = '47bd8fb80abc5a6b5e7b10df';
             var task = Task.create(definition, {}, {target: _nodeId});
-            var getSkuId = this.sandbox.stub(task,'getSkuId');
+            var getSkuId = this.sandbox.stub(task, 'getSkuId');
             getSkuId.resolves('sku12345');
             var envGetStub = this.sandbox.stub(env, 'get');
-            envGetStub.withArgs('config',{},['sku12345']).resolves(
+            envGetStub.withArgs('config', {}, ['sku12345']).resolves(
                 {
                     "productName":'viper',
                     "chassisInfo": {
@@ -476,13 +479,15 @@ describe("Task", function () {
                     }
                 }
             );
-            envGetStub.withArgs('config',{},['sku12345','global']).resolves(
+            envGetStub.withArgs('config', {}, ['sku12345', 'global']).resolves(
                 {
                     "vendorName":'emc',
-                    "detailedInfo":{
+                    "detailedInfo":
+                    {
                         "partNumber":"PN12345",
                         "serialNumber": "SN12345",
-                        "users":{
+                        "users":
+                        {
                             "sex":"male",
                             "name":"Frank"
                         }
@@ -567,10 +572,10 @@ describe("Task", function () {
                 };
 
                 return task.run().then(function() {
-                        expect(task.state).to.equal('cancelled');
-                        expect(task.error).to.equal(error);
-                        expect(task.job.cancel).to.have.been.calledOnce;
-                    });
+                    expect(task.state).to.equal('cancelled');
+                    expect(task.error).to.equal(error);
+                    expect(task.job.cancel).to.have.been.calledOnce;
+                });
             });
 
             it("should timeout", function() {
@@ -586,10 +591,10 @@ describe("Task", function () {
                 };
 
                 return task.run().then(function() {
-                        expect(task.state).to.equal('timeout');
-                        expect(task.error).to.equal(error);
-                        expect(task.job.cancel).to.have.been.calledOnce;
-                    });
+                    expect(task.state).to.equal('timeout');
+                    expect(task.error).to.equal(error);
+                    expect(task.job.cancel).to.have.been.calledOnce;
+                });
             });
 
             it("should cancel on failure to instantiate a job", function() {
@@ -598,9 +603,9 @@ describe("Task", function () {
                 task.instantiateJob = sinon.stub().throws(error);
 
                 return task.run().then(function() {
-                        expect(task.state).to.equal('failed');
-                        expect(task.error).to.equal(error);
-                    });
+                    expect(task.state).to.equal('failed');
+                    expect(task.error).to.equal(error);
+                });
             });
         });
 
@@ -621,11 +626,11 @@ describe("Task", function () {
                 };
 
                 return task.run().then(function() {
-                        expect(task.job.cancel).to.have.been.calledOnce;
-                        expect(task.job.cancel).to.have.been.calledWith(error);
-                        expect(task.job._done).to.have.been.calledOnce;
-                        expect(task.job._done).to.have.been.calledWith(error);
-                    });
+                    expect(task.job.cancel).to.have.been.calledOnce;
+                    expect(task.job.cancel).to.have.been.calledWith(error);
+                    expect(task.job._done).to.have.been.calledOnce;
+                    expect(task.job._done).to.have.been.calledWith(error);
+                });
             });
 
             it("should manage subscription resource creation and deletion", function() {
@@ -643,9 +648,9 @@ describe("Task", function () {
 
 
                 return task.run().then(function() {
-                        expect(task.job._subscribeActiveTaskExists).to.have.been.calledOnce;
-                        expect(jobSubscriptionStub.dispose).to.have.been.calledThrice;
-                    });
+                    expect(task.job._subscribeActiveTaskExists).to.have.been.calledOnce;
+                    expect(jobSubscriptionStub.dispose).to.have.been.calledThrice;
+                });
             });
         });
     });
