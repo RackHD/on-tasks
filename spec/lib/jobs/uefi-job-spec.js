@@ -6,7 +6,7 @@
 var uuid = require('node-uuid');
 
 describe('Run a UEFI Application', function () {
-    var uefiJob;
+    var UefiJob;
     var subscribeRequestProfileStub;
     var subscribeRequestPropertiesStub;
     var subscribeHttpResponseStub;
@@ -19,20 +19,20 @@ describe('Run a UEFI Application', function () {
                 helper.require('/lib/jobs/uefi-job')
             ])
         );
-        uefiJob = helper.injector.get('Job.Uefi');
+        UefiJob = helper.injector.get('Job.Uefi');
         subscribeRequestProfileStub = sinon.stub(
-            uefiJob.prototype, '_subscribeRequestProfile');
+            UefiJob.prototype, '_subscribeRequestProfile');
         subscribeRequestPropertiesStub = sinon.stub(
-            uefiJob.prototype, '_subscribeRequestProperties');
+            UefiJob.prototype, '_subscribeRequestProperties');
         subscribeHttpResponseStub = sinon.stub(
-            uefiJob.prototype, '_subscribeHttpResponse');
+            UefiJob.prototype, '_subscribeHttpResponse');
     });
 
     beforeEach(function () {
         subscribeRequestProfileStub.reset();
         subscribeRequestPropertiesStub.reset();
         subscribeHttpResponseStub.reset();
-        job = new uefiJob(
+        job = new UefiJob(
             {
                 profile: 'testprofile',
                 repo: 'http://127.0.0.1:8080',
