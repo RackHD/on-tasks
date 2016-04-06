@@ -68,17 +68,6 @@ describe("JobUtils.RedfishTool", function() {
             .to.throw('Unsupported HTTP Protocol: fake');
     });
     
-    it("should generate valid auth token", function() {
-        var token = new Buffer('user'+':'+'pass').toString('base64');
-        return expect(redfishTool.getAuthToken('user', 'pass'))
-            .to.equal('Basic ' + token);
-    });
-    
-    it("should generate invalid auth token", function() {
-        return expect(redfishTool.getAuthToken())
-            .to.equal(undefined);
-    });
-    
     it("should send http request methods", function() {
         var response = {
             setEncoding: sandbox.stub().resolves(),
