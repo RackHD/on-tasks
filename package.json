@@ -20,8 +20,9 @@
     "di": "git+https://github.com/RackHD/di.js.git",
     "lodash": "^3.10.1",
     "on-core": "git+https://github.com/RackHD/on-core.git",
-    "xml2js": "^0.4.4",
-    "url-parse": "~1.0.5"
+    "superagent": "^1.8.3",
+    "url-parse": "~1.0.5",
+    "xml2js": "^0.4.4"
   },
   "devDependencies": {
     "chai": "^2.0.0",
