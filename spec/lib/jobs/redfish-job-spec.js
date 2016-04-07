@@ -7,22 +7,6 @@ var uuid = require('node-uuid'),
     events = require('events'),
     waterline = {},
     sandbox = sinon.sandbox.create(),
-    redfishJob,
-    redfishTool = {
-        clientRequest: sandbox.stub()
-    },
-    listChassisData = { 
-        body: {
-            Members: [
-                {'@odata.id':'/redfish/v1/Chassis/abc123'}
-            ],
-            Power: {},
-            Thermal: {},
-            LogServices: {}
-        }
-    },
-    chassisData = { body: { chassis: 'data' } },
-    logData = { body: { Entries: {}, Items: [{ entry: 'data' }] } },
     data = {
         config: { command: 'power' },
         uri: 'http://testuri',
@@ -30,7 +14,28 @@ var uuid = require('node-uuid'),
         password: 'password',
         workItemId: 'testworkitemid',
         node: 'xyz'
-    };
+    },
+    redfishJob,
+    redfishTool = {
+        clientRequest: sandbox.stub(),
+        settings: data
+    },
+    listChassisData = { 
+        body: {
+            Members: [
+                {'@odata.id':'/redfish/v1/Chassis/abc123'}
+            ],
+            Power: {'@odata.id': 'data'},
+            Thermal: {'@odata.id': 'data'},
+            LogServices: {'@odata.id': 'data'},
+            Managers: {'@odata.id': 'data'}
+        }
+    },
+    chassisData = { body: { chassis: 'data' } },
+    logData = { body: { Entries: {'@odata.id': 'data'}, 
+                        Members: [{'@odata.id': 'data' }] } 
+    },
+    entryData = { body: { data: 'data' } };
 
 describe('Job.Redfish', function () {
     var base = require('./base-spec');
@@ -130,32 +135,48 @@ describe('Job.Redfish', function () {
             });
         });
         
-        it("should run collectData for LogServies", function() {
+        it("should run collectData for Systems LogServices", function() {
             redfishTool.clientRequest.onCall(0).resolves(listChassisData);
             redfishTool.clientRequest.onCall(1).resolves(listChassisData);
             redfishTool.clientRequest.onCall(2).resolves(logData);
             redfishTool.clientRequest.onCall(3).resolves(logData);
-            return redfishJob.collectData(data, 'logservices')
-            .then(function(data) {
-                expect(data).to.deep.equal(logData.body.Items);
+            redfishTool.clientRequest.onCall(4).resolves(entryData);
+            return redfishJob.collectData(data, 'systems.logservices')
+            .map(function(data) {
+                expect(data[0]).to.deep.equal(entryData.body);
             });
         });
         
-        it("should fail collactData for unknown command", function() {
+        it("should run collectData for Managers LogServices", function() {
+            redfishTool.clientRequest.onCall(0).resolves(listChassisData);
+            redfishTool.clientRequest.onCall(1).resolves(listChassisData);
+            redfishTool.clientRequest.onCall(2).resolves(listChassisData);
+            redfishTool.clientRequest.onCall(3).resolves(listChassisData);
+            redfishTool.clientRequest.onCall(4).resolves(logData);
+            redfishTool.clientRequest.onCall(5).resolves(logData);
+            redfishTool.clientRequest.onCall(6).resolves(logData);
+            redfishTool.clientRequest.onCall(7).resolves(entryData);
+            return redfishJob.collectData(data, 'managers.logservices')
+            .map(function(data) {
+                expect(data[0]).to.deep.equal(entryData.body);
+            });
+        });
+        
+        it("should fail collectData for unknown command", function() {
             redfishTool.clientRequest.onCall(0).resolves(listChassisData);
             redfishTool.clientRequest.onCall(1).resolves(chassisData);
             return expect(redfishJob.collectData(data, 'unknown'))
                 .to.be.rejectedWith('Unsupported Redfish Command: unknown');
         });
         
-        it("should fail collectChassis with no data", function() {
+        it("should fail collectData with no data", function() {
             redfishTool.clientRequest.onCall(0).resolves(listChassisData);
-            redfishTool.clientRequest.onCall(1).resolves({body: undefined});
+            redfishTool.clientRequest.onCall(1).resolves(undefined);
             return expect(redfishJob.collectData(data, 'power'))
                 .to.be.rejectedWith('No Data Found For Command: power');
         });
         
-        it("should fail getPowerAsync with error", function() {
+        it("should fail collectData with error", function() {
             redfishTool.clientRequest.onCall(0).resolves(listChassisData);
             redfishTool.clientRequest.onCall(1).rejects('error text');
             return expect(redfishJob.collectData(data, 'power'))
