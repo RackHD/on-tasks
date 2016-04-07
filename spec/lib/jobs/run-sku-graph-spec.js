@@ -1,0 +1,161 @@
+// Copyright 2015, EMC, Inc.
+/* jshint node:true */
+
+'use strict';
+
+describe("Job.Graph.RunSku", function () {
+    var waterline = {};
+    var uuid;
+    var RunSkuGraphJob;
+    var workflowTool;
+    var Errors;
+    var Constants;
+    var fakeNode;
+    var fakeSku;
+
+    before(function () {
+        // create a child injector with on-core and the base pieces we need to test this
+        helper.setupInjector([
+            helper.require('/spec/mocks/logger.js'),
+            helper.require('/lib/jobs/base-job.js'),
+            helper.require('/lib/jobs/run-sku-graph.js'),
+            helper.require('/lib/utils/job-utils/workflow-tool.js'),
+            helper.di.simpleWrapper(waterline, 'Services.Waterline'),
+            helper.di.simpleWrapper({}, 'Task.taskLibrary')
+        ]);
+
+        RunSkuGraphJob = helper.injector.get('Job.Graph.RunSku');
+        workflowTool = helper.injector.get('JobUtils.WorkflowTool');
+        Errors = helper.injector.get('Errors');
+        Constants = helper.injector.get('Constants');
+        uuid = helper.injector.get('uuid');
+
+        waterline.skus = {
+            needOne: sinon.stub().resolves()
+        };
+        waterline.nodes = {
+            findByIdentifier: sinon.stub().resolves()
+        };
+    });
+
+    beforeEach(function () {
+        fakeNode = {
+            id: 'bc7dab7e8fb7d6abf8e7d6ab',
+            sku: 'testskuid'
+        };
+
+        fakeSku = {
+            discoveryGraphName: 'testskugraph',
+            discoveryGraphOptions: {
+                'option': 'test'
+            }
+        };
+
+        this.sandbox = sinon.sandbox.create();
+        this.sandbox.stub(RunSkuGraphJob.prototype, '_subscribeActiveTaskExists');
+        this.sandbox.stub(RunSkuGraphJob.prototype, '_subscribeGraphFinished');
+        this.sandbox.stub(workflowTool, 'runGraph').resolves();
+        waterline.skus.needOne.reset();
+        waterline.nodes.findByIdentifier.reset();
+    });
+
+    afterEach(function() {
+        this.sandbox.restore();
+    });
+
+    it('should run a graph', function() {
+        waterline.nodes.findByIdentifier.resolves(fakeNode);
+        waterline.skus.needOne.resolves(fakeSku);
+        var job = new RunSkuGraphJob({ nodeId: fakeNode.id }, { target: fakeNode.id }, uuid.v4());
+        job._run();
+
+        expect(job._subscribeGraphFinished).to.have.been.calledOnce;
+        var cb = job._subscribeGraphFinished.firstCall.args[0];
+
+        setImmediate(function() {
+            cb(Constants.Task.States.Succeeded);
+        });
+
+        return job._deferred
+        .then(function() {
+            expect(waterline.nodes.findByIdentifier).to.have.been.calledOnce;
+            expect(waterline.nodes.findByIdentifier).to.have.been.calledWith(fakeNode.id);
+
+            expect(waterline.skus.needOne).to.have.been.calledOnce;
+            expect(waterline.skus.needOne).to.have.been.calledWith({ id: fakeNode.sku });
+
+            expect(workflowTool.runGraph).to.have.been.calledOnce;
+            expect(workflowTool.runGraph).to.have.been.calledWith(
+                fakeNode.id,
+                fakeSku.discoveryGraphName,
+                fakeSku.discoveryGraphOptions
+            );
+
+            // Assert here that we override the sub-graphs instanceId so that
+            // our AMQP subscription to the graph finished event is actually
+            // listening on the right routing key!!!
+            expect(job.graphId).to.be.ok;
+            expect(workflowTool.runGraph.firstCall.args[2])
+                .to.have.property('instanceId')
+                .that.equals(job.graphId);
+        });
+    });
+
+    it('should fail on a failed graph', function() {
+        waterline.nodes.findByIdentifier.resolves(fakeNode);
+        waterline.skus.needOne.resolves(fakeSku);
+        var job = new RunSkuGraphJob({ nodeId: fakeNode.id }, { target: fakeNode.id }, uuid.v4());
+        job._run();
+
+        expect(job._subscribeGraphFinished).to.have.been.calledOnce;
+        var cb = job._subscribeGraphFinished.firstCall.args[0];
+
+        setImmediate(function() {
+            cb(Constants.Task.States.Failed);
+        });
+
+        return expect(job._deferred).to.be.rejectedWith(/Graph.*failed with status/);
+    });
+
+    it('should noop if there is no sku discovery graph defined', function() {
+        waterline.nodes.findByIdentifier.resolves(fakeNode);
+        waterline.skus.needOne.resolves(fakeSku);
+        var job = new RunSkuGraphJob({ nodeId: fakeNode.id }, { target: fakeNode.id }, uuid.v4());
+        job._run();
+
+        delete fakeSku.discoveryGraphName;
+        delete fakeSku.discoveryGraphOptions;
+
+        // The assertion here is that the job promise should just be resolved
+        // without having to trigger the _subscribeGraphFinished callback.
+        return expect(job._deferred).to.be.fulfilled;
+    });
+
+    it('should noop if there is no sku', function() {
+        delete fakeNode.sku;
+        waterline.nodes.findByIdentifier.resolves(fakeNode);
+        var job = new RunSkuGraphJob({ nodeId: fakeNode.id }, { target: fakeNode.id }, uuid.v4());
+        job._run();
+
+        // The assertion here is that the job promise should just be resolved
+        // without having to trigger the _subscribeGraphFinished callback.
+        return expect(job._deferred).to.be.fulfilled;
+    });
+
+    it('should fail if the sku does not exist', function() {
+        waterline.nodes.findByIdentifier.resolves(fakeNode);
+        waterline.skus.needOne.rejects(new Errors.NotFoundError('test'));
+        var job = new RunSkuGraphJob({ nodeId: fakeNode.id }, { target: fakeNode.id }, uuid.v4());
+        job._run();
+
+        return expect(job._deferred).to.be.rejectedWith(Errors.NotFoundError);
+    });
+
+    it('should fail on internal errors with _run() code', function() {
+        waterline.nodes.findByIdentifier.rejects(new Error('test'));
+        var job = new RunSkuGraphJob({ nodeId: fakeNode.id }, { target: fakeNode.id }, uuid.v4());
+        job._run();
+
+        return expect(job._deferred).to.be.rejectedWith('test');
+    });
+});
