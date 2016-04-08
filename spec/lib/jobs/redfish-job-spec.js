@@ -28,7 +28,8 @@ var uuid = require('node-uuid'),
             Power: {'@odata.id': 'data'},
             Thermal: {'@odata.id': 'data'},
             LogServices: {'@odata.id': 'data'},
-            Managers: {'@odata.id': 'data'}
+            Managers: {'@odata.id': 'data'},
+            Oem: { Emc: { FabricService: {'@odata.id': 'data'} }}
         }
     },
     chassisData = { body: { chassis: 'data' } },
@@ -144,6 +145,16 @@ describe('Job.Redfish', function () {
             return redfishJob.collectData(data, 'systems.logservices')
             .map(function(data) {
                 expect(data[0]).to.deep.equal(entryData.body);
+            });
+        });
+        
+        it("should run collectData for Emc Oem FabricService", function() {
+            redfishTool.clientRequest.onCall(0).resolves(listChassisData);
+            redfishTool.clientRequest.onCall(1).resolves(listChassisData);
+            redfishTool.clientRequest.onCall(2).resolves(entryData);
+            return redfishJob.collectData(data, 'fabricservice')
+            .then(function(data) {
+                expect(data).to.deep.equal(entryData.body);
             });
         });
         
