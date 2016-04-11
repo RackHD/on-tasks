@@ -7,6 +7,7 @@ describe('Emc Redfish Compose System Job', function () {
         graphId = uuid.v4(),
         redfishJob,
         redfishTool,
+        redfishDisc,
         waterline = {},
         sandbox = sinon.sandbox.create(),
         rootData = {
@@ -30,22 +31,44 @@ describe('Emc Redfish Compose System Job', function () {
                 Oem: { Emc: { EndPoints: [ 'Element0' ] } },
                 Id: 'SystemId'
             }
-        };
+        },
+        nodes = [{
+            id: 'abc123',
+            relations: [{
+                relationType: 'elementEndpoints'
+            }]
+        }];
     
     before(function() { 
+        /* jshint ignore:start */
         function redfishTool() {
-            this.setup = sandbox.stub().resolves(); // jshint ignore:line
-            this.clientRequest = sandbox.stub(); // jshint ignore:line
+            this.setup = sandbox.stub().resolves();
+            this.clientRequest = sandbox.stub(); 
         }
+        function redfishDisc() {
+            this.getRoot = sandbox.stub().resolves();
+            this.createSystems = sandbox.stub().resolves(nodes);
+            this.createChassis = sandbox.stub().resolves(nodes);
+            this.upsertRelations = sandbox.stub().resolves();
+            this.mapPathToIdRelation = sandbox.stub().resolves();
+        };
+        /* jshint ignore:end */
         helper.setupInjector([
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/emc-compose-system.js'),
+            helper.require('/lib/jobs/redfish-discovery.js'),
             helper.require('/lib/utils/job-utils/redfish-tool.js'),
             helper.di.simpleWrapper(waterline,'Services.Waterline'),
-            helper.di.simpleWrapper(redfishTool,'JobUtils.RedfishTool')
+            helper.di.simpleWrapper(redfishTool,'JobUtils.RedfishTool'),
+            helper.di.simpleWrapper(redfishDisc,'Job.Redfish.Discovery')
         ]);
         waterline.catalogs = {
             updateOne: sandbox.stub().resolves()
+        };
+        waterline.nodes = {
+            findOne: sandbox.stub().resolves(nodes[0]),
+            findByIdentifier: sandbox.stub().resolves(nodes[0]),
+            destroyByIdentifier: sandbox.stub().resolves()
         };
     });
     
