@@ -497,6 +497,21 @@ describe("Task Parser", function () {
         });
     });
 
+    describe("MegaRAID perccli Parsers", function () {
+        it("perccli parsers should exist", function () {
+            var perccliCmd = [
+                'sudo /opt/MegaRAID/perccli/perccli64 show ctrlcount J',
+                'sudo /opt/MegaRAID/storcli/storcli64 /c0 show all J',
+                'sudo /opt/MegaRAID/perccli/perccli64 /c0 /eall /sall show all J',
+                'sudo /opt/MegaRAID/perccli/perccli64 /c0 /vall show all J'
+            ];
+            perccliCmd.forEach(function(cmd){
+                expect(taskParser).to.have.property(cmd);
+                expect(taskParser).to.respondTo(cmd);
+            }); 
+        });
+    });
+
     describe("MPT Fusion parsers", function () {
         it("should parse sudo /opt/mpt/mpt2fusion/sas2flash -s -list", function () {
             var sas2flashCmd = 'sudo /opt/mpt/mpt2fusion/sas2flash -s -list';
