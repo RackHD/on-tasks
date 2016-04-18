@@ -20,6 +20,7 @@
     "di": "git+https://github.com/RackHD/di.js.git",
     "lodash": "^3.10.1",
     "on-core": "git+https://github.com/RackHD/on-core.git",
+    "ssh2": "0.5.0",
     "xml2js": "^0.4.4",
     "url-parse": "~1.0.5"
   },
