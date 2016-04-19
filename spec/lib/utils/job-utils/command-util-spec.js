@@ -5,13 +5,41 @@
 describe('Command Util', function() {
     var waterline = { catalogs: {} },
         parser = {},
+        Emitter = require('events').EventEmitter,
+        mockEncryption = {},
         CmdUtil,
         commandUtil;
+
+    function sshMockGet(eventList, error) {
+        var mockSsh = new Emitter();
+        mockSsh.events = new Emitter();
+        mockSsh.stdout = mockSsh.events;
+        mockSsh.events.stderr = new Emitter();
+        mockSsh.stderr = mockSsh.events.stderr;
+        mockSsh.eventList = eventList;
+        mockSsh.error = error;
+        mockSsh.exec = function(cmd, callback) {
+            callback(this.error, this.events);
+        };
+        mockSsh.end = function() {
+            this.emit('close');
+        };
+        mockSsh.connect = function() {
+            var self = this;
+            self.emit('ready');
+            _.forEach(this.eventList, function(eventObj) {
+                eventObj = _.defaults(eventObj, {event: 'data', source: 'stdout'});
+                self[eventObj.source].emit(eventObj.event, eventObj.data);
+            });
+        };
+        return mockSsh;
+    }
 
     before(function() {
         helper.setupInjector([
             helper.require('/lib/utils/job-utils/command-util.js'),
             helper.di.simpleWrapper(parser, 'JobUtils.CommandParser'),
+            helper.di.simpleWrapper(mockEncryption, 'Services.Encryption'),
             helper.di.simpleWrapper(waterline, 'Services.Waterline')
         ]);
 
@@ -190,6 +218,94 @@ describe('Command Util', function() {
                 .calledWithExactly({source: 'test', data:'goodData', node: commandUtil.nodeId});
             });
 
+        });
+    });
+
+    describe('sshExec', function() {
+        var sshSettings,
+            testCmd;
+
+        beforeEach(function() {
+            commandUtil = new CmdUtil('fakeNodeId');
+            mockEncryption.decrypt = this.sandbox.stub();
+            testCmd = {cmd: 'doStuff'};
+            sshSettings = {
+                host: 'the remote host',
+                port: 22,
+                username: 'someUsername',
+                password: 'somePassword',
+                privateKey: 'a pretty long string',
+            };
+        });
+
+        it('should return a promise for an object with stdout/err and exit code', function() {
+            var events = [
+                { data: 'test ' },
+                { data: 'string' },
+                { event: 'close', data: 0 }
+            ];
+
+            return commandUtil.sshExec(testCmd, sshSettings, sshMockGet(events))
+            .then(function(data) {
+                expect(data.stdout).to.equal('test string');
+                expect(data.stderr).to.equal(undefined);
+                expect(data.exitCode).to.equal(0);
+            });
+        });
+
+        it('should reject if exit code is not in accepted exit codes', function() {
+            var events = [
+                {event: 'data', source: 'stderr', data: 'errData' },
+                { event: 'close', data: 127 }
+            ];
+            return expect(
+                commandUtil.sshExec(testCmd, sshSettings, sshMockGet(events))
+            ).to.be.rejected;
+        });
+
+        it('should decrypt passwords and private keys', function() {
+            var mockClient = sshMockGet([{ event: 'close', data: 0 }]);
+            return commandUtil.sshExec(testCmd, sshSettings, mockClient)
+            .then(function() {
+                expect(mockEncryption.decrypt.callCount).to.equal(2);
+                expect(mockEncryption.decrypt)
+                    .to.have.been.calledWith(sshSettings.password);
+                expect(mockEncryption.decrypt)
+                    .to.have.been.calledWith(sshSettings.privateKey);
+            });
+        });
+
+        it('should time out if given the option', function() {
+            var mockClient = sshMockGet();
+            testCmd.timeout = 10;
+            mockClient.connect = function() {
+                return Promise.delay(20);
+            };
+
+            return expect(commandUtil.sshExec(testCmd, sshSettings, mockClient)).to
+                .be.rejectedWith(/timed out/);
+        });
+
+        it('should reject on ssh error events', function() {
+            var error = new Error('ssh error');
+            error.level = 'client-ssh'; //may also be 'client-socket'
+
+            var mockClient = sshMockGet();
+            mockClient.connect = function() {
+                this.emit('error', error);
+            };
+            return expect(commandUtil.sshExec(testCmd, sshSettings, mockClient)).to
+                .be.rejectedWith(/ssh error/);
+        });
+
+        it('should reject if underlying ssh returns a remote error', function() {
+            var mockClient = sshMockGet(
+                [{ event: 'close', data: 0 }],
+                new Error('ssh error')
+            );
+
+            return expect(commandUtil.sshExec(testCmd, sshSettings, mockClient)).to
+                .be.rejected;
         });
     });
 
