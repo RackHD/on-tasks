@@ -78,7 +78,7 @@ describe('sftp-job', function() {
             return sftpJob._run()
             .then(function() {
                 expect(waterline.nodes.needByIdentifier).to.have.been.calledOnce;
-                expect(sftpJob.runSftp).to.have.been.calledWith();
+                expect(sftpJob.runSftp).to.have.been.calledWith(sshSettings, {});
             });
         });
 
@@ -100,7 +100,7 @@ describe('sftp-job', function() {
             sshSettings = {
                 host: 'the remote host',
                 port: 22,
-                username: 'someUsername',
+                user: 'someUsername',
                 password: 'somePassword',
                 privateKey: 'a pretty long, encrypted string',
             };
@@ -172,14 +172,37 @@ describe('sftp-job', function() {
                 .rejectedWith(/sftp error/);
         });
 
-        it('should optionally time out', function() {
+        it('should pass timeout options to ssh.connect', function() {
             var mockSsh = sshMockGet();
-            sftpJob.timeout = 10;
-            mockSsh.connect = function() {
-                return Promise.delay(20);
+            options = {
+                fileSource: 'testSource',
+                fileDestination: 'testDest',
+                keepaliveInterval: 3000,
+                keepaliveCountMax: 4,
+                timeout: 30000
             };
-            return expect(sftpJob.runSftp(sshSettings, mockSsh)).to.be
-                .rejectedWith(/The file transfer timed out/);
+            sftpJob = new SftpJob(options, { target: 'someNodeId' }, uuid.v4());
+            this.sandbox.spy(mockSsh, 'connect');
+            mockEncryption.decrypt.restore();
+            this.sandbox.stub(
+                mockEncryption,
+                'decrypt',
+                function(string) { return string; }
+            );
+
+            return sftpJob.runSftp(sshSettings, mockSsh)
+            .then(function() {
+                expect(mockSsh.connect).to.be.calledWithExactly({
+                    host: 'the remote host',
+                    port: 22,
+                    username: 'someUsername',
+                    password: 'somePassword',
+                    privateKey: 'a pretty long, encrypted string',
+                    keepaliveInterval: 3000,
+                    keepaliveCountMax: 4,
+                    readyTimeout: 30000
+                });
+            });
         });
     });
 });
