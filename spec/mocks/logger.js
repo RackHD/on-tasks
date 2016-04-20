@@ -79,6 +79,10 @@ function mockLoggerFactory(Constants, assert, _) {
         };
     });
 
+    Logger.prototype.deprecate = function (message, context) {
+        this.log('deprecate', message, context);
+    };
+
     Logger.initialize = function (module) {
         return new Logger(module);
     };

@@ -12,6 +12,9 @@ describe("Job.Graph.RunSku", function () {
     var Constants;
     var fakeNode;
     var fakeSku;
+    var env;
+    var fakeGraphInfo;
+    var fakeEnv;
 
     before(function () {
         // create a child injector with on-core and the base pieces we need to test this
@@ -29,6 +32,7 @@ describe("Job.Graph.RunSku", function () {
         Errors = helper.injector.get('Errors');
         Constants = helper.injector.get('Constants');
         uuid = helper.injector.get('uuid');
+        env = helper.injector.get('Services.Environment');
 
         waterline.skus = {
             needOne: sinon.stub().resolves()
@@ -51,6 +55,22 @@ describe("Job.Graph.RunSku", function () {
             }
         };
 
+        fakeGraphInfo = {
+            name: 'testskugraph',
+            options: {
+                foo: 'bar'
+            }
+        };
+
+        fakeEnv = {
+            postDiscoveryGraph: {
+                name: 'testskugraph',
+                options: {
+                    foo: 'bar'
+                }
+            }
+        };
+
         this.sandbox = sinon.sandbox.create();
         this.sandbox.stub(RunSkuGraphJob.prototype, '_subscribeActiveTaskExists');
         this.sandbox.stub(RunSkuGraphJob.prototype, '_subscribeGraphFinished');
@@ -63,10 +83,79 @@ describe("Job.Graph.RunSku", function () {
         this.sandbox.restore();
     });
 
+    describe('prototype._findSkuGraphInfo', function() {
+        var _findSkuGraphInfo;
+        var sandbox;
+
+        before(function() {
+            sandbox = sinon.sandbox.create();
+            var job = new RunSkuGraphJob({ nodeId: fakeNode.id },
+                { target: fakeNode.id }, uuid.v4());
+            _findSkuGraphInfo = job._findSkuGraphInfo;
+        });
+
+        afterEach(function() {
+            sandbox.restore();
+        });
+
+        //this also test the skupack will take precedence
+        it('should return the sku graph info of skupack', function() {
+            sandbox.stub(env, 'get').withArgs('config', {}, [fakeNode.sku, Constants.Scope.Global])
+                .resolves(fakeEnv);
+            waterline.skus.needOne.resolves(fakeSku);
+
+            return expect(_findSkuGraphInfo(fakeNode)).to.become(fakeGraphInfo);
+        });
+
+        it('should return the sku graph info of sku document', function() {
+            sandbox.stub(env, 'get').withArgs('config', {}, [fakeNode.sku, Constants.Scope.Global])
+                .resolves({});
+            waterline.skus.needOne.resolves(fakeSku);
+
+            return expect(_findSkuGraphInfo(fakeNode)).to.become({
+                name: fakeSku.discoveryGraphName,
+                options: fakeSku.discoveryGraphOptions
+            });
+        });
+
+        it('should return nothing if the node has no sku', function() {
+            delete fakeNode.sku;
+            sandbox.stub(env, 'get').withArgs('config', {}, [Constants.Scope.Global]).resolves({});
+
+            return expect(_findSkuGraphInfo(fakeNode)).to.become(undefined);
+        });
+
+        it('should return nothing if both env & sku document don\'t have graph info', function() {
+            sandbox.stub(env, 'get').withArgs('config', {}, [fakeNode.sku, Constants.Scope.Global])
+                .resolves({});
+            delete fakeSku.discoveryGraphName;
+            waterline.skus.needOne.resolves(fakeSku);
+
+            return expect(_findSkuGraphInfo(fakeNode)).to.become(undefined);
+        });
+
+        it('should throw error if sku document is not found', function() {
+            sandbox.stub(env, 'get').withArgs('config', {}, [fakeNode.sku, Constants.Scope.Global])
+                .resolves({});
+            waterline.skus.needOne.rejects();
+            return expect(_findSkuGraphInfo(fakeNode)).to.be.rejected;
+        });
+
+        it('should throw error if lookup env throws error', function() {
+            sandbox.stub(env, 'get').rejects();
+            return expect(_findSkuGraphInfo(fakeNode)).to.be.rejected;
+        });
+    });
+
     it('should run a graph', function() {
         waterline.nodes.findByIdentifier.resolves(fakeNode);
         waterline.skus.needOne.resolves(fakeSku);
-        var job = new RunSkuGraphJob({ nodeId: fakeNode.id }, { target: fakeNode.id }, uuid.v4());
+        var job = new RunSkuGraphJob(
+            { nodeId: fakeNode.id, instanceId: 'testinstance' },
+            { target: fakeNode.id },
+            uuid.v4()
+        );
+        this.sandbox.stub(job, '_findSkuGraphInfo').resolves(fakeGraphInfo);
         job._run();
 
         expect(job._subscribeGraphFinished).to.have.been.calledOnce;
@@ -78,17 +167,11 @@ describe("Job.Graph.RunSku", function () {
 
         return job._deferred
         .then(function() {
-            expect(waterline.nodes.findByIdentifier).to.have.been.calledOnce;
-            expect(waterline.nodes.findByIdentifier).to.have.been.calledWith(fakeNode.id);
-
-            expect(waterline.skus.needOne).to.have.been.calledOnce;
-            expect(waterline.skus.needOne).to.have.been.calledWith({ id: fakeNode.sku });
-
-            expect(workflowTool.runGraph).to.have.been.calledOnce;
-            expect(workflowTool.runGraph).to.have.been.calledWith(
+            expect(job._findSkuGraphInfo).to.have.been.calledOnce.and.calledWith(fakeNode);
+            expect(workflowTool.runGraph).to.have.been.calledOnce.and.calledWith(
                 fakeNode.id,
-                fakeSku.discoveryGraphName,
-                fakeSku.discoveryGraphOptions
+                fakeGraphInfo.name,
+                _.merge(fakeGraphInfo.options, { instanceId: 'testinstance' })
             );
 
             // Assert here that we override the sub-graphs instanceId so that
@@ -104,6 +187,7 @@ describe("Job.Graph.RunSku", function () {
     it('should fail on a failed graph', function() {
         waterline.nodes.findByIdentifier.resolves(fakeNode);
         waterline.skus.needOne.resolves(fakeSku);
+        this.sandbox.stub(env, 'get').resolves(fakeEnv);
         var job = new RunSkuGraphJob({ nodeId: fakeNode.id }, { target: fakeNode.id }, uuid.v4());
         job._run();
 
@@ -117,24 +201,10 @@ describe("Job.Graph.RunSku", function () {
         return expect(job._deferred).to.be.rejectedWith(/Graph.*failed with status/);
     });
 
-    it('should noop if there is no sku discovery graph defined', function() {
-        waterline.nodes.findByIdentifier.resolves(fakeNode);
-        waterline.skus.needOne.resolves(fakeSku);
-        var job = new RunSkuGraphJob({ nodeId: fakeNode.id }, { target: fakeNode.id }, uuid.v4());
-        job._run();
-
-        delete fakeSku.discoveryGraphName;
-        delete fakeSku.discoveryGraphOptions;
-
-        // The assertion here is that the job promise should just be resolved
-        // without having to trigger the _subscribeGraphFinished callback.
-        return expect(job._deferred).to.be.fulfilled;
-    });
-
-    it('should noop if there is no sku', function() {
-        delete fakeNode.sku;
+    it('should noop if there is no sku graph info is found', function() {
         waterline.nodes.findByIdentifier.resolves(fakeNode);
         var job = new RunSkuGraphJob({ nodeId: fakeNode.id }, { target: fakeNode.id }, uuid.v4());
+        this.sandbox.stub(job, '_findSkuGraphInfo').resolves({});
         job._run();
 
         // The assertion here is that the job promise should just be resolved
@@ -142,13 +212,21 @@ describe("Job.Graph.RunSku", function () {
         return expect(job._deferred).to.be.fulfilled;
     });
 
-    it('should fail if the sku does not exist', function() {
+    it('should fail if finding graph info throws exception', function() {
         waterline.nodes.findByIdentifier.resolves(fakeNode);
-        waterline.skus.needOne.rejects(new Errors.NotFoundError('test'));
         var job = new RunSkuGraphJob({ nodeId: fakeNode.id }, { target: fakeNode.id }, uuid.v4());
+        this.sandbox.stub(job, '_findSkuGraphInfo').rejects(new Errors.NotFoundError('test'));
         job._run();
 
         return expect(job._deferred).to.be.rejectedWith(Errors.NotFoundError);
+    });
+
+    it('should fail if node document is not found', function() {
+        waterline.nodes.findByIdentifier.resolves();
+        var job = new RunSkuGraphJob({ nodeId: fakeNode.id }, { target: fakeNode.id }, uuid.v4());
+        job._run();
+
+        return expect(job._deferred).to.be.rejected;
     });
 
     it('should fail on internal errors with _run() code', function() {
