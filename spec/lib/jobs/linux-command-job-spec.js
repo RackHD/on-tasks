@@ -42,6 +42,10 @@ describe('Linux Command Job', function () {
             job = new LinuxCommandJob({ commands: [] }, { target: 'testid' }, uuid.v4());
         });
 
+        it('should have a property "commandUtil"', function() {
+            expect(job).to.have.property('commandUtil');
+        });
+
         it("should have a nodeId value", function() {
             expect(job.nodeId).to.equal('testid');
         });
