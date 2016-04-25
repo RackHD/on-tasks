@@ -45,6 +45,11 @@ describe('Linux Catalog Job', function () {
         afterEach(function() {
             this.sandbox.restore();
         });
+
+        it('should have a property "commandUtil"', function() {
+            expect(catalogJob).to.have.property('commandUtil');
+        });
+
         it('should subcribe to command requests from a node', function() {
             catalogJob._run();
             expect(catalogJob._subscribeRequestCommands).to.have.been.calledOnce;
