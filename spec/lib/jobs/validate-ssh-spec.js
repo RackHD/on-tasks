@@ -79,6 +79,16 @@ describe('Validate Ssh', function() {
                 expect(validateSshJob._done).to.be.calledWith(error);
             });
         });
+
+        it('should skip and succeed if no users are defined', function() {
+            validateSshJob.users = null;
+            this.sandbox.stub(validateSshJob, '_done').resolves();
+            return validateSshJob._run()
+            .then(function() {
+                expect(validateSshJob._done).to.be.calledOnce;
+                expect(validateSshJob._done).to.be.calledWith();
+            });
+        });
     });
 
     describe('attemptConnection', function() {
