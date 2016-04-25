@@ -146,6 +146,12 @@ describe('Install OS Job', function () {
         });
     });
 
+    it('should provide the given user credentials to the context', function() {
+        expect(job.context.users).to.deep.equal(
+            job.options.users.concat({name: 'root', password: 'rackhd', privateKey: undefined})
+        );
+    });
+
     describe('test _convertInstallDisk', function() {
         var catalog = {
             data: [
