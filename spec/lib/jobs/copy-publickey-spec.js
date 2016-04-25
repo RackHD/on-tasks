@@ -20,7 +20,7 @@ describe('copy-key job', function() {
             helper.di.simpleWrapper(waterline, 'Services.Waterline')
         ]);
         this.sandbox = sinon.sandbox.create();
-        CopyKeyJob = helper.injector.get('Job.CopyKey');
+        CopyKeyJob = helper.injector.get('Job.CopySshKey');
     });
 
     describe('_run', function() {
@@ -34,6 +34,7 @@ describe('copy-key job', function() {
                 port: 22,
                 username: 'someUsername',
                 password: 'somePassword',
+                publicKey: 'a somewhat long string',
                 privateKey: 'a pretty long string',
             };
             waterline.nodes.needByIdentifier = this.sandbox.stub().resolves(

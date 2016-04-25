@@ -43,11 +43,7 @@ describe('Linux Command Job', function () {
         });
 
         it('should have a property "commandUtil"', function() {
-<<<<<<< HEAD
             expect(job).to.have.property('commandUtil');
-=======
-             expect(job).to.have.property('commandUtil');
->>>>>>> changed commandUtil to attribute of jobs
         });
 
         it("should have a nodeId value", function() {
