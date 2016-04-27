@@ -118,7 +118,7 @@ describe('Validate Ssh', function() {
             )
             .to.eventually.deep.equal({
                 host: '1.2.3.4',
-                username:'user',
+                user:'user',
                 password: 'pass',
                 privateKey: 'key'
             });
