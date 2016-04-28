@@ -96,6 +96,7 @@ describe("JobUtils.RedfishTool", function() {
     it("should fail to http request", function() {
         var response = {
             setEncoding: sandbox.stub().resolves(),
+            setTimeout: sandbox.stub().resolves(),
             on: sandbox.stub().resolves()
         };
         var request = {
@@ -111,7 +112,7 @@ describe("JobUtils.RedfishTool", function() {
                 return request;
             })
         });
-        return expect(redfishTool.request())
+        return expect(redfishTool.request({recvTimeoutMs:1000}))
             .to.be.rejectedWith('some error');
     });
     
