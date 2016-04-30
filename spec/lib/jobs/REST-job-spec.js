@@ -22,7 +22,10 @@ describe("REST-job", function(){
         header:{cookie:'my-cookie'}
         }
     };
+<<<<<<< HEAD
     var context = {};
+=======
+>>>>>>> Initial commit of unit tests
 
     before(function() {
         helper.setupInjector([
@@ -35,6 +38,7 @@ describe("REST-job", function(){
         RestJob = helper.injector.get('Job.Rest');
     });
 
+<<<<<<< HEAD
     it("Should do REST with all parameters", function(done){
         nock(testUrl)
         .matchHeader('content-type', 'application/json')
@@ -133,4 +137,24 @@ describe("REST-job", function(){
         expect(restJob.run()).to.be.rejectedWith(err);
         done();
     });
+=======
+    it("Should be able to do REST with all parameters", 
+        function(done){
+            nock(testUrl)
+            .matchHeader('content-type', 'application/json')
+            .matchHeader('cookie','my-cookie')
+            .put('/full-put')
+            .basicAuth({user:'hello', pass: 'world'})
+            .reply(201, "You are good!");
+            
+            var context = {};
+            
+            console.log(typeof(taskId));
+
+            var restJob = new RestJob(option, context, taskId);
+            restJob.run().then(function(){
+                console.log(context);
+                done();
+            });});
+>>>>>>> Initial commit of unit tests
 });
