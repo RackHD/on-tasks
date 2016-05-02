@@ -22,6 +22,7 @@ describe("REST-job", function(){
         header:{cookie:'my-cookie'}
         }
     };
+    var context = {};
 
     before(function() {
         helper.setupInjector([
@@ -34,22 +35,102 @@ describe("REST-job", function(){
         RestJob = helper.injector.get('Job.Rest');
     });
 
-    it("Should be able to do REST with all parameters", 
-        function(done){
-            nock(testUrl)
-            .matchHeader('content-type', 'application/json')
-            .matchHeader('cookie','my-cookie')
-            .put('/full-put')
-            .basicAuth({user:'hello', pass: 'world'})
-            .reply(201, "You are good!");
+    it("Should do REST with all parameters", function(done){
+        nock(testUrl)
+        .matchHeader('content-type', 'application/json')
+        .matchHeader('cookie','my-cookie')
+        .put('/full-put')
+        .basicAuth({user:'hello', pass: 'world'})
+        .reply(201, "You are good!");
             
-            var context = {};
-            
-            console.log(typeof(taskId));
+        context = {};
+        var restJob = new RestJob(option, context, taskId);
+        restJob.run().then(function(){
+            expect(context).to.have.property('text')
+            .to.equal('You are good!');
+                
+            done();
+        });
+    });
 
-            var restJob = new RestJob(option, context, taskId);
-            restJob.run().then(function(){
-                console.log(context);
-                done();
-            });});
+// Should proceed with REST request and return if optional parameter is missing
+    it('Should do REST without basic auth parameter', function(done){
+        nock(testUrl)
+        .matchHeader('content-type', 'application/json')
+        .matchHeader('cookie','my-cookie')
+        .put('/no-auth-put')
+        .reply(201, "You are good!");
+           
+        context = {};
+        option.requestConfig.url = testUrl + '/no-auth-put';
+        delete option.requestConfig.cred;
+
+        var restJob = new RestJob(option, context, taskId);
+        restJob.run().then(function(){
+            expect(context).to.have.property('text')
+            .to.equal('You are good!');
+            done();
+        });
+    });
+
+    it('Should handle REST without header parameter', function(done){
+        nock(testUrl)
+        .put('/no-header-put')
+        .reply(201, "You are good!");
+           
+        context = {};
+        option.requestConfig.url = testUrl + '/no-header-put';
+        delete option.requestConfig.dataType;
+        delete option.requestConfig.header;
+
+        var restJob = new RestJob(option, context, taskId);
+        restJob.run().then(function(){
+            expect(context).to.have.property('text')
+            .to.equal('You are good!');
+            done();
+        });
+    });
+
+// Should raise failure when necessary parameters are missing
+    it('Should reject without URL', function(done){
+        nock(testUrl).get('/simple-get').reply(200, "Here is get");
+
+        context = {};
+        delete option.requestConfig.url;
+        option.requestConfig.method = 'GET';
+
+        var restJob = new RestJob(option, context, taskId);
+        expect(restJob.run())
+        .to.be.rejectedWith('Please provide method and url to continue');
+        done();
+    });
+
+    it('Should reject without REST method', function(done){
+        context = {};
+        option.requestConfig.url = testUrl + '/simple-get';
+        delete option.requestConfig.method;
+        
+        var restJob = new RestJob(option, context, taskId);
+        expect(restJob.run())
+        .to.be.rejectedWith('Please provide method and url to continue');
+
+        done();
+    });
+
+// Should return err on encountering http errors
+    it ('Should return correct err when having http errors', function(done){
+        nock(testUrl).get('/bad-link').reply(404, 'boom');
+
+        option.requestConfig.url = testUrl + '/bad-link';
+        option.requestConfig.method = 'GET';
+
+        var restJob = new RestJob(option, context, taskId);
+        var err = {
+            status: 404,
+            message: 'boom',
+            header: {}
+        };
+        expect(restJob.run()).to.be.rejectedWith(err);
+        done();
+    });
 });
