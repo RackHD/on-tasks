@@ -79,11 +79,13 @@ describe('Job.Redfish', function () {
             redfishJob = new this.Jobclass({}, { graphId: graphId }, uuid.v4());
             expect(redfishJob.routingKey).to.equal(graphId);
             redfishJob.initClient = sandbox.stub().returns(redfishTool);
+            redfishJob._publishPollerAlert = sinon.stub().resolves();
         });
         
         afterEach(function() {
             redfishJob.initClient.reset();
             redfishTool.clientRequest.reset();
+            redfishJob._publishPollerAlert.reset();
         });
         
         it("should have a _run() method", function() {
@@ -207,6 +209,49 @@ describe('Job.Redfish', function () {
                 redfishJob.addConcurrentRequest('test', 'power');
             });
             expect(redfishJob.concurrentRequests('test', 'power')).to.equal(true);
+        });
+        
+        it("should generate ResourceUpdated for FabricService data", function() {
+            var fabricServData = {
+                EndPoints: [{ EndPointName:'epName', Available: true }]
+            };
+            redfishJob.fabricDataCache = { 
+                EndPoints: [{ EndPointName:'epName',  Available: false }]
+            };
+            return redfishJob.fabricServiceDataAlert(redfishTool, fabricServData)
+            .then(function(data) {
+                expect(data).to.deep.equal(fabricServData);
+            });
+        });
+        
+        it("should generate ResourceAdded for FabricService data", function() {
+            var fabricServData = {
+                EndPoints: [
+                    { EndPointName:'epName', Available: true },
+                    { EndPointName:'newEpName', Available: true }
+                ]
+            };
+            redfishJob.fabricDataCache = {
+                EndPoints: [{ EndPointName:'epName', Available: true }]
+            };
+            return redfishJob.fabricServiceDataAlert(redfishTool, fabricServData)
+            .then(function(data) {
+                expect(data).to.deep.equal(fabricServData);
+            });
+        });
+        
+        it("should generate ResourceRemoved for FabricService data", function() {
+            var fabricServData = {
+                EndPoints: [
+                    { EndPointName:'epName1',  Available: true },
+                    { EndPointName:'EpName2', Available: true }]
+            };
+            redfishJob.fabricDataCache = Object.assign({}, fabricServData);
+            fabricServData.EndPoints = _.drop(fabricServData.EndPoints);
+            return redfishJob.fabricServiceDataAlert(redfishTool, fabricServData)
+            .then(function(data) {
+                expect(data).to.deep.equal(fabricServData);
+            });
         });
     });
 });
