@@ -131,7 +131,7 @@ describe("Job.Pollers.CreateDefault", function () {
             "pollInterval": 60000,
             "config": {
                 "metric": "snmp-interface-bandwidth-utilization"
-            },
+            }
         });
 
         pollers.push({
@@ -139,7 +139,15 @@ describe("Job.Pollers.CreateDefault", function () {
             "pollInterval": 60000,
             "config": {
                 "command": "thermal"
-            },
+            }
+        });
+
+       pollers.push({
+            "type": "redfish",
+            "pollInterval": 60000,
+            "config": {
+                "command": "systems.logservice"
+            }
         });
 
         var job = new CreateDefaultPollers(
@@ -159,7 +167,7 @@ describe("Job.Pollers.CreateDefault", function () {
                 .to.have.property('node', nodeId);
             expect(waterline.catalogs.findMostRecent.secondCall.args[0])
                 .to.have.property('source', 'snmp-1');
-            expect(waterline.workitems.findOrCreate).to.have.been.calledThrice;
+            expect(waterline.workitems.findOrCreate).to.have.been.callCount(4);
             expect(waterline.workitems.findOrCreate).to.have.been.calledWith(
                 { node: nodeId, config: { command: pollers[0].config.command } }, pollers[0]);
             expect(waterline.workitems.findOrCreate).to.have.been.calledWith(
