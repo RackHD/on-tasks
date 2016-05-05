@@ -13,12 +13,12 @@ describe("RestTool", function(){
     var badData = {good:false};
 
     before(function() {
-        helper.setupInjector([
-            helper.require('/lib/utils/job-utils/REST-tool.js'),
-            helper.require('/node_modules/superagent/superagent.js'),
-            helper.di.requireWrapper('superagent', 'Superagent')
-        ]);
-
+        helper.setupInjector(
+            _.flattenDeep([
+                helper.require('/lib/utils/job-utils/REST-tool.js'),
+                helper.di.requireWrapper('superagent', 'Superagent')
+            ])
+        );
         restTool = helper.injector.get('JobUtils.RestTool');
     });
 

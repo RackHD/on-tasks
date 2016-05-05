@@ -29,7 +29,6 @@ describe("REST-job", function(){
             helper.require('/lib/jobs/REST-job.js'),
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/utils/job-utils/REST-tool.js'),
-            helper.require('/node_modules/superagent/superagent.js'),
             helper.di.requireWrapper('superagent', 'Superagent')
         ]);
         RestJob = helper.injector.get('Job.Rest');
