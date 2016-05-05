@@ -253,6 +253,34 @@ describe("Task", function () {
             });
         });
 
+        it("should render proxy api and server values", function() {
+            Task.configCache = {
+                testConfigValue: 'test config value',
+                apiServerAddress: '10.1.1.1',
+                apiServerPort: '80'
+            };
+
+            var proxy = 'http://12.1.1.1:8080';
+
+            definition.options = {
+                server: '{{ api.server }}',
+                baseRoute: '{{ api.base }}',
+                filesRoute: '{{ api.files }}',
+                nodesRoute: '{{ api.nodes }}',
+                testConfigValue: 'test: {{ server.testConfigValue }}'
+            };
+            var task = Task.create(definition, {}, {proxy: proxy});
+
+            return task.run().then(function() {
+                expect(task.options.server).to.equal(proxy);
+                expect(task.options.baseRoute).to.equal(proxy + '/api/current');
+                expect(task.options.filesRoute).to.equal(proxy + '/api/current/files');
+                expect(task.options.nodesRoute).to.equal(proxy + '/api/current/nodes');
+                expect(task.options.testConfigValue)
+                    .to.equal('test: ' + Task.configCache.testConfigValue);
+            });
+        });
+
         it("should render nested templates", function() {
             definition.options = {
                 sourceValue: 'source value',
