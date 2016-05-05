@@ -6,8 +6,8 @@
 'use strict';
 var nock = require('nock'); // mock http request and its respond.
 
-describe("RestTool", function(){
-    var restTool;
+describe("HttpTool", function(){
+    var httpTool;
     var urlGood = "http://test.com";
     var goodData = {good:true}; 
     var badData = {good:false};
@@ -15,11 +15,11 @@ describe("RestTool", function(){
     before(function() {
         helper.setupInjector(
             _.flattenDeep([
-                helper.require('/lib/utils/job-utils/REST-tool.js'),
+                helper.require('/lib/utils/job-utils/HTTP-tool.js'),
                 helper.di.requireWrapper('superagent', 'Superagent')
             ])
         );
-        restTool = helper.injector.get('JobUtils.RestTool');
+        httpTool = helper.injector.get('JobUtils.HttpTool');
     });
 
     it('Should handle basic auth', function(done){
@@ -27,8 +27,8 @@ describe("RestTool", function(){
         .basicAuth({user:'hello', pass: 'world'})
         .reply(200, goodData);
 
-        restTool.credential = {username:'hello', password:'world'};
-        restTool.get(urlGood+'/basicAuth', {}, function(err, res){
+        httpTool.credential = {username:'hello', password:'world'};
+        httpTool.get(urlGood+'/basicAuth', {}, function(err, res){
             expect(res).to.have.property('status').to.equal(200);
             done();
         });
@@ -40,7 +40,7 @@ describe("RestTool", function(){
         .get('/withCookie')
         .reply(200);
 
-        restTool.get(urlGood+'/withCookie', {cookie:'mySession'}, function(err, res){
+        httpTool.get(urlGood+'/withCookie', {cookie:'mySession'}, function(err, res){
             expect(res.status).to.equal(200);
             done();
         });
@@ -49,7 +49,7 @@ describe("RestTool", function(){
     it("Should GET on Good URL", function(done) {
         nock(urlGood).get('/GET').reply(200, goodData);
 
-        restTool.get(urlGood+'/GET', {}, function(err, res){
+        httpTool.get(urlGood+'/GET', {}, function(err, res){
             expect(res.status).to.equal(200);
             done();
         });
@@ -57,7 +57,7 @@ describe("RestTool", function(){
 
     it("Should have err when GET bad URL", function(done){
         nock(urlGood).get('/badGET').reply(404, badData);
-        restTool.get(urlGood+'/badGET', {}, function(err){
+        httpTool.get(urlGood+'/badGET', {}, function(err){
                 expect(err).to.have.property('status').to.equal(404);
                 done();
             });
@@ -65,7 +65,7 @@ describe("RestTool", function(){
 
     it('Should POST handle URL', function(done){
         nock(urlGood).post('/goodPOST').reply(201, {status:'happy'});
-        restTool.post(urlGood+'/goodPOST', 'application/json', 
+        httpTool.post(urlGood+'/goodPOST', 'application/json', 
                       '{data:"make me happy"}', {}, 
                       function (err, res){
             expect(res.body.status).to.equal('happy');
@@ -77,7 +77,7 @@ describe("RestTool", function(){
         nock(urlGood).matchHeader('content-type', 'application/xml')
         .post('/header-post').reply(201, "You are good");
         
-        restTool.post(urlGood+'/header-post', 'application/xml', 
+        httpTool.post(urlGood+'/header-post', 'application/xml', 
             '<data>"My xml Data"</data>', {}, 
         function (err, res){
             expect(res).to.have.property('text')
@@ -89,7 +89,7 @@ describe("RestTool", function(){
     it('Should PUT with given URL', function(done){
         nock(urlGood).put('/put-good').reply(204, 'Successfully get the put');
         
-        restTool.put(urlGood+'/put-good', 'application/json', 
+        httpTool.put(urlGood+'/put-good', 'application/json', 
             '{data: "put something"}', {}, 
             function(err, res){
                 expect(res).to.have.property('text')
@@ -103,7 +103,7 @@ describe("RestTool", function(){
     it('Should DEL with given URL', function(done){
         nock(urlGood).delete('/del-good').reply(200, 'Delete Successfully');
 
-        restTool.del(urlGood+'/del-good', {}, function(err, res){
+        httpTool.del(urlGood+'/del-good', {}, function(err, res){
             expect(res).to.have.property('text')
             .to.equal('Delete Successfully');
             expect(err).to.equal(null);
