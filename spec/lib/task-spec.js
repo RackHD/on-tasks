@@ -18,7 +18,7 @@ describe("Task", function () {
 
     function literalCompare(objA, objB) {
         _.forEach(objA, function(v, k) {
-            if (_.contains(['renderContext', 'subscriptions' ,'_events', '_cancellable'], k)) {
+            if (_.contains(['renderContext', 'timer'], k)) {
                 return;
             }
             if (typeof v === 'object') {
@@ -350,12 +350,6 @@ describe("Task", function () {
 
             var parsed = JSON.parse(taskJson);
 
-            // Re-add properties removed from the serialized object
-            // just so our deep.equal comparison is easier.
-            parsed.subscriptions = task.subscriptions;
-            parsed._jobPromise = task._jobPromise;
-            parsed._resolver = task._resolver;
-
             //expect(task).to.deep.equal(parsed);
             literalCompare(task, parsed);
         });
@@ -508,6 +502,86 @@ describe("Task", function () {
 
     });
 
+    describe("timer", function() {
+        it("should have a default timeout with null or unsupported values", function() {
+            var definition = _.cloneDeep(noopDefinition);
+
+            function testTimeout(val) {
+                definition.options.$taskTimeout = val;
+                var task = Task.create(definition, {}, {});
+                task.job = { run: sinon.stub() };
+                task._run();
+                return task;
+            }
+
+            _.forEach([null, undefined, 'test', [], {}], function(val) {
+                var task = testTimeout(val);
+                expect(task).to.have.property('timer').that.is.an('object');
+                expect(task.$taskTimeout).to.equal(24 * 60 * 60 * 1000);
+            });
+        });
+
+        it("should not timeout when value is 0", function() {
+            var definition = _.cloneDeep(noopDefinition);
+            definition.options.$taskTimeout = 0;
+            definition.options.delay = 1;
+            var task = Task.create(definition, {}, {});
+            task.renderAll = sinon.stub().resolves();
+            sinon.spy(task, 'cancel');
+
+            return task.run().then(function() {
+                expect(task.state).to.equal('succeeded');
+                expect(task.error).to.equal(null);
+            });
+        });
+
+        it("should not timeout when value is -1", function() {
+            var definition = _.cloneDeep(noopDefinition);
+            definition.options.$taskTimeout = -1;
+            definition.options.delay = 1;
+            var task = Task.create(definition, {}, {});
+            task.renderAll = sinon.stub().resolves();
+            sinon.spy(task, 'cancel');
+
+            return task.run().then(function() {
+                expect(task.state).to.equal('succeeded');
+                expect(task.error).to.equal(null);
+            });
+        });
+
+        it("should timeout with options.$taskTimeout", function() {
+            var definition = _.cloneDeep(noopDefinition);
+            definition.options.$taskTimeout = 1;
+            definition.options.delay = 2;
+            var task = Task.create(definition, {}, {});
+            task.renderAll = sinon.stub().resolves();
+            sinon.spy(task, 'cancel');
+
+            return task.run().then(function() {
+                expect(task.state).to.equal('timeout');
+                expect(task.error).to.be.an.instanceof(Errors.TaskTimeoutError);
+                expect(task.error.message).to.equal("Task did not complete within 1ms");
+                expect(task.cancel).to.have.been.calledOnce;
+            });
+        });
+
+        it("should timeout with options.schedulerOverrides", function() {
+            var definition = _.cloneDeep(noopDefinition);
+            definition.options.schedulerOverrides = { timeout: 1 };
+            definition.options.delay = 2;
+            var task = Task.create(definition, {}, {});
+            task.renderAll = sinon.stub().resolves();
+            sinon.spy(task, 'cancel');
+
+            return task.run().then(function() {
+                expect(task.state).to.equal('timeout');
+                expect(task.error).to.be.an.instanceof(Errors.TaskTimeoutError);
+                expect(task.error.message).to.equal("Task did not complete within 1ms");
+                expect(task.cancel).to.have.been.calledOnce;
+            });
+        });
+    });
+
     describe("cancellation/completion", function() {
         var task;
         var eventsProtocol;
@@ -534,16 +608,11 @@ describe("Task", function () {
             this.sandbox.stub(env, 'get').withArgs(
                 'config', {}, ['global']).resolves();
 
-            task.subscriptions = {
-                run: subscriptionStub,
-                cancel: subscriptionStub
-            };
             sinon.spy(task, 'cancel');
             sinon.spy(task, 'stop');
         });
 
         describe("of task", function() {
-
             it("should cancel before it has been set to run", function(done) {
                 var error = new Errors.TaskCancellationError('test error');
                 task.cancel(error);
@@ -573,25 +642,6 @@ describe("Task", function () {
 
                 return task.run().then(function() {
                     expect(task.state).to.equal('cancelled');
-                    expect(task.error).to.equal(error);
-                    expect(task.job.cancel).to.have.been.calledOnce;
-                });
-            });
-
-            it("should timeout", function() {
-                task.instantiateJob();
-                var error = new Errors.TaskTimeoutError('test timeout error');
-                task.instantiateJob = function() {
-                    task.cancel(error);
-                };
-
-                sinon.spy(task.job, 'cancel');
-                task.job._run = function() {
-                    return Promise.delay(100);
-                };
-
-                return task.run().then(function() {
-                    expect(task.state).to.equal('timeout');
                     expect(task.error).to.equal(error);
                     expect(task.job.cancel).to.have.been.calledOnce;
                 });
