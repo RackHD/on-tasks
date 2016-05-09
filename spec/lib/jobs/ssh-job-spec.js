@@ -65,6 +65,7 @@ describe('ssh-job', function() {
             commandUtil.catalogParsedTasks = this.sandbox.stub().resolves(
             [{data:'data', source: 'test'}]
             );
+            commandUtil.updateLookups = this.sandbox.stub().resolves();
 
             var node = { sshSettings: sshSettings };
             waterline.nodes.needByIdentifier.resolves(node);

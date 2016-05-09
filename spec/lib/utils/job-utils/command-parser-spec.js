@@ -508,7 +508,7 @@ describe("Task Parser", function () {
             perccliCmd.forEach(function(cmd){
                 expect(taskParser).to.have.property(cmd);
                 expect(taskParser).to.respondTo(cmd);
-            }); 
+            });
         });
     });
 
@@ -1190,6 +1190,63 @@ describe("Task Parser", function () {
             })
             .catch(function (err) {
                 done(err);
+            });
+        });
+    });
+
+    describe("ip parser", function() {
+
+        it('should parse ip output', function() {
+            var tasks = [
+                {
+                    cmd: 'sudo ip -d addr show; sudo ip -d link show',
+                    stdout: stdoutMocks.ipAddrLinkOutput,
+                    stderr: '',
+                    error: null
+                }
+            ];
+
+            return taskParser.parseTasks(tasks)
+            .spread(function(result) {
+                expect(result.data.eth0).to.deep.equal(
+                    {
+                        flags: [ 'BROADCAST', 'MULTICAST', 'UP', 'LOWER_UP' ],
+                        mtu: '1500',
+                        qdisc: 'pfifo_fast',
+                        state: 'UP',
+                        group: 'default',
+                        qlen: '1000',
+                        'link/ether': '08:00:27:70:0a:09',
+                        brd: 'ff:ff:ff:ff:ff:ff',
+                        inet: '10.0.2.15/24',
+                        scope: 'global eth0',
+                        'valid_lft': 'forever',
+                        'preferred_lft': 'forever',
+                        inet6: 'fe80::a00:27ff:fe70:a09/64',
+                        mode: 'DEFAULT',
+                        promiscuity: '0'
+                    }
+                );
+                expect(result.data['eth0@100@eth0']).to.deep.equal(
+                    {
+                        flags: [ 'BROADCAST', 'MULTICAST' ],
+                        mtu: '1500',
+                        qdisc: 'noop',
+                        state: 'DOWN',
+                        group: 'default',
+                        'link/ether': '08:00:27:70:0a:09',
+                        brd: 'ff:ff:ff:ff:ff:ff',
+                        mode: 'DEFAULT',
+                        promiscuity: '0',
+                        vlan: { protocol: '802.1Q', id: '99' }
+                    }
+                );
+                expect(result.lookups).to.deep.equal(
+                    [
+                        { ip: '10.0.2.15', mac: '08:00:27:70:0a:09' },
+                        { ip: '172.31.128.1', mac: '08:00:27:aa:ce:94' }
+                    ]
+                );
             });
         });
     });
