@@ -1219,7 +1219,7 @@ describe("Task Parser", function () {
                         'link/ether': '08:00:27:70:0a:09',
                         brd: 'ff:ff:ff:ff:ff:ff',
                         inet: '10.0.2.15/24',
-                        scope: 'global',
+                        scope: 'global eth0',
                         'valid_lft': 'forever',
                         'preferred_lft': 'forever',
                         inet6: 'fe80::a00:27ff:fe70:a09/64',

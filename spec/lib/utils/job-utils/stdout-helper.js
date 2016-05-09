@@ -3644,42 +3644,12 @@ module.exports.racadmJobStatusData = 'Security Alert: Certificate is invalid - s
                                     '----------------------------------------------------------\n' +
                                     '\n';
 
-module.exports.ipAddrLinkOutput = '1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN group default\n'+
-    'link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00\n'+
-    'inet 127.0.0.1/8 scope host lo\n'+
-       'valid_lft forever preferred_lft forever\n'+
-    'inet6 ::1/128 scope host\n'+
-       'valid_lft forever preferred_lft forever\n'+
-'2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000\n'+
-    'link/ether 08:00:27:70:0a:09 brd ff:ff:ff:ff:ff:ff\n'+
-    'inet 10.0.2.15/24 brd 10.0.2.255 scope global eth0\n'+
-       'valid_lft forever preferred_lft forever\n'+
-    'inet6 fe80::a00:27ff:fe70:a09/64 scope link\n'+
-       'valid_lft forever preferred_lft forever\n'+
-'3: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP group default qlen 1000\n'+
-    'link/ether 08:00:27:aa:ce:94 brd ff:ff:ff:ff:ff:ff\n'+
-    'inet 172.31.128.1/24 brd 172.31.128.255 scope global eth1\n'+
-       'valid_lft forever preferred_lft forever\n'+
-    'inet6 fe80::a00:27ff:feaa:ce94/64 scope link\n'+
-       'valid_lft forever preferred_lft forever\n'+
-'4: eth0_100@eth0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN group default\n'+
-    'link/ether 08:00:27:70:0a:09 brd ff:ff:ff:ff:ff:ff\n'+
-'5: eth0@100@eth0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN group default\n'+
-    'link/ether 08:00:27:70:0a:09 brd ff:ff:ff:ff:ff:ff\n'+
-'1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default\n'+
-    'link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00 promiscuity 0\n'+
-'2: eth0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP mode DEFAULT group default qlen 1000\n'+
-    'link/ether 08:00:27:70:0a:09 brd ff:ff:ff:ff:ff:ff promiscuity 0\n'+
-'3: eth1: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc pfifo_fast state UP mode DEFAULT group default qlen 1000\n'+
-    'link/ether 08:00:27:aa:ce:94 brd ff:ff:ff:ff:ff:ff promiscuity 0\n'+
-'4: eth0_100@eth0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default\n'+
-    'link/ether 08:00:27:70:0a:09 brd ff:ff:ff:ff:ff:ff promiscuity 0\n'+
-    'vlan protocol 802.1Q id 100 <REORDER_HDR>\n'+
-'5: eth0@100@eth0: <BROADCAST,MULTICAST> mtu 1500 qdisc noop state DOWN mode DEFAULT group default\n'+
-    'link/ether 08:00:27:70:0a:09 brd ff:ff:ff:ff:ff:ff promiscuity 0\n'+
-    'vlan protocol 802.1Q id 99 <REORDER_HDR>';
 
 var fs = require('fs');
+
+module.exports.ipAddrLinkOutput = fs
+    .readFileSync(__dirname+"/samplefiles/ip_addr_link_output.txt")
+    .toString();
 
 module.exports.storcliAdapterInfo = fs
     .readFileSync(__dirname+"/samplefiles/storcli_adapter_info.txt")
