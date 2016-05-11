@@ -6,6 +6,9 @@
 describe('ISC DHCP Poller Job', function () {
     var base = require('./base-spec');
     var uuid;
+    var Logger;
+    var PromiseQueue;
+    var Tail;
 
     // create a future end date
     // consider different timezone and the daylight saving, add 2 days bases on now will always
@@ -84,6 +87,11 @@ describe('ISC DHCP Poller Job', function () {
         ]);
 
         uuid = helper.injector.get('uuid');
+        Logger = helper.injector.get('Logger');
+        PromiseQueue = helper.injector.get('PromiseQueue');
+        Tail = helper.injector.get('Tail');
+
+        //this.DHCPLeasePoller = helper.injector.get('Job.IscDhcpLeasePoller');
 
         context.Jobclass = helper.injector.get('Job.IscDhcpLeasePoller');
     });
@@ -127,6 +135,75 @@ describe('ISC DHCP Poller Job', function () {
         });
     });
 
+    describe("Queue Error", function (){
+        it('should log a Queue Error', function(){
+            var DHCPPoller = new this.Jobclass({}, {}, uuid.v4());
+            var spy = sinon.spy(Logger.prototype, 'error');
+
+            DHCPPoller._queueError('Queue Error Test');
+
+            expect(spy).to.have.been.calledWith('Queue Error', { error: "Queue Error Test" });
+
+            Logger.prototype.error.restore();
+        });
+    });
+
+    describe("Tail Error", function (){
+        it('should log a Tail Error', function(){
+            var DHCPPoller = new this.Jobclass({}, {}, uuid.v4());
+            var spy = sinon.spy(Logger.prototype, 'error');
+
+            DHCPPoller._tailError('Tail Error Test');
+
+            expect(spy).to.have.been.calledWith('Tail Error', { error: "Tail Error Test" });
+
+            Logger.prototype.error.restore();
+        });
+    });
+
+    describe("Online", function (){
+        beforeEach(function () {
+            this.sandbox = sinon.sandbox.create();
+        });
+
+        afterEach(function () {
+            this.sandbox.restore();
+        });
+
+        it('should log an error if data is undefined', function (){
+            var DHCPPoller = new this.Jobclass({}, {}, uuid.v4());
+            var spy = this.sandbox.stub(Logger.prototype, 'error');
+
+            return DHCPPoller._onLine(undefined).then( function(){
+                expect(spy).to.have.been.calledOnce;
+
+                Logger.prototype.error.restore();
+            });
+        });
+
+        it("should not lookup a lease that does not exist", function(){
+            var DHCPPoller = new this.Jobclass({}, {}, uuid.v4());
+            var spy = this.sandbox.stub(PromiseQueue.prototype, 'enqueue');
+
+            return DHCPPoller._onLine('11').then( function(){
+                expect(spy).to.not.have.been.called;
+            });
+        });
+    });
+
+    describe("Cleanup", function (){
+        it('should stop the queue even when there is no tail', function (){
+            var DHCPPoller = new this.Jobclass({}, {}, uuid.v4());
+            var spy = sinon.spy(PromiseQueue.prototype, 'stop');
+
+            DHCPPoller._cleanup();
+
+            expect(spy).to.have.been.calledOnce;
+        });
+
+        it("should unwatch and remove the tail");
+
+    });
 
     describe("Parse Lease Data", function(){
         it('should parse lease data', function() {
