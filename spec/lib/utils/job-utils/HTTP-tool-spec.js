@@ -1,113 +1,146 @@
-#! /usr/bin/env node
-
 // Copyright, 2016, EMC, Inc.
 /* jshint node: true */
 
 'use strict';
-var nock = require('nock'); // mock http request and its respond.
+var nock = require('nock');
 
 describe("HttpTool", function(){
     var httpTool;
-    var urlGood = "http://test.com";
-    var goodData = {good:true}; 
-    var badData = {good:false};
+    var siteGen = 'http://mysite.emc.com';
+    var requestSettings = {};
 
-    before(function() {
+
+    before(function(){
         helper.setupInjector(
             _.flattenDeep([
-                helper.require('/lib/utils/job-utils/HTTP-tool.js'),
-                helper.di.requireWrapper('superagent', 'Superagent')
+                helper.require('/lib/utils/job-utils/HTTP-tool.js')
             ])
         );
         httpTool = helper.injector.get('JobUtils.HttpTool');
     });
 
     it('Should handle basic auth', function(done){
-        nock(urlGood).get('/basicAuth')
-        .basicAuth({user:'hello', pass: 'world'})
-        .reply(200, goodData);
+        nock(siteGen).get('/basicAuth')
+        .basicAuth({user:'hello', pass:'world'})
+        .reply(200);
 
-        httpTool.credential = {username:'hello', password:'world'};
-        httpTool.get(urlGood+'/basicAuth', {}, function(err, res){
-            expect(res).to.have.property('status').to.equal(200);
+        requestSettings.url = siteGen + '/basicAuth';
+        requestSettings.method = 'GET';
+        requestSettings.credential = {username:'hello', password:'world'};
+
+        httpTool.setupRequest(requestSettings)
+        .then(httpTool.runRequest()
+        .then(function(data){
+            expect(data).to.have.property('httpStatusCode').to.equal(200);
             done();
-        });
+        }));
     });
 
-    it('Should handle cookie in header', function(done){
-        nock(urlGood)
-        .matchHeader('cookie','mySession')
+    it('can handle header change', function(done){
+        nock(siteGen)
+        .matchHeader('cookie', 'mySession')
         .get('/withCookie')
         .reply(200);
 
-        httpTool.get(urlGood+'/withCookie', {cookie:'mySession'}, function(err, res){
-            expect(res.status).to.equal(200);
-            done();
-        });
-    });
-
-    it("Should GET on Good URL", function(done) {
-        nock(urlGood).get('/GET').reply(200, goodData);
-
-        httpTool.get(urlGood+'/GET', {}, function(err, res){
-            expect(res.status).to.equal(200);
-            done();
-        });
-    });
-
-    it("Should have err when GET bad URL", function(done){
-        nock(urlGood).get('/badGET').reply(404, badData);
-        httpTool.get(urlGood+'/badGET', {}, function(err){
-                expect(err).to.have.property('status').to.equal(404);
-                done();
-            });
-    });
-
-    it('Should POST handle URL', function(done){
-        nock(urlGood).post('/goodPOST').reply(201, {status:'happy'});
-        httpTool.post(urlGood+'/goodPOST', 'application/json', 
-                      '{data:"make me happy"}', {}, 
-                      function (err, res){
-            expect(res.body.status).to.equal('happy');
-            done();
-        });
-    });
-
-    it('Should POST handle content type', function(done){
-        nock(urlGood).matchHeader('content-type', 'application/xml')
-        .post('/header-post').reply(201, "You are good");
+        requestSettings.url = siteGen + '/withCookie';
+        requestSettings.method = 'GET';
+        requestSettings.headers = {cookie: 'mySession'};
         
-        httpTool.post(urlGood+'/header-post', 'application/xml', 
-            '<data>"My xml Data"</data>', {}, 
-        function (err, res){
-            expect(res).to.have.property('text')
-            .to.equal('You are good');
+        httpTool.setupRequest(requestSettings)
+        .then(httpTool.runRequest()
+        .then(function(data){
+            expect(data).to.have.property('httpStatusCode').to.equal(200);
             done();
-        });
+        }));
     });
 
-    it('Should PUT with given URL', function(done){
-        nock(urlGood).put('/put-good').reply(204, 'Successfully get the put');
+    it('can handle secure http and non-standard port', function(done){
+        nock('https://mysite.emc.com:12345')
+        .get('/non-standard-port/http-secure')
+        .reply(200, 'You are good');
         
-        httpTool.put(urlGood+'/put-good', 'application/json', 
-            '{data: "put something"}', {}, 
-            function(err, res){
-                expect(res).to.have.property('text')
-                .to.equal('Successfully get the put');
-                expect(err).to.equal(null);
-                
-                done();
-        });
+        requestSettings.url = 'https://mysite.emc.com:12345/non-standard-port/http-secure';
+        requestSettings.method = 'GET';
+        
+        httpTool.setupRequest(requestSettings)
+        .then(httpTool.runRequest()
+        .then(function(data){
+            expect(data).to.have.property('body').to.equal('You are good');
+            done();
+        }));
     });
 
-    it('Should DEL with given URL', function(done){
-        nock(urlGood).delete('/del-good').reply(200, 'Delete Successfully');
+    it('can handle object formatted url', function(done){
+        nock(siteGen).get('/getWithObjUrl').reply(200);
 
-        httpTool.del(urlGood+'/del-good', {}, function(err, res){
-            expect(res).to.have.property('text')
-            .to.equal('Delete Successfully');
-            expect(err).to.equal(null);
+        requestSettings.url = {
+            protocol: "http",
+            host: "mysite.emc.com",
+            path: "/getWithObjUrl"
+        };
+        requestSettings.method = 'GET';
+
+        httpTool.setupRequest(requestSettings)
+        .then(httpTool.runRequest()
+        .then(function(data){
+            expect(data).to.have.property('httpStatusCode').to.equal(200); 
             done();
-        });
+        }));
+    });
+    
+    it('can put err into reject callback', function(done){
+        nock(siteGen).get('/good-get').reply(200);
+
+        requestSettings.url = siteGen + '/bad-get';
+        requestSettings.method = 'GET';
+        
+        httpTool.setupRequest(requestSettings)
+        .then(httpTool.runRequest()
+        .catch(function(err){
+            expect(err).to.have.property('status').to.equal(404);
+            done();
+        }));
+    });
+
+    it('can do DELETE', function(done){
+        nock(siteGen).delete('/delete-good').reply(200, 'Delete Successfully');
+
+        requestSettings.url = siteGen + '/delete-good';
+        requestSettings.method = 'DELETE';
+
+        httpTool.setupRequest(requestSettings)
+        .then(httpTool.runRequest()
+        .then(function(data){
+            expect(data).to.have.property('body').to.equal('Delete Successfully');
+            done();
+        }));
+    });
+
+    it('can do successful POST', function(done){
+        nock.cleanAll();
+        nock(siteGen).matchHeader('content-type', 'application/xml').matchHeader('token', 'my-ssl-token').put('/header-post').reply(201, 'OK');
+
+        requestSettings.url = siteGen + '/header-post';
+        requestSettings.method = 'PUT';
+        requestSettings.headers = {
+            'Content-Type': 'appication/xml',
+            'Token':'my-SSL-token'
+        };
+        requestSettings.data = '<data>My XML data</data>';
+        console.log(requestSettings);
+
+        httpTool.setupRequest(requestSettings)
+        .then(httpTool.runRequest()
+        .then(function(data){
+            console.log(data);
+            expect(data).to.have.property('body').to.equal('OK');
+            done();
+        })
+        .catch(function(err){
+            console.log('find error during request');
+            console.log(err);
+            done();
+        })
+        );
     });
 });
