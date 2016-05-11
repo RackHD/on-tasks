@@ -3,9 +3,10 @@
 'use strict';
 
 describe('Command Util', function() {
-    var waterline = { catalogs: {} },
+    var waterline = { catalogs: {}, lookups: {} },
         parser = {},
         Emitter = require('events').EventEmitter,
+        lookup = {},
         mockEncryption = {},
         CmdUtil,
         commandUtil;
@@ -39,6 +40,7 @@ describe('Command Util', function() {
         helper.setupInjector([
             helper.require('/lib/utils/job-utils/command-util.js'),
             helper.di.simpleWrapper(parser, 'JobUtils.CommandParser'),
+            helper.di.simpleWrapper(lookup, 'Services.Lookup'),
             helper.di.simpleWrapper(mockEncryption, 'Services.Encryption'),
             helper.di.simpleWrapper(waterline, 'Services.Waterline')
         ]);
@@ -306,6 +308,36 @@ describe('Command Util', function() {
 
             return expect(commandUtil.sshExec(testCmd, sshSettings, mockClient)).to
                 .be.rejected;
+        });
+    });
+
+    describe('updateLookups', function() {
+        var parsedTasks;
+        beforeEach(function() {
+            parsedTasks = [
+                {data: 'data', source: 'test'},
+                {data: 'data', source: 'test', lookups: [
+                    {mac: 'testMacAddress'}, {mac: 'testMac'}
+                ]},
+                {data: 'data', source: 'test', lookups: [
+                    {ip: 'someIp', mac: 'someMacAddress'}, {ip: 'anIp', mac: 'someMac'}
+                ]}
+            ];
+            commandUtil.buildCommands = sinon.stub().returns([]);
+            lookup.setIpAddress = this.sandbox.stub().resolves();
+            waterline.lookups.upsertNodeToMacAddress = this.sandbox.stub().resolves();
+        });
+
+        it('should setIpAddress given a mac and ip and upsert for just a mac', function() {
+            return commandUtil.updateLookups(parsedTasks)
+            .then(function() {
+                expect(lookup.setIpAddress).to.be.calledTwice.and
+                    .calledWithExactly('someIp', 'someMacAddress').and
+                    .calledWithExactly('anIp', 'someMac');
+                expect(waterline.lookups.upsertNodeToMacAddress).to.be.calledTwice
+                    .and.calledWithExactly('fakeNodeId', 'testMacAddress')
+                    .and.calledWithExactly('fakeNodeId', 'testMac');
+            });
         });
     });
 

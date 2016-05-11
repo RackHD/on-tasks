@@ -6,8 +6,7 @@
 describe('Linux Catalog Job', function () {
     var LinuxCatalogJob,
         catalogJob,
-        waterline = { lookups: {}, catalogs: {} },
-        lookup = {},
+        waterline = { catalogs: {} },
         parser = {},
         uuid;
 
@@ -20,7 +19,6 @@ describe('Linux Catalog Job', function () {
                 helper.require('/lib/jobs/base-job'),
                 helper.require('/lib/jobs/linux-catalog'),
                 helper.di.simpleWrapper(parser, 'JobUtils.CommandParser'),
-                helper.di.simpleWrapper(lookup, 'Services.Lookup'),
                 helper.di.simpleWrapper(CommandUtil, 'JobUtils.Commands'),
                 helper.di.simpleWrapper(waterline, 'Services.Waterline')
             ])
@@ -101,15 +99,15 @@ describe('Linux Catalog Job', function () {
             tasks = [{cmd: 'testCommand'}];
             parsedTasks = [{data: 'data', source: 'testCommand'}];
             commandUtil.buildCommands = sinon.stub().returns(tasks);
+            parser.parseTasks = this.sandbox.stub().resolves(parsedTasks);
+            commandUtil.handleRemoteFailure = this.sandbox.stub().resolves(tasks);
+            commandUtil.catalogParsedTasks = this.sandbox.stub().resolves(parsedTasks);
+            commandUtil.updateLookups = this.sandbox.stub().resolves([]);
             catalogJob = new LinuxCatalogJob(
                 { commands: [] },
                 { target: 'testId' },
                 uuid.v4()
             );
-            parser.parseTasks = this.sandbox.stub().resolves(parsedTasks);
-            commandUtil.handleRemoteFailure = this.sandbox.stub().resolves(tasks);
-            commandUtil.catalogParsedTasks = this.sandbox.stub().resolves(parsedTasks);
-            this.sandbox.stub(catalogJob, 'updateLookups').resolves([]);
             this.sandbox.stub(catalogJob, '_subscribeRequestCommands');
         });
 
@@ -125,7 +123,7 @@ describe('Linux Catalog Job', function () {
                         .calledWith(tasks);
                     expect(commandUtil.handleRemoteFailure).to.have.been.calledOnce
                         .and.calledWith(tasks);
-                    expect(catalogJob.updateLookups).to.have.been.calledOnce
+                    expect(commandUtil.updateLookups).to.have.been.calledOnce
                         .and.calledWith(parsedTasks);
                     expect(commandUtil.catalogParsedTasks).to.have.been
                         .calledWithExactly(parsedTasks[0]);
@@ -167,39 +165,5 @@ describe('Linux Catalog Job', function () {
         });
     });
 
-    describe('updateLookups', function() {
-        var parsedTasks;
-        beforeEach(function() {
-            parsedTasks = [
-                {data: 'data', source: 'test'},
-                {data: 'data', source: 'test', lookups: [
-                    {mac: 'testMacAddress'}, {mac: 'testMac'}
-                ]},
-                {data: 'data', source: 'test', lookups: [
-                    {ip: 'someIp', mac: 'someMacAddress'}, {ip: 'anIp', mac: 'someMac'}
-                ]}
-            ];
-            commandUtil.buildCommands = sinon.stub().returns([]);
-            catalogJob = new LinuxCatalogJob(
-                { commands: [] },
-                { target: 'testId' },
-                uuid.v4()
-            );
-            lookup.setIpAddress = this.sandbox.stub().resolves();
-            waterline.lookups.upsertNodeToMacAddress = this.sandbox.stub().resolves();
-        });
-
-        it('should setIpAddress given a mac and ip and upsert for just a mac', function() {
-            return catalogJob.updateLookups(parsedTasks)
-            .then(function() {
-                expect(lookup.setIpAddress).to.be.calledTwice.and
-                    .calledWithExactly('someIp', 'someMacAddress').and
-                    .calledWithExactly('anIp', 'someMac');
-                expect(waterline.lookups.upsertNodeToMacAddress).to.be.calledTwice
-                    .and.calledWithExactly('testId', 'testMacAddress')
-                    .and.calledWithExactly('testId', 'testMac');
-            });
-        });
-    });
 });
 
