@@ -29,6 +29,7 @@ describe("Job.Obm.Node", function () {
             helper.require('/lib/jobs/obm-control.js'),
             helper.require('/lib/services/base-obm-service.js'),
             helper.require('/lib/services/ipmi-obm-service.js'),
+            helper.require('/lib/services/noop-obm-service.js'),
             helper.require('/lib/services/obm-service.js'),
             helper.di.simpleWrapper(mockWaterline, 'Services.Waterline')
         ]);
@@ -131,6 +132,92 @@ describe("Job.Obm.Node", function () {
             });
         });
 
+        it('should fail if there is no OBM services and no default', function(){
+            // user is not passing any default obm service to use for this test...
+            var testOptions = {
+                action: 'reboot',
+                delay: 1,
+                retries: 1
+            };
+
+            job = new Job(testOptions, { target: '54da9d7bf33e0405c75f7111' }, uuid.v4());
+            job._subscribeActiveTaskExists = sinon.stub().resolves();
+            job.killObm = sinon.stub().resolves();
+            var node = {
+                obmSettings: []
+            };
+            mockWaterline.nodes.findByIdentifier.resolves(node);
+
+            return expect(job.run()).to.be.rejectedWith(Error,
+                 'No OBM service assigned to this node.');
+
+        });
+
+        it('should fail if there is more than one OBM service with no default', function(){
+          // user is not passing any default obm service to use for this test...
+          var testOptions = {
+              action: 'reboot',
+              delay: 1,
+              retries: 1
+          };
+
+          job = new Job(testOptions, { target: '54da9d7bf33e0405c75f7111' }, uuid.v4());
+          job._subscribeActiveTaskExists = sinon.stub().resolves();
+          job.killObm = sinon.stub().resolves();
+
+          var node = {
+              obmSettings: [
+                  {
+                      service: 'noop-obm-service',
+                      config: {}
+                  },
+                  {
+                      service: 'foo',
+                      config: {
+                          "user": "admin",
+                          "password": "admin",
+                          "host": "10.0.0.254"
+                      }
+                  }
+              ]
+          };
+          mockWaterline.nodes.findByIdentifier.resolves(node);
+
+          return expect(job.run()).to.be.rejectedWith(Error,
+               'More than one OBM service assigned to this node.' +
+               ' (no default set for which to use)');
+
+        });
+
+        it('should set default OBM setting if only one exists', function(){
+            // user is not passing any default obm service to use for this test...
+            var testOptions = {
+                action: 'reboot',
+                delay: 1,
+                retries: 1
+            };
+
+            job = new Job(testOptions, { target: '54da9d7bf33e0405c75f7111' }, uuid.v4());
+            job._subscribeActiveTaskExists = sinon.stub().resolves();
+            job.killObm = sinon.stub().resolves();
+
+            var node = {
+                obmSettings: [
+                    {
+                        service: 'noop-obm-service',
+                        config: {}
+                    }
+                ]
+            };
+            mockWaterline.nodes.findByIdentifier.resolves(node);
+
+            return job.run()
+            .then(function() {
+                expect(job.settings).to.equal(node.obmSettings[0]);
+            });
+        });
+
+
         it('should run an OBM command with nodeId specified in options', function() {
             var node = {
                 obmSettings: [
@@ -179,7 +266,7 @@ describe("Job.Obm.Node", function () {
             .then(function() {
                 var ipmiObmServiceFactory = helper.injector.get('ipmi-obm-service');
                 expect(ObmServiceSpy).to.have.been.calledWith(
-                    job.nodeId, ipmiObmServiceFactory, node.obmSettings[0], 
+                    job.nodeId, ipmiObmServiceFactory, node.obmSettings[0],
                     testOptions);
                 expect(ObmService.prototype.reboot).to.have.been.calledOnce;
             });
