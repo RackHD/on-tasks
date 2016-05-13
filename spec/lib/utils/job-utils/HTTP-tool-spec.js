@@ -8,7 +8,7 @@ describe("HttpTool", function(){
     var httpTool;
     var siteGen = 'http://mysite.emc.com';
     var requestSettings = {};
-
+    
 
     before(function(){
         helper.setupInjector(
@@ -16,7 +16,8 @@ describe("HttpTool", function(){
                 helper.require('/lib/utils/job-utils/HTTP-tool.js')
             ])
         );
-        httpTool = helper.injector.get('JobUtils.HttpTool');
+        var HttpTool = helper.injector.get('JobUtils.HttpTool');
+        httpTool = new HttpTool();
     });
 
     it('Should handle basic auth', function(done){
@@ -116,31 +117,61 @@ describe("HttpTool", function(){
         }));
     });
 
-    it('can do successful POST', function(done){
+    it('can do simple POST', function(done){
         nock.cleanAll();
-        nock(siteGen).matchHeader('content-type', 'application/xml').matchHeader('token', 'my-ssl-token').put('/header-post').reply(201, 'OK');
+        requestSettings = {};
+        
+        nock(siteGen)
+        .post('/simple-post').reply(201, 'OK');
 
-        requestSettings.url = siteGen + '/header-post';
-        requestSettings.method = 'PUT';
-        requestSettings.headers = {
-            'Content-Type': 'appication/xml',
-            'Token':'my-SSL-token'
-        };
+        requestSettings.url = siteGen + '/simple-post';
+        requestSettings.method = 'POST';
         requestSettings.data = '<data>My XML data</data>';
-        console.log(requestSettings);
 
         httpTool.setupRequest(requestSettings)
         .then(httpTool.runRequest()
         .then(function(data){
-            console.log(data);
             expect(data).to.have.property('body').to.equal('OK');
             done();
-        })
-        .catch(function(err){
-            console.log('find error during request');
-            console.log(err);
+        }));
+    });
+
+    it('can do PUT with headers', function(done){
+        nock.cleanAll();
+        requestSettings = {};
+
+        nock(siteGen)
+        .matchHeader('content-type', 'application/xml')
+        .matchHeader('token', 'my-ssl-token')
+        .put('/put/header').reply(204);
+
+        requestSettings.url = siteGen + '/put/header';
+        requestSettings.method = 'PUT';
+        requestSettings.headers = {"content-type": "application/xml", "token": "my-ssl-token"};
+        requestSettings.data = '<data>some data</data>';
+        
+        httpTool.setupRequest(requestSettings)
+        .then(httpTool.runRequest()
+        .then(function(data){
+            expect(data).to.have.property('httpStatusCode').to.equal(204);
             done();
-        })
-        );
+        }));
+    });
+
+    it('can PATCH successfully', function(done){
+        nock.cleanAll();
+        requestSettings = {};
+
+        nock(siteGen).intercept('/simple/patch', 'PATCH').reply(304);
+
+        requestSettings.url = siteGen + '/simple/patch';
+        requestSettings.method = 'PATCH';
+
+        httpTool.setupRequest(requestSettings)
+        .then(httpTool.runRequest()
+        .then(function(data){
+            expect(data).to.have.property('httpStatusCode').to.equal(304);
+            done();
+        }));
     });
 });
