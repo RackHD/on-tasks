@@ -30,7 +30,6 @@ describe('ARP Poller Job', function () {
         ]);
 
         waterline.lookups = {
-            destroyOne: sinon.stub().resolves(),
             setIp: sinon.stub().resolves()
         };
         
@@ -47,7 +46,6 @@ describe('ARP Poller Job', function () {
     beforeEach(function() {
         fs.readFileAsync.reset();
         waterline.lookups.setIp.reset();
-        waterline.lookups.destroyOne.reset();
     });
 
     describe('Base', function () {
@@ -104,8 +102,7 @@ describe('ARP Poller Job', function () {
             var job = new this.Jobclass({}, {}, uuid.v4());
             return job.arpCacheHandler()
             .then(function() {
-                expect(waterline.lookups.setIp).to.be.calledOnce;
-                expect(waterline.lookups.destroyOne).to.be.calledTwice;
+                expect(waterline.lookups.setIp).to.be.calledThrice;
                 expect(job.last).to.deep.equal(parsedData);
                 expect(job.current).to.deep.equal(parsedData);
             });
