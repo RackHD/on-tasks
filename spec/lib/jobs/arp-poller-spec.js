@@ -92,17 +92,17 @@ describe('ARP Poller Job', function () {
         it('should handle updated ARP data', function() {
             fs.readFileAsync.resolves(
                 "IP address  HW type  Flags   HW address         Mask  Device\n" +
-                "1.2.3.4     0x1      0x0     52:54:be:ef:ff:12  *     eth1\n" +
+                "1.2.3.4     0x1      0x1     52:54:be:ef:ff:12  *     eth1\n" +
                 "2.3.4.5     0x1      0x0     00:00:be:ef:ff:00  *     eth0\n" +
                 "2.3.4.9     0x1      0x2     00:00:be:ef:ff:01  *     eth0\n"
             );
-            parsedData[0].flag = '0x0';
+            parsedData[0].flag = '0x1';
             parsedData[1].flag = '0x0';
             parsedData[2].ip = '2.3.4.9';
             var job = new this.Jobclass({}, {}, uuid.v4());
             return job.arpCacheHandler()
             .then(function() {
-                expect(waterline.lookups.setIp).to.be.calledThrice;
+                expect(waterline.lookups.setIp).to.be.calledTwice;
                 expect(job.last).to.deep.equal(parsedData);
                 expect(job.current).to.deep.equal(parsedData);
             });
