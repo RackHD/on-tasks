@@ -378,6 +378,113 @@ describe('Install OS Job', function () {
             return expect(job._validateOptions.bind(job,{}))
                    .to.throw('The uid should between 500 and 65535 (>=500, <=65535)');
         });
-        
+
+        it("should have a vlanIds array with number", function() {
+            job.options.networkDevices = [
+                {
+                    device: "eth0",
+                    ipv4:{
+                        ipAddr: "192.168.1.29",
+                        gateway: "192.168.1.1",
+                        netmask: "255.255.255.0",
+                        vlanId: ['104', '105']
+                    }
+                }
+            ];
+            job._validateOptions();
+            expect(job.options.networkDevices[0].ipv4.vlanId[0] === 104 &&
+                job.options.networkDevices[0].ipv4.vlanId[1] === 105).to.be.true;
+        });
+
+        it('should throw vlanId RangeError', function () {
+            job.options.networkDevices = [
+                {
+                    device: "eth0",
+                    ipv6:{
+                        ipAddr: "fec0::6ab4:0:5efe:157.60.14.21",
+                        gateway: "fe80::5efe:131.107.25.1",
+                        netmask: "ffff.ffff.ffff.ffff.0.0.0.0",
+                        vlanId: [10555, 106]
+                    }
+                }
+            ];
+            expect(function() { job._validateOptions(); })
+                .to.throw(RangeError, 'VlanId must be between 0 and 4095.');
+        });
+
+        it('should be normal without vlanId input', function () {
+            job.options.networkDevices = [
+                {
+                    device: "eth0",
+                    ipv4:{
+                        ipAddr: "192.168.1.29",
+                        gateway: "192.168.1.1",
+                        netmask: "255.255.255.0"
+                        //vlanId: ['104', '105']
+                    }
+                }
+            ];
+            expect(job._validateOptions()).to.be.undefined;
+        });
+
+        it('should throw ipAddr AssertionError', function () {
+            job.options.networkDevices = [
+                {
+                    device: "eth0",
+                    ipv4:{
+                        ipAddr: '292.168.1.1',
+                        gateway: "192.168.1.1",
+                        netmask: "255.255.255.0"
+                    }
+                }
+            ];
+            expect(function() { job._validateOptions(); })
+                .to.throw(Error.AssertionError, 'Violated isIP constraint');
+        });
+
+        it('should throw netmask AssertionError', function () {
+            job.options.networkDevices = [
+                {
+                    device: "eth0",
+                    ipv4:{
+                        ipAddr: '192.168.1.1',
+                        gateway: '192.168.1.1',
+                        netmask: '255.255.192.1'
+                    }
+                }
+            ];
+            expect(function() { job._validateOptions(); })
+                .to.throw(Error.AssertionError, 'Invalid ipv4 netmask.');
+        });
+
+        it('should throw ipAddress AssertionError', function () {
+            job.options.networkDevices = [
+                {
+                    device: "eth0",
+                    ipv6:{
+                        ipAddr: "10ec0::6ab4:0:5efe:157.60.14.21",
+                        gateway: "fe80::5efe:131.107.25.1",
+                        netmask: "ffff.ffff.ffff.ffff.0.0.1.0"
+                    }
+                }
+            ];
+            expect(function() { job._validateOptions(); })
+                .to.throw(Error.AssertionError, 'Violated isIP constraint');
+        });
+
+        it('should throw netmask AssertionError', function () {
+            job.options.networkDevices = [
+                {
+                    device: "eth0",
+                    ipv6:{
+                        ipAddr: "fec0::6ab4:0:5efe:157.60.14.21",
+                        gateway: "fe80::5efe:131.107.25.1",
+                        netmask: "ffff.ffff.ffff.ffff.0.0.1.0"
+                    }
+                }
+            ];
+            expect(function() { job._validateOptions(); })
+                .to.throw(Error, 'Invalid ipv6 netmask.');
+        });
     });
 });
