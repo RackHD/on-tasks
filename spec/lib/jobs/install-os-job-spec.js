@@ -337,6 +337,12 @@ describe('Install OS Job', function () {
                    .to.not.throw(Error);
         });
 
+        it('sshKey is allowed to be null', function() {
+            job.options.users = [{name: "test", password:"12345", uid:600, sshKey:null}];
+            return expect(job._validateOptions.bind(job,{}))
+                   .to.not.throw(Error);
+        });
+
         it('should throw error when sshKey is not a string', function() {
             job.options.users = [{name: "test", password:"12345", uid:600, sshKey:1234}];
             return expect(job._validateOptions.bind(job,{}))
@@ -347,6 +353,12 @@ describe('Install OS Job', function () {
             job.options.users = [{name:"test", password:'12345', sshKey:''}];
             return expect(job._validateOptions.bind(job,{}))
                    .to.not.throw(Error);
+        });
+
+        it('should throw error when uid is null', function() {
+            job.options.users = [{name:"test", password:'12345', sshKey:'', uid:null}];
+            return expect(job._validateOptions.bind(job,{}))
+                   .to.throw('uid must be a number');
         });
 
         it('should throw error when uid is not a number ', function() {

@@ -10,6 +10,10 @@ describe("Job.Pollers.CreateDefault", function () {
     var pollers;
     var Promise;
     var uuid;
+    var souceQueryString = {or: [
+        {source: {startsWith: 'bmc'}},
+        {source: 'rmm'}
+    ]};
 
     before(function () {
         // create a child injector with on-core and the base pieces we need to test this
@@ -59,6 +63,7 @@ describe("Job.Pollers.CreateDefault", function () {
 
     it('should create pollers for a job with options.nodeId', function () {
         var nodeId = 'bc7dab7e8fb7d6abf8e7d6ad';
+        var queryString = _.merge({node: nodeId}, souceQueryString);
 
         var job = new CreateDefaultPollers(
             { nodeId: nodeId, pollers: pollers },
@@ -70,9 +75,7 @@ describe("Job.Pollers.CreateDefault", function () {
         .then(function() {
             expect(waterline.catalogs.findMostRecent).to.have.been.calledOnce;
             expect(waterline.catalogs.findMostRecent.firstCall.args[0])
-                .to.have.property('node', nodeId);
-            expect(waterline.catalogs.findMostRecent.firstCall.args[0])
-                .to.have.property('source', 'bmc');
+                .to.be.deep.equals(queryString);
             expect(waterline.workitems.findOrCreate).to.have.been.calledOnce;
             expect(waterline.workitems.findOrCreate).to.have.been.calledWith(
                 { node: nodeId, config: { command: pollers[0].config.command } }, pollers[0]);
@@ -81,6 +84,7 @@ describe("Job.Pollers.CreateDefault", function () {
 
     it('should create pollers for a job with context.target', function () {
         var nodeId = 'bc7dab7e8fb7d6abf8e7d6af';
+        var queryString = _.merge({node: nodeId}, souceQueryString);
 
         var job = new CreateDefaultPollers(
             { pollers: pollers },
@@ -92,9 +96,7 @@ describe("Job.Pollers.CreateDefault", function () {
         .then(function() {
             expect(waterline.catalogs.findMostRecent).to.have.been.calledOnce;
             expect(waterline.catalogs.findMostRecent.firstCall.args[0])
-                .to.have.property('node', nodeId);
-            expect(waterline.catalogs.findMostRecent.firstCall.args[0])
-                .to.have.property('source', 'bmc');
+                .to.be.deep.equals(queryString);
             expect(waterline.workitems.findOrCreate).to.have.been.calledOnce;
             expect(waterline.workitems.findOrCreate).to.have.been.calledWith(
                 { node: nodeId, config: { command: pollers[0].config.command } }, pollers[0]);
@@ -103,6 +105,7 @@ describe("Job.Pollers.CreateDefault", function () {
 
     it('should not create pollers when bmc catalog does not exist', function () {
         var nodeId = 'bc7dab7e8fb7d6abf8e7d6af';
+        var queryString = _.merge({node: nodeId}, souceQueryString);
 
         waterline.catalogs.findMostRecent.resolves();
 
@@ -116,15 +119,15 @@ describe("Job.Pollers.CreateDefault", function () {
         .then(function() {
             expect(waterline.catalogs.findMostRecent).to.have.been.calledOnce;
             expect(waterline.catalogs.findMostRecent.firstCall.args[0])
-                .to.have.property('node', nodeId);
-            expect(waterline.catalogs.findMostRecent.firstCall.args[0])
-                .to.have.property('source', 'bmc');
+                .to.be.deep.equals(queryString);
             expect(waterline.workitems.findOrCreate).to.not.have.been.called;
         });
     });
 
     it('should create multiple pollers', function () {
         var nodeId = 'bc7dab7e8fb7d6abf8e7d6ad';
+        var ipmiQueryString = _.merge({node: nodeId}, souceQueryString);
+        var snmpQueryString = _.merge({node: nodeId}, {source: 'snmp-1'});
 
         pollers.push({
             "type": "snmp",
@@ -160,13 +163,9 @@ describe("Job.Pollers.CreateDefault", function () {
         .then(function() {
             expect(waterline.catalogs.findMostRecent).to.have.been.calledTwice;
             expect(waterline.catalogs.findMostRecent.firstCall.args[0])
-                .to.have.property('node', nodeId);
-            expect(waterline.catalogs.findMostRecent.firstCall.args[0])
-                .to.have.property('source', 'bmc');
+                .to.be.deep.equals(ipmiQueryString);
             expect(waterline.catalogs.findMostRecent.secondCall.args[0])
-                .to.have.property('node', nodeId);
-            expect(waterline.catalogs.findMostRecent.secondCall.args[0])
-                .to.have.property('source', 'snmp-1');
+                .to.be.deep.equals(snmpQueryString);
             expect(waterline.workitems.findOrCreate).to.have.been.callCount(4);
             expect(waterline.workitems.findOrCreate).to.have.been.calledWith(
                 { node: nodeId, config: { command: pollers[0].config.command } }, pollers[0]);
