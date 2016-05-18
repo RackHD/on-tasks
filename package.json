@@ -17,9 +17,9 @@
   },
   "homepage": "https://github.com/RackHD/on-tasks",
   "dependencies": {
-    "di": "git+https://github.com/RackHD/di.js.git",
+    "di": "git+https://github.com/RackHD/di.js.git#release/1.2.0-branch",
     "lodash": "^3.10.1",
-    "on-core": "git+https://github.com/RackHD/on-core.git",
+    "on-core": "git+https://github.com/RackHD/on-core.git#release/1.2.0-branch",
     "ssh2": "0.5.0",
     "xml2js": "^0.4.4",
     "url-parse": "~1.0.5"
