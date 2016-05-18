@@ -52,7 +52,7 @@ describe('Install OS Job', function () {
                     {
                         name: 'test',
                         password: 'testPassword',
-                        uid: 100,
+                        uid: 600,
                         sshKey: ''
                     }
                 ],
@@ -106,7 +106,7 @@ describe('Install OS Job', function () {
                     {
                         name: 'test',
                         password: 'testPassword',
-                        uid: 100,
+                        uid: 600,
                         sshKey: ''
                     }
                 ],
@@ -186,7 +186,7 @@ describe('Install OS Job', function () {
                         {
                             name: 'test',
                             password: 'testPassword',
-                            uid: 100,
+                            uid: 600,
                             sshKey: ''
                         }
                     ],
@@ -277,5 +277,107 @@ describe('Install OS Job', function () {
                 expect(job.options.installDisk).to.equal('firstdisk');
             });
         });
+    });
+
+    describe('test _validateOptions', function() {
+
+        it('should throw error when username is not given ', function() {
+            job.options.users = [{password:'12345', uid:600, sshKey:''}];
+            return expect(job._validateOptions.bind(job,{}))
+                   .to.throw('username is required');
+        });
+
+        it('should throw error when username is empty', function() {
+            job.options.users = [
+                {"name":"WangW25", "uid":1066, "password":"12345", "sshKey":"123456" },
+                {"name": "", "uid":1069, "password":"12345", "sshKey":"123456"}];
+            return expect(job._validateOptions.bind(job,{}))
+                   .to.throw('username is required');
+        });
+
+        it('should throw error when username is not a string ', function() {
+            job.options.users = [{name:100, password:'12345', uid:600, sshKey:''}];
+            return expect(job._validateOptions.bind(job,{}))
+                   .to.throw('username must be a string');
+        });
+
+        it('should throw error when username is not valid', function() {
+            job.options.users = [{"name":" ", "uid":1066, "password":"12345", "sshKey":"123456"}];
+            return expect(job._validateOptions.bind(job,{}))
+                   .to.throw('username should be valid ');
+        });
+
+        it('username should consist of at least a valid character or number', function() {
+            job.options.users = [{"name":"123", "uid":1066, "password":"12345", "sshKey":"123456"}];
+            return expect(job._validateOptions.bind(job,{}))
+                   .to.not.throw(Error);
+        });
+
+        it('should throw error when password is not given', function() {
+            job.options.users = [{name: "test", uid:600, sshKey:''}];
+            return expect(job._validateOptions.bind(job,{}))
+                   .to.throw('password is required');
+        });
+        
+        it('should throw error when password is not a string', function() {
+            job.options.users = [{name: "test", password:123, uid:600, sshKey:''}];
+            return expect(job._validateOptions.bind(job,{}))
+                   .to.throw('password must be a string');
+        });
+
+        it('should throw error when the length of password is less than 4', function() {
+            job.options.users = [{name: "test", password:"123",uid:600, sshKey:''}];
+            return expect(job._validateOptions.bind(job,{}))
+                   .to.throw('The length of password should larger than 4');
+        });
+
+        it('sshKey is optional', function() {
+            job.options.users = [{name: "test", password:"12345", uid:600}];
+            return expect(job._validateOptions.bind(job,{}))
+                   .to.not.throw(Error);
+        });
+
+        it('sshKey is allowed to be null', function() {
+            job.options.users = [{name: "test", password:"12345", uid:600, sshKey:null}];
+            return expect(job._validateOptions.bind(job,{}))
+                   .to.not.throw(Error);
+        });
+
+        it('should throw error when sshKey is not a string', function() {
+            job.options.users = [{name: "test", password:"12345", uid:600, sshKey:1234}];
+            return expect(job._validateOptions.bind(job,{}))
+                   .to.throw('sshKey must be a string');
+        });
+
+        it('uid is optional', function() {
+            job.options.users = [{name:"test", password:'12345', sshKey:''}];
+            return expect(job._validateOptions.bind(job,{}))
+                   .to.not.throw(Error);
+        });
+
+        it('should throw error when uid is null', function() {
+            job.options.users = [{name:"test", password:'12345', sshKey:'', uid:null}];
+            return expect(job._validateOptions.bind(job,{}))
+                   .to.throw('uid must be a number');
+        });
+
+        it('should throw error when uid is not a number ', function() {
+            job.options.users = [{name:"test", password:'12345', uid:"200",sshKey:''}];
+            return expect(job._validateOptions.bind(job,{}))
+                   .to.throw('uid must be a number');
+        });
+ 
+        it('should throw error when uid is less than 500', function() {
+            job.options.users = [{name:"test", password:'12345', uid:200,sshKey:''}];
+            return expect(job._validateOptions.bind(job,{}))
+                   .to.throw('The uid should between 500 and 65535 (>=500, <=65535)');
+        });
+
+        it('should throw error when uid is larger than 65535 ', function() {
+            job.options.users = [{name:"test", password:'12345', uid:70000,sshKey:''}];
+            return expect(job._validateOptions.bind(job,{}))
+                   .to.throw('The uid should between 500 and 65535 (>=500, <=65535)');
+        });
+        
     });
 });
