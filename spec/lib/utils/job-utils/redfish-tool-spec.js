@@ -79,7 +79,9 @@ describe('HttpTool', function(){
         redfishTool.settings.host = 'fake';
         redfishTool.settings.port = 12345;
         
-        expect(redfishTool.clientRequest('/this-should-fail', 'POST', 'My secret data')).to.be.eventually.rejectedWith('Unknown Error');
+        expect(redfishTool
+               .clientRequest('/this-should-fail', 'POST', 'My secret data'))
+               .to.be.eventually.rejectedWith('Unknown Error');
     });
 });
 
