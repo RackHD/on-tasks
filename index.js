@@ -17,7 +17,6 @@ module.exports = {
             core.helper.requireGlob(__dirname + '/lib/task-data/**/*.js'),
             'Task.taskLibrary'
         ),
-         core.helper.requireWrapper('superagent', 'Superagent')
     ])
 };
 
