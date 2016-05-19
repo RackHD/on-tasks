@@ -9,6 +9,7 @@ var uuid = require('node-uuid');
 describe("REST-job", function(){
     var RestJob;
 <<<<<<< HEAD
+<<<<<<< HEAD
     var testUrl = 'http://test.address.com';
     var taskId = uuid.v4();
     var option = {
@@ -30,6 +31,8 @@ describe("REST-job", function(){
     var context = {};
 >>>>>>> added unit test and modified the source code based on unit tests
 =======
+=======
+>>>>>>> 6af6311fe1b4a82b3eccb17ca8d33defd1546c68
     var restJob;
     var testUrl = 'https://test.address.com:12345',
         taskId = uuid.v4(),
@@ -44,7 +47,10 @@ describe("REST-job", function(){
             data: "nobody cares"
         },
         context = {};
+<<<<<<< HEAD
 >>>>>>> modified HTTP-tool to use Node default http lib
+=======
+>>>>>>> 6af6311fe1b4a82b3eccb17ca8d33defd1546c68
 
     before(function(){
         helper.setupInjector([
@@ -54,6 +60,7 @@ describe("REST-job", function(){
         ]);
         RestJob = helper.injector.get('Job.Rest');
     });
+<<<<<<< HEAD
 <<<<<<< HEAD
 
 <<<<<<< HEAD
@@ -181,6 +188,8 @@ describe("REST-job", function(){
         });
     });
 =======
+=======
+>>>>>>> 6af6311fe1b4a82b3eccb17ca8d33defd1546c68
    
     // With all parameters provided, REST should be good 
     it('Should do REST with all parameters', function(done){
@@ -190,7 +199,10 @@ describe("REST-job", function(){
         .put('/full/put')
         .basicAuth({user: 'foo', pass: 'bar'})
         .reply(201, 'You are good');
+<<<<<<< HEAD
 >>>>>>> modified HTTP-tool to use Node default http lib
+=======
+>>>>>>> 6af6311fe1b4a82b3eccb17ca8d33defd1546c68
 
         context = {};
         restJob = new RestJob(options, context, taskId);
@@ -219,6 +231,7 @@ describe("REST-job", function(){
     });
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 // Should raise failure when necessary parameters are missing
     it('Should reject without URL', function(done){
         nock(testUrl).get('/simple-get').reply(200, "Here is get");
@@ -238,6 +251,10 @@ describe("REST-job", function(){
     it('Should reject on missing url', function(done){
         options.url = null;
 >>>>>>> modified HTTP-tool to use Node default http lib
+=======
+    it('Should reject on missing url', function(done){
+        options.url = null;
+>>>>>>> 6af6311fe1b4a82b3eccb17ca8d33defd1546c68
 
         restJob = new RestJob(options, context, taskId);
         var err1 = 'Please provide at least url and method to use HTTP tool!';
@@ -275,5 +292,8 @@ describe("REST-job", function(){
 
         done();
     });
+<<<<<<< HEAD
 >>>>>>> added unit test and modified the source code based on unit tests
+=======
+>>>>>>> 6af6311fe1b4a82b3eccb17ca8d33defd1546c68
 });
