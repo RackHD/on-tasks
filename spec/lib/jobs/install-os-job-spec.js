@@ -387,13 +387,38 @@ describe('Install OS Job', function () {
                         ipAddr: "192.168.1.29",
                         gateway: "192.168.1.1",
                         netmask: "255.255.255.0",
-                        vlanId: ['104', '105']
+                        vlanIds: ['104', '105']
                     }
                 }
             ];
             job._validateOptions();
-            expect(job.options.networkDevices[0].ipv4.vlanId[0] === 104 &&
-                job.options.networkDevices[0].ipv4.vlanId[1] === 105).to.be.true;
+            expect(job.options.networkDevices[0].ipv4.vlanIds[0]).to.equals(104);
+            expect(job.options.networkDevices[0].ipv4.vlanIds[1]).to.equals(105);
+        });
+
+        it("should change vlanId to vlanIds", function() {
+            job.options.networkDevices = [
+                {
+                    device: "eth0",
+                    ipv4:{
+                        ipAddr: "192.168.1.29",
+                        gateway: "192.168.1.1",
+                        netmask: "255.255.255.0",
+                        vlanId: ['104', '105']
+                    },
+                    ipv6:{
+                        ipAddr: "fec0::6ab4:0:5efe:157.60.14.21",
+                        gateway: "fe80::5efe:131.107.25.1",
+                        netmask: "ffff.ffff.ffff.ffff.0.0.0.0",
+                        vlanId: [104, 105]
+                    }
+                }
+            ];
+            job._validateOptions();
+            expect(job.options.networkDevices[0].ipv4.vlanIds[0]).to.equals(104);
+            expect(job.options.networkDevices[0].ipv4.vlanIds[1]).to.equals(105);
+            expect(job.options.networkDevices[0].ipv6.vlanIds[0]).to.equals(104);
+            expect(job.options.networkDevices[0].ipv6.vlanIds[1]).to.equals(105);
         });
 
         it('should throw vlanId RangeError', function () {
@@ -404,7 +429,7 @@ describe('Install OS Job', function () {
                         ipAddr: "fec0::6ab4:0:5efe:157.60.14.21",
                         gateway: "fe80::5efe:131.107.25.1",
                         netmask: "ffff.ffff.ffff.ffff.0.0.0.0",
-                        vlanId: [10555, 106]
+                        vlanIds: [10555, 106]
                     }
                 }
             ];
@@ -420,7 +445,7 @@ describe('Install OS Job', function () {
                         ipAddr: "192.168.1.29",
                         gateway: "192.168.1.1",
                         netmask: "255.255.255.0"
-                        //vlanId: ['104', '105']
+                        //vlanIds: ['104', '105']
                     }
                 }
             ];
