@@ -22,13 +22,49 @@ describe('Emc Redfish Catalog Job', function () {
         elementMembers = {
             body: {
                 Members: [
-                    { '@odata.id':'/redfish/v1/Chassis/0/Elements/0'},
-                    { '@odata.id':'/redfish/v1/Chassis/0/Elements/' }
+                    { '@odata.id':'/redfish/v1/Chassis/0/Elements/0'}
                 ]
             }
         },
         elementData = {
-            body: [{ data: 'data' }]
+            body: {
+                Dimms:
+                {'@odata.id':'/redfish/v1/Chassis/0/Elements/Dimms' }
+            }
+        },
+
+        subElementData = {
+            body: {
+                "@odata.context": "/redfish/v1/$metadata#EmcDimmCollection.EmcDimmCollection",
+                "@odata.type": "#EmcDimmCollection.EmcDimmCollection",
+                "@odata.id": "/redfish/v1/Chassis/0/Elements/0/Dimms",
+                "Id": "DimmCollection",
+                "Name": "Mock HCI System DIMM Collection",
+                "Members@odata.count": 4,
+                "Members": [
+                    {
+                        "@odata.id": "/redfish/v1/Chassis/0/Elements/0/Dimms/0"
+                    },
+                ]
+            }
+        },
+        subElementData2 = {
+            body: {
+                "@odata.context": "/redfish/v1/$metadata#EmcDimm.EmcDimm",
+                "@odata.type": "#EmcDimm.1.0.0.EmcDimm",
+                "@odata.id": "/redfish/v1/Chassis/0/Elements/0/Dimms/0",
+                "Id": "0",
+                "Name": "Mock HCI System DIMM Info",
+                "DimmType": "Ddr4",
+                "Manufacturer": "Micron",
+                "SizeGB": 8,
+                "SpeedMhz": 2133,
+                "PartNumber": "MI-DDR4-08-2133",
+                "SerialNumber": "MI00000000",
+                "EmcPartNumber": "999-999-300A-00",
+                "EmcSerialNumber": "EMCDDR000000"
+            }
+
         };
         var setup = sandbox.stub().resolves();
         var clientRequest = sandbox.stub();
@@ -70,11 +106,14 @@ describe('Emc Redfish Catalog Job', function () {
     });
     
     describe('run catalog elements', function() {
-        it('should successfully run job', function() { 
+        it('should successfully run job', function() {
             clientRequest.onCall(0).resolves(rootData);
             clientRequest.onCall(1).resolves(elementMembers);
             clientRequest.onCall(2).resolves(elementData);
             clientRequest.onCall(3).resolves(elementData);
+            clientRequest.onCall(4).resolves(subElementData);
+            clientRequest.onCall(5).resolves(subElementData2);
+            clientRequest.onCall(6).resolves(subElementData2);
             redfishJob._run();
             return redfishJob._deferred
             .then(function() {
