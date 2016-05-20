@@ -511,5 +511,48 @@ describe('Install OS Job', function () {
             expect(function() { job._validateOptions(); })
                 .to.throw(Error, 'Invalid ipv6 netmask.');
         });
+
+        it('should throw error when mountPoint is not specified', function() {
+            job.options.installPartitions = [{ size:'500', fsType:'ext3' }];
+            return expect(job._validateOptions.bind(job,{}))
+                   .to.throw('mountPoint is required');
+        });
+
+        it('should throw error when mountPoint is not a string', function() {
+            job.options.installPartitions = [{ mountPoint:{}, size:'500', fsType:'ext3' }];
+            return expect(job._validateOptions.bind(job,{}))
+                   .to.throw('mountPoint must be a string');
+        });
+
+        it('should throw error when size is not specified', function() {
+            job.options.installPartitions = [{ mountPoint:'/boot', fsType:'ext3' }];
+            return expect(job._validateOptions.bind(job,{}))
+                   .to.throw('size is required');
+        });
+
+        it('should throw error when size is not a string', function() {
+            job.options.installPartitions = [{ mountPoint:'/boot', size:{}, fsType:'ext3' }];
+            return expect(job._validateOptions.bind(job,{}))
+                   .to.throw('size must be a string');
+        });
+
+        it('should throw error when size is not a number string and not "auto"', function() {
+            job.options.installPartitions = [{ mountPoint:'/boot', size:"abc", fsType:'ext3' }];
+            return expect(job._validateOptions.bind(job,{}))
+                   .to.throw('size must be a number string or "auto"');
+        });
+
+        it('should throw error when fsType is not a string', function() {
+            job.options.installPartitions = [{ mountPoint:'/boot', size:'500', fsType:{} }];
+            return expect(job._validateOptions.bind(job,{}))
+                   .to.throw('fsType must be a string');
+        });
+
+        it('should correct fsType when mountPoint is swap but fsType is not swap', function() {
+            job.options.installPartitions = [{ mountPoint:'swap', size:'500', fsType:'ext3' }];
+            job._validateOptions.bind(job,{})();
+            expect(job.options.installPartitions[0].fsType).to.equal('swap');
+        });
+
     });
 });
