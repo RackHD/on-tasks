@@ -5,7 +5,9 @@ var uuid = require('node-uuid');
 
 describe('update-lookups-job', function() {
     var waterline = { catalogs: {}, lookups: {} },
-        UpdateLookupsJob;
+        UpdateLookupsJob,
+        job,
+        snmpObject;
 
     before(function() {
         helper.setupInjector([
@@ -13,13 +15,12 @@ describe('update-lookups-job', function() {
             helper.require('/lib/jobs/update-lookups-snmp.js'),
             helper.di.simpleWrapper(waterline, 'Services.Waterline')
         ]);
-
+        this.sandbox = sinon.sandbox.create();
         UpdateLookupsJob = helper.injector.get('Job.Snmp.Update.Lookups');
     });
 
-    it('should update lookups from cataloged snmp data', function() {
-        var job = new UpdateLookupsJob({}, { target: 'someNodeId'}, uuid.v4());
-        var snmpObject = {
+    beforeEach(function() {
+        snmpObject = {
             node: 'someNodeId',
             source: 'snmp-1',
             data: {
@@ -35,14 +36,44 @@ describe('update-lookups-job', function() {
                 "IF-MIB::ifPhysAddress_999001": "8:0:27:1e:27:4e"
             }
         };
-        waterline.catalogs.findLatestCatalogOfSource = sinon.stub().resolves(snmpObject);
-        waterline.lookups.upsertNodeToMacAddress = sinon.stub().resolves();
+        waterline.catalogs.findLatestCatalogOfSource = this.sandbox.stub().resolves(snmpObject);
+        waterline.lookups.upsertNodeToMacAddress = this.sandbox.stub().resolves();
+        job = new UpdateLookupsJob({}, { target: 'someNodeId'}, uuid.v4());
+    });
+
+    afterEach(function() {
+        this.sandbox.restore();
+    });
+
+    it('should update lookups from cataloged snmp data', function() {
         return job._run()
         .then(function() {
             expect(waterline.lookups.upsertNodeToMacAddress).to.be.calledThrice;
             expect(waterline.lookups.upsertNodeToMacAddress).to.be
+                .calledWithExactly('someNodeId', '08:00:27:aa:c8:8e');
+            expect(waterline.lookups.upsertNodeToMacAddress).to.be
                 .calledWithExactly('someNodeId', '08:00:27:ca:c6:0a');
+            expect(waterline.lookups.upsertNodeToMacAddress).to.be
+                .calledWithExactly('someNodeId', '08:00:27:1e:27:4e');
         });
     });
 
+    it('should fail if lookups inserts fail', function() {
+        var error = new Error('some Waterline error');
+        waterline.lookups.upsertNodeToMacAddress.rejects(error);
+        this.sandbox.stub(job, '_done').resolves();
+        return job._run()
+        .then(function() {
+            expect(job._done.args[0][0]).to.deep.equal(error);
+        });
+    });
+
+    it('should fail if snmp-1 data is unavailable', function() {
+        waterline.catalogs.findLatestCatalogOfSource.resolves(undefined);
+        this.sandbox.stub(job, '_done').resolves();
+        return job._run()
+        .then(function() {
+            expect(job._done.args[0][0]).to.deep.equal(new Error('snmpData should be defined'));
+        });
+    });
 });
