@@ -237,6 +237,9 @@ describe("Task", function () {
             definition.options = {
                 server: '{{ api.server }}',
                 baseRoute: '{{ api.base }}',
+                templatesRoute: '{{ api.templates }}',
+                profilesRoute: '{{ api.profiles }}',
+                lookupsRoute: '{{ api.lookups }}',
                 filesRoute: '{{ api.files }}',
                 nodesRoute: '{{ api.nodes }}',
                 testConfigValue: 'test: {{ server.testConfigValue }}'
@@ -246,6 +249,9 @@ describe("Task", function () {
             return task.run().then(function() {
                 expect(task.options.server).to.equal(server);
                 expect(task.options.baseRoute).to.equal(server + '/api/current');
+                expect(task.options.templatesRoute).to.equal(server + '/api/current/templates');
+                expect(task.options.profilesRoute).to.equal(server + '/api/current/profiles');
+                expect(task.options.lookupsRoute).to.equal(server + '/api/current/lookups');
                 expect(task.options.filesRoute).to.equal(server + '/api/current/files');
                 expect(task.options.nodesRoute).to.equal(server + '/api/current/nodes');
                 expect(task.options.testConfigValue)
