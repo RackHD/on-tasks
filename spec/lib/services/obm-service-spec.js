@@ -7,17 +7,20 @@ describe('OBM Service', function() {
     var ObmService;
     var obmService;
     var Logger;
+    var encryption;
 
     before('OBM Service before', function() {
         helper.setupInjector([
             helper.require('/lib/services/obm-service'),
             helper.require('/lib/services/ipmi-obm-service'),
             helper.require('/lib/services/base-obm-service'),
-            helper.di.simpleWrapper({ skus: {} }, 'Services.Waterline')
+            helper.di.simpleWrapper({ skus: {}, nodes: {}, obms: {}}, 'Services.Waterline')
         ]);
         ObmService = helper.injector.get('Task.Services.OBM');
         Logger = helper.injector.get('Logger');
+        encryption = helper.injector.get('Services.Encryption');
         sinon.stub(Logger.prototype, 'log');
+        return encryption.start();
     });
 
     after('OBM Service after', function() {

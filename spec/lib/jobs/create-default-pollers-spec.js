@@ -34,19 +34,20 @@ describe("Job.Pollers.CreateDefault", function () {
         waterline.workitems = {
             findOrCreate: sinon.stub().resolves()
         };
-        waterline.nodes = {
-            needByIdentifier: sinon.stub().resolves({
-                obmSettings: [{
-                    service: 'redfish-obm-service',
-                    config: {}
-                }]
-            })
-        };
         waterline.catalogs = {
             findMostRecent: sinon.stub().resolves({
                 id: 'bc7dab7e8fb7d6abf8e7d6a1'
             })
         };
+        waterline.obms = {
+            findByNode: sinon.stub().resolves(
+                {
+                    service: 'redfish-obm-service',
+                    config: {}
+                }
+            )
+        };
+
         taskProtocol.subscribeActiveTaskExists = sinon.stub().returns(Promise.resolve({
             dispose: sinon.stub()
         }));
@@ -191,6 +192,7 @@ describe("Job.Pollers.CreateDefault", function () {
             })
         };
 
+        waterline.obms.findByNode.resolves();
         var job = new CreateDefaultPollers(
             { nodeId: nodeId, pollers: pollers },
             { graphId: uuid.v4() },
