@@ -79,6 +79,39 @@ describe("Job.Graph.Run", function () {
         });
     });
 
+    it('should run a graph with a proxy', function() {
+        var proxy = "12.1.1.1";
+        var job = new RunGraphJob(taskOptions, {proxy: proxy}, uuid.v4());
+        job._run();
+
+        expect(job._subscribeGraphFinished).to.have.been.calledOnce;
+        var cb = job._subscribeGraphFinished.firstCall.args[0];
+
+        setImmediate(function() {
+            cb(Constants.Task.States.Succeeded);
+        });
+
+        return job._deferred
+        .then(function() {
+            expect(workflowTool.runGraph).to.have.been.calledOnce;
+            expect(workflowTool.runGraph).to.have.been.calledWith(
+                job.graphTarget,
+                taskOptions.graphName,
+                taskOptions.graphOptions,
+                Constants.Task.DefaultDomain,
+                proxy
+            );
+
+            // Assert here that we override the sub-graphs instanceId so that
+            // our AMQP subscription to the graph finished event is actually
+            // listening on the right routing key!!!
+            expect(job.graphId).to.be.ok;
+            expect(workflowTool.runGraph.firstCall.args[2])
+                .to.have.property('instanceId')
+                .that.equals(job.graphId);
+        });
+    });
+    
     it('should run a graph against a target (nodeId)', function() {
         taskOptions.graphOptions.target = 'testnodeid';
 

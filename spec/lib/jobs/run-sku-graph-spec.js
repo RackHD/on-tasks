@@ -101,6 +101,51 @@ describe("Job.Graph.RunSku", function () {
         });
     });
 
+    it('should run a graph with a proxy', function() {
+        waterline.nodes.findByIdentifier.resolves(fakeNode);
+        waterline.skus.needOne.resolves(fakeSku);
+        var proxy = "12.1.1.1";
+        var job = new RunSkuGraphJob(
+                { nodeId: fakeNode.id },
+                { target: fakeNode.id, proxy: proxy }, 
+                uuid.v4()
+                );
+        job._run();
+
+        expect(job._subscribeGraphFinished).to.have.been.calledOnce;
+        var cb = job._subscribeGraphFinished.firstCall.args[0];
+
+        setImmediate(function() {
+            cb(Constants.Task.States.Succeeded);
+        });
+
+        return job._deferred
+        .then(function() {
+            expect(waterline.nodes.findByIdentifier).to.have.been.calledOnce;
+            expect(waterline.nodes.findByIdentifier).to.have.been.calledWith(fakeNode.id);
+
+            expect(waterline.skus.needOne).to.have.been.calledOnce;
+            expect(waterline.skus.needOne).to.have.been.calledWith({ id: fakeNode.sku });
+
+            expect(workflowTool.runGraph).to.have.been.calledOnce;
+            expect(workflowTool.runGraph).to.have.been.calledWith(
+                fakeNode.id,
+                fakeSku.discoveryGraphName,
+                fakeSku.discoveryGraphOptions,
+                null,
+                proxy
+            );
+
+            // Assert here that we override the sub-graphs instanceId so that
+            // our AMQP subscription to the graph finished event is actually
+            // listening on the right routing key!!!
+            expect(job.graphId).to.be.ok;
+            expect(workflowTool.runGraph.firstCall.args[2])
+                .to.have.property('instanceId')
+                .that.equals(job.graphId);
+        });
+    });
+    
     it('should fail on a failed graph', function() {
         waterline.nodes.findByIdentifier.resolves(fakeNode);
         waterline.skus.needOne.resolves(fakeSku);
