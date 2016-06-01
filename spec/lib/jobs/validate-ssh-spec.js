@@ -4,6 +4,7 @@
 var uuid = require('node-uuid');
 describe('Validate Ssh', function() {
     var waterline = { lookups: {}, nodes: {} },
+        encryption,
         ValidateSshJob,
         validateSshJob,
         Emitter = require('events').EventEmitter,
@@ -27,6 +28,8 @@ describe('Validate Ssh', function() {
 
         this.sandbox = sinon.sandbox.create();
         ValidateSshJob = helper.injector.get('Job.Ssh.Validation');
+        encryption = helper.injector.get('Services.Encryption');
+        return encryption.start();
     });
 
     describe('_run', function() {
@@ -59,6 +62,8 @@ describe('Validate Ssh', function() {
 
         it('should use lookups to test ssh credentials and update a node with valid sshSettings',
         function() {
+            sshSettings.host = 'testhost';
+
             return validateSshJob._run()
             .then(function() {
                 expect(validateSshJob.testCredentials).to.be.calledOnce
@@ -66,7 +71,21 @@ describe('Validate Ssh', function() {
                 expect(waterline.lookups.findByTerm).to.be.calledOnce
                     .and.calledWithExactly('nodeId');
                 expect(waterline.nodes.updateByIdentifier).to.be.calledOnce
-                    .and.calledWithExactly('nodeId', {sshSettings: sshSettings});
+                    .and.calledWith('nodeId');
+
+                var settings = waterline.nodes.updateByIdentifier.firstCall.args[1];
+                expect(settings).to.have.property('sshSettings');
+                settings = settings.sshSettings;
+
+                expect(settings).to.have.property('host').that.equals(sshSettings.host);
+                expect(settings).to.have.property('user').that.equals(sshSettings.username);
+                expect(settings).to.have.property('password')
+                    .that.not.equal(sshSettings.password);
+                expect(settings).to.have.property('privateKey')
+                    .that.not.equal(sshSettings.privateKey);
+
+                expect(encryption.decrypt(settings.password)).to.equal(sshSettings.password);
+                expect(encryption.decrypt(settings.privateKey)).to.equal(sshSettings.privateKey);
             });
         });
 
@@ -120,7 +139,8 @@ describe('Validate Ssh', function() {
                 host: '1.2.3.4',
                 user:'user',
                 password: 'pass',
-                privateKey: 'key'
+                privateKey: 'key',
+                tryKeyboard: true
             });
         });
 
