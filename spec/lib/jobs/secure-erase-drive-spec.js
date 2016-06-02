@@ -127,9 +127,9 @@ describe(require('path').basename(__filename), function () {
             var options = {
                 eraseSettings: [
                     {
-                        disks: ['1'],
+                        disks: [1],
                         tool: 'hdparm',
-                        arg: '1'
+                        arg: 'security-erase1'
                     }
                 ]
             };
@@ -137,38 +137,45 @@ describe(require('path').basename(__filename), function () {
             job = new SEJob(options, { target: nodeId }, uuid.v4());
 
             expect(function() { job._validateOptions(); })
-                .to.throw('hdparm doesn\'t support arg 1' );
+                .to.throw('hdparm doesn\'t support arg security-erase1' );
          });
 
-         it('should change disk number to string', function() {
+         it('should fail when the arg is custom= for scrub', function() {
             var options = {
                 eraseSettings: [
                     {
-                        disks: ['sda', 2],
-                        tool: 'hdparm',
-                        arg: 'secure-erase'
-                    },
-                    {
-                        disks: ['1']
+                        disks: [1],
+                        tool: 'scrub',
+                        arg: 'custom='
                     }
                 ]
             };
 
-            var eraseSettings= [
-                {
-                    disks: ['sda', '2'],
-                    tool: 'hdparm',
-                    arg: 'secure-erase'
-                },
-                {
-                    disks: ['1']
-                }
-            ];
+            job = new SEJob(options, { target: nodeId }, uuid.v4());
+
+            expect(function() { job._validateOptions(); })
+                .to.throw('scrub doesn\'t support arg custom=' );
+         });
+
+         it('should success when the arg is custom=a for scrub', function(done) {
+            var options = {
+                eraseSettings: [
+                    {
+                        disks: [1],
+                        tool: 'scrub',
+                        arg: 'custom=a'
+                    }
+                ]
+            };
 
             job = new SEJob(options, { target: nodeId }, uuid.v4());
 
-            expect(job._validateOptions())
-                .to.deep.equal(eraseSettings);
+            try{
+                job._validateOptions();
+                done();
+            } catch(e) {
+                done(e);
+            }
          });
     });
 
@@ -181,7 +188,7 @@ describe(require('path').basename(__filename), function () {
         it('should make sure the input format is correct', function() {
             job.eraseSettings = [
                 {
-                    disks: ['sda', '2'],
+                    disks: ['sda', 2],
                     tool: 'hdparm',
                     arg: 'secure-erase'
                 },
@@ -227,7 +234,7 @@ describe(require('path').basename(__filename), function () {
         it('should verify the tool cannot support the disk (disk is number)', function() {
             job.eraseSettings = [
                 {
-                    disks: ['1'],
+                    disks: [1],
                     tool: 'hdparm'
                 }
             ];
@@ -240,7 +247,7 @@ describe(require('path').basename(__filename), function () {
             diskInfo[0].esxiWwid = "/dev/disk/by-id/ata-SATADOM-SV_3SE_20150522AA9992050074";
             job.eraseSettings = [
                 {
-                    disks: ['1'],
+                    disks: [1],
                     tool: 'sg_sanitize'
                 }
             ];
@@ -252,7 +259,7 @@ describe(require('path').basename(__filename), function () {
         it('should throw error if no catalog info matches eraseSetting', function() {
             job.eraseSettings = [
                 {
-                    disks: ['2'],
+                    disks: [2],
                     tool: 'sg_sanitize'
                 }
             ];
@@ -311,7 +318,7 @@ describe(require('path').basename(__filename), function () {
                     arg: 'secure-erase'
                 },
                 {
-                    disks: ['3']
+                    disks: [3]
                 }
             ];
 
@@ -431,7 +438,6 @@ describe(require('path').basename(__filename), function () {
             cataSearchMock.getDriveIdCatalogExt = sandbox.stub().resolves(cataDiskInfo);
 
             sandbox.stub(job, '_subscribeActiveTaskExists').resolves();
-            sandbox.stub(job, '_subscribeRequestProperties').resolves();
         });
 
         afterEach('Secure erase job check run sequence', function() {
