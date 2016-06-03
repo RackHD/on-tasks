@@ -1270,7 +1270,7 @@ describe("Task Parser", function () {
                     expect(result.store).to.be.true;
                     expect(result.source).to.equal('driveId');
                     var driveIdLog = result.data;
-                    expect(driveIdLog).that.is.an('array').with.length(2);
+                    expect(driveIdLog).that.is.an('array').with.length(4);
                     expect(driveIdLog[0]).property('identifier').to.equal(0);
                     expect(driveIdLog[0]).property('esxiWwid').to.equal
                     ("t10.ATA_____SATADOM2DSV_3SE__________________________20150522AA9992050074");
