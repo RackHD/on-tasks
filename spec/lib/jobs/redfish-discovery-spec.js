@@ -38,6 +38,7 @@ describe('Redfish Discovery Job', function () {
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/redfish-discovery.js'),
             helper.require('/lib/utils/job-utils/redfish-tool.js'),
+            helper.require('/lib/utils/job-utils/http-tool.js'),
             helper.di.simpleWrapper(waterline,'Services.Waterline')
         ]);
         waterline.nodes = {

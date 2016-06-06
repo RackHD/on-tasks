@@ -1,5 +1,4 @@
-// Copyright 2016, EMC, Inc.
-/* jshint node:true */
+
 
 'use strict';
 
@@ -92,6 +91,7 @@ describe('Job.Redfish', function () {
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/redfish-job.js'),
             helper.require('/lib/utils/job-utils/redfish-tool.js'),
+            helper.require('/lib/utils/job-utils/http-tool.js'),
             helper.di.simpleWrapper(waterline,'Services.Waterline')
         ]);
         context.Jobclass = helper.injector.get('Job.Redfish');
