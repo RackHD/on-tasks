@@ -12,6 +12,7 @@ var uuid = require('node-uuid'),
         uri: 'http://testuri',
         user: 'user',
         password: 'password',
+        root: '/',
         workItemId: 'testworkitemid',
         node: 'xyz'
     },
@@ -29,12 +30,55 @@ var uuid = require('node-uuid'),
             Thermal: {'@odata.id': 'data'},
             LogServices: {'@odata.id': 'data'},
             Managers: {'@odata.id': 'data'},
-            Oem: { Emc: { FabricService: {'@odata.id': 'data'} }}
+            Oem: {
+                Emc: {FabricService: {'@odata.id': 'data'}}
+            }
+        }
+    },
+    listOemElementThermalData = {
+        body: {
+            Members: [
+                {'@odata.id': '/redfish/v1/Chassis/0/Elements/0'}
+            ],
+            Oem: {
+                Emc: {Elements: {'@odata.id': 'data'}}
+            },
+            LogServices: {'@odata.id': 'data'},
+            Managers: {'@odata.id': 'data'},
+            Thermal:
+            {'@odata.id':'/redfish/v1/Chassis/0/Elements/0/Thermal'
+            }
+        }
+    },
+    entryDataOemElementThermal = {
+        body: {
+            "Id": "Thermal",
+            "Name": "Mock HCI Module Thermal Info",
+            "Temperatures": [
+                {
+                    "@odata.id": "/redfish/v1/Chassis/0/Elements/0/Thermal#/Temperatures/0",
+                    "MemberId": "0",
+                    "Name": "Element Temperature Sensor",
+                    "Status": {
+                        "State": "Enabled"
+                    },
+                    "ReadingCelsius": 32
+                },
+                {
+                    "@odata.id": "/redfish/v1/Chassis/0/Elements/0/Thermal#/Temperatures/1",
+                    "MemberId": "1",
+                    "Name": "CPU0 Temperature",
+                    "Status": {
+                        "State": "Enabled"
+                    },
+                    "ReadingCelsius": -39
+                }
+            ]
         }
     },
     chassisData = { body: { chassis: 'data' } },
-    logData = { body: { Entries: {'@odata.id': 'data'}, 
-                        Members: [{'@odata.id': 'data' }] } 
+    logData = { body: { Entries: {'@odata.id': 'data'},
+                        Members: [{'@odata.id': 'data' }] }
     },
     entryData = { body: { data: 'data' } };
 
@@ -157,6 +201,19 @@ describe('Job.Redfish', function () {
             return redfishJob.collectData(data, 'fabricservice')
             .then(function(data) {
                 expect(data).to.deep.equal(entryData.body);
+            });
+        });
+
+        it("should run collectData for Emc Oem Elements Thermal", function() {
+            redfishTool.clientRequest.onCall(0).resolves(listOemElementThermalData);
+            redfishTool.clientRequest.onCall(1).resolves(listOemElementThermalData);
+            redfishTool.clientRequest.onCall(2).resolves(listOemElementThermalData);
+            redfishTool.clientRequest.onCall(3).resolves(listOemElementThermalData);
+            redfishTool.clientRequest.onCall(4).resolves(listOemElementThermalData);
+            redfishTool.clientRequest.onCall(5).resolves(entryDataOemElementThermal);
+            return redfishJob.collectData(data, 'elements.thermal')
+            .then(function(data) {
+                expect(data[0]).to.deep.equal(entryDataOemElementThermal.body);
             });
         });
         
