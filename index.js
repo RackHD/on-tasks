@@ -17,5 +17,6 @@ module.exports = {
             core.helper.requireGlob(__dirname + '/lib/task-data/**/*.js'),
             'Task.taskLibrary'
         )
-    ])
+    ]),
+    taskSchemas: core.helper.requireGlob(__dirname + '/lib/task-data/schemas/*.json')
 };

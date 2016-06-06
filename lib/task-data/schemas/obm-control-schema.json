@@ -1,0 +1,48 @@
+{
+    "$schema": "rackhd/schemas/v1/task-schema",
+    "id": "rackhd/schemas/v1/tasks/obm-control",
+    "copyright": "Copyright 2016, EMC, Inc.",
+    "title": "OBM Control",
+    "description": "The schema for all obm control tasks",
+    "describeJob": "Job.Obm.Control",
+    "definitions": {
+        "ObmAction": {
+            "enum": [
+                "clearSEL",
+                "identifyOff",
+                "identifyOn",
+                "NMI",
+                "powerButton",
+                "powerOff",
+                "powerOn",
+                "powerStatus",
+                "reboot",
+                "setPxeBoot"
+            ]
+        },
+        "ObmService": {
+            "enum": [
+                "amt-obm-service",
+                "apc-obm-service",
+                "ipmi-obm-service",
+                "noop-obm-service",
+                "panduit-obm-service",
+                "raritan-obm-service",
+                "redfish-obm-service",
+                "servertech-obm-service",
+                "vbox-obm-service",
+                "vmrun-obm-service"
+            ]
+        }
+    },
+    "properties": {
+        "action": {
+            "$ref": "#/definitions/ObmAction",
+            "readonly": true
+        },
+        "obmService": {
+            "$ref": "#/definitions/ObmService"
+        }
+    },
+    "required": ["action"]
+}

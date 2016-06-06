@@ -1,0 +1,44 @@
+{
+    "id": "rackhd/schemas/v1/task-schema",
+    "type": "object",
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "title": "RackHD Tasks Schema Extention",
+    "description": "The extension for RackHD tasks schema, all RackHD tasks schema should adhere to this schema.",
+    "allOf": [
+        {
+            "$ref": "http://json-schema.org/draft-04/schema"
+        }
+    ],
+    "definitions": {
+        "describeJob": {
+            "type": "string",
+            "description": "This property is required to point to a job's di injectable name."
+        },
+        "copyright": {
+            "type": "string",
+            "description": "This attribute shall contain the copyright notice for the schema."
+        },
+        "readonly": {
+            "type": "boolean",
+            "description": "This property shall designate a property to be readoly when set to true"
+        },
+        "$timeout": {
+            "type": "integer",
+            "description": "The timeout for this task, unit is milliseconds"
+        }
+    },
+    "properties": {
+        "describeJob": {
+            "$ref": "#/definitions/describeJob"
+        },
+        "copyright": {
+            "$ref": "#/definitions/copyright"
+        },
+        "readonly": {
+            "$ref": "#/definitions/readonly"
+        },
+        "$timeout": {
+            "$ref": "#/definitions/$timeout"
+        }
+    }
+}
