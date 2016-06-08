@@ -89,6 +89,33 @@ describe('JobUtils.WorkflowTool', function() {
                 });
         });
 
+        it('should create and run graph with parent context', function() {
+            return workflowTool.runGraph(nodeId, graphName, graphOptions, graphDomain,
+                                         null, 'parentGraphId', 'taskId')
+                .then(function() {
+                    expect(taskGraphStore.findActiveGraphForTarget)
+                        .to.have.been.calledWith(nodeId);
+                    expect(taskGraphStore.getGraphDefinitions)
+                        .to.have.been.calledWith(graphName);
+                    expect(TaskGraph.create)
+                        .to.have.callCount(1)
+                        .to.have.been.calledWith(graphDomain,
+                            {
+                                definition: graphDefinition,
+                                options: graphOptions,
+                                context: {
+                                  target: nodeId,
+                                  _parent: { graphId: 'parentGraphId', taskId: 'taskId' }
+                                }
+                            }
+                        );
+                    expect(graphInstance.persist).to.have.callCount(1);
+                    expect(taskGraphProtocol.runTaskGraph)
+                        .to.have.been.calledWith(graphInstanceId, graphDomain)
+                        .to.have.callCount(1);
+                });
+        });
+
        it('should create and run graph with a proxy', function() {
             return workflowTool.runGraph(nodeId, graphName, graphOptions, graphDomain, proxy)
                 .then(function() {
