@@ -604,7 +604,7 @@ describe("Task", function () {
             var definition = _.cloneDeep(noopDefinition);
 
             function testTimeout(val) {
-                definition.options.$taskTimeout = val;
+                definition.options._taskTimeout = val;
                 return Task.create(definition, {}, {})
                 .then(function(task) {
                     task.job = { run: sinon.stub() };
@@ -617,14 +617,14 @@ describe("Task", function () {
                 return testTimeout(val)
                 .then(function(task) {
                     expect(task).to.have.property('timer').that.is.an('object');
-                    expect(task.$taskTimeout).to.equal(24 * 60 * 60 * 1000);
+                    expect(task._taskTimeout).to.equal(24 * 60 * 60 * 1000);
                 });
             });
         });
 
         it("should not timeout when value is 0", function() {
             var definition = _.cloneDeep(noopDefinition);
-            definition.options.$taskTimeout = 0;
+            definition.options._taskTimeout = 0;
             definition.options.delay = 1;
             return Task.create(definition, {}, {})
             .then(function(task) {
@@ -639,7 +639,7 @@ describe("Task", function () {
 
         it("should not timeout when value is -1", function() {
             var definition = _.cloneDeep(noopDefinition);
-            definition.options.$taskTimeout = -1;
+            definition.options._taskTimeout = -1;
             definition.options.delay = 1;
             return Task.create(definition, {}, {})
             .then(function(task) {
@@ -652,9 +652,9 @@ describe("Task", function () {
             });
         });
 
-        it("should timeout with options.$taskTimeout", function() {
+        it("should timeout with options._taskTimeout", function() {
             var definition = _.cloneDeep(noopDefinition);
-            definition.options.$taskTimeout = 1;
+            definition.options._taskTimeout = 1;
             definition.options.delay = 2;
             return Task.create(definition, {}, {})
             .then(function(task) {
