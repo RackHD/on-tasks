@@ -12,6 +12,7 @@ describe("Task", function () {
     var Constants;
     var taskProtocol = {};
     var waterline;
+    var env;
     var Errors;
     var catalogSearch;
     var _;
@@ -40,6 +41,7 @@ describe("Task", function () {
         Constants = helper.injector.get('Constants');
         Promise = helper.injector.get('Promise');
         var Logger = helper.injector.get('Logger');
+        env = helper.injector.get('Services.Environment');
         Logger.prototype.log = sinon.spy();
         Task = helper.injector.get('Task.Task');
         _ = helper.injector.get('_');
@@ -64,10 +66,40 @@ describe("Task", function () {
 
     beforeEach('task-spec beforeEach', function() {
         this.sandbox = sinon.sandbox.create();
+        this.sandbox.stub(env, 'get').withArgs('config', {}, ['global']).resolves();
+        this.sandbox.stub(Task.prototype, 'getSkuId').resolves();
     });
 
     afterEach('task-spec beforeEach', function() {
         this.sandbox.restore();
+    });
+
+    describe('get path', function() {
+        it('should get the value for a path', function() {
+            var getPath = Task.prototype.getPath.bind({ getPath: Task.prototype.getPath });
+            var obj = {
+                'foo': {
+                    'bar': {
+                        'baz': 'value'
+                    }
+                }
+            };
+            var path = 'foo.bar.baz';
+            expect(getPath(obj, path)).to.equal('value');
+        });
+
+        it('should return undefined if value does not exist', function() {
+            var getPath = Task.prototype.getPath.bind({ getPath: Task.prototype.getPath });
+            var obj = {
+                'foo': {
+                    'bar': {
+                        'notbaz': 'notvalue'
+                    }
+                }
+            };
+            var path = 'foo.bar.baz';
+            expect(getPath(obj, path)).to.equal(undefined);
+        });
     });
 
     describe("option rendering", function() {
@@ -86,10 +118,12 @@ describe("Task", function () {
                 testRenderVal: 'test rendered',
                 toRenderVal: 'val: {{ options.testRenderVal }}'
             };
-            var task = Task.create(definition, {}, {});
-            return task.run().then(function() {
-                expect(task.options.toRenderVal).to.equal(
-                    'val: ' + definition.options.testRenderVal);
+            return Task.create(definition, {}, {})
+            .then(function(task) {
+                return task.run().then(function() {
+                    expect(task.options.toRenderVal).to.equal(
+                        'val: ' + definition.options.testRenderVal);
+                });
             });
         });
 
@@ -97,9 +131,11 @@ describe("Task", function () {
             definition.options = {
                 toRenderVal: 'val: {{ options.doesNotExist | DEFAULT }}'
             };
-            var task = Task.create(definition, {}, {});
-            return task.run().then(function() {
-                expect(task.options.toRenderVal).to.equal('val: DEFAULT');
+            return Task.create(definition, {}, {})
+            .then(function(task) {
+                return task.run().then(function() {
+                    expect(task.options.toRenderVal).to.equal('val: DEFAULT');
+                });
             });
         });
 
@@ -107,9 +143,11 @@ describe("Task", function () {
             definition.options = {
                 toRenderVal: 'val: {{ options.doesNotExist || DEFAULT }}'
             };
-            var task = Task.create(definition, {}, {});
-            return task.run().then(function () {
-                expect(task.options.toRenderVal).to.equal('val: DEFAULT');
+            return Task.create(definition, {}, {})
+            .then(function(task) {
+                return task.run().then(function () {
+                    expect(task.options.toRenderVal).to.equal('val: DEFAULT');
+                });
             });
         });
 
@@ -117,9 +155,11 @@ describe("Task", function () {
             definition.options = {
                 toRenderVal: 'val: {{ options.doesNotExist|DEFAULT }}'
             };
-            var task = Task.create(definition, {}, {});
-            return task.run().then(function() {
-                expect(task.options.toRenderVal).to.equal('val: DEFAULT');
+            return Task.create(definition, {}, {})
+            .then(function(task) {
+                return task.run().then(function() {
+                    expect(task.options.toRenderVal).to.equal('val: DEFAULT');
+                });
             });
         });
 
@@ -127,9 +167,11 @@ describe("Task", function () {
             definition.options = {
                 toRenderVal: 'val: {{ options.doesNotExist | options.stillNotThere | DEFAULT }}'
             };
-            var task = Task.create(definition, {}, {});
-            return task.run().then(function() {
-                expect(task.options.toRenderVal).to.equal('val: DEFAULT');
+            return Task.create(definition, {}, {})
+            .then(function(task) {
+                return task.run().then(function() {
+                    expect(task.options.toRenderVal).to.equal('val: DEFAULT');
+                });
             });
         });
 
@@ -140,9 +182,11 @@ describe("Task", function () {
                 'options.stillNotThere | ' +
                 'DEFAULT }}'
             };
-            var task = Task.create(definition, {}, {});
-            return task.run().then(function() {
-                expect(task.options.toRenderVal).to.equal('val: DEFAULT');
+            return Task.create(definition, {}, {})
+            .then(function(task) {
+                return task.run().then(function() {
+                    expect(task.options.toRenderVal).to.equal('val: DEFAULT');
+                });
             });
         });
 
@@ -153,10 +197,12 @@ describe("Task", function () {
                 },
                 toRenderVal: 'val: {{ options.renderOptions.testRenderVal }}'
             };
-            var task = Task.create(definition, {}, {});
-            return task.run().then(function() {
-                expect(task.options.toRenderVal)
-                    .to.equal('val: ' + definition.options.renderOptions.testRenderVal);
+            return Task.create(definition, {}, {})
+            .then(function(task) {
+                return task.run().then(function() {
+                    expect(task.options.toRenderVal)
+                        .to.equal('val: ' + definition.options.renderOptions.testRenderVal);
+                });
             });
         });
 
@@ -169,12 +215,14 @@ describe("Task", function () {
                     'val2: {{ options.testRenderVal2 }}'
                 ]
             };
-            var task = Task.create(definition, {}, {});
-            return task.run().then(function() {
-                expect(task.options.toRenderVal).to.deep.equal([
-                    'val1: ' + definition.options.testRenderVal1,
-                    'val2: ' + definition.options.testRenderVal2
-                ]);
+            return Task.create(definition, {}, {})
+            .then(function(task) {
+                return task.run().then(function() {
+                    expect(task.options.toRenderVal).to.deep.equal([
+                        'val1: ' + definition.options.testRenderVal1,
+                        'val2: ' + definition.options.testRenderVal2
+                    ]);
+                });
             });
         });
 
@@ -192,33 +240,59 @@ describe("Task", function () {
                     }
                 }
             };
-            var task = Task.create(definition, {}, {});
-            return task.run().then(function() {
-                expect(task.options.toRenderObject.toRenderArray).to.deep.equal([
-                    'val1: ' + definition.options.testRenderVal1,
-                    'val2: ' + definition.options.testRenderVal2
-                ]);
-                expect(task.options.toRenderObject.toRenderVal.toRenderValNested)
-                    .to.equal(definition.options.testRenderVal1);
+            return Task.create(definition, {}, {})
+            .then(function(task) {
+                return task.run().then(function() {
+                    expect(task.options.toRenderObject.toRenderArray).to.deep.equal([
+                        'val1: ' + definition.options.testRenderVal1,
+                        'val2: ' + definition.options.testRenderVal2
+                    ]);
+                    expect(task.options.toRenderObject.toRenderVal.toRenderValNested)
+                        .to.equal(definition.options.testRenderVal1);
+                });
             });
         });
 
         it("should render own instance values", function() {
+            var test = this;
             definition.options = {
                 instanceId: '{{ task.instanceId }}',
                 nodeId: '{{ task.nodeId }}'
             };
-            var env = helper.injector.get('Services.Environment');
-            var task = Task.create(definition, {}, { target: 'testnodeid' });
-            var getSkuId = this.sandbox.stub(task, 'getSkuId');
-            var subscription = {dispose: this.sandbox.stub()};
-            taskProtocol.subscribeActiveTaskExists = this.sandbox.stub().resolves(subscription);
-            getSkuId.resolves();
-            this.sandbox.stub(env, 'get').withArgs(
-                'config', {}, ['global']).resolves();
-            return task.run().then(function() {
-                expect(task.options.instanceId).to.be.ok.and.to.equal(task.instanceId);
-                expect(task.options.nodeId).to.be.ok.and.to.equal(task.nodeId);
+            return Task.create(definition, {}, { target: 'testnodeid' })
+            .then(function(task) {
+                var subscription = {dispose: test.sandbox.stub()};
+                taskProtocol.subscribeActiveTaskExists = test.sandbox.stub().resolves(subscription);
+                return task.run().then(function() {
+                    expect(task.options.instanceId).to.be.ok.and.to.equal(task.instanceId);
+                    expect(task.options.nodeId).to.be.ok.and.to.equal(task.nodeId);
+                });
+            });
+        });
+
+        it("should defer context rendering if compileOnly is true", function() {
+            definition.options = {
+                bar: 'baz',
+                testRenderVal1: '{{ context.foo }}',
+                testRenderVal2: '{{ options.bar }} - {{ context.foo }}',
+                testRenderVal3: '{{ context.foo }} - {{ options.bar }}',
+                testRenderVal4: '{{ context.foo }} - {{ options.bar }} - {{ context.foo }}',
+                testRenderVal5: '{{ context.foo || options.bar }}',
+                testRenderVal6: '{{ options.testRenderVal1 }}',
+                testRenderVal7: '{{ options.testRenderVal4 }}',
+            };
+
+            return Task.create(definition, { compileOnly: true }, {})
+            .then(function(task) {
+                expect(task.options.testRenderVal1).to.equal('{{context.foo}}');
+                expect(task.options.testRenderVal2).to.equal('baz - {{context.foo}}');
+                expect(task.options.testRenderVal3).to.equal('{{context.foo}} - baz');
+                expect(task.options.testRenderVal4).to.equal(
+                    '{{context.foo}} - baz - {{context.foo}}');
+                expect(task.options.testRenderVal5).to.equal('{{context.foo || options.bar}}');
+                expect(task.options.testRenderVal6).to.equal('{{context.foo}}');
+                expect(task.options.testRenderVal7).to.equal(
+                    '{{context.foo}} - baz - {{context.foo}}');
             });
         });
 
@@ -244,18 +318,19 @@ describe("Task", function () {
                 nodesRoute: '{{ api.nodes }}',
                 testConfigValue: 'test: {{ server.testConfigValue }}'
             };
-            var task = Task.create(definition, {}, {});
-
-            return task.run().then(function() {
-                expect(task.options.server).to.equal(server);
-                expect(task.options.baseRoute).to.equal(server + '/api/current');
-                expect(task.options.templatesRoute).to.equal(server + '/api/current/templates');
-                expect(task.options.profilesRoute).to.equal(server + '/api/current/profiles');
-                expect(task.options.lookupsRoute).to.equal(server + '/api/current/lookups');
-                expect(task.options.filesRoute).to.equal(server + '/api/current/files');
-                expect(task.options.nodesRoute).to.equal(server + '/api/current/nodes');
-                expect(task.options.testConfigValue)
-                    .to.equal('test: ' + Task.configCache.testConfigValue);
+            return Task.create(definition, {}, {})
+            .then(function(task) {
+                return task.run().then(function() {
+                    expect(task.options.server).to.equal(server);
+                    expect(task.options.baseRoute).to.equal(server + '/api/current');
+                    expect(task.options.templatesRoute).to.equal(server + '/api/current/templates');
+                    expect(task.options.profilesRoute).to.equal(server + '/api/current/profiles');
+                    expect(task.options.lookupsRoute).to.equal(server + '/api/current/lookups');
+                    expect(task.options.filesRoute).to.equal(server + '/api/current/files');
+                    expect(task.options.nodesRoute).to.equal(server + '/api/current/nodes');
+                    expect(task.options.testConfigValue)
+                        .to.equal('test: ' + Task.configCache.testConfigValue);
+                });
             });
         });
 
@@ -275,15 +350,16 @@ describe("Task", function () {
                 nodesRoute: '{{ api.nodes }}',
                 testConfigValue: 'test: {{ server.testConfigValue }}'
             };
-            var task = Task.create(definition, {}, {proxy: proxy});
-
-            return task.run().then(function() {
-                expect(task.options.server).to.equal(proxy);
-                expect(task.options.baseRoute).to.equal(proxy + '/api/current');
-                expect(task.options.filesRoute).to.equal(proxy + '/api/current/files');
-                expect(task.options.nodesRoute).to.equal(proxy + '/api/current/nodes');
-                expect(task.options.testConfigValue)
-                    .to.equal('test: ' + Task.configCache.testConfigValue);
+            return Task.create(definition, {}, {proxy: proxy})
+            .then(function(task) {
+                return task.run().then(function() {
+                    expect(task.options.server).to.equal(proxy);
+                    expect(task.options.baseRoute).to.equal(proxy + '/api/current');
+                    expect(task.options.filesRoute).to.equal(proxy + '/api/current/files');
+                    expect(task.options.nodesRoute).to.equal(proxy + '/api/current/nodes');
+                    expect(task.options.testConfigValue)
+                        .to.equal('test: ' + Task.configCache.testConfigValue);
+                });
             });
         });
 
@@ -294,11 +370,13 @@ describe("Task", function () {
                 nested2: '{{ options.nested1 }}',
                 nested3: '{{ options.nested2 }}'
             };
-            var task = Task.create(definition, {}, {});
-            return task.run().then(function() {
-                expect(task.options.nested1).to.equal(definition.options.sourceValue);
-                expect(task.options.nested2).to.equal(definition.options.sourceValue);
-                expect(task.options.nested3).to.equal(definition.options.sourceValue);
+            return Task.create(definition, {}, {})
+            .then(function(task) {
+                return task.run().then(function() {
+                    expect(task.options.nested1).to.equal(definition.options.sourceValue);
+                    expect(task.options.nested2).to.equal(definition.options.sourceValue);
+                    expect(task.options.nested3).to.equal(definition.options.sourceValue);
+                });
             });
         });
 
@@ -317,12 +395,14 @@ describe("Task", function () {
                 ],
                 testVal: '{{#options.testList}}{{ name }}.{{/options.testList}}'
             };
-            var task = Task.create(definition, {}, {});
-            var tempList = _.transform(definition.options.testList, function (result, n) {
-                result.push(n.name);
-            });
-            return task.run().then(function() {
-                expect(task.options.testVal).to.equal(tempList.join('.') + '.');
+            return Task.create(definition, {}, {})
+            .then(function(task) {
+                var tempList = _.transform(definition.options.testList, function (result, n) {
+                    result.push(n.name);
+                });
+                return task.run().then(function() {
+                    expect(task.options.testVal).to.equal(tempList.join('.') + '.');
+                });
             });
         });
 
@@ -332,10 +412,12 @@ describe("Task", function () {
                 testVal1: '{{#options.testSrc1}}{{ options.testSrc1 }}{{/options.testSrc1}}',
                 testVal2: '{{#options.testSrc2}}{{ options.testSrc2 }}{{/options.testSrc2}}'
             };
-            var task = Task.create(definition, {}, {});
-            return task.run().then(function() {
-                expect(task.options.testVal1).to.equal(definition.options.testSrc1);
-                expect(task.options.testVal2).to.equal('');
+            return Task.create(definition, {}, {})
+            .then(function(task) {
+                return task.run().then(function() {
+                    expect(task.options.testVal1).to.equal(definition.options.testSrc1);
+                    expect(task.options.testVal2).to.equal('');
+                });
             });
         });
 
@@ -346,7 +428,10 @@ describe("Task", function () {
 
             beforeEach(function () {
                 definition = _.cloneDeep(noopDefinition);
-                task = Task.create(noopDefinition, {}, {});
+                return Task.create(noopDefinition, {}, {})
+                .then(function(_task) {
+                    task = _task;
+                });
             });
 
             before('Task option rendering errors', function() {
@@ -367,31 +452,33 @@ describe("Task", function () {
 
     describe("serialization", function() {
         it("should serialize to a JSON object", function() {
-            var task = Task.create(noopDefinition, {}, {});
-            expect(task).to.have.property('serialize');
-
-            literalCompare(task, task.serialize());
+            return Task.create(noopDefinition, {}, {})
+            .then(function(task) {
+                expect(task).to.have.property('serialize');
+                literalCompare(task, task.serialize());
+            });
         });
 
         it("should serialize to a JSON string", function() {
             var taskJson;
-            var task = Task.create(noopDefinition, {}, {});
-
-            expect(task).to.have.property('serialize').that.is.a('function');
-            expect(function() {
-                taskJson = JSON.stringify(task);
-            }).to.not.throw(Error);
-
-            var parsed = JSON.parse(taskJson);
-
-            //expect(task).to.deep.equal(parsed);
-            literalCompare(task, parsed);
+            return Task.create(noopDefinition, {}, {})
+            .then(function(task) {
+                expect(task).to.have.property('serialize').that.is.a('function');
+                expect(function() {
+                    taskJson = JSON.stringify(task);
+                }).to.not.throw(Error);
+                var parsed = JSON.parse(taskJson);
+                //expect(task).to.deep.equal(parsed);
+                literalCompare(task, parsed);
+            });
         });
 
         it("should serialize a job for an instance", function() {
-            var task = Task.create(noopDefinition, {}, {});
-            task.instantiateJob();
-            expect(task.serialize().job).to.deep.equal(task.job.serialize());
+            return Task.create(noopDefinition, {}, {})
+            .then(function(task) {
+                task.instantiateJob();
+                expect(task.serialize().job).to.deep.equal(task.job.serialize());
+            });
         });
     });
 
@@ -404,30 +491,33 @@ describe("Task", function () {
         });
 
         it("should get undefined from getSkuId if nodeId is null", function () {
+            Task.prototype.getSkuId.restore();
             _nodeId = null;
-            var task = Task.create(definition, {}, {target: _nodeId});
-            expect(task).to.have.property('getSkuId').that.is.a('function');
-            return task.getSkuId(_nodeId).then(function (node) {
-                expect(typeof(node)).to.equal('undefined');
+            return Task.create(definition, {}, {target: _nodeId})
+            .then(function(task) {
+                return task.getSkuId(_nodeId).then(function (node) {
+                    expect(typeof(node)).to.equal('undefined');
+                });
             });
         });
 
         it("should get sku Id if node.sku exists", function() {
+            Task.prototype.getSkuId.restore();
             var node = {
                 "id": "47bd8fb80abc5a6b5e7b10df",
                 "sku": "56f8db46c6dc1d8e2e562bdd"
             };
-            _nodeId = '47bd8fb80abc5a6b5e7b10df';
-            var task = Task.create(definition, {}, {target: _nodeId});
-            expect(task).to.have.property('getSkuId').that.is.a('function');
-
             waterline.nodes = {
                 needByIdentifier: sinon.stub()
             };
             waterline.nodes.needByIdentifier.resolves(node);
-            return task.getSkuId(_nodeId).then(function (node) {
-                expect(waterline.nodes.needByIdentifier).to.have.been.calledWith(_nodeId);
-                expect(node.sku).to.equal(node.sku);
+            _nodeId = '47bd8fb80abc5a6b5e7b10df';
+            return Task.create(definition, {}, {target: _nodeId})
+            .then(function(task) {
+                return task.getSkuId(_nodeId).then(function (node) {
+                    expect(waterline.nodes.needByIdentifier).to.have.been.calledWith(_nodeId);
+                    expect(node.sku).to.equal(node.sku);
+                });
             });
         });
     });
@@ -441,18 +531,7 @@ describe("Task", function () {
         });
 
         it("should render env options if sku id isn't valid", function() {
-            var env = helper.injector.get('Services.Environment');
-            definition.options = {
-                testRenderVal:  'test rendered',
-                vendor: '{{env.vendorName}}',
-                partNumber: '{{env.detailedInfo.partNumber}}',
-                userName: '{{env.detailedInfo.users.name}}'
-            };
-            _nodeId = '47bd8fb80abc5a6b5e7b10df';
-            var task = Task.create(definition, {}, {target: _nodeId});
-            var getSkuId = this.sandbox.stub(task, 'getSkuId');
-            getSkuId.resolves();
-            this.sandbox.stub(env, 'get').withArgs(
+            env.get.withArgs(
                 'config', {}, ['global']).resolves(
                 {
                     "vendorName": 'emc',
@@ -468,33 +547,27 @@ describe("Task", function () {
                     }
                 }
             );
-            return task.run().then(function() {
-                expect(task.getSkuId).to.have.been.calledOnce;
-                expect(env.get).to.have.been.calledOnce;
-                expect(task.options.vendor).to.equal('emc');
-                expect(task.options.partNumber).to.equal('PN12345');
-                expect(task.options.userName).to.equal('Frank');
+            definition.options = {
+                testRenderVal:  'test rendered',
+                vendor: '{{env.vendorName}}',
+                partNumber: '{{env.detailedInfo.partNumber}}',
+                userName: '{{env.detailedInfo.users.name}}'
+            };
+            _nodeId = '47bd8fb80abc5a6b5e7b10df';
+            return Task.create(definition, {}, {target: _nodeId})
+            .then(function(task) {
+                return task.run().then(function() {
+                    expect(task.getSkuId).to.have.been.calledOnce;
+                    expect(env.get).to.have.been.calledOnce;
+                    expect(task.options.vendor).to.equal('emc');
+                    expect(task.options.partNumber).to.equal('PN12345');
+                    expect(task.options.userName).to.equal('Frank');
+                });
             });
         });
 
         it("should render sku and env options if sku id is valid", function() {
-            var env = helper.injector.get('Services.Environment');
-            definition.options = {
-                testRenderVal: 'test rendered',
-                vendor: '{{env.vendorName}}',
-                partNumber:  '{{env.detailedInfo.partNumber}}',
-                userName: '{{env.detailedInfo.users.name}}',
-                productName: '{{sku.productName}}',
-                chassisType: '{{sku.chassisInfo.chassisType}}',
-                diskNumber: '{{sku.chassisInfo.diskInfo.diskNumber}}'
-
-            };
-            _nodeId = '47bd8fb80abc5a6b5e7b10df';
-            var task = Task.create(definition, {}, {target: _nodeId});
-            var getSkuId = this.sandbox.stub(task, 'getSkuId');
-            getSkuId.resolves('sku12345');
-            var envGetStub = this.sandbox.stub(env, 'get');
-            envGetStub.withArgs('config', {}, ['sku12345']).resolves(
+            env.get.withArgs('config', {}, ['sku12345']).resolves(
                 {
                     "productName":'viper',
                     "chassisInfo": {
@@ -507,7 +580,7 @@ describe("Task", function () {
                     }
                 }
             );
-            envGetStub.withArgs('config', {}, ['sku12345', 'global']).resolves(
+            env.get.withArgs('config', {}, ['sku12345', 'global']).resolves(
                 {
                     "vendorName":'emc',
                     "detailedInfo":
@@ -516,21 +589,39 @@ describe("Task", function () {
                         "serialNumber": "SN12345",
                         "users":
                         {
-                            "sex":"male",
-                            "name":"Frank"
+                            "sex":"female",
+                            "name":"Francesca"
                         }
                     }
                 }
             );
-            return task.run().then(function() {
-                expect(task.getSkuId).to.have.been.calledOnce;
-                expect(env.get).to.have.been.calledTwice;
-                expect(task.options.vendor).to.equal('emc');
-                expect(task.options.partNumber).to.equal('PN12345');
-                expect(task.options.userName).to.equal('Frank');
-                expect(task.options.productName).to.equal('viper');
-                expect(task.options.chassisType).to.equal('DAE');
-                expect(task.options.diskNumber).to.equal('24');
+
+            Task.prototype.getSkuId.resolves('sku12345');
+
+            definition.options = {
+                testRenderVal: 'test rendered',
+                vendor: '{{env.vendorName}}',
+                partNumber:  '{{env.detailedInfo.partNumber}}',
+                userName: '{{env.detailedInfo.users.name}}',
+                productName: '{{sku.productName}}',
+                chassisType: '{{sku.chassisInfo.chassisType}}',
+                diskNumber: '{{sku.chassisInfo.diskInfo.diskNumber}}'
+
+            };
+            _nodeId = '47bd8fb80abc5a6b5e7b10df';
+
+            return Task.create(definition, {}, {target: _nodeId})
+            .then(function(task) {
+                return task.run().then(function() {
+                    expect(task.getSkuId).to.have.been.calledOnce;
+                    expect(env.get).to.have.been.calledTwice;
+                    expect(task.options.vendor).to.equal('emc');
+                    expect(task.options.partNumber).to.equal('PN12345');
+                    expect(task.options.userName).to.equal('Francesca');
+                    expect(task.options.productName).to.equal('viper');
+                    expect(task.options.chassisType).to.equal('DAE');
+                    expect(task.options.diskNumber).to.equal('24');
+                });
             });
         });
 
@@ -542,16 +633,20 @@ describe("Task", function () {
 
             function testTimeout(val) {
                 definition.options.$taskTimeout = val;
-                var task = Task.create(definition, {}, {});
-                task.job = { run: sinon.stub() };
-                task._run();
-                return task;
+                return Task.create(definition, {}, {})
+                .then(function(task) {
+                    task.job = { run: sinon.stub() };
+                    task._run();
+                    return task;
+                });
             }
 
-            _.forEach([null, undefined, 'test', [], {}], function(val) {
-                var task = testTimeout(val);
-                expect(task).to.have.property('timer').that.is.an('object');
-                expect(task.$taskTimeout).to.equal(24 * 60 * 60 * 1000);
+            return Promise.map([null, undefined, 'test', [], {}], function(val) {
+                return testTimeout(val)
+                .then(function(task) {
+                    expect(task).to.have.property('timer').that.is.an('object');
+                    expect(task.$taskTimeout).to.equal(24 * 60 * 60 * 1000);
+                });
             });
         });
 
@@ -559,13 +654,14 @@ describe("Task", function () {
             var definition = _.cloneDeep(noopDefinition);
             definition.options.$taskTimeout = 0;
             definition.options.delay = 1;
-            var task = Task.create(definition, {}, {});
-            task.renderAll = sinon.stub().resolves();
-            sinon.spy(task, 'cancel');
-
-            return task.run().then(function() {
-                expect(task.state).to.equal('succeeded');
-                expect(task.error).to.equal(null);
+            return Task.create(definition, {}, {})
+            .then(function(task) {
+                task.renderAll = sinon.stub().resolves();
+                sinon.spy(task, 'cancel');
+                return task.run().then(function() {
+                    expect(task.state).to.equal('succeeded');
+                    expect(task.error).to.equal(null);
+                });
             });
         });
 
@@ -573,13 +669,14 @@ describe("Task", function () {
             var definition = _.cloneDeep(noopDefinition);
             definition.options.$taskTimeout = -1;
             definition.options.delay = 1;
-            var task = Task.create(definition, {}, {});
-            task.renderAll = sinon.stub().resolves();
-            sinon.spy(task, 'cancel');
-
-            return task.run().then(function() {
-                expect(task.state).to.equal('succeeded');
-                expect(task.error).to.equal(null);
+            return Task.create(definition, {}, {})
+            .then(function(task) {
+                task.renderAll = sinon.stub().resolves();
+                sinon.spy(task, 'cancel');
+                return task.run().then(function() {
+                    expect(task.state).to.equal('succeeded');
+                    expect(task.error).to.equal(null);
+                });
             });
         });
 
@@ -587,15 +684,16 @@ describe("Task", function () {
             var definition = _.cloneDeep(noopDefinition);
             definition.options.$taskTimeout = 1;
             definition.options.delay = 2;
-            var task = Task.create(definition, {}, {});
-            task.renderAll = sinon.stub().resolves();
-            sinon.spy(task, 'cancel');
-
-            return task.run().then(function() {
-                expect(task.state).to.equal('timeout');
-                expect(task.error).to.be.an.instanceof(Errors.TaskTimeoutError);
-                expect(task.error.message).to.equal("Task did not complete within 1ms");
-                expect(task.cancel).to.have.been.calledOnce;
+            return Task.create(definition, {}, {})
+            .then(function(task) {
+                task.renderAll = sinon.stub().resolves();
+                sinon.spy(task, 'cancel');
+                return task.run().then(function() {
+                    expect(task.state).to.equal('timeout');
+                    expect(task.error).to.be.an.instanceof(Errors.TaskTimeoutError);
+                    expect(task.error.message).to.equal("Task did not complete within 1ms");
+                    expect(task.cancel).to.have.been.calledOnce;
+                });
             });
         });
 
@@ -603,17 +701,18 @@ describe("Task", function () {
             var definition = _.cloneDeep(noopDefinition);
             definition.options.schedulerOverrides = { timeout: 1 };
             definition.options.delay = 2;
-            var task = Task.create(definition, {}, {});
-            task.renderAll = sinon.stub().resolves();
-            sinon.spy(task, 'cancel');
-
-            return task.run().then(function() {
-                expect(task.state).to.equal('timeout');
-                expect(task.error).to.be.an.instanceof(Errors.TaskTimeoutError);
-                expect(task.error.message).to.equal("Task did not complete within 1ms");
-                expect(task.cancel).to.have.been.calledOnce;
+            return Task.create(definition, {}, {})
+            .then(function(task) {
+                task.renderAll = sinon.stub().resolves();
+                sinon.spy(task, 'cancel');
+                return task.run().then(function() {
+                    expect(task.state).to.equal('timeout');
+                    expect(task.error).to.be.an.instanceof(Errors.TaskTimeoutError);
+                    expect(task.error.message).to.equal("Task did not complete within 1ms");
+                    expect(task.cancel).to.have.been.calledOnce;
+                });
             });
-        });
+            });
     });
 
     describe("cancellation/completion", function() {
@@ -633,17 +732,14 @@ describe("Task", function () {
             subscriptionStub.dispose.reset();
             eventsProtocol.publishTaskFinished.reset();
 
-            var env = helper.injector.get('Services.Environment');
-            task = Task.create(noopDefinition, {}, {});
-            var getSkuId = sinon.stub(task, 'getSkuId');
-            var subscription = {dispose: sinon.stub()};
-            taskProtocol.subscribeActiveTaskExists = sinon.stub().resolves(subscription);
-            getSkuId.resolves();
-            this.sandbox.stub(env, 'get').withArgs(
-                'config', {}, ['global']).resolves();
-
-            sinon.spy(task, 'cancel');
-            sinon.spy(task, 'stop');
+            return Task.create(noopDefinition, {}, {})
+            .then(function(_task) {
+                task = _task;
+                var subscription = {dispose: sinon.stub()};
+                taskProtocol.subscribeActiveTaskExists = sinon.stub().resolves(subscription);
+                sinon.spy(task, 'cancel');
+                sinon.spy(task, 'stop');
+            });
         });
 
         describe("of task", function() {

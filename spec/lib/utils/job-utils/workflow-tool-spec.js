@@ -37,7 +37,10 @@ describe('JobUtils.WorkflowTool', function() {
         helper.setupInjector(
             _.flattenDeep([
                 helper.require('/lib/utils/job-utils/workflow-tool.js'),
+                helper.require('/lib/task.js'),
+                helper.require('/lib/task-graph.js'),
                 helper.di.simpleWrapper(waterline, 'Services.Waterline'),
+                helper.di.simpleWrapper({}, 'Task.Task'),
                 helper.di.simpleWrapper({}, 'Task.taskLibrary')
             ])
         );

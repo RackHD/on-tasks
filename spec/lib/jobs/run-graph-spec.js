@@ -17,6 +17,8 @@ describe("Job.Graph.Run", function () {
             helper.require('/spec/mocks/logger.js'),
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/run-graph.js'),
+            helper.require('/lib/task-graph.js'),
+            helper.require('/lib/task.js'),
             helper.require('/lib/utils/job-utils/workflow-tool.js'),
             helper.di.simpleWrapper({}, 'Task.taskLibrary')
         ]);
@@ -111,7 +113,7 @@ describe("Job.Graph.Run", function () {
                 .that.equals(job.graphId);
         });
     });
-    
+
     it('should run a graph against a target (nodeId)', function() {
         taskOptions.graphOptions.target = 'testnodeid';
 
