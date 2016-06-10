@@ -6,6 +6,7 @@ describe('Task Graph', function () {
     var store;
     var getDefinitions;
     var definitions;
+    var Task;
     var taskLibrary;
     var Promise;
     var Constants;
@@ -14,6 +15,7 @@ describe('Task Graph', function () {
         getDefinitions = require('./test-definitions').get;
         helper.setupInjector([
             helper.require('/lib/task-graph.js'),
+            helper.require('/lib/task.js'),
             helper.di.simpleWrapper([], 'Task.taskLibrary'),
             helper.di.simpleWrapper({
                 getTaskDefinition: sinon.stub().resolves(),
@@ -25,18 +27,23 @@ describe('Task Graph', function () {
         Constants = helper.injector.get('Constants');
         Promise = helper.injector.get('Promise');
         TaskGraph = helper.injector.get('TaskGraph.TaskGraph');
+        Task = helper.injector.get('Task.Task');
         taskLibrary = helper.injector.get('Task.taskLibrary');
         store = helper.injector.get('TaskGraph.Store');
         this.sandbox = sinon.sandbox.create();
     });
 
     beforeEach(function() {
+        this.sandbox.stub(TaskGraph.prototype, 'renderTasks', function() {
+            return this;
+        });
         definitions = getDefinitions();
         while (taskLibrary.length) {
             taskLibrary.pop();
         }
         taskLibrary.push(definitions.baseTask);
         taskLibrary.push(definitions.testTask);
+        taskLibrary.push(definitions.baseTaskEmpty);
     });
 
     afterEach(function() {
@@ -341,8 +348,7 @@ describe('Task Graph', function () {
         describe('graph level options', function() {
             var firstTask, secondTask, thirdTask, fourthTask;
 
-            before('Graph level options before', function() {
-                taskLibrary.push(definitions.baseTaskEmpty);
+            beforeEach('Graph level options beforeEach', function() {
                 return TaskGraph.create('domain',
                     { definition: definitions.graphDefinitionOptions })
                 .then(function(graph) {

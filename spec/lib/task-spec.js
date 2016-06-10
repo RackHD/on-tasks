@@ -74,34 +74,6 @@ describe("Task", function () {
         this.sandbox.restore();
     });
 
-    describe('get path', function() {
-        it('should get the value for a path', function() {
-            var getPath = Task.prototype.getPath.bind({ getPath: Task.prototype.getPath });
-            var obj = {
-                'foo': {
-                    'bar': {
-                        'baz': 'value'
-                    }
-                }
-            };
-            var path = 'foo.bar.baz';
-            expect(getPath(obj, path)).to.equal('value');
-        });
-
-        it('should return undefined if value does not exist', function() {
-            var getPath = Task.prototype.getPath.bind({ getPath: Task.prototype.getPath });
-            var obj = {
-                'foo': {
-                    'bar': {
-                        'notbaz': 'notvalue'
-                    }
-                }
-            };
-            var path = 'foo.bar.baz';
-            expect(getPath(obj, path)).to.equal(undefined);
-        });
-    });
-
     describe("option rendering", function() {
         var definition;
 

@@ -61,6 +61,7 @@ describe('JobUtils.WorkflowTool', function() {
             .withArgs(graphName).resolves([graphDefinition]);
         sandbox.stub(TaskGraph, 'create').resolves(graphInstance);
         sandbox.stub(taskGraphProtocol, 'runTaskGraph').resolves();
+        sandbox.stub(TaskGraph.prototype, 'renderTasks').resolves(graphInstance);
         sandbox.spy(graphInstance, 'persist');
     });
 
