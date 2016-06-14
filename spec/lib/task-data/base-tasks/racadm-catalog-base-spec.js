@@ -8,7 +8,7 @@ describe(require('path').basename(__filename), function () {
 
     base.before(function (context) {
         context.taskdefinition = helper.require(
-            '/lib/task-data/base-tasks/dell-racadm-update-firmware-base.js');
+            '/lib/task-data/base-tasks/racadm-catalog-base.js');
     });
 
     describe('task-data', function () {

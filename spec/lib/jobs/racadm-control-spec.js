@@ -20,7 +20,7 @@ describe(require('path').basename(__filename), function () {
     before(function() {
         helper.setupInjector([
             helper.require('/lib/jobs/base-job'),
-            helper.require('/lib/jobs/dell-racadm-tool-job'),
+            helper.require('/lib/jobs/racadm-control'),
             helper.require('/lib/utils/job-utils/racadm-tool.js'),
             helper.require('/lib/utils/job-utils/racadm-parser.js'),
             helper.di.simpleWrapper(mockWaterline, 'Services.Waterline')
@@ -228,7 +228,8 @@ describe(require('path').basename(__filename), function () {
                 serverUsername: "onrack",
                 serverPassword: "onrack",
                 serverFilePath: "//1.2.3.4/src/bios.xml",
-                action: "getBiosConfig"
+                action: "getBiosConfig",
+                forceReboot: true
             };
             job = new RacadmToolJob(options, {}, uuid.v4());
             mockWaterline.nodes.findByIdentifier = function(){};
@@ -259,7 +260,7 @@ describe(require('path').basename(__filename), function () {
 
             var getBiosStub = this.sandbox.stub(racadmTool,'getBiosConfig');
             var cifsInfo = {user: options.serverUsername, password: options.serverPassword ,
-                filePath: options.serverFilePath};
+                filePath: options.serverFilePath, forceReboot: options.forceReboot};
             mockWaterline.nodes.findByIdentifier.resolves(node);
             getBiosStub.resolves(
                 {
@@ -270,7 +271,7 @@ describe(require('path').basename(__filename), function () {
                 .then(function() {
                     expect(getBiosStub).to.have.been.calledWith(
                         node.obmSettings[0].config.host, node.obmSettings[0].config.user,
-                        node.obmSettings[0].config.password,cifsInfo);
+                        node.obmSettings[0].config.password, cifsInfo);
                 });
         });
     });
