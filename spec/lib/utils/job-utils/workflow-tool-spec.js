@@ -65,7 +65,8 @@ describe('JobUtils.WorkflowTool', function() {
         sandbox.stub(taskGraphProtocol, 'runTaskGraph').resolves();
         sandbox.spy(graphInstance, 'persist');
         sandbox.stub(env, 'get').resolves(graphName);
-        sandbox.stub(waterline.nodes, 'needByIdentifier').resolves({ id: 'testnodeid', sku: testNodeSku });
+        sandbox.stub(waterline.nodes, 'needByIdentifier')
+            .resolves({ id: 'testnodeid', sku: testNodeSku });
     });
 
     afterEach(function() {
@@ -94,11 +95,12 @@ describe('JobUtils.WorkflowTool', function() {
                         .to.have.been.calledWith(graphInstanceId, graphDomain)
                         .to.have.callCount(1);
                     expect(env.get)
-                        .to.have.been.calledWith("config." + graphName, graphName, [testNodeSku, Constants.Scope.Global])
-                        .to.have.callCount(1)
+                        .to.have.been.calledWith("config." + graphName,graphName,
+                        [testNodeSku, Constants.Scope.Global])
+                        .to.have.callCount(1);
                     expect(waterline.nodes.needByIdentifier)
                         .to.have.been.calledWith(nodeId)
-                        .to.have.callCount(1)
+                        .to.have.callCount(1);
                 });
         });
 
