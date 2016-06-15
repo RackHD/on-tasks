@@ -61,7 +61,7 @@ describe("Job.Alert.Node.Discovered", function () {
             .then(function () {
                 expect(waterline.nodes.needByIdentifier).to.have.been.calledOnce;
                 expect(job._deferred).to.be.rejected;
-            })
+            });
         });
     });
 });
