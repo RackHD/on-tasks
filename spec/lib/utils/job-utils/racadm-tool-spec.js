@@ -634,6 +634,7 @@ describe("racadm-tool", function() {
             });
 
             it('should be called with reboot', function() {
+                var command = 'jobqueue create Any -r pwrcycle -s TIME_NOW -e TIME_NA';
                 this.sandbox.stub(instance, 'getSoftwareList').resolves({"BIOS": {"FQDD": "Any"}});
                 this.sandbox.stub(instance, 'runCommand').resolves("Anything");
                 this.sandbox.stub(parser, 'getJobId').returns("Anything");
@@ -644,10 +645,9 @@ describe("racadm-tool", function() {
                         expect(instance.getSoftwareList).to.have.been.calledOnce;
                         expect(instance.runCommand).to.have.been.calledTwice;
                         expect(instance.runCommand)
-                            .to.have.been.calledWith('any', 'any', 'any', 
-                                                     'jobqueue create Any –r pwrcycle –s TIME_NOW –e TIME_NA');
+                            .to.have.been.calledWith('any', 'any', 'any', command); 
                         expect(parser.getJobId).to.have.been.calledOnce;
-                        expect(instance.waitJobDone).to.have.been.calledOnce
+                        expect(instance.waitJobDone).to.have.been.calledOnce;
                     });
             });
 
@@ -669,22 +669,22 @@ describe("racadm-tool", function() {
             });
         });
 
-        describe('disableVt', function(){
+        describe('disableVTx', function(){
             afterEach('disable virtualization after', function() {
                 this.sandbox.restore();
             });
 
-            it('disableVt exists', function() {
-                should.exist(instance.disableVt);
+            it('disableVTx exists', function() {
+                should.exist(instance.disableVTx);
             });
 
-            it('disableVt is a function', function() {
-                expect(instance.disableVt).is.a('function');
+            it('disableVTx is a function', function() {
+                expect(instance.disableVTx).is.a('function');
             });
 
             it('should disable virtualization', function(){
                 this.sandbox.stub(instance, '_configBiosAttr').resolves();
-                return instance.disableVt('any','any','any', {"forceReboot": true})
+                return instance.disableVTx('any','any','any', {"forceReboot": true})
                     .then(function(){
                         expect(instance._configBiosAttr)
                             .to.have.been
@@ -694,22 +694,22 @@ describe("racadm-tool", function() {
             });
         });
 
-        describe('enableVt', function(){
+        describe('enableVTx', function(){
             afterEach('enable virtualization after', function() {
                 this.sandbox.restore();
             });
 
-            it('enableVt exists', function() {
-                should.exist(instance.enableVt);
+            it('enableVTx exists', function() {
+                should.exist(instance.enableVTx);
             });
 
-            it('enableVt is a function', function() {
-                expect(instance.enableVt).is.a('function');
+            it('enableVTx is a function', function() {
+                expect(instance.enableVTx).is.a('function');
             });
 
             it('should enable virtualization', function(){
                 this.sandbox.stub(instance, '_configBiosAttr').resolves();
-                return instance.enableVt('any','any','any', {"forceReboot": true})
+                return instance.enableVTx('any','any','any', {"forceReboot": true})
                     .then(function(){
                         expect(instance._configBiosAttr)
                             .to.have.been
