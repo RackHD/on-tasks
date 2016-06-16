@@ -96,7 +96,7 @@ describe('JobUtils.WorkflowTool', function() {
                         .to.have.callCount(1);
                     expect(env.get)
                         .to.have.been.calledWith("config." + graphName,graphName,
-                        [testNodeSku, Constants.Scope.Global])
+                            [testNodeSku, Constants.Scope.Global])
                         .to.have.callCount(1);
                     expect(waterline.nodes.needByIdentifier)
                         .to.have.been.calledWith(nodeId)
