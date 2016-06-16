@@ -1,0 +1,53 @@
+{
+    "$schema": "rackhd/schemas/v1/task-schema",
+    "id": "rackhd/schemas/v1/tasks/install-esxi",
+    "copyright": "Copyright 2016, EMC, Inc.",
+    "title": "Install ESXi",
+    "description": "The parameters for ESXi installation",
+    "describeJob": "Job.Os.Install",
+    "definitions": {
+        "switchDevice": {
+            "type": "object",
+            "properties": {
+                "switchName": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "virtual switch name, such as 'vSwitch0'"
+                },
+                "uplinks": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "uniqueItems": true,
+                    "description": "list of uplink adapters that connected with the virtual switch, the example name of uplink adapter is 'vmnic0'"
+                }
+            },
+            "required": ["switchName"]
+        }
+    },
+    "allOf": [
+        {
+            "$ref": "install-os-common"
+        }
+    ],
+    "properties": {
+        "postInstallCommands": {
+            "type": "array",
+            "description": "A list of commands that will be run at the end of the post installation step, this can be used by the customer to tweak final system configuration",
+            "items": {
+                "type": "string",
+                "minLength": 1
+            }
+        },
+        "switchDevices": {
+            "type": "array",
+            "description": "Virtual switch configuration",
+            "items": {
+                "$ref": "#/definitions/switchDevice"
+            },
+            "uniqueItems": true
+        }
+    }
+}
