@@ -4,31 +4,40 @@
 'use strict';
 
 describe(require('path').basename(__filename), function() {
+    var schemaFilePath = '/lib/task-data/schemas/obm-control-schema.json';
+
+    var canonical = {
+        "action": "powerOn",
+        "obmService": "ipmi-obm-service"
+    };
+
+    var negativeSetParam = {
+        "action": ['foo', 123, true],
+        "obmService": ["not-existed-service", 9876]
+    };
+
+    var positiveSetParam = {
+        action: [
+            "clearSEL", "identifyOff", "identifyOn", "NMI", "powerButton", "powerOff",
+            "powerOn", "powerStatus", "reboot", "setPxeBoot"
+        ],
+        obmService: [
+            "amt-obm-service", "apc-obm-service", "ipmi-obm-service", "noop-obm-service",
+            "panduit-obm-service", "raritan-obm-service", "redfish-obm-service",
+            "servertech-obm-service", "vbox-obm-service", "vmrun-obm-service"
+        ]
+    };
+
+    var negativeUnsetParam = [
+        "action",
+        ["action", "obmService"]
+    ];
+
+    var positiveUnsetParam = [
+        "obmService"
+    ];
+
     var SchemaUtHelper = require('./schema-ut-helper');
-    var schemaHelper = new SchemaUtHelper('/lib/task-data/schemas/obm-control-schema.json');
-    schemaHelper.init();
-
-    var datas = [
-        {
-            "action": "powerOn",
-            "obmService": "ipmi-obm-service"
-        },
-        {
-            "action": "reboot",
-            "obmService": "noop-obm-service"
-        }
-    ];
-    schemaHelper.test(datas, true);
-
-    datas = [
-        {
-            "action": "foo",
-            "obmService": "ipmi-obm-service"
-        },
-        {
-            "action": "powerOn",
-            "obmService": "bar"
-        }
-    ];
-    schemaHelper.test(datas, false);
+    new SchemaUtHelper(schemaFilePath, canonical).batchTest(
+        positiveSetParam, negativeSetParam, positiveUnsetParam, negativeUnsetParam);
 });

@@ -4,12 +4,12 @@
 'use strict';
 
 describe(require('path').basename(__filename), function() {
-    var schemaFilePath = '/lib/task-data/schemas/install-os-common-schema.json';
+    var schemaFilePath = '/lib/task-data/schemas/install-esxi-schema.json';
 
     var canonical = {
-        "osType": "linux",
-        "version": "7",
-        "repo": "http://172.31.128.1:9080/centos/7/os/x86_64",
+        "osType": "esx",
+        "version": "5.5",
+        "repo": "http://172.31.128.1:9080/esxi/5.5",
         "rootPassword": "RackHDRocks!",
         "hostname": "rackhd-node",
         "domain": "example.com",
@@ -17,7 +17,6 @@ describe(require('path').basename(__filename), function() {
             {
                 "name": "rackhd1",
                 "password": "123456",
-                "uid": 1010,
                 "sshKey": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDJQ631/sw3D40h/6JfA+PFVy5Ofza6"
             },
             {
@@ -32,7 +31,7 @@ describe(require('path').basename(__filename), function() {
         ],
         "networkDevices": [
             {
-                "device": "ens802f0",
+                "device": "vmnic0",
                 "ipv4": {
                     "ipAddr": "192.168.1.29",
                     "gateway": "192.168.1.1",
@@ -53,7 +52,7 @@ describe(require('path').basename(__filename), function() {
                 }
             },
             {
-                "device": "eth0",
+                "device": "vmnic1",
                 "ipv4": {
                     "ipAddr": "192.168.11.89",
                     "gateway": "192.168.11.1",
@@ -61,7 +60,7 @@ describe(require('path').basename(__filename), function() {
                 }
             },
             {
-                "device": "ens802f1",
+                "device": "vmnic4",
                 "ipv6": {
                     "ipAddr": "fec0::6ab4:0:5efe:157.60.14.21",
                     "gateway": "fe80::5efe:131.107.25.1",
@@ -69,66 +68,38 @@ describe(require('path').basename(__filename), function() {
                 }
             },
         ],
-        "kvm": true,
-        "installDisk": "/dev/sda",
-        "installPartitions": [
+        "installDisk": "naa.123456",
+        "postInstallCommands": [
+            "cd /var/log",
+            "ls -l"
+        ],
+        "switchDevices": [
             {
-                "mountPoint": "/boot",
-                "size": "500",
-                "fsType": "ext3"
+                "switchName": "vSwitch0",
+                "uplinks": [ "vmnic0", "vmnic4" ]
             },
             {
-                "mountPoint": "swap",
-                "size": "500",
-            },
-            {
-                "mountPoint": "/",
-                "size": "auto",
-                "fsType": "ext3"
+                "switchName": "vSwitch1"
             }
         ]
     };
 
     var positiveSetParam = {
-        version: ["trusty", "6"],
-        "networkDevices[0].ipv4.vlanIds[0]": [0, 1009, 4095],
-        "users[0].uid": [500, 10000, 65535]
     };
 
     var negativeSetParam = {
-        version: [7, 6.5],
-        kvm: [1, 'abc'],
-        "networkDevices[0].ipv4.ipAddr": ["foo/bar", "300.100.9.0"],
-        "networkDevices[0].ipv4.vlanIds[0]": [-1, 4096, 10000],
-        "users[0].uid": [0, 499, 65536],
-        "installDisk": [-1]
+        "switchDevices[0].uplinks[1]": "vmnic0", //cannot set duplicated uplinks
+        "switchDevices[0]": { "switchName": "vSwitch1" } //cannot set duplicated switchDevice
     };
 
     var positiveUnsetParam = [
-        "users",
-        "networkDevices",
-        "installDisk",
-        "dnsServers",
-        "kvm",
-        "rootSshKey",
-        "installPartitions",
-        "users[0].sshKey",
-        ["users[0].sshKey", "users[0].uid"]
+        "postInstallCommands",
+        "switchDevices"
     ];
 
     var negativeUnsetParam = [
-        "version",
-        "repo",
-        "rootPassword",
-        "domain",
-        "hostname",
-        "users[0].name",
-        "users[1].password",
-        "networkDevices[0].device",
-        "networkDevices[1].ipv4.ipAddr",
-        "networkDevices[2].ipv6.netmask"
+        "switchDevices[0].switchName"
     ];
-
 
     var SchemaUtHelper = require('./schema-ut-helper');
     new SchemaUtHelper(schemaFilePath, canonical).batchTest(
