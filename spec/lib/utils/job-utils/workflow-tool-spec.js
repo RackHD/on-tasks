@@ -8,6 +8,7 @@ describe('JobUtils.WorkflowTool', function() {
     var taskGraphProtocol, taskGraphStore, TaskGraph;
     var Constants, Errors;
     var sandbox;
+    var env;
 
     var graphName = 'test.graph.foo';
     var nodeId = '568f1ff9d78678801234567';
@@ -15,10 +16,11 @@ describe('JobUtils.WorkflowTool', function() {
     var graphInstanceId = '447bb68c-aaaf-4eef-9ed2-c839a72c505d';
     var graphOptions = { defaults: { foo: 'bar' } };
     var proxy = "http://12.1.1.1:8080";
+    var testNodeSku = "test node id";
 
     var waterline = {
-        graphdefinitions: {
-            needOne: function() {}
+        nodes: {
+            needByIdentifier: function() {}
         }
     };
 
@@ -30,6 +32,7 @@ describe('JobUtils.WorkflowTool', function() {
     };
     var graphInstance = {
         instanceId: graphInstanceId,
+        _status: "pending",
         persist: function() { return this; }
     };
 
@@ -47,6 +50,8 @@ describe('JobUtils.WorkflowTool', function() {
         taskGraphProtocol = helper.injector.get('Protocol.TaskGraphRunner');
         taskGraphStore = helper.injector.get('TaskGraph.Store');
         TaskGraph = helper.injector.get('TaskGraph.TaskGraph');
+        env = helper.injector.get('Services.Environment');
+        waterline = helper.injector.get('Services.Waterline');
 
         sandbox = sinon.sandbox.create();
     });
@@ -59,6 +64,9 @@ describe('JobUtils.WorkflowTool', function() {
         sandbox.stub(TaskGraph, 'create').resolves(graphInstance);
         sandbox.stub(taskGraphProtocol, 'runTaskGraph').resolves();
         sandbox.spy(graphInstance, 'persist');
+        sandbox.stub(env, 'get').resolves(graphName);
+        sandbox.stub(waterline.nodes, 'needByIdentifier')
+            .resolves({ id: 'testnodeid', sku: testNodeSku });
     });
 
     afterEach(function() {
@@ -85,6 +93,13 @@ describe('JobUtils.WorkflowTool', function() {
                     expect(graphInstance.persist).to.have.callCount(1);
                     expect(taskGraphProtocol.runTaskGraph)
                         .to.have.been.calledWith(graphInstanceId, graphDomain)
+                        .to.have.callCount(1);
+                    expect(env.get)
+                        .to.have.been.calledWith("config." + graphName,graphName,
+                            [testNodeSku, Constants.Scope.Global])
+                        .to.have.callCount(1);
+                    expect(waterline.nodes.needByIdentifier)
+                        .to.have.been.calledWith(nodeId)
                         .to.have.callCount(1);
                 });
         });
@@ -192,6 +207,15 @@ describe('JobUtils.WorkflowTool', function() {
         it('should fail if no nodeId is specified', function() {
             return expect(workflowTool.runGraph(null, graphName))
                 .to.be.rejectedWith(Error.AssertionError);
+        });
+
+        it('should run with graph name if node sku does not exist', function() {
+            waterline.nodes.needByIdentifier = sinon.stub().resolves({ id: 'testnodeid'});
+            return workflowTool.runGraph(nodeId, graphName, graphOptions, graphDomain)
+                .then(function() {
+                    expect(taskGraphStore.getGraphDefinitions)
+                        .to.have.been.calledWith(graphName);
+                });
         });
 
         it('should fail if there is active graph is running', function() {
