@@ -18,7 +18,7 @@ describe(require('path').basename(__filename), function () {
     before(function() {
         helper.setupInjector([
             helper.require('/lib/jobs/base-job'),
-            helper.require('/lib/jobs/dell-racadm-catalog-job'),
+            helper.require('/lib/jobs/racadm-catalog'),
             helper.require('/lib/utils/job-utils/racadm-tool.js'),
             helper.require('/lib/utils/job-utils/racadm-parser.js'),
             helper.require('/lib/utils/job-utils/job-helper.js'),

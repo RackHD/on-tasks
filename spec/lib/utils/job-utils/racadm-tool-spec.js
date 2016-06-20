@@ -86,48 +86,6 @@ describe("racadm-tool", function() {
 
         });
 
-        describe('enableIpmi', function(){
-            afterEach('runCommand after', function() {
-                this.sandbox.restore();
-            });
-
-            it('enableIpmi exists', function() {
-                should.exist(instance.enableIpmi);
-            });
-            it('enableIpmi is a function', function() {
-                expect(instance.enableIpmi).is.a('function');
-            });
-
-            it('should enable IPMI', function(){
-                this.sandbox.stub(instance, 'runCommand').resolves();
-                return instance.enableIpmi('any','any','any')
-                    .then(function(){
-                        expect(instance.runCommand).to.have.been.calledOnce;
-                    });
-            });
-        });
-
-        describe('disableIpmi', function(){
-            afterEach('runCommand after', function() {
-                this.sandbox.restore();
-            });
-
-            it('disableIpmi exists', function() {
-                should.exist(instance.disableIpmi);
-            });
-            it('disableIpmi is a function', function() {
-                expect(instance.disableIpmi).is.a('function');
-            });
-
-            it('should disable IPMI', function(){
-                this.sandbox.stub(instance, 'runCommand').resolves();
-                return instance.disableIpmi('any','any','any')
-                    .then(function(){
-                        expect(instance.runCommand).to.have.been.calledOnce;
-                    });
-            });
-        });
-
         describe('getLatestJobId', function(){
             var jobqueueMock = require('./stdout-helper').racadmJobqueueData;
             var runCommandStub;
@@ -609,6 +567,154 @@ describe("racadm-tool", function() {
                             'File /tmp/idra_configure.xml does not exist'
                         );
                         expect(instance.runCommand).to.be.calledOnce;
+                    });
+            });
+        });
+        
+        describe('enableIpmi', function(){
+            afterEach('enable IPMI after', function() {
+                this.sandbox.restore();
+            });
+
+            it('enableIpmi exists', function() {
+                should.exist(instance.enableIpmi);
+            });
+            it('enableIpmi is a function', function() {
+                expect(instance.enableIpmi).is.a('function');
+            });
+
+            it('should enable IPMI', function(){
+                this.sandbox.stub(instance, 'runCommand').resolves();
+                return instance.enableIpmi('any','any','any')
+                    .then(function(){
+                        expect(instance.runCommand).to.have.been.calledOnce;
+                    });
+            });
+        });
+
+        describe('disableIpmi', function(){
+            afterEach('disable IPMI after', function() {
+                this.sandbox.restore();
+            });
+
+            it('disableIpmi exists', function() {
+                should.exist(instance.disableIpmi);
+            });
+            it('disableIpmi is a function', function() {
+                expect(instance.disableIpmi).is.a('function');
+            });
+
+            it('should disable IPMI', function(){
+                this.sandbox.stub(instance, 'runCommand').resolves();
+                return instance.disableIpmi('any','any','any')
+                    .then(function(){
+                        expect(instance.runCommand).to.have.been.calledOnce;
+                    });
+            });
+        });
+
+        describe('_configBiosAttr', function(){
+            afterEach('configure bios attribute after', function() {
+                this.sandbox.restore();
+            });
+
+            it('should throw an error if BIOS fqdd does not exist', function(done) {
+                this.sandbox.stub(instance, 'getSoftwareList').resolves("Anything");
+                this.sandbox.stub(instance, 'runCommand').resolves("Anything");
+                return instance._configBiosAttr('any', 'any', 'any', 'any', 'any')
+                    .then(function(){
+                        done(new Error("Expected getLatestJobId to fail"));
+                    })
+                    .catch(function(err){
+                        expect(instance.runCommand).to.be.calledOnce;
+                        expect(instance.getSoftwareList).to.be.calledOnce;
+                        expect(err.message).to.equal('Can not get BIOS FQDD');
+                        done();
+                    });
+            });
+
+            it('should be called with reboot', function() {
+                var command = 'jobqueue create Any -r pwrcycle -s TIME_NOW -e TIME_NA';
+                this.sandbox.stub(instance, 'getSoftwareList').resolves({"BIOS": {"FQDD": "Any"}});
+                this.sandbox.stub(instance, 'runCommand').resolves("Anything");
+                this.sandbox.stub(parser, 'getJobId').returns("Anything");
+                this.sandbox.stub(instance, 'waitJobDone').returns("Completed");
+                return instance._configBiosAttr('any', 'any', 'any', true, 'any')
+                    .then(function(result){
+                        expect(result).to.equal("Completed");
+                        expect(instance.getSoftwareList).to.have.been.calledOnce;
+                        expect(instance.runCommand).to.have.been.calledTwice;
+                        expect(instance.runCommand)
+                            .to.have.been.calledWith('any', 'any', 'any', command); 
+                        expect(parser.getJobId).to.have.been.calledOnce;
+                        expect(instance.waitJobDone).to.have.been.calledOnce;
+                    });
+            });
+
+            it('should be called without reboot', function() {
+                this.sandbox.stub(instance, 'getSoftwareList').resolves({"BIOS": {"FQDD": "Any"}});
+                this.sandbox.stub(instance, 'runCommand').resolves("Anything");
+                this.sandbox.stub(parser, 'getJobId').returns("Anything");
+                this.sandbox.stub(instance, 'waitJobDone').returns("Completed");
+                return instance._configBiosAttr('any', 'any', 'any', false, 'any')
+                    .then(function(result){
+                        expect(result).to.equal("Anything");
+                        expect(instance.getSoftwareList).to.have.been.calledOnce;
+                        expect(instance.runCommand).to.have.been.calledTwice;
+                        expect(instance.runCommand)
+                            .to.have.been.calledWith('any', 'any', 'any', 
+                                                     'jobqueue create Any');
+                        expect(parser.getJobId).to.have.been.calledOnce;
+                    });
+            });
+        });
+
+        describe('disableVTx', function(){
+            afterEach('disable virtualization after', function() {
+                this.sandbox.restore();
+            });
+
+            it('disableVTx exists', function() {
+                should.exist(instance.disableVTx);
+            });
+
+            it('disableVTx is a function', function() {
+                expect(instance.disableVTx).is.a('function');
+            });
+
+            it('should disable virtualization', function(){
+                this.sandbox.stub(instance, '_configBiosAttr').resolves();
+                return instance.disableVTx('any','any','any', {"forceReboot": true})
+                    .then(function(){
+                        expect(instance._configBiosAttr)
+                            .to.have.been
+                            .calledWith('any', 'any', 'any', true, 
+                                        "set BIOS.ProcSettings.ProcVirtualization Disabled");
+                    });
+            });
+        });
+
+        describe('enableVTx', function(){
+            afterEach('enable virtualization after', function() {
+                this.sandbox.restore();
+            });
+
+            it('enableVTx exists', function() {
+                should.exist(instance.enableVTx);
+            });
+
+            it('enableVTx is a function', function() {
+                expect(instance.enableVTx).is.a('function');
+            });
+
+            it('should enable virtualization', function(){
+                this.sandbox.stub(instance, '_configBiosAttr').resolves();
+                return instance.enableVTx('any','any','any', {"forceReboot": true})
+                    .then(function(){
+                        expect(instance._configBiosAttr)
+                            .to.have.been
+                            .calledWith('any', 'any', 'any', true, 
+                                        "set BIOS.ProcSettings.ProcVirtualization Enabled");
                     });
             });
         });
