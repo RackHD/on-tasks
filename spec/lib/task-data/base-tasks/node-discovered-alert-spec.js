@@ -7,7 +7,7 @@ describe(require('path').basename(__filename), function () {
 
     base.before(function (context) {
         context.taskdefinition = helper.require(
-            '/lib/task-data/base-tasks/redfish-discovery.js');
+            '/lib/task-data/base-tasks/node-discovered-alert.js');
     });
 
     describe('task-data', function () {
