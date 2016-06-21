@@ -6,8 +6,7 @@ describe(require('path').basename(__filename), function () {
     var base = require('./base-task-data-spec');
 
     base.before(function (context) {
-        context.taskdefinition = helper.require(
-            '/lib/task-data/base-tasks/redfish-discovery.js');
+        context.taskdefinition = helper.require('/lib/task-data/base-tasks/boot-profile.js');
     });
 
     describe('task-data', function () {

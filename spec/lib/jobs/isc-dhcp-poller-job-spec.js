@@ -121,12 +121,12 @@ describe('ISC DHCP Poller Job', function () {
             expect(_job.options.leasesFile).to.equal('/var/db/dhcpd.leases');
         });
 
-        it('should throw on unsupported platform', function() {
+        it('should throw unknown DHCP leases file path', function() {
             var self = this;
             this.sandbox.stub(this.Jobclass.prototype, 'getPlatform').returns('invalid');
             expect(function() {
                 var _job = new self.Jobclass({}, {}, uuid.v4());  /* jshint ignore:line */
-            }).to.throw(/Unsupported platform type/);
+            }).to.throw(/Unkown DHCP leases file path/);
         });
 
         it('should prioritize a user defined lease file', function() {

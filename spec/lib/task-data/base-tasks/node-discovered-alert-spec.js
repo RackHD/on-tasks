@@ -1,5 +1,4 @@
 // Copyright 2016, EMC, Inc.
-/* jshint node:true */
 
 'use strict';
 
@@ -8,7 +7,7 @@ describe(require('path').basename(__filename), function () {
 
     base.before(function (context) {
         context.taskdefinition = helper.require(
-            '/lib/task-data/base-tasks/dell-racadm-get-bios-base.js');
+            '/lib/task-data/base-tasks/node-discovered-alert.js');
     });
 
     describe('task-data', function () {
