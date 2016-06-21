@@ -10,6 +10,7 @@ module.exports = {
     injectables: _.flattenDeep([
         core.helper.requireWrapper('ssh2', 'ssh', undefined, __dirname),
         require('./lib/task'),
+        require('./lib/task-graph'),
         core.helper.requireGlob(__dirname + '/lib/jobs/*.js'),
         core.helper.requireGlob(__dirname + '/lib/utils/**/*.js'),
         core.helper.requireGlob(__dirname + '/lib/services/*.js'),
