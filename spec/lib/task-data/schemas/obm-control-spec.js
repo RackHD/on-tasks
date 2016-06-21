@@ -4,7 +4,7 @@
 'use strict';
 
 describe(require('path').basename(__filename), function() {
-    var schemaFilePath = '/lib/task-data/schemas/obm-control-schema.json';
+    var schemaFilePath = '/lib/task-data/schemas/obm-control.json';
 
     var canonical = {
         "action": "powerOn",

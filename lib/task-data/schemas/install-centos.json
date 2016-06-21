@@ -1,0 +1,19 @@
+{
+    "$schema": "rackhd/schemas/v1/task-schema",
+    "id": "rackhd/schemas/v1/tasks/install-centos",
+    "copyright": "Copyright 2016, EMC, Inc.",
+    "title": "Install CentOS",
+    "description": "The parameters for CentOS installation",
+    "describeJob": "Job.Os.Install",
+    "allOf": [
+        {
+            "$ref": "install-os-general"
+        }
+    ],
+    "properties": {
+        "rackhdCallbackScript": {
+            "$ref": "install-os-base#/definitions/RackHDCallbackScript"
+        }
+    },
+    "required": [ "rackhdCallbackScript" ]
+}

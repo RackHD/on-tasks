@@ -4,10 +4,14 @@
 'use strict';
 
 describe(require('path').basename(__filename), function() {
-    var schemaFilePath = '/lib/task-data/schemas/install-esxi-schema.json';
+    var schemaFilePath = '/lib/task-data/schemas/install-esxi.json';
 
     var canonical = {
         "osType": "esx",
+        "completionUri": "esx-ks",
+        "profile": "install-esx.ipxe",
+        "installScript": "esx-ks",
+        "installScriptUri": "http://172.31.128.9090/api/1.1/templates/esx-ks",
         "version": "5.5",
         "repo": "http://172.31.128.1:9080/esxi/5.5",
         "rootPassword": "RackHDRocks!",
@@ -81,13 +85,20 @@ describe(require('path').basename(__filename), function() {
             {
                 "switchName": "vSwitch1"
             }
-        ]
+        ],
+        "rackhdCallbackScript": "esx.rackhdcallback",
+        "esxBootConfigTemplate": "esx-boot-cfg",
+        "esxBootConfigTemplateUri": "http://172.31.128.1:9080/api/1.1/templates/esx-boot-cfg",
+        "comport": "com1",
+        "comportaddress": "0x3f8"
     };
 
     var positiveSetParam = {
+        "comportaddress": ["0x3f8", "0x2f8", "0x3e8", "0x2e8"]
     };
 
     var negativeSetParam = {
+        "comportaddress": ["com1", "com2", 1, 0x3f8],
         "switchDevices[0].uplinks[1]": "vmnic0", //cannot set duplicated uplinks
         "switchDevices[0]": { "switchName": "vSwitch1" } //cannot set duplicated switchDevice
     };
@@ -98,8 +109,14 @@ describe(require('path').basename(__filename), function() {
     ];
 
     var negativeUnsetParam = [
+        "rackhdCallbackScript",
+        "esxBootConfigTemplate",
+        "esxBootConfigTemplateUri",
+        "comportaddress",
         "switchDevices[0].switchName"
     ];
+
+    require('./install-os-schema-ut-helper').test(schemaFilePath, canonical);
 
     var SchemaUtHelper = require('./schema-ut-helper');
     new SchemaUtHelper(schemaFilePath, canonical).batchTest(

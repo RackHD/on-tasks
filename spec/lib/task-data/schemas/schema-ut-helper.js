@@ -103,19 +103,31 @@ function validateSchemaDefinition(schema, jobNames) {
  * A Helper Class for Schema Unit-Testing
  * @param {String} testfile - The file path of target schema
  * @param {Object} [canonicalData] - The canonical data for target schema
+ * @param {Boolean} [skipTaskSchemaDefValidation=false] - True to skip the validation for task
+ * schema definition itself.
+ * @param {Boolean} [skipCommonOptionsValidation=false] - True to skip the common task options
+ * validation, this depends the the canonical data is specified
  */
-function SchemaUnitTestHelper(testfile, canonicalData) {
+function SchemaUnitTestHelper(testfile, canonicalData, skipTaskSchemaDefValidation,
+                              skipCommonOptionsValidation) {
     var result = init();
     var self = this;
     this.validator = result.validator;
     this.schema = helper.require(testfile);
     this.canonicalData = canonicalData;
-    validateSchemaDefinition(this.schema, result.jobNames);
+
+    if (!skipTaskSchemaDefValidation) {
+        validateSchemaDefinition(this.schema, result.jobNames);
+    }
 
     if (this.canonicalData) {
         before('Validate canonical data', function(done) {
             self._validate(self.canonicalData, true, done);
         });
+
+        if (!skipCommonOptionsValidation) {
+            self.validateCommonOptions();
+        }
     }
 }
 
@@ -128,6 +140,45 @@ function SchemaUnitTestHelper(testfile, canonicalData) {
  */
 SchemaUnitTestHelper.prototype._validate = function(data, expected, done) {
     return done(validateData(this.validator, this.schema.id, data, expected));
+};
+
+/**
+ * validate task common options
+ * @memberof SchemaUnitTestHelper
+ * @param {Object} [overrideCanonicalData] - A particular canonical data to override the default one
+ */
+SchemaUnitTestHelper.prototype.validateCommonOptions = function(overrideCanonicalData) {
+    var self = this;
+    var canonical = overrideCanonicalData || self.canonicalData;
+    describe('validate task common options', function() {
+        [36000, 0, -1].forEach(function(value) {
+            it("should success if '_timeout'=" + JSON.stringify(value), function(done) {
+                var data = _.defaults({ _timeout: value }, canonical);
+                self._validate(data, true, done);
+            });
+
+            it("should success if 'schedulerOverrides.timeout'=" + JSON.stringify(value),
+                function(done) {
+                    var data = _.defaults({ schedulerOverrides: { timeout: value } }, canonical);
+                    self._validate(data, true, done);
+                }
+            );
+        });
+
+        [-2, 1.5, "100"].forEach(function(value) {
+            it("should fail if '_timeout'=" + JSON.stringify(value), function(done) {
+                var data = _.defaults({ _timeout: value }, canonical);
+                self._validate(data, false, done);
+            });
+
+            it("should fail if 'schedulerOverrides.timeout'=" + JSON.stringify(value),
+                function(done) {
+                    var data = _.defaults({ schedulerOverrides: { timeout: value } }, canonical);
+                    self._validate(data, false, done);
+                }
+            );
+        });
+    });
 };
 
 /**
