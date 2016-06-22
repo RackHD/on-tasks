@@ -6,7 +6,7 @@
     "description": "The base paramters schema for install os",
     "describeJob": "Job.Os.Install",
     "allOf": [
-        { "$ref": "common-options" }
+        { "$ref": "common#/definitions/Options" }
     ],
     "definitions": {
         "OsType": {
@@ -166,7 +166,7 @@
             "additionalProperties": false
         },
         "NetworkDevices": {
-            "description": "The network cofiguration for each NIC",
+            "description": "The network configuration for each NIC",
             "type": "array",
             "minItems": 1,
             "items": {

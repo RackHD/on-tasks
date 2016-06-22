@@ -1,5 +1,5 @@
 {
-    "id": "rackhd/schemas/v1/tasks/common-options",
+    "id": "rackhd/schemas/v1/tasks/common",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "title": "RackHD Task Common Options",
     "description": "The common options that shared by all tasks",
@@ -17,14 +17,16 @@
                     "$ref": "#/definitions/Timeout"
                 }
             }
-        }
-    },
-    "properties": {
-        "_timeout": {
-            "$ref": "#/definitions/Timeout"
         },
-        "schedulerOverrides": {
-            "$ref": "#/definitions/SchedulerOverrides"
+        "Options": {
+            "properties": {
+                "_timeout": {
+                    "$ref": "#/definitions/Timeout"
+                },
+                "schedulerOverrides": {
+                    "$ref": "#/definitions/SchedulerOverrides"
+                }
+            }
         }
     }
 }

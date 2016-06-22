@@ -6,7 +6,7 @@
     "description": "The paramters schema for CoreOS installation",
     "describeJob": "Job.Os.Install",
     "allOf": [
-        { "$ref": "common-options" }
+        { "$ref": "common#/definitions/Options" }
     ],
     "properties": {
         "version": {
