@@ -4,7 +4,10 @@
     "copyright": "Copyright 2016, EMC, Inc.",
     "title": "OBM Control",
     "description": "The schema for all obm control tasks",
-    "describeJob": "Job.Obm.Control",
+    "describeJob": "Job.Obm.Node",
+    "allOf": [
+        { "$ref": "common#/definitions/Options" }
+    ],
     "definitions": {
         "ObmAction": {
             "enum": [

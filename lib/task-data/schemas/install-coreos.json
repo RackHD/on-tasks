@@ -1,0 +1,50 @@
+{
+    "$schema": "rackhd/schemas/v1/task-schema",
+    "id": "rackhd/schemas/v1/tasks/install-coreos",
+    "copyright": "Copyright 2016, EMC, Inc.",
+    "title": "Install CoreOS",
+    "description": "The paramters schema for CoreOS installation",
+    "describeJob": "Job.Os.Install",
+    "allOf": [
+        { "$ref": "common#/definitions/Options" }
+    ],
+    "properties": {
+        "version": {
+            "$ref": "install-os-base#/definitions/Version"
+        },
+        "repo": {
+            "$ref": "install-os-base#/definitions/Repo"
+        },
+        "hostname": {
+            "$ref": "install-os-base#/definitions/Hostname"
+        },
+        "installDisk": {
+            "$ref": "install-os-base#/definitions/InstallDisk"
+        },
+        "comport": {
+            "$ref": "install-os-base#/definitions/Comport"
+        },
+        "profile": {
+            "$ref": "install-os-base#/definitions/Profile"
+        },
+        "completionUri": {
+            "$ref": "install-os-base#/definitions/CompletionUri"
+        },
+        "installScript": {
+            "$ref": "install-os-base#/definitions/InstallScript"
+        },
+        "installScriptUri": {
+            "$ref": "install-os-base#/definitions/InstallScriptUri"
+        }
+    },
+    "required": [
+        "version",
+        "repo",
+        "hostname",
+        "comport",
+        "profile",
+        "completionUri",
+        "installScript",
+        "installScriptUri"
+    ]
+}

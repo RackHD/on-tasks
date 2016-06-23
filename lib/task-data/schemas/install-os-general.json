@@ -1,0 +1,27 @@
+{
+    "$schema": "rackhd/schemas/v1/task-schema",
+    "id": "rackhd/schemas/v1/tasks/install-os-general",
+    "copyright": "Copyright 2016, EMC, Inc.",
+    "title": "Install OS Normal Support",
+    "description": "The parameters for normal OS installation",
+    "describeJob": "Job.Os.Install",
+    "allOf": [
+        {
+            "$ref": "install-os-base"
+        },
+        {
+            "type": "object",
+            "properties": {
+                "users": {
+                    "$ref": "install-os-base#/definitions/UsersFull"
+                },
+                "kvm": {
+                    "$ref": "install-os-base#/definitions/Kvm"
+                },
+                "installPartitions": {
+                    "$ref": "install-os-base#/definitions/InstallPartitions"
+                }
+            }
+        }
+    ]
+}
