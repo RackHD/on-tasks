@@ -48,14 +48,16 @@ describe("SNMP PDU Sensor Metric", function () {
         };
         metric.snmptool.collectHostSnmp.resolves(values);
 
-        return expect(metric._collectSineticaSensorData(testCommand)).to.eventually.deep.equal(expectValues);
+        return expect(metric._collectSineticaSensorData(testCommand))
+            .to.eventually.deep.equal(expectValues);
     });
 
     it('should collect pdu sensor data for Sinetica(Panduit) iPDU', function() {
         metric.snmptool = { collectHostSnmp: sinon.stub() };
         var testCommand = ['HAWK-I2-MIB::test'];
         metric.snmptool.collectHostSnmp.rejects();
-        return expect(metric._collectSineticaSensorData(testCommand)).to.eventually.deep.equal(undefined);
+        return expect(metric._collectSineticaSensorData(testCommand))
+            .to.eventually.deep.equal(undefined);
     });
 
     it('should calculate pdu sensor data for Sinetica(Panduit) iPDU', function() {
@@ -67,6 +69,7 @@ describe("SNMP PDU Sensor Metric", function () {
             'HAWK-I2-MIB::ipTHALocn.1': 'MCU',
             'HAWK-I2-MIB::ipTHAType.1': 'temperature'
         };
+        /*jshint camelcase: false */
         var data = {
             channel_1:
             {
@@ -76,8 +79,9 @@ describe("SNMP PDU Sensor Metric", function () {
                 'ipTHALocn.1': 'MCU',
                 'ipTHAType.1': 'temperature'
             }
-        }
-        expect(metric._calculateSineticaSensorData(sensorData, source)).to.deep.equal(data)
+        };
+        expect(metric._calculateSineticaSensorData(sensorData, source))
+            .to.deep.equal(data);
     });
 
     it('should call correct sensor collection function based on node type', function() {
@@ -89,6 +93,7 @@ describe("SNMP PDU Sensor Metric", function () {
     });
 
     it('should call correct sensor calculation function based on node type', function() {
+        /*jshint camelcase: false */
         var data = {
             channel_1:
             {
