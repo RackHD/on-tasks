@@ -60,40 +60,44 @@
                 "0x3e8",
                 "0x2e8"
             ]
+        },
+        "EsxiSpecificOptions": {
+            "type": "object",
+            "properties": {
+                "users": {
+                    "$ref": "install-os-types#/definitions/UsersSimple"
+                },
+                "postInstallCommands": {
+                    "$ref": "#/definitions/PostInstallCommands"
+                },
+                "switchDevices": {
+                    "$ref": "#/definitions/SwitchDevices"
+                },
+                "esxBootConfigTemplate": {
+                    "$ref": "#/definitions/EsxBootConfigTemplate"
+                },
+                "esxBootConfigTemplateUri": {
+                    "$ref": "#/definitions/EsxBootConfigTemplateUri"
+                },
+                "rackhdCallbackScript": {
+                    "$ref": "install-os-types#/definitions/RackHDCallbackScript"
+                },
+                "comportaddress": {
+                    "$ref": "#/definitions/ComportAddress"
+                }
+            },
+            "required": [
+                "esxBootConfigTemplate",
+                "esxBootConfigTemplateUri",
+                "rackhdCallbackScript",
+                "comportaddress"
+            ]
         }
     },
     "allOf": [
-        {
-            "$ref": "install-os-base"
-        }
-    ],
-    "properties": {
-        "users": {
-            "$ref": "install-os-base#/definitions/UsersSimple"
-        },
-        "postInstallCommands": {
-            "$ref": "#/definitions/PostInstallCommands"
-        },
-        "switchDevices": {
-            "$ref": "#/definitions/SwitchDevices"
-        },
-        "esxBootConfigTemplate": {
-            "$ref": "#/definitions/EsxBootConfigTemplate"
-        },
-        "esxBootConfigTemplateUri": {
-            "$ref": "#/definitions/EsxBootConfigTemplateUri"
-        },
-        "rackhdCallbackScript": {
-            "$ref": "install-os-base#/definitions/RackHDCallbackScript"
-        },
-        "comportaddress": {
-            "$ref": "#/definitions/ComportAddress"
-        }
-    },
-    "required": [
-        "esxBootConfigTemplate",
-        "esxBootConfigTemplateUri",
-        "rackhdCallbackScript",
-        "comportaddress"
+        { "$ref": "common#/definitions/Options" },
+        { "$ref": "install-os-types#/definitions/BasicOptions" },
+        { "$ref": "install-os-types#/definitions/AdvanceOptionsWithSimpleUser" },
+        { "$ref": "#/definitions/EsxiSpecificOptions" }
     ]
 }

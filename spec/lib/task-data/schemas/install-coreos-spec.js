@@ -15,7 +15,8 @@ describe(require('path').basename(__filename), function() {
         "repo": "http://172.31.128.1:9080/coreos/current",
         "hostname": "rackhd-node",
         "installDisk": "/dev/sda",
-        "comport": "ttyS0"
+        "comport": "ttyS0",
+        "osType": "linux"
     };
 
     var positiveSetParam = {
@@ -32,6 +33,7 @@ describe(require('path').basename(__filename), function() {
     ];
 
     var negativeUnsetParam = [
+        "osType",
         "completionUri",
         "profile",
         "installScript",
