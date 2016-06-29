@@ -31,6 +31,7 @@ describe(require('path').basename(__filename), function () {
             helper.di.simpleWrapper(metricStub, 'JobUtils.Metrics.Snmp.InterfaceStateMetric'),
             helper.di.simpleWrapper(metricStub, 'JobUtils.Metrics.Snmp.ProcessorLoadMetric'),
             helper.di.simpleWrapper(metricStub, 'JobUtils.Metrics.Snmp.MemoryUsageMetric'),
+            helper.di.simpleWrapper(metricStub, 'JobUtils.Metrics.Snmp.TxRxCountersMetric'),
             helper.di.simpleWrapper(waterline,'Services.Waterline')
         ]);
         context.Jobclass = helper.injector.get('Job.Snmp');
@@ -304,7 +305,8 @@ describe(require('path').basename(__filename), function () {
                     Constants.WorkItems.Pollers.Metrics.SnmpInterfaceBandwidthUtilization,
                     Constants.WorkItems.Pollers.Metrics.SnmpInterfaceState,
                     Constants.WorkItems.Pollers.Metrics.SnmpProcessorLoad,
-                    Constants.WorkItems.Pollers.Metrics.SnmpMemoryUsage
+                    Constants.WorkItems.Pollers.Metrics.SnmpMemoryUsage,
+                    Constants.WorkItems.Pollers.Metrics.SnmpTxRxCounters
                 ], function(metricType) {
                     var data = {
                         host: 'test',
