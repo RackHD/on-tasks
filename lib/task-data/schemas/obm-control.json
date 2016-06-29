@@ -5,9 +5,6 @@
     "title": "OBM Control",
     "description": "The schema for all obm control tasks",
     "describeJob": "Job.Obm.Node",
-    "allOf": [
-        { "$ref": "common#/definitions/Options" }
-    ],
     "definitions": {
         "ObmAction": {
             "enum": [
@@ -38,14 +35,20 @@
             ]
         }
     },
-    "properties": {
-        "action": {
-            "$ref": "#/definitions/ObmAction",
-            "readonly": true
-        },
-        "obmService": {
-            "$ref": "#/definitions/ObmService"
+    "allOf": [
+        { "$ref": "common#/definitions/Options" },
+        {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "$ref": "#/definitions/ObmAction",
+                    "readonly": true
+                },
+                "obmService": {
+                    "$ref": "#/definitions/ObmService"
+                }
+            },
+            "required": ["action"]
         }
-    },
-    "required": ["action"]
+    ]
 }

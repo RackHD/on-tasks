@@ -5,15 +5,21 @@
     "title": "Install CentOS",
     "description": "The parameters for CentOS installation",
     "describeJob": "Job.Os.Install",
-    "allOf": [
-        {
-            "$ref": "install-os-general"
-        }
-    ],
-    "properties": {
-        "rackhdCallbackScript": {
-            "$ref": "install-os-base#/definitions/RackHDCallbackScript"
+    "definitions": {
+        "CentOsSpecificOptions": {
+            "type": "object",
+            "properties": {
+                "rackhdCallbackScript": {
+                    "$ref": "install-os-types#/definitions/RackHDCallbackScript"
+                }
+            },
+            "required": ["rackhdCallbackScript"]
         }
     },
-    "required": [ "rackhdCallbackScript" ]
+    "allOf": [
+        { "$ref": "common#/definitions/Options" },
+        { "$ref": "install-os-types#/definitions/BasicOptions" },
+        { "$ref": "install-os-types#/definitions/AdvanceOptions" },
+        { "$ref": "#/definitions/CentOsSpecificOptions" }
+    ]
 }

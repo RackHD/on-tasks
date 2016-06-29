@@ -1,13 +1,10 @@
 {
     "$schema": "rackhd/schemas/v1/task-schema",
-    "id": "rackhd/schemas/v1/tasks/install-os-base",
+    "id": "rackhd/schemas/v1/tasks/install-os-types",
     "copyright": "Copyright 2016, EMC, Inc.",
-    "title": "Install OS Base",
-    "description": "The base paramters schema for install os",
+    "title": "Install OS Types",
+    "description": "The paramters type definition schema for install os",
     "describeJob": "Job.Os.Install",
-    "allOf": [
-        { "$ref": "common#/definitions/Options" }
-    ],
     "definitions": {
         "OsType": {
             "description": "The type of OS which is used by code internally",
@@ -57,13 +54,16 @@
             "allOf": [
                 {
                     "$ref": "#/definitions/UserAccountInfoSimple"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "uid": {
+                            "$ref": "#/definitions/UserID"
+                        }
+                    }
                 }
-            ],
-            "properties": {
-                "uid": {
-                    "$ref": "#/definitions/UserID"
-                }
-            }
+            ]
         },
         "UsersSimple": {
             "description": "The list of user account that will be created during OS installation, it supports simple user account information",
@@ -281,67 +281,93 @@
             "type": "string",
             "description": "The file name of callback script that will be called when the first time the OS boots up",
             "minLength": 1
+        },
+        "BasicOptions": {
+            "type": "object",
+            "properties": {
+                "osType": {
+                    "$ref": "#/definitions/OsType",
+                    "readonly": true
+                },
+                "version": {
+                    "$ref": "#/definitions/Version"
+                },
+                "repo": {
+                    "$ref": "#/definitions/Repo"
+                },
+                "hostname": {
+                    "$ref": "#/definitions/Hostname"
+                },
+                "installDisk": {
+                    "$ref": "#/definitions/InstallDisk"
+                },
+                "profile": {
+                    "$ref": "#/definitions/Profile"
+                },
+                "completionUri": {
+                    "$ref": "#/definitions/CompletionUri"
+                },
+                "installScript": {
+                    "$ref": "#/definitions/InstallScript"
+                },
+                "installScriptUri": {
+                    "$ref": "#/definitions/InstallScriptUri"
+                },
+                "comport": {
+                    "$ref": "#/definitions/Comport"
+                }
+            },
+            "required": ["osType", "version", "repo", "hostname", "profile",
+                "completionUri", "installScript", "installScriptUri", "comport"]
+        },
+        "AdvanceOptionsCommon": {
+            "type": "object",
+            "properties": {
+                "rootPassword": {
+                    "$ref": "#/definitions/UserPassword"
+                },
+                "rootSshKey": {
+                    "$ref": "#/definitions/SshKey"
+                },
+                "domain": {
+                    "$ref": "#/definitions/Domain"
+                },
+                "dnsServers": {
+                    "$ref": "#/definitions/DnsServers"
+                },
+                "networkDevices": {
+                    "$ref": "#/definitions/NetworkDevices"
+                },
+                "kvm": {
+                    "$ref": "#/definitions/Kvm"
+                },
+                "installPartitions": {
+                    "$ref": "#/definitions/InstallPartitions"
+                }
+            },
+            "required": ["rootPassword", "domain"]
+        },
+        "AdvanceOptions": {
+            "allOf": [
+                { "$ref": "#/definitions/AdvanceOptionsCommon" },
+                {
+                    "type": "object",
+                    "properties": {
+                        "users": { "$ref": "#/definitions/UsersFull" }
+                    }
+                }
+            ]
+        },
+        "AdvanceOptionsWithSimpleUser": {
+            "allOf": [
+                { "$ref": "#/definitions/AdvanceOptionsCommon" },
+                {
+                    "type": "object",
+                    "properties": {
+                        "users": { "$ref": "#/definitions/UsersSimple" }
+                    }
+                }
+            ]
         }
-    },
-    "properties": {
-        "osType": {
-            "$ref": "#/definitions/OsType",
-            "readonly": true
-        },
-        "version": {
-            "$ref": "#/definitions/Version"
-        },
-        "repo": {
-            "$ref": "#/definitions/Repo"
-        },
-        "rootPassword": {
-            "$ref": "#/definitions/UserPassword"
-        },
-        "rootSshKey": {
-            "$ref": "#/definitions/SshKey"
-        },
-        "hostname": {
-            "$ref": "#/definitions/Hostname"
-        },
-        "domain": {
-            "$ref": "#/definitions/Domain"
-        },
-        "dnsServers": {
-            "$ref": "#/definitions/DnsServers"
-        },
-        "networkDevices": {
-            "$ref": "#/definitions/NetworkDevices"
-        },
-        "installDisk": {
-            "$ref": "#/definitions/InstallDisk"
-        },
-        "comport": {
-            "$ref": "#/definitions/Comport"
-        },
-        "profile": {
-            "$ref": "#/definitions/Profile"
-        },
-        "completionUri": {
-            "$ref": "#/definitions/CompletionUri"
-        },
-        "installScript": {
-            "$ref": "#/definitions/InstallScript"
-        },
-        "installScriptUri": {
-            "$ref": "#/definitions/InstallScriptUri"
-        }
-    },
-    "required": [
-        "osType",
-        "version",
-        "repo",
-        "rootPassword",
-        "hostname",
-        "domain",
-        "comport",
-        "profile",
-        "completionUri",
-        "installScript",
-        "installScriptUri"
-    ]
+    }
 }
