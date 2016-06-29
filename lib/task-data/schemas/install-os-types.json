@@ -345,7 +345,7 @@
                     "$ref": "#/definitions/InstallPartitions"
                 }
             },
-            "required": ["rootPassword", "domain"]
+            "required": ["rootPassword"]
         },
         "AdvanceOptions": {
             "allOf": [

@@ -46,7 +46,7 @@ describe('Install OS Job', function () {
                 version: '7.0',
                 repo: 'http://127.0.0.1:8080/myrepo/7.0/x86_64',
                 rootPassword: 'rackhd',
-                rootSshKey: null,
+                rootSshKey: 'testkey',
                 kvm: null,
                 users: [
                     {
@@ -83,15 +83,6 @@ describe('Install OS Job', function () {
         expect(job.options.users[0].encryptedPassword).to.match(/^\$6\$*\$*/);
     });
 
-    it("should remove empty ssh key", function() {
-        expect(job.options).to.not.have.property('rootSshKey');
-        expect(job.options.users[0]).to.not.have.property('sshKey');
-    });
-
-    it("should remove empty kvm flag", function() {
-        expect(job.options).to.not.have.property('kvm');
-    });
-
     it("should preserve an existing/positive kvm flag", function() {
         var jobWithKVM = new InstallOsJob(
             {
@@ -100,7 +91,7 @@ describe('Install OS Job', function () {
                 version: '7.0',
                 repo: 'http://127.0.0.1:8080/myrepo/7.0/x86_64',
                 rootPassword: 'rackhd',
-                rootSshKey: null,
+                rootSshKey: 'testkey',
                 kvm: true,
                 users: [
                     {
@@ -120,10 +111,6 @@ describe('Install OS Job', function () {
         expect(jobWithKVM.options.kvm).to.equal(true);
     });
 
-
-    it("should convert some option to empty array", function() {
-        expect(job.options.dnsServers).to.have.length(0);
-    });
 
     it("should set up message subscribers", function() {
         var cb;
@@ -148,7 +135,7 @@ describe('Install OS Job', function () {
 
     it('should provide the given user credentials to the context', function() {
         expect(job.context.users).to.deep.equal(
-            job.options.users.concat({name: 'root', password: 'rackhd', privateKey: undefined})
+            job.options.users.concat({name: 'root', password: 'rackhd', privateKey: 'testkey'})
         );
     });
 
@@ -181,7 +168,7 @@ describe('Install OS Job', function () {
                     version: '7.0',
                     repo: 'http://127.0.0.1:8080/myrepo/7.0/x86_64',
                     rootPassword: 'rackhd',
-                    rootSshKey: null,
+                    rootSshKey: 'testkey',
                     users: [
                         {
                             name: 'test',
@@ -280,178 +267,6 @@ describe('Install OS Job', function () {
     });
 
     describe('test _validateOptions', function() {
-
-        it('should throw error when username is not given ', function() {
-            job.options.users = [{password:'12345', uid:600, sshKey:''}];
-            return expect(job._validateOptions.bind(job,{}))
-                   .to.throw('username is required');
-        });
-
-        it('should throw error when username is empty', function() {
-            job.options.users = [
-                {"name":"WangW25", "uid":1066, "password":"12345", "sshKey":"123456" },
-                {"name": "", "uid":1069, "password":"12345", "sshKey":"123456"}];
-            return expect(job._validateOptions.bind(job,{}))
-                   .to.throw('username is required');
-        });
-
-        it('should throw error when username is not a string ', function() {
-            job.options.users = [{name:100, password:'12345', uid:600, sshKey:''}];
-            return expect(job._validateOptions.bind(job,{}))
-                   .to.throw('username must be a string');
-        });
-
-        it('should throw error when username is not valid', function() {
-            job.options.users = [{"name":" ", "uid":1066, "password":"12345", "sshKey":"123456"}];
-            return expect(job._validateOptions.bind(job,{}))
-                   .to.throw('username should be valid ');
-        });
-
-        it('username should consist of at least a valid character or number', function() {
-            job.options.users = [{"name":"123", "uid":1066, "password":"12345", "sshKey":"123456"}];
-            return expect(job._validateOptions.bind(job,{}))
-                   .to.not.throw(Error);
-        });
-
-        it('should throw error when password is not given', function() {
-            job.options.users = [{name: "test", uid:600, sshKey:''}];
-            return expect(job._validateOptions.bind(job,{}))
-                   .to.throw('password is required');
-        });
-        
-        it('should throw error when password is not a string', function() {
-            job.options.users = [{name: "test", password:123, uid:600, sshKey:''}];
-            return expect(job._validateOptions.bind(job,{}))
-                   .to.throw('password must be a string');
-        });
-
-        it('should throw error when the length of password is less than 4', function() {
-            job.options.users = [{name: "test", password:"123",uid:600, sshKey:''}];
-            return expect(job._validateOptions.bind(job,{}))
-                   .to.throw('The length of password should larger than 4');
-        });
-
-        it('sshKey is optional', function() {
-            job.options.users = [{name: "test", password:"12345", uid:600}];
-            return expect(job._validateOptions.bind(job,{}))
-                   .to.not.throw(Error);
-        });
-
-        it('sshKey is allowed to be null', function() {
-            job.options.users = [{name: "test", password:"12345", uid:600, sshKey:null}];
-            return expect(job._validateOptions.bind(job,{}))
-                   .to.not.throw(Error);
-        });
-
-        it('should throw error when sshKey is not a string', function() {
-            job.options.users = [{name: "test", password:"12345", uid:600, sshKey:1234}];
-            return expect(job._validateOptions.bind(job,{}))
-                   .to.throw('sshKey must be a string');
-        });
-
-        it('uid is optional', function() {
-            job.options.users = [{name:"test", password:'12345', sshKey:''}];
-            return expect(job._validateOptions.bind(job,{}))
-                   .to.not.throw(Error);
-        });
-
-        it('should throw error when uid is null', function() {
-            job.options.users = [{name:"test", password:'12345', sshKey:'', uid:null}];
-            return expect(job._validateOptions.bind(job,{}))
-                   .to.throw('uid must be a number');
-        });
-
-        it('should throw error when uid is not a number ', function() {
-            job.options.users = [{name:"test", password:'12345', uid:"200",sshKey:''}];
-            return expect(job._validateOptions.bind(job,{}))
-                   .to.throw('uid must be a number');
-        });
- 
-        it('should throw error when uid is less than 500', function() {
-            job.options.users = [{name:"test", password:'12345', uid:200,sshKey:''}];
-            return expect(job._validateOptions.bind(job,{}))
-                   .to.throw('The uid should between 500 and 65535 (>=500, <=65535)');
-        });
-
-        it('should throw error when uid is larger than 65535 ', function() {
-            job.options.users = [{name:"test", password:'12345', uid:70000,sshKey:''}];
-            return expect(job._validateOptions.bind(job,{}))
-                   .to.throw('The uid should between 500 and 65535 (>=500, <=65535)');
-        });
-
-        it("should have a vlanIds array with number", function() {
-            job.options.networkDevices = [
-                {
-                    device: "eth0",
-                    ipv4:{
-                        ipAddr: "192.168.1.29",
-                        gateway: "192.168.1.1",
-                        netmask: "255.255.255.0",
-                        vlanIds: ['104', '105']
-                    }
-                }
-            ];
-            job._validateOptions();
-            expect(job.options.networkDevices[0].ipv4.vlanIds[0]).to.equals(104);
-            expect(job.options.networkDevices[0].ipv4.vlanIds[1]).to.equals(105);
-        });
-
-        it("should change vlanId to vlanIds", function() {
-            job.options.networkDevices = [
-                {
-                    device: "eth0",
-                    ipv4:{
-                        ipAddr: "192.168.1.29",
-                        gateway: "192.168.1.1",
-                        netmask: "255.255.255.0",
-                        vlanId: ['104', '105']
-                    },
-                    ipv6:{
-                        ipAddr: "fec0::6ab4:0:5efe:157.60.14.21",
-                        gateway: "fe80::5efe:131.107.25.1",
-                        netmask: "ffff.ffff.ffff.ffff.0.0.0.0",
-                        vlanId: [104, 105]
-                    }
-                }
-            ];
-            job._validateOptions();
-            expect(job.options.networkDevices[0].ipv4.vlanIds[0]).to.equals(104);
-            expect(job.options.networkDevices[0].ipv4.vlanIds[1]).to.equals(105);
-            expect(job.options.networkDevices[0].ipv6.vlanIds[0]).to.equals(104);
-            expect(job.options.networkDevices[0].ipv6.vlanIds[1]).to.equals(105);
-        });
-
-        it('should throw vlanId RangeError', function () {
-            job.options.networkDevices = [
-                {
-                    device: "eth0",
-                    ipv6:{
-                        ipAddr: "fec0::6ab4:0:5efe:157.60.14.21",
-                        gateway: "fe80::5efe:131.107.25.1",
-                        netmask: "ffff.ffff.ffff.ffff.0.0.0.0",
-                        vlanIds: [10555, 106]
-                    }
-                }
-            ];
-            expect(function() { job._validateOptions(); })
-                .to.throw(RangeError, 'VlanId must be between 0 and 4095.');
-        });
-
-        it('should be normal without vlanId input', function () {
-            job.options.networkDevices = [
-                {
-                    device: "eth0",
-                    ipv4:{
-                        ipAddr: "192.168.1.29",
-                        gateway: "192.168.1.1",
-                        netmask: "255.255.255.0"
-                        //vlanIds: ['104', '105']
-                    }
-                }
-            ];
-            expect(job._validateOptions()).to.be.undefined;
-        });
-
         it('should throw ipAddr AssertionError', function () {
             job.options.networkDevices = [
                 {
@@ -512,41 +327,12 @@ describe('Install OS Job', function () {
                 .to.throw(Error, 'Invalid ipv6 netmask.');
         });
 
-        it('should throw error when mountPoint is not specified', function() {
-            job.options.installPartitions = [{ size:'500', fsType:'ext3' }];
-            return expect(job._validateOptions.bind(job,{}))
-                   .to.throw('mountPoint is required');
-        });
-
-        it('should throw error when mountPoint is not a string', function() {
-            job.options.installPartitions = [{ mountPoint:{}, size:'500', fsType:'ext3' }];
-            return expect(job._validateOptions.bind(job,{}))
-                   .to.throw('mountPoint must be a string');
-        });
-
-        it('should throw error when size is not specified', function() {
-            job.options.installPartitions = [{ mountPoint:'/boot', fsType:'ext3' }];
-            return expect(job._validateOptions.bind(job,{}))
-                   .to.throw('size is required');
-        });
-
-        it('should throw error when size is not a string', function() {
-            job.options.installPartitions = [{ mountPoint:'/boot', size:{}, fsType:'ext3' }];
-            return expect(job._validateOptions.bind(job,{}))
-                   .to.throw('size must be a string');
-        });
-
         it('should throw error when size is not a number string and not "auto"', function() {
             job.options.installPartitions = [{ mountPoint:'/boot', size:"abc", fsType:'ext3' }];
             return expect(job._validateOptions.bind(job,{}))
                    .to.throw('size must be a number string or "auto"');
         });
 
-        it('should throw error when fsType is not a string', function() {
-            job.options.installPartitions = [{ mountPoint:'/boot', size:'500', fsType:{} }];
-            return expect(job._validateOptions.bind(job,{}))
-                   .to.throw('fsType must be a string');
-        });
 
         it('should correct fsType when mountPoint is swap but fsType is not swap', function() {
             job.options.installPartitions = [{ mountPoint:'swap', size:'500', fsType:'ext3' }];

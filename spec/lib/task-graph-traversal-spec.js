@@ -10,6 +10,7 @@ describe("Task Graph sorting", function () {
         helper.setupInjector([
             helper.require('/lib/task-graph.js'),
             helper.require('/lib/task.js'),
+            helper.require('/lib/utils/task-option-validator.js'),
             helper.di.simpleWrapper([], 'Task.taskLibrary'),
             helper.di.simpleWrapper({}, 'TaskGraph.Store')
         ]);

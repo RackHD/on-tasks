@@ -19,7 +19,7 @@ describe(require('path').basename(__filename), function() {
     var positiveSetParam = {
         action: [
             "clearSEL", "identifyOff", "identifyOn", "NMI", "powerButton", "powerOff",
-            "powerOn", "powerStatus", "reboot", "setPxeBoot"
+            "powerOn", "powerStatus", "reboot", "setBootPxe"
         ],
         obmService: [
             "amt-obm-service", "apc-obm-service", "ipmi-obm-service", "noop-obm-service",

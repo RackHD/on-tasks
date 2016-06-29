@@ -17,7 +17,7 @@
                 "powerOn",
                 "powerStatus",
                 "reboot",
-                "setPxeBoot"
+                "setBootPxe"
             ]
         },
         "ObmService": {
