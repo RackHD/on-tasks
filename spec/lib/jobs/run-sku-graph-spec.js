@@ -7,6 +7,7 @@ describe("Job.Graph.RunSku", function () {
     var waterline = {};
     var uuid;
     var RunSkuGraphJob;
+    var RunGraphJob;
     var workflowTool;
     var Errors;
     var Constants;
@@ -17,6 +18,7 @@ describe("Job.Graph.RunSku", function () {
         // create a child injector with on-core and the base pieces we need to test this
         helper.setupInjector([
             helper.require('/spec/mocks/logger.js'),
+            helper.require('/lib/jobs/run-graph.js'),
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/run-sku-graph.js'),
             helper.require('/lib/task-graph.js'),
@@ -27,6 +29,7 @@ describe("Job.Graph.RunSku", function () {
             helper.di.simpleWrapper({}, 'Task.taskLibrary')
         ]);
 
+        RunGraphJob = helper.injector.get('Job.Graph.Run');
         RunSkuGraphJob = helper.injector.get('Job.Graph.RunSku');
         workflowTool = helper.injector.get('JobUtils.WorkflowTool');
         Errors = helper.injector.get('Errors');
@@ -38,6 +41,9 @@ describe("Job.Graph.RunSku", function () {
         };
         waterline.nodes = {
             findByIdentifier: sinon.stub().resolves()
+        };
+        waterline.graphobjects = {
+            findOneMongo: sinon.stub().resolves()
         };
     });
 
@@ -60,10 +66,16 @@ describe("Job.Graph.RunSku", function () {
         this.sandbox.stub(workflowTool, 'runGraph').resolves();
         waterline.skus.needOne.reset();
         waterline.nodes.findByIdentifier.reset();
+        waterline.graphobjects.findOneMongo.reset();
     });
 
     afterEach(function() {
         this.sandbox.restore();
+    });
+
+    it('should inherit from RunGraphJob', function() {
+        var job = new RunSkuGraphJob({ nodeId: fakeNode.id }, { target: fakeNode.id }, uuid.v4());
+        expect(job).to.be.an.instanceof(RunGraphJob);
     });
 
     it('should run a graph', function() {
@@ -72,15 +84,16 @@ describe("Job.Graph.RunSku", function () {
         var job = new RunSkuGraphJob({ nodeId: fakeNode.id }, { target: fakeNode.id }, uuid.v4());
         job._run();
 
-        expect(job._subscribeGraphFinished).to.have.been.calledOnce;
-        var cb = job._subscribeGraphFinished.firstCall.args[0];
-
         setImmediate(function() {
-            cb(Constants.Task.States.Succeeded);
+            job.finishWithState(Constants.Task.States.Succeeded);
         });
 
         return job._deferred
         .then(function() {
+            expect(job._subscribeGraphFinished).to.have.been.calledOnce;
+            expect(job._subscribeGraphFinished).to.have.been.calledWith(
+                job.finishWithState
+            );
             expect(waterline.nodes.findByIdentifier).to.have.been.calledOnce;
             expect(waterline.nodes.findByIdentifier).to.have.been.calledWith(fakeNode.id);
 
@@ -115,15 +128,16 @@ describe("Job.Graph.RunSku", function () {
                 );
         job._run();
 
-        expect(job._subscribeGraphFinished).to.have.been.calledOnce;
-        var cb = job._subscribeGraphFinished.firstCall.args[0];
-
         setImmediate(function() {
-            cb(Constants.Task.States.Succeeded);
+            job.finishWithState(Constants.Task.States.Succeeded);
         });
 
         return job._deferred
         .then(function() {
+            expect(job._subscribeGraphFinished).to.have.been.calledOnce;
+            expect(job._subscribeGraphFinished).to.have.been.calledWith(
+                job.finishWithState
+            );
             expect(waterline.nodes.findByIdentifier).to.have.been.calledOnce;
             expect(waterline.nodes.findByIdentifier).to.have.been.calledWith(fakeNode.id);
 
@@ -155,11 +169,8 @@ describe("Job.Graph.RunSku", function () {
         var job = new RunSkuGraphJob({ nodeId: fakeNode.id }, { target: fakeNode.id }, uuid.v4());
         job._run();
 
-        expect(job._subscribeGraphFinished).to.have.been.calledOnce;
-        var cb = job._subscribeGraphFinished.firstCall.args[0];
-
         setImmediate(function() {
-            cb(Constants.Task.States.Failed);
+            job.finishWithState(Constants.Task.States.Failed);
         });
 
         return expect(job._deferred).to.be.rejectedWith(/Graph.*failed with status/);
