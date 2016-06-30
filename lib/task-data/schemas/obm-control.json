@@ -11,13 +11,16 @@
                 "clearSEL",
                 "identifyOff",
                 "identifyOn",
+                "mcResetCold",
                 "NMI",
                 "powerButton",
                 "powerOff",
                 "powerOn",
                 "powerStatus",
                 "reboot",
-                "setBootPxe"
+                "reset",
+                "setBootPxe",
+                "softReset"
             ]
         },
         "ObmService": {
