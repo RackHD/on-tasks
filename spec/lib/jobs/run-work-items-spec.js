@@ -220,7 +220,7 @@ describe("Job.Catalog.RunWorkItem", function () {
         setImmediate(function () {
             try {
                 expect(waterline.workitems.setFailed).to.have.been.calledOnce;
-                expect(waterline.workitems.setFailed.firstCall.args[1]).to.equal(workItem);
+                expect(waterline.workitems.setFailed.firstCall.args[2]).to.equal(workItem);
                 job.cancel();
                 done();
             } catch (e) {
