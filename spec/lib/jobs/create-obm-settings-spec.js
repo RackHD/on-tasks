@@ -24,8 +24,8 @@ describe(require('path').basename(__filename), function () {
         VboxObmService = helper.injector.get('vbox-obm-service');
         waterline = helper.injector.get('Services.Waterline');
 
-        waterline.nodes = {
-            updateByIdentifier: sinon.stub().resolves()
+        waterline.obms = {
+            upsertByNode: sinon.stub().resolves()
         };
     });
 
@@ -56,14 +56,10 @@ describe(require('path').basename(__filename), function () {
             self.sandbox.stub(self.job, '_done');
             self.sandbox.stub(self.job, 'liveTestObmConfig').resolves();
 
-            var expectedUpdateData = {
-                obmSettings: [ self.job.obmSettings ]
-            };
-
             return self.job._run()
             .then(function() {
-                expect(waterline.nodes.updateByIdentifier)
-                    .to.have.been.calledWith(self.job.nodeId, expectedUpdateData);
+                expect(waterline.obms.upsertByNode)
+                    .to.have.been.calledWith(self.job.nodeId, self.job.obmSettings);
             });
         });
 

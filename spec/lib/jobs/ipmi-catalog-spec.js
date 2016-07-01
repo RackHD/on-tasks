@@ -8,7 +8,7 @@ describe('LocalIpmi Catalog Job', function () {
     var Promise;
     var uuid;
     var mockWaterline = {
-        nodes: {},
+        obms: {},
         catalogs: {}
     };
 
@@ -36,11 +36,11 @@ describe('LocalIpmi Catalog Job', function () {
                 acceptedResponseCodes: [1]
             };
             job = new IpmiCatalogJob(options, { target: 'bc7dab7e8fb7d6abf8e7d6ac' }, uuid.v4());
-            mockWaterline.nodes.findByIdentifier = function(){};
+            mockWaterline.obms.findByNode = function(){};
 
             this.sandbox = sinon.sandbox.create();
             this.sandbox.stub(job, '_subscribeActiveTaskExists').resolves();
-            this.sandbox.stub(mockWaterline.nodes,'findByIdentifier');
+            this.sandbox.stub(mockWaterline.obms,'findByNode');
         });
 
         afterEach('Ipmi catalog job input validation', function(){
@@ -48,7 +48,7 @@ describe('LocalIpmi Catalog Job', function () {
         });
 
         it('should fail if node does not exist', function(done) {
-            mockWaterline.nodes.findByIdentifier.resolves(null);
+            mockWaterline.obms.findByNode.resolves(null);
 
             job.run()
             .then(function() {
@@ -58,7 +58,7 @@ describe('LocalIpmi Catalog Job', function () {
                 try {
                     expect(e).to.have.property('name').that.equals('AssertionError');
                     expect(e).to.have.property('message').that.equals(
-                        'No node for ipmi catalog');
+                        'No OBM service available. (object) is required');
                     done();
                 } catch (e) {
                     done(e);
@@ -67,16 +67,10 @@ describe('LocalIpmi Catalog Job', function () {
         });
 
         it('should fail if ipmi obmSetting does not exist', function(done) {
-            var node = {
-                id: 'bc7dab7e8fb7d6abf8e7d6ac',
-                obmSettings: [
-                    {
-                        config: {
-                        }
-                    }
-                ]
+            var obm = {
+                config: {}
             };
-            mockWaterline.nodes.findByIdentifier.resolves(node);
+            mockWaterline.obms.findByNode.resolves(obm);
 
             job.run()
             .then(function() {
@@ -86,7 +80,7 @@ describe('LocalIpmi Catalog Job', function () {
                 try {
                     expect(e).to.have.property('name').that.equals('AssertionError');
                     expect(e).to.have.property('message').that.equals(
-                        'No ipmi obmSetting for ipmi catalog');
+                        'No OBM service config available.');
                     done();
                 } catch (e) {
                     done(e);
@@ -113,9 +107,9 @@ describe('LocalIpmi Catalog Job', function () {
             };
             job = new IpmiCatalogJob(options, { target: 'bc7dab7e8fb7d6abf8e7d6ac' }, uuid.v4());
 
-            mockWaterline.nodes.findByIdentifier = function(){};
+            mockWaterline.obms.findByNode = function(){};
             this.sandbox = sinon.sandbox.create();
-            this.sandbox.stub(mockWaterline.nodes,'findByIdentifier');
+            this.sandbox.stub(mockWaterline.obms,'findByNode');
             this.sandbox.stub(job, '_subscribeActiveTaskExists').resolves();
         });
 
@@ -157,24 +151,19 @@ describe('LocalIpmi Catalog Job', function () {
         });
 
         it('should run command and process response', function() {
-            var node = {
-                id: 'bc7dab7e8fb7d6abf8e7d6ac',
-                obmSettings: [
-                    {
-                        service: 'ipmi-obm-service',
-                        config: {
-                            host: '1.2.3.4',
-                            user: 'admin',
-                            password: 'password'
-                        }
-                    }
-                ]
+            var obm = {
+                service: 'ipmi-obm-service',
+                config: {
+                    host: '1.2.3.4',
+                    user: 'admin',
+                    password: 'password'
+                }
             };
 
             this.sandbox.stub(job,'runCommand').resolves();
             this.sandbox.stub(job,'handleResponse').resolves();
 
-            mockWaterline.nodes.findByIdentifier.resolves(node);
+            mockWaterline.obms.findByNode.resolves(obm);
 
             return job.run()
             .then(function() {
@@ -205,11 +194,11 @@ describe('LocalIpmi Catalog Job', function () {
             };
             job = new IpmiCatalogJob(options, { target: 'bc7dab7e8fb7d6abf8e7d6ac' }, uuid.v4());
 
-            mockWaterline.nodes.findByIdentifier = function(){};
+            mockWaterline.obms.findByNode = function(){};
             mockWaterline.catalogs.create = function(){};
 
             this.sandbox = sinon.sandbox.create();
-            this.sandbox.stub(mockWaterline.nodes,'findByIdentifier');
+            this.sandbox.stub(mockWaterline.obms,'findByNode');
             this.sandbox.stub(mockWaterline.catalogs,'create');
             this.sandbox.stub(parser, 'parseTasks');
         });

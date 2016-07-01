@@ -16,15 +16,16 @@ describe('Redfish Discovery Job', function () {
         Error,
         sandbox = sinon.sandbox.create();
         
+    var obm = {
+        service: 'redfish-obm-service',
+        config: { root: '/fake' }
+    };
+
     var node = {
         id: 'abc',
         type: 'enclosure',
         name: 'Node',
         identifiers: [],
-        obmSettings: [{
-            service: 'redfish-obm-service',
-            config: { root: '/fake' }
-        }],
         relations: [
             { relationType: 'encloses', 
               targets: [ '/fake' ] },
@@ -45,6 +46,10 @@ describe('Redfish Discovery Job', function () {
             create: sandbox.stub().resolves(),
             needOne: sandbox.stub().resolves(node),
             updateOne: sandbox.stub().resolves(node)
+        };
+        waterline.obms = {
+            upsertByNode: sandbox.stub().resolves(obm),
+            findByNode: sandbox.stub().resolves(obm)
         };
         Error = helper.injector.get('Errors');
     });

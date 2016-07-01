@@ -24,13 +24,13 @@ describe('RedfishTool', function(){
     });
 
     beforeEach(function() {
-        waterline.nodes = {
-            needByIdentifier: sandbox.stub().resolves({
-                obmSettings: [{
+        waterline.obms = {
+            findByNode: sandbox.stub().resolves(
+                {
                     service: 'redfish-obm-service',
                     config: { uri: 'http://fake'}
-                }]
-            })
+                }
+            )
         };
     });
 
@@ -41,7 +41,7 @@ describe('RedfishTool', function(){
     it("should setup settings", function() {
         return redfishTool.setup('abc')
         .then(function() {
-            expect(waterline.nodes.needByIdentifier)
+            expect(waterline.obms.findByNode)
                 .to.be.calledOnce;
             return;
         })
@@ -53,8 +53,8 @@ describe('RedfishTool', function(){
     });
             
     it("should fail to setup settings", function() {
-        waterline.nodes.needByIdentifier = sandbox.stub()
-            .resolves({obmSettings:[]});
+        waterline.obms.findByNode = sandbox.stub()
+            .resolves();
         return expect(redfishTool.setup('abc'))
             .to.be.rejectedWith('Failed to find Redfish settings');
     });
