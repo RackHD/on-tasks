@@ -11,13 +11,13 @@ describe(require('path').basename(__filename), function () {
     var collectMetricDataStub;
     var metricStub;
     var waterline = {};
+    var protocolEvents;
 
     base.before(function (context) {
         // create a child injector with on-core and the base pieces we need to test this
         collectMetricDataStub = sinon.stub();
         metricStub = function() {};
         metricStub.prototype.collectMetricData = collectMetricDataStub;
-
         helper.setupInjector([
             helper.require('/spec/mocks/logger.js'),
             helper.requireGlob('/lib/services/*.js'),
@@ -35,6 +35,7 @@ describe(require('path').basename(__filename), function () {
             helper.di.simpleWrapper(waterline,'Services.Waterline')
         ]);
         context.Jobclass = helper.injector.get('Job.Snmp');
+        protocolEvents = helper.injector.get('Protocol.Events');
     });
 
     describe('Base', function () {
@@ -292,6 +293,176 @@ describe(require('path').basename(__filename), function () {
                 });
             });
         });
+        
+        
+        it("set snmp inaccessible alert", function(done) {
+            var self = this;
+            var workItem = {
+                id: 'bc7dab7e8fb7d6abf8e7d6ad',
+                name: 'Pollers.SNMP',
+                failureCount: 1,
+                node: '5771e9583029069e07b3fc2c',
+                config: {
+                    ip: '1.2.3.4',
+                    communityString: 'community'
+                }
+            };
+            this.sandbox.stub(self.snmp, '_collectMetricData');
+            this.sandbox.stub(this.snmp, 'concurrentRequests').returns(false);
+            this.sandbox.stub(this.snmp, 'addConcurrentRequest');
+            this.sandbox.stub(this.snmp, 'removeConcurrentRequest');
+            waterline.workitems.findOne.resolves(workItem);
+            self.snmp._collectMetricData.resolves();
+            self.snmp._publishMetricResult = sinon.stub();
+            protocolEvents.publishNodeAlert = sinon.stub().resolves();
+            self.snmp._subscribeRunSnmpCommand = function(routingKey, callback) {
+                testEmitter.on('test-subscribe-snmp-command', function(config) {
+                    callback(config);
+                });
+            };
+
+            self.snmp._run()
+            .then(function() {
+                testEmitter.emit('test-subscribe-snmp-command', {
+                    host: 'test',
+                    community: 'test',
+                    node: 'test',
+                    workItemId: 'testWorkItemId',
+                    pollInterval: 60000,
+                    config: {
+                        //metric: "snmp-interface-state"
+                    }
+                });
+
+                setImmediate(function() {
+                    try {
+                        expect(protocolEvents.publishNodeAlert)
+                            .to.be.calledWith(workItem.node, {nodeId: workItem.node,
+                                obmType: "snmp-obm-service",
+                                state: "inaccessible",
+                                snmpName: ""});
+                        expect(waterline.workitems.setFailed).to.be.calledOnce;
+                        done();
+                    } catch (e) {
+                        done(e);
+                    }
+                });
+            });
+        });
+
+        
+        it("don't set snmp inaccessible alert", function(done) {
+            var self = this;
+            var workItem = {
+                id: 'bc7dab7e8fb7d6abf8e7d6ad',
+                name: 'Pollers.SNMP',
+                failureCount: 10,
+                node: '5771e9583029069e07b3fc2c',
+                config: {
+                    ip: '1.2.3.4',
+                    communityString: 'community'
+                }
+            };
+            this.sandbox.stub(self.snmp, '_collectMetricData');
+            this.sandbox.stub(this.snmp, 'concurrentRequests').returns(false);
+            this.sandbox.stub(this.snmp, 'addConcurrentRequest');
+            this.sandbox.stub(this.snmp, 'removeConcurrentRequest');
+            waterline.workitems.findOne.resolves(workItem);
+            self.snmp._collectMetricData.resolves();
+            self.snmp._publishMetricResult = sinon.stub();
+            protocolEvents.publishNodeAlert = sinon.stub().resolves();
+            self.snmp._subscribeRunSnmpCommand = function(routingKey, callback) {
+                testEmitter.on('test-subscribe-snmp-command', function(config) {
+                    callback(config);
+                });
+            };
+
+            self.snmp._run()
+            .then(function() {
+                testEmitter.emit('test-subscribe-snmp-command', {
+                    host: 'test',
+                    community: 'test',
+                    node: 'test',
+                    workItemId: 'testWorkItemId',
+                    pollInterval: 60000,
+                    config: {
+                        //metric: "snmp-interface-state"
+                    }
+                });
+
+                setImmediate(function() {
+                    try {
+                        expect(protocolEvents.publishNodeAlert).callCount(0);
+                        expect(waterline.workitems.setFailed).to.be.calledOnce;
+                        done();
+                    } catch (e) {
+                        done(e);
+                    }
+                });
+            });
+        });
+        
+        it("set snmp accessible alert", function(done) {
+            var self = this;
+            var workItem = {
+                id: 'bc7dab7e8fb7d6abf8e7d6ad',
+                name: 'Pollers.SNMP',
+                failureCount: 1,
+                node: '5771e9583029069e07b3fc2c',
+                config: {
+                    ip: '1.2.3.4',
+                    communityString: 'community'
+                }
+            };
+            this.sandbox.stub(self.snmp, '_collectMetricData');
+            this.sandbox.stub(this.snmp, 'concurrentRequests').returns(false);
+            this.sandbox.stub(this.snmp, 'addConcurrentRequest');
+            this.sandbox.stub(this.snmp, 'removeConcurrentRequest');
+            waterline.workitems.findOne.resolves(workItem);
+            self.snmp._collectMetricData.resolves();
+            self.snmp._publishMetricResult = sinon.stub();
+            self.snmp._subscribeRunSnmpCommand = function(routingKey, callback) {
+                testEmitter.on('test-subscribe-snmp-command', function(config) {
+                    callback(config);
+                });
+            };
+            protocolEvents.publishNodeAlert = sinon.stub().resolves();
+            self.snmp._subscribeRunSnmpCommand = function(routingKey, callback) {
+                testEmitter.on('test-subscribe-snmp-command', function(config) {
+                    callback(config);
+                });
+            };
+
+            self.snmp._run()
+            .then(function() {
+                testEmitter.emit('test-subscribe-snmp-command', {
+                    host: 'test',
+                    community: 'test',
+                    node: 'test',
+                    workItemId: 'testWorkItemId',
+                    pollInterval: 60000,
+                    config: {
+                        metric: "snmp-interface-state"
+                    }
+                });
+
+                setImmediate(function() {
+                    try {
+                        expect(protocolEvents.publishNodeAlert)
+                            .to.be.calledWith(workItem.node, {nodeId: workItem.node,
+                                obmType: "snmp-obm-service",
+                                state: "accessible",
+                                snmpName: "metric:snmp-interface-state"});
+                        expect(waterline.workitems.setSucceeded).to.be.calledOnce;
+                        done();
+                    } catch (e) {
+                        done(e);
+                    }
+                });
+            });
+        });
+
+
 
         describe('metric polling', function() {
             before(function() {
