@@ -5,7 +5,8 @@
 
 var uuid = require('node-uuid'),
     events = require('events'),
-    waterline = {};
+    waterline = {},
+    protocolEvents;
 
 describe(require('path').basename(__filename), function () {
     var base = require('./base-spec');
@@ -23,6 +24,7 @@ describe(require('path').basename(__filename), function () {
         ]);
 
         context.Jobclass = helper.injector.get('Job.Ipmi');
+        protocolEvents = helper.injector.get('Protocol.Events');
     });
 
     describe('Base', function () {
@@ -31,7 +33,7 @@ describe(require('path').basename(__filename), function () {
 
     describe("ipmi-job", function() {
         var testEmitter = new events.EventEmitter();
-
+        var config, workitem;
         beforeEach(function() {
             this.sandbox = sinon.sandbox.create();
             waterline.workitems = {
@@ -41,6 +43,19 @@ describe(require('path').basename(__filename), function () {
                 setFailed: this.sandbox.stub().resolves()
             };
             var graphId = uuid.v4();
+            config = {
+                host: '10.1.1.',
+                user: 'admin',
+                password: 'admin',
+                workItemId: 'testworkitemid'
+            };
+            workitem= {
+                failureCount: 1,
+                node: "any",
+                lastFinished: null,
+                leaseToken: null,
+                leaseExpires: null
+            };
             this.ipmi = new this.Jobclass({}, { graphId: graphId }, uuid.v4());
             expect(this.ipmi.routingKey).to.equal(graphId);
         });
@@ -55,14 +70,9 @@ describe(require('path').basename(__filename), function () {
 
         it("should listen for ipmi sdr command requests", function(done) {
             var self = this;
-            var config = {
-                host: '10.1.1.',
-                user: 'admin',
-                password: 'admin',
-                workItemId: 'testworkitemid'
-            };
             self.ipmi.collectIpmiSdr = sinon.stub().resolves();
             self.ipmi._publishIpmiCommandResult = sinon.stub();
+            waterline.workitems.findOne = sinon.stub.resolves(workitem);
             self.ipmi._subscribeRunIpmiCommand = function(routingKey, type, callback) {
                 if (type === 'sdr') {
                     testEmitter.on('test-subscribe-ipmi-sdr-command', function(config) {
@@ -74,22 +84,22 @@ describe(require('path').basename(__filename), function () {
             };
 
             self.ipmi._run()
-            .then(function() {
-                _.forEach(_.range(100), function(i) {
-                    var _config = _.cloneDeep(config);
-                    _config.host += i;
-                    testEmitter.emit('test-subscribe-ipmi-sdr-command', _config);
-                });
+                .then(function() {
+                    _.forEach(_.range(100), function(i) {
+                        var _config = _.cloneDeep(config);
+                        _config.host += i;
+                        testEmitter.emit('test-subscribe-ipmi-sdr-command', _config);
+                    });
 
-                setImmediate(function() {
-                    try {
-                        expect(self.ipmi.collectIpmiSdr.callCount).to.equal(100);
-                        done();
-                    } catch (e) {
-                        done(e);
-                    }
+                    setImmediate(function() {
+                        try {
+                            expect(self.ipmi.collectIpmiSdr.callCount).to.equal(100);
+                            done();
+                        } catch (e) {
+                            done(e);
+                        }
+                    });
                 });
-            });
         });
 
         it("should add a concurrent request", function() {
@@ -103,6 +113,67 @@ describe(require('path').basename(__filename), function () {
             expect(this.ipmi.concurrentRequests('test', 'chassis')).to.equal(false);
             this.ipmi.addConcurrentRequest('test', 'chassis');
             expect(this.ipmi.concurrentRequests('test', 'chassis')).to.equal(true);
+        });
+
+        it("should publish node accessible alerts", function() {
+            var self = this;
+            self.ipmi.addConcurrentRequest = sinon.stub().returns();
+            self.ipmi.concurrentRequests = sinon.stub().returns(false);
+            self.ipmi.collectIpmiSdr = sinon.stub().resolves('any');
+            self.ipmi.removeConcurrentRequest = sinon.stub().resolves();
+            self.ipmi._publishIpmiCommandResult = sinon.stub().resolves();
+            waterline.workitems.findOne = sinon.stub().resolves(workitem);
+            waterline.workitems.setSucceeded = sinon.stub().resolves();
+            protocolEvents.publishNodeAlert = sinon.stub().resolves();
+            return self.ipmi.createCallback("sdr", self.ipmi.collectIpmiSdr)(config)
+                .then(function(){
+
+                    expect(protocolEvents.publishNodeAlert)
+                        .to.be.calledWith(workitem.node, {nodeId: workitem.node,
+                            obmType: "ipmi-obm-service",
+                            state: "accessible",
+                            command: "sdr"});
+                });
+        });
+
+        it("should publish node inaccessible alerts", function() {
+            var self = this;
+            self.ipmi.addConcurrentRequest = sinon.stub().returns();
+            self.ipmi.concurrentRequests = sinon.stub().returns(false);
+            self.ipmi.collectIpmiSdr = sinon.stub().resolves('any');
+            self.ipmi.removeConcurrentRequest = sinon.stub().resolves();
+            self.ipmi._publishIpmiCommandResult = sinon.stub().rejects();
+            waterline.workitems.findOne = sinon.stub().resolves(workitem);
+            waterline.workitems.setFailed = sinon.stub().resolves();
+            protocolEvents.publishNodeAlert = sinon.stub().resolves();
+            return self.ipmi.createCallback("sdr", self.ipmi.collectIpmiSdr)(config)
+                .then(function(){
+                    expect(protocolEvents.publishNodeAlert)
+                        .to.be.calledWith(workitem.node, {nodeId: workitem.node,
+                            obmType: "ipmi-obm-service",
+                            state: "inaccessible",
+                            command: "sdr"});
+                    expect(self.ipmi.collectIpmiSdr).to.be.calledOnce;
+                    expect(config).not.to.have.property("password");
+                });
+        });
+
+        it("should not publish node inaccessible alerts", function() {
+            var self = this;
+            workitem.failureCount = 2;
+            self.ipmi.addConcurrentRequest = sinon.stub().returns();
+            self.ipmi.concurrentRequests = sinon.stub().returns(false);
+            self.ipmi.collectIpmiSdr = sinon.stub().resolves('any');
+            self.ipmi.removeConcurrentRequest = sinon.stub().resolves();
+            self.ipmi._publishIpmiCommandResult = sinon.stub().rejects();
+            waterline.workitems.findOne = sinon.stub().resolves(workitem);
+            waterline.workitems.setFailed = sinon.stub().resolves();
+            protocolEvents.publishNodeAlert = sinon.stub().resolves();
+            return self.ipmi.createCallback("sdr", self.ipmi.collectIpmiSdr)(config)
+                .then(function(){
+                    expect(protocolEvents.publishNodeAlert).callCount(0);
+                    expect(waterline.workitems.setFailed).to.be.calledOnce;
+                });
         });
     });
 });
