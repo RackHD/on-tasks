@@ -13,14 +13,14 @@ describe(require('path').basename(__filename), function () {
     var racadmTool;
     var Errors;
     var mockWaterline = {
-        nodes: {},
+        obms: {},
         catalogs: {}
     };
 
     before(function() {
         helper.setupInjector([
             helper.require('/lib/jobs/base-job'),
-            helper.require('/lib/jobs/dell-racadm-tool-job'),
+            helper.require('/lib/jobs/racadm-control'),
             helper.require('/lib/utils/job-utils/racadm-tool.js'),
             helper.require('/lib/utils/job-utils/racadm-parser.js'),
             helper.di.simpleWrapper(mockWaterline, 'Services.Waterline')
@@ -43,59 +43,30 @@ describe(require('path').basename(__filename), function () {
                 action: "setBiosConfig"
             };
             job = new RacadmToolJob(options, {}, uuid.v4());
-            mockWaterline.nodes.findByIdentifier = function() {
+            mockWaterline.obms.findByNode = function() {
             };
             this.sandbox = sinon.sandbox.create();
             this.sandbox.stub(job, '_subscribeActiveTaskExists').resolves();
-            this.sandbox.stub(mockWaterline.nodes, 'findByIdentifier');
+            this.sandbox.stub(mockWaterline.obms, 'findByNode');
         });
 
         afterEach('Dell Racadm Tool Input Validation', function() {
             this.sandbox.restore();
         });
 
-        it('should fail if node does not exist', function() {
-            mockWaterline.nodes.findByIdentifier.resolves(null);
-            return expect(job.run()).to.be.rejectedWith(Errors.AssertionError,
-                'No node for dell racadm tool');
-        });
-
-        it('should fail if ipmi obmSetting does not exist', function() {
-            var node = {
-                id: 'bc7dab7e8fb7d6abf8e7d6ac',
-                obmSettings: [
-                    {
-                        config: {
-                        }
-                    }
-                ]
-            };
-            mockWaterline.nodes.findByIdentifier.resolves(node);
-            return expect(job.run()).to.be.rejectedWith(Errors.AssertionError,
-                'No ipmi obmSetting for dell racadm tool');
+        it('should fail if OBM settings for node do not exist', function() {
+            mockWaterline.obms.findByNode.resolves(undefined);
+            return expect(job.run()).to.be.rejectedWith(undefined);
         });
     });
 
     describe("Obm setting decrypt", function() {
         beforeEach(function() {
-            encryption.start();
             this.sandbox = sinon.sandbox.create();
         });
 
         afterEach(function() {
-            encryption.stop();
             this.sandbox.restore();
-        });
-
-        it("should decrypt a password", function() {
-            var iv = 'vNtIgxV4kh0XHSa9ZJxkSg==';
-            var password = encryption.encrypt('password', iv);
-            var data = {
-                password: password
-            };
-            expect(job.revealSecrets(data)).to.deep.equal({
-                password: 'password'
-            });
         });
 
         it("should convert a host mac address to an IP", function() {
@@ -121,11 +92,10 @@ describe(require('path').basename(__filename), function () {
                 action: "setBiosConfig"
             };
             job = new RacadmToolJob(options, {}, uuid.v4());
-            mockWaterline.nodes.findByIdentifier = function(){};
 
             this.sandbox = sinon.sandbox.create();
             this.sandbox.stub(job, '_subscribeActiveTaskExists').resolves();
-            this.sandbox.stub(mockWaterline.nodes,'findByIdentifier');
+            this.sandbox.stub(mockWaterline.obms, 'findByNode');
         });
 
         afterEach('Dell Racadm Tool Set BIOS Validation', function() {
@@ -150,12 +120,14 @@ describe(require('path').basename(__filename), function () {
             var setBiosStub = this.sandbox.stub(racadmTool,'setBiosConfig');
             var cifsInfo = {user: options.serverUsername, password: options.serverPassword ,
                 filePath: options.serverFilePath};
-            mockWaterline.nodes.findByIdentifier.resolves(node);
             setBiosStub.resolves(
                 {
                     status:"Completed"
                 }
             );
+            var lookupHostStub = this.sandbox.stub(job,'lookupHost');
+            mockWaterline.obms.findByNode.resolves(node);
+            lookupHostStub.resolves(node.obmSettings[0]);
             return job.run()
                 .then(function() {
                     expect(setBiosStub).to.have.been.calledWith(
@@ -176,11 +148,10 @@ describe(require('path').basename(__filename), function () {
                 action: "updateFirmware"
             };
             job = new RacadmToolJob(options, {}, uuid.v4());
-            mockWaterline.nodes.findByIdentifier = function(){};
 
             this.sandbox = sinon.sandbox.create();
             this.sandbox.stub(job, '_subscribeActiveTaskExists').resolves();
-            this.sandbox.stub(mockWaterline.nodes,'findByIdentifier');
+            this.sandbox.stub(mockWaterline.obms, 'findByNode');
         });
 
         afterEach('Dell Racadm Tool Update Firmware Validation', function() {
@@ -205,12 +176,14 @@ describe(require('path').basename(__filename), function () {
             var updateFirmwareStub = this.sandbox.stub(racadmTool,'updateFirmware');
             var cifsInfo = {user: options.serverUsername, password: options.serverPassword ,
                 filePath: options.serverFilePath};
-            mockWaterline.nodes.findByIdentifier.resolves(node);
             updateFirmwareStub.resolves(
                 {
                     status:"Completed"
                 }
             );
+            var lookupHostStub = this.sandbox.stub(job,'lookupHost');
+            mockWaterline.obms.findByNode.resolves(node);
+            lookupHostStub.resolves(node.obmSettings[0]);
             return job.run()
                 .then(function() {
                     expect(updateFirmwareStub).to.have.been.calledWith(
@@ -228,14 +201,14 @@ describe(require('path').basename(__filename), function () {
                 serverUsername: "onrack",
                 serverPassword: "onrack",
                 serverFilePath: "//1.2.3.4/src/bios.xml",
-                action: "getBiosConfig"
+                action: "getBiosConfig",
+                forceReboot: true
             };
             job = new RacadmToolJob(options, {}, uuid.v4());
-            mockWaterline.nodes.findByIdentifier = function(){};
 
             this.sandbox = sinon.sandbox.create();
             this.sandbox.stub(job, '_subscribeActiveTaskExists').resolves();
-            this.sandbox.stub(mockWaterline.nodes,'findByIdentifier');
+            this.sandbox.stub(mockWaterline.obms, 'findByNode');
         });
 
         afterEach('Dell Racadm Tool Get BIOS Validation', function() {
@@ -259,18 +232,20 @@ describe(require('path').basename(__filename), function () {
 
             var getBiosStub = this.sandbox.stub(racadmTool,'getBiosConfig');
             var cifsInfo = {user: options.serverUsername, password: options.serverPassword ,
-                filePath: options.serverFilePath};
-            mockWaterline.nodes.findByIdentifier.resolves(node);
+                filePath: options.serverFilePath, forceReboot: options.forceReboot};
             getBiosStub.resolves(
                 {
                     status:"Completed"
                 }
             );
+            var lookupHostStub = this.sandbox.stub(job,'lookupHost');
+            mockWaterline.obms.findByNode.resolves(node);
+            lookupHostStub.resolves(node.obmSettings[0]);
             return job.run()
                 .then(function() {
                     expect(getBiosStub).to.have.been.calledWith(
                         node.obmSettings[0].config.host, node.obmSettings[0].config.user,
-                        node.obmSettings[0].config.password,cifsInfo);
+                        node.obmSettings[0].config.password, cifsInfo);
                 });
         });
     });
@@ -286,11 +261,10 @@ describe(require('path').basename(__filename), function () {
                 action: "Unsupported_Action"
             };
             job = new RacadmToolJob(options, {}, uuid.v4());
-            mockWaterline.nodes.findByIdentifier = function(){};
 
             this.sandbox = sinon.sandbox.create();
             this.sandbox.stub(job, '_subscribeActiveTaskExists').resolves();
-            this.sandbox.stub(mockWaterline.nodes,'findByIdentifier');
+            this.sandbox.stub(mockWaterline.obms, 'findByNode');
         });
 
         afterEach('Dell Racadm Tool Unsupported action validation ', function() {
@@ -314,12 +288,14 @@ describe(require('path').basename(__filename), function () {
 
             var getBiosStub = this.sandbox.stub(racadmTool,'getBiosConfig');
             var spy = this.sandbox.spy(job, '_done');
-            mockWaterline.nodes.findByIdentifier.resolves(node);
             getBiosStub.resolves(
                 {
                     status:"Completed"
                 }
             );
+            var lookupHostStub = this.sandbox.stub(job,'lookupHost');
+            mockWaterline.obms.findByNode.resolves(node);
+            lookupHostStub.resolves(node.obmSettings[0]);
             return job.run()
                 .then(function() {
                     done(new Error("Should not run into this piece of code!"));

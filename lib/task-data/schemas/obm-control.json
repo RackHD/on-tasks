@@ -4,7 +4,7 @@
     "copyright": "Copyright 2016, EMC, Inc.",
     "title": "OBM Control",
     "description": "The schema for all obm control tasks",
-    "describeJob": "Job.Obm.Control",
+    "describeJob": "Job.Obm.Node",
     "definitions": {
         "ObmAction": {
             "enum": [
@@ -35,14 +35,20 @@
             ]
         }
     },
-    "properties": {
-        "action": {
-            "$ref": "#/definitions/ObmAction",
-            "readonly": true
-        },
-        "obmService": {
-            "$ref": "#/definitions/ObmService"
+    "allOf": [
+        { "$ref": "common#/definitions/Options" },
+        {
+            "type": "object",
+            "properties": {
+                "action": {
+                    "$ref": "#/definitions/ObmAction",
+                    "readonly": true
+                },
+                "obmService": {
+                    "$ref": "#/definitions/ObmService"
+                }
+            },
+            "required": ["action"]
         }
-    },
-    "required": ["action"]
+    ]
 }

@@ -11,14 +11,15 @@ describe(require('path').basename(__filename), function () {
     var racadmTool;
     var Errors;
     var mockWaterline = {
-        nodes: {},
+        obms: {},
         catalogs: {}
     };
+    var jobHelper;
 
     before(function() {
         helper.setupInjector([
             helper.require('/lib/jobs/base-job'),
-            helper.require('/lib/jobs/dell-racadm-catalog-job'),
+            helper.require('/lib/jobs/racadm-catalog'),
             helper.require('/lib/utils/job-utils/racadm-tool.js'),
             helper.require('/lib/utils/job-utils/racadm-parser.js'),
             helper.require('/lib/utils/job-utils/job-helper.js'),
@@ -30,52 +31,35 @@ describe(require('path').basename(__filename), function () {
         racadmTool = helper.injector.get('JobUtils.RacadmTool');
         uuid = helper.injector.get('uuid');
         Errors = helper.injector.get('Errors');
+        jobHelper = helper.injector.get('JobUtils.JobHelpers');
     });
 
     describe('Input validation', function() {
         beforeEach('Dell Racadm Catalog Input Validation', function() {
             job = new RacadmCatalogJob({action: 'getConfigCatalog'}, {}, uuid.v4());
-            mockWaterline.nodes.findByIdentifier = function() {
+            mockWaterline.obms.findByNode = function() {
             };
             this.sandbox = sinon.sandbox.create();
-            //this.sandbox.stub(job, '_subscribeActiveTaskExists').resolves();
-            this.sandbox.stub(mockWaterline.nodes, 'findByIdentifier');
+            this.sandbox.stub(mockWaterline.obms, 'findByNode');
         });
 
         afterEach('Dell Racadm Catalog Input Validation', function() {
             this.sandbox.restore();
         });
 
-        it('should fail if node does not exist', function() {
-            mockWaterline.nodes.findByIdentifier.resolves(null);
-            return expect(job.run()).to.be.rejectedWith(Errors.AssertionError,
-                'No node for dell racadm catalog');
-        });
-
-        it('should fail if ipmi obmSetting does not exist', function() {
-            var node = {
-                id: 'bc7dab7e8fb7d6abf8e7d6ac',
-                obmSettings: [
-                    {
-                        config: {
-                        }
-                    }
-                ]
-            };
-            mockWaterline.nodes.findByIdentifier.resolves(node);
-            return expect(job.run()).to.be.rejectedWith(Errors.AssertionError,
-                'No ipmi obmSetting for dell racadm catalog');
+        it('should fail if OBM setting for node does not exist', function() {
+            mockWaterline.obms.findByNode.resolves(undefined);
+            return expect(job.run()).to.be.rejectedWith(undefined);
         });
     });
 
     describe('Dell Racadm getConfigCatalog', function() {
         beforeEach('Dell Racadm getConfigCatalog', function() {
             job = new RacadmCatalogJob({action: 'getConfigCatalog'}, {}, uuid.v4());
-            mockWaterline.nodes.findByIdentifier = function(){};
 
             this.sandbox = sinon.sandbox.create();
             this.sandbox.stub(job, '_subscribeActiveTaskExists').resolves();
-            this.sandbox.stub(mockWaterline.nodes,'findByIdentifier');
+            this.sandbox.stub(mockWaterline.obms, 'findByNode');
         });
 
         afterEach('Dell Racadm getConfigCatalog', function() {
@@ -98,7 +82,9 @@ describe(require('path').basename(__filename), function () {
             };
 
             var getConfigCatalog = this.sandbox.stub(racadmTool,'getConfigCatalog');
-            mockWaterline.nodes.findByIdentifier.resolves(node);
+            var lookupHostStub = this.sandbox.stub(jobHelper,'lookupHost');
+            mockWaterline.obms.findByNode.resolves(node);
+            lookupHostStub.resolves(node.obmSettings[0]);
 
             return job.run()
                 .then(function() {
@@ -120,11 +106,9 @@ describe(require('path').basename(__filename), function () {
         beforeEach('Dell Racadm Catalog Job handle response beforeEach', function() {
             job = new RacadmCatalogJob({action: 'getConfigCatalog'}, {}, uuid.v4());
 
-            mockWaterline.nodes.findByIdentifier = function(){};
             mockWaterline.catalogs.create = function(){};
 
             this.sandbox = sinon.sandbox.create();
-            this.sandbox.stub(mockWaterline.nodes,'findByIdentifier');
             this.sandbox.stub(mockWaterline.catalogs,'create');
         });
 

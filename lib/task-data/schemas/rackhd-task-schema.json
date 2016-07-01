@@ -21,10 +21,6 @@
         "readonly": {
             "type": "boolean",
             "description": "This property shall designate a property to be readoly when set to true"
-        },
-        "$timeout": {
-            "type": "integer",
-            "description": "The timeout for this task, unit is milliseconds"
         }
     },
     "properties": {
@@ -36,9 +32,7 @@
         },
         "readonly": {
             "$ref": "#/definitions/readonly"
-        },
-        "$timeout": {
-            "$ref": "#/definitions/$timeout"
         }
-    }
+    },
+    "required": ["describeJob", "id", "description", "title"]
 }

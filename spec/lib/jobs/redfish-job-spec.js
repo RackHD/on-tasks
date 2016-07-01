@@ -110,12 +110,11 @@ describe('Job.Redfish', function () {
                 findOne: sandbox.stub().resolves(),
                 setSucceeded: sandbox.stub().resolves()
             };
-            waterline.nodes = {
-                needByIdentifier: sinon.stub().resolves({
-                    obmSettings: [{
-                        service: 'redfish-obm-service',
-                        config: {}
-                    }]
+
+            waterline.obms = {
+                findByNode: sinon.stub().resolves({
+                    service: 'redfish-obm-service',
+                    config: {}
                 })
             };
             
