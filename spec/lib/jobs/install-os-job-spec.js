@@ -10,6 +10,7 @@ describe('Install OS Job', function () {
     var subscribeRequestProfileStub;
     var subscribeRequestPropertiesStub;
     var subscribeHttpResponseStub;
+    var doneSpy;
     var job;
     var waterline;
     var Promise;
@@ -33,16 +34,18 @@ describe('Install OS Job', function () {
             InstallOsJob.prototype, '_subscribeRequestProperties');
         subscribeHttpResponseStub = sinon.stub(
             InstallOsJob.prototype, '_subscribeHttpResponse');
+        doneSpy = sinon.spy(InstallOsJob.prototype, '_done');
     });
 
     beforeEach(function() {
         subscribeRequestProfileStub.reset();
         subscribeRequestPropertiesStub.reset();
         subscribeHttpResponseStub.reset();
+        doneSpy.reset();
         job = new InstallOsJob(
             {
                 profile: 'testprofile',
-                completionUri: '',
+                completionUri: 'testCompletion',
                 version: '7.0',
                 repo: 'http://127.0.0.1:8080/myrepo/7.0/x86_64',
                 rootPassword: 'rackhd',
@@ -68,6 +71,7 @@ describe('Install OS Job', function () {
         subscribeRequestProfileStub.restore();
         subscribeRequestPropertiesStub.restore();
         subscribeHttpResponseStub.restore();
+        doneSpy.restore();
     });
 
     it("should have a nodeId value", function() {
@@ -130,6 +134,52 @@ describe('Install OS Job', function () {
 
             cb = subscribeHttpResponseStub.firstCall.args[0];
             expect(cb).to.be.a.function;
+        });
+    });
+
+    it('should finish job if http response has expected completionUri', function() {
+        subscribeHttpResponseStub.restore();
+        subscribeHttpResponseStub = sinon.stub(
+            InstallOsJob.prototype, '_subscribeHttpResponse', function(callback) {
+                callback({
+                    statusCode: 200,
+                    url: 'http://172.31.128.1:9080/foo/bar/testCompletion'
+                });
+            });
+        return job._run().then(function() {
+            expect(subscribeHttpResponseStub).to.have.callCount(1);
+            expect(job._done).to.have.callCount(1);
+            expect(job._done.firstCall.args[0]).to.equal(undefined);
+        });
+    });
+
+    it('should not finish job if http response has bad http statusCode', function() {
+        subscribeHttpResponseStub.restore();
+        subscribeHttpResponseStub = sinon.stub(
+            InstallOsJob.prototype, '_subscribeHttpResponse', function(callback) {
+                callback({
+                    statusCode: 400,
+                    url: 'http://172.31.128.1:9080/foo/bar/testCompletion'
+                });
+            });
+        return job._run().then(function() {
+            expect(subscribeHttpResponseStub).to.have.callCount(1);
+            expect(job._done).to.have.not.been.called;
+        });
+    });
+
+    it('should not finish job if http response has no expected completionUri', function() {
+        subscribeHttpResponseStub.restore();
+        subscribeHttpResponseStub = sinon.stub(
+            InstallOsJob.prototype, '_subscribeHttpResponse', function(callback) {
+                callback({
+                    statusCode: 200,
+                    url: 'http://172.31.128.1:9080/foo/bar/test123'
+                });
+            });
+        return job._run().then(function() {
+            expect(subscribeHttpResponseStub).to.have.callCount(1);
+            expect(job._done).to.have.not.been.called;
         });
     });
 
