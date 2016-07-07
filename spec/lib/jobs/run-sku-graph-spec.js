@@ -22,6 +22,7 @@ describe("Job.Graph.RunSku", function () {
             helper.require('/lib/task-graph.js'),
             helper.require('/lib/task.js'),
             helper.require('/lib/utils/job-utils/workflow-tool.js'),
+            helper.require('/lib/utils/task-option-validator.js'),
             helper.di.simpleWrapper(waterline, 'Services.Waterline'),
             helper.di.simpleWrapper({}, 'Task.taskLibrary')
         ]);
