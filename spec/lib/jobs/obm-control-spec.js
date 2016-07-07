@@ -110,8 +110,8 @@ describe("Job.Obm.Node", function () {
             .catch(function(e) {
                 try {
                     expect(e).to.have.property('name').that.equals('AssertionError');
-                    expect(e).to.have.property('message').that.equals(
-                        'No OBM service assigned to this node.');
+                    expect(e).to.have.property('message').and.to.match(
+                        /ipmi-obm-service does not exist on this node/);
                     done();
                 } catch (e) {
                     done(e);
@@ -154,49 +154,14 @@ describe("Job.Obm.Node", function () {
             job._subscribeActiveTaskExists = sinon.stub().resolves();
             job.killObm = sinon.stub().resolves();
             mockWaterline.obms.findByNode.resolves();
-            mockWaterline.obms.find.resolves([]);
             mockWaterline.nodes.findByIdentifier.resolves({name: 'a node'});
 
             return expect(job.run()).to.be.rejectedWith(Error,
-                 'No OBM service assigned to this node.');
+                 /ipmi-obm-service does not exist on this node/);
 
         });
 
-        it('should fail if there is more than one OBM service with no default', function(){
-          // user is not passing any default obm service to use for this test...
-          var testOptions = {
-              action: 'reboot',
-              delay: 1,
-              retries: 1
-          };
-
-          job = new Job(testOptions, { target: '54da9d7bf33e0405c75f7111' }, uuid.v4());
-          job._subscribeActiveTaskExists = sinon.stub().resolves();
-          job.killObm = sinon.stub().resolves();
-          var node = {name: 'a node'};
-          var obms = [
-              {
-                  service: 'noop-obm-service',
-                  config: {}
-              },
-              {
-                  service: 'foo',
-                  config: {
-                      "user": "admin",
-                      "password": "admin",
-                      "host": "10.0.0.254"
-                  }
-              }
-          ];
-          mockWaterline.nodes.findByIdentifier.resolves(node);
-          mockWaterline.obms.findByNode.resolves();
-          mockWaterline.obms.find.resolves(obms);
-          return expect(job.run()).to.be.rejectedWith(Error,
-               'More than one OBM service assigned to this node.');
-
-        });
-
-        it('should set default OBM setting if only one exists', function(){
+        it('should default to ipmi-obm-service', function(){
             // user is not passing any default obm service to use for this test...
             var testOptions = {
                 action: 'reboot',
@@ -209,19 +174,17 @@ describe("Job.Obm.Node", function () {
             job.killObm = sinon.stub().resolves();
 
             var node = {name: 'a node'};
-            var obms = [
+            var obm =
               {
-                  service: 'noop-obm-service',
+                  service: 'ipmi-obm-service',
                   config: {}
               }
-            ];
             mockWaterline.nodes.findByIdentifier.resolves(node);
-            mockWaterline.obms.findByNode.resolves();
-            mockWaterline.obms.find.resolves(obms);
+            mockWaterline.obms.findByNode.resolves(obm);
 
             return job.run()
             .then(function() {
-                expect(job.settings).to.equal(obms[0]);
+                expect(job.settings).to.equal(obm);
             });
         });
 
