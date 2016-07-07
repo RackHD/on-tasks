@@ -8,6 +8,22 @@ function TaskAnnotation(validator) {
     this.validator = validator;
 }
 
+/**
+ * Merge the schema (recusively) where `allOf` keyword found.
+ * @example
+ * { allOf: [
+ *     { p1: { type: "string" } },
+ *     { p2: { type: "number" } }
+ *  ]
+ * }
+ * after merged:
+ * { p1: { type: "string" },
+ *   p2: { type: "number" }
+ * }
+ *
+ * @param  {Object} obj - JSON schema object
+ * @return {Object} schema - with `allOf` merged
+ */
 TaskAnnotation.prototype.mergeSchema = function (obj) {
     var self = this;
     if (obj.allOf && obj.allOf instanceof Array) {
@@ -31,6 +47,14 @@ TaskAnnotation.prototype.mergeSchema = function (obj) {
     return obj;
 };
 
+/**
+ * Parse the JSON schema and generate doc data recusively.
+ * The doc data will be rendered in apiDoc template
+ *
+ * @param {Object} obj - JSON schema object
+ * @param {Object} dataTemplate - the doc data template
+ * @return {Array} doc data array
+ */
 TaskAnnotation.prototype.generateDocData = function (obj, dataTemplate) {
     var self = this;
     var data = {
@@ -71,7 +95,7 @@ TaskAnnotation.prototype.generateDocData = function (obj, dataTemplate) {
         }
 
         var fieldTemp = {
-            group: 'g1', // TODO: find out gourp usage
+            group: 'g1', // TODO: find out group usage
             type: option.type,
             optional: _.indexOf(obj.required, name) < 0,
             field: name + '',
@@ -95,6 +119,9 @@ TaskAnnotation.prototype.generateDocData = function (obj, dataTemplate) {
     return [data].concat(subItems);
 };
 
+/**
+ * Run the process to generate doc data with current existing task schemas
+ */
 TaskAnnotation.prototype.run = function () {
     var self = this;
     var baseId = 'rackhd/schemas/v1/tasks/';
