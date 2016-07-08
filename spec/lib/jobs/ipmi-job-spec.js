@@ -9,6 +9,7 @@ var uuid = require('node-uuid'),
 
 describe(require('path').basename(__filename), function () {
     var base = require('./base-spec');
+    var pollerHelper;
 
     base.before(function (context) {
         // create a child injector with on-core and the base pieces we need to test this
@@ -19,10 +20,12 @@ describe(require('path').basename(__filename), function () {
             helper.require('/lib/utils/job-utils/ipmi-parser.js'),
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/ipmi-job.js'),
+            helper.require('/lib/utils/job-utils/poller-helper.js'),
             helper.di.simpleWrapper(waterline,'Services.Waterline')
         ]);
 
         context.Jobclass = helper.injector.get('Job.Ipmi');
+        pollerHelper = helper.injector.get('JobUtils.PollerHelper');
     });
 
     describe('Base', function () {
@@ -31,7 +34,6 @@ describe(require('path').basename(__filename), function () {
 
     describe("ipmi-job", function() {
         var testEmitter = new events.EventEmitter();
-        var mockPollers;
         beforeEach(function() {
             this.sandbox = sinon.sandbox.create();
             waterline.workitems = {
@@ -43,7 +45,6 @@ describe(require('path').basename(__filename), function () {
             var graphId = uuid.v4();
             this.ipmi = new this.Jobclass({}, { graphId: graphId }, uuid.v4());
             expect(this.ipmi.routingKey).to.equal(graphId);
-            mockPollers = _.fill(Array(5), {state: "inaccessible"});
         });
 
         it("should have a _run() method", function() {
@@ -63,7 +64,7 @@ describe(require('path').basename(__filename), function () {
                 workItemId: 'testworkitemid'
             };
             self.ipmi.collectIpmiSdr = sinon.stub().resolves();
-            self.ipmi.getNodeAlertMsg = sinon.stub().resolves({});
+            pollerHelper.getNodeAlertMsg = sinon.stub().resolves({});
             self.ipmi._publishIpmiCommandResult = sinon.stub();
             self.ipmi._subscribeRunIpmiCommand = function(routingKey, type, callback) {
                 if (type === 'sdr') {
@@ -86,7 +87,7 @@ describe(require('path').basename(__filename), function () {
                 setImmediate(function() {
                     try {
                         expect(self.ipmi.collectIpmiSdr.callCount).to.equal(100);
-                        expect(self.ipmi.getNodeAlertMsg.callCount).to.equal(100);
+                        expect(pollerHelper.getNodeAlertMsg.callCount).to.equal(100);
                         done();
                     } catch (e) {
                         done(e);
@@ -108,39 +109,5 @@ describe(require('path').basename(__filename), function () {
             expect(this.ipmi.concurrentRequests('test', 'chassis')).to.equal(true);
         });
 
-        it("should return non-empty alert message", function() {
-            waterline.workitems.find = sinon.stub().resolves(mockPollers); 
-            waterline.nodes = {findByIdentifier: sinon.stub().resolves({"type": "compute"})};
-            return this.ipmi.getNodeAlertMsg("any", "inaccessible", "accessible")
-            .then(function(message){
-                expect(message).to.deep.equal({"nodeType": "compute"});
-                expect(waterline.workitems.find).to.be.calledOnce;
-                expect(waterline.nodes.findByIdentifier).to.be.calledOnce;
-            });
-        });
-
-        it("should return empty alert message", function() {
-            mockPollers[0] = {"state": "accessible"};
-            waterline.workitems.find = sinon.stub().resolves(mockPollers); 
-            waterline.nodes = {findByIdentifier: sinon.stub().resolves({"type": "compute"})};
-            return this.ipmi.getNodeAlertMsg("any", "inaccessible", "accessible")
-            .then(function(message){
-                expect(message).to.deep.equal({});
-                expect(waterline.workitems.find).to.be.calledOnce;
-                expect(waterline.nodes.findByIdentifier).to.be.calledOnce;
-            });
-        });
-
-        it("should return empty alert message", function() {
-            mockPollers[0].state = "accessible";
-            waterline.workitems.find = sinon.stub().resolves(mockPollers); 
-            waterline.nodes = {findByIdentifier: sinon.stub().resolves({"type": "compute"})};
-            return this.ipmi.getNodeAlertMsg("any", "inaccessible", "inaccessible")
-            .then(function(message){
-                expect(message).to.deep.equal({});
-                expect(waterline.workitems.find).callCount(0);
-                expect(waterline.nodes.findByIdentifier).callCount(0);
-            });
-        });
     });
 });
