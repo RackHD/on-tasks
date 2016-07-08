@@ -98,7 +98,9 @@ describe(require('path').basename(__filename), function() {
     };
 
     var positiveSetParam = {
-        "comportaddress": ["0x3f8", "0x2f8", "0x3e8", "0x2e8"]
+        "comportaddress": ["0x3f8", "0x2f8", "0x3e8", "0x2e8"],
+        "networkDevices[0].device": "90:e2:ba:91:1b:e4",
+        "switchDevices[0].uplinks[0]": "90:e2:ba:91:1b:e4"
     };
 
     var negativeSetParam = {
