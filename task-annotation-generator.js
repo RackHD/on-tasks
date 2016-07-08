@@ -4,9 +4,40 @@
 
 var fs = require('fs');
 
-function TaskAnnotation(validator) {
-    this.validator = validator;
+function TaskAnnotation(task) {
+    this.task = task;
 }
+
+/**
+ * Run the process to generate doc data with current existing task schemas
+ * @param {Array} tasks - list of task from task folder
+ *                        e.g. /lib/task-data/tasks/*.js
+ * @param {Object} validator - instance of task-option-validator
+ * @return {Promise} promise with value docData array
+ */
+TaskAnnotation.run = function (tasks, validator) {
+    return validator.register()
+    .return(tasks)
+    .filter(function (task) {
+        // filter all tasks, only those task has schema will be annotated.
+        return task.schemaRef ? true: false;
+    })
+    .map(function (task) {
+        var tn = new TaskAnnotation(task);
+        var schemaResolved = validator.getSchemaResolved(task.schemaRef);
+        var schemaMerged = tn.mergeSchema(schemaResolved);
+        return tn.generateDocData(schemaMerged, {
+            url: '/' + task.injectableName,
+            name: 'option',
+            title: 'option',
+            group: task.injectableName,
+            groupTitle: task.friendlyName
+        });
+    })
+    .then(function (docData) {
+        return _.flatten(docData);
+    });
+};
 
 /**
  * Merge the schema (recusively) where `allOf` keyword found.
@@ -119,38 +150,6 @@ TaskAnnotation.prototype.generateDocData = function (obj, dataTemplate) {
     return [data].concat(subItems);
 };
 
-/**
- * Run the process to generate doc data with current existing task schemas
- */
-TaskAnnotation.prototype.run = function () {
-    var self = this;
-    var baseId = 'rackhd/schemas/v1/tasks/';
-    // TODO: move the list to config
-    var schemaIds = [
-        'install-os-general',
-        'install-centos',
-        'install-coreos',
-        'obm-control'
-    ];
-
-    return self.validator.register().return(schemaIds)
-    .map(function (id) {
-        var schemaResolved = self.validator.getSchemaResolved(baseId + id);
-        var schemaMerged = self.mergeSchema(schemaResolved);
-        return self.generateDocData(schemaMerged, {
-            url: '/' + id,
-            name: 'option',
-            title: 'option',
-            group: id,
-            groupTitle: schemaMerged.title
-        });
-    }).then(function (docData) {
-        docData = _.flatten(docData);
-        // console.log(JSON.stringify(docData));        
-        fs.writeFileSync('task_doc_data.json', JSON.stringify(docData));
-    });
-};
-
 
 if (require.main === module) {
     require('on-core/spec/helper');
@@ -160,8 +159,11 @@ if (require.main === module) {
     ]);
 
     var validator = helper.injector.get('TaskOption.Validator');
+    var tasks = helper.requireGlob('/lib/task-data/tasks/*.js');
 
-    var taskAnnotation = new TaskAnnotation(validator);
-    taskAnnotation.run();
-    console.log('========= task_doc_data.json generated =======');
+    TaskAnnotation.run(tasks, validator)
+    .then(function (docData) {
+        fs.writeFileSync('task_doc_data.json', JSON.stringify(docData));
+        console.log('========= task_doc_data.json generated =======');
+    });
 }
