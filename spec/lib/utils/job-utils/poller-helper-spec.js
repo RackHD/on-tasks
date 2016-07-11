@@ -34,7 +34,7 @@ describe("Poller Helper", function () {
                 });
         });
 
-        it("should return empty alert message", function() {
+        it("should return empty alert message if any node is already accessible", function() {
             mockPollers[0] = {"state": "accessible"};
             waterline.workitems.find = sinon.stub().resolves(mockPollers);
             return pollerHelper.getNodeAlertMsg("any", "inaccessible", "accessible")
@@ -45,7 +45,7 @@ describe("Poller Helper", function () {
                 });
         });
 
-        it("should return empty alert message", function() {
+        it("should return empty alert message if node status is not changed", function() {
             mockPollers[0] = {"state": "accessible"};
             waterline.workitems.find = sinon.stub().resolves(mockPollers);
             return pollerHelper.getNodeAlertMsg("any", "inaccessible", "inaccessible")
@@ -56,7 +56,7 @@ describe("Poller Helper", function () {
                 });
         });
 
-        it("should return empty alert message", function() {
+        it("should return empty alert message if only one node is inaccessible", function() {
             mockPollers = _.fill(mockPollers, {state: "accessible"})
             waterline.workitems.find = sinon.stub().resolves(mockPollers);
             return pollerHelper.getNodeAlertMsg("any", "accessible", "inaccessible")
