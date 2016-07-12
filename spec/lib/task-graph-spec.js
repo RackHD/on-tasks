@@ -16,6 +16,7 @@ describe('Task Graph', function () {
         helper.setupInjector([
             helper.require('/lib/task-graph.js'),
             helper.require('/lib/task.js'),
+            helper.require('/lib/utils/task-option-validator.js'),
             helper.di.simpleWrapper([], 'Task.taskLibrary'),
             helper.di.simpleWrapper({
                 getTaskDefinition: sinon.stub().resolves(),
@@ -346,7 +347,7 @@ describe('Task Graph', function () {
         });
 
         describe('graph level options', function() {
-            var firstTask, secondTask, thirdTask, fourthTask;
+            var firstTask, secondTask, thirdTask, fourthTask, fifthTask;
 
             beforeEach('Graph level options beforeEach', function() {
                 return TaskGraph.create('domain',
@@ -359,8 +360,10 @@ describe('Task Graph', function () {
                             secondTask = task;
                         } else if (task.options.testName === 'thirdTask') {
                             thirdTask = task;
-                        } else {
+                        } else if (task.options.testName === 'fourthTask') {
                             fourthTask = task;
+                        } else if (task.options.testName === 'fifthTask') {
+                            fifthTask = task;
                         }
                     });
                 });
@@ -404,6 +407,19 @@ describe('Task Graph', function () {
             it('should pass in options to a task with no required options', function() {
                 expect(fourthTask.options).to.have.property('nonRequiredOption')
                     .that.equals('add an option to an empty base task');
+            });
+
+            it('should pass correct options to task definition that has schema', function() {
+                expect(fifthTask.options).to.have.property('optionNonExistant')
+                    .that.equals('not in any');
+                expect(fifthTask.options).to.have.property('option1')
+                    .that.equals('same for all');
+                expect(fifthTask.options).to.have.property('option2')
+                    .that.equals('overidden all');
+                expect(fifthTask.options).to.not.have.property('option3');
+                expect(fifthTask.options).to.not.have.property('option4');
+                expect(fifthTask.options).to.have.property('option5')
+                    .that.equals('default value of option 5');
             });
         });
     });

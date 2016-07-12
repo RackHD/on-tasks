@@ -1,0 +1,23 @@
+{
+    "$schema": "rackhd/schemas/v1/task-schema",
+    "id": "rackhd/schemas/v1/tasks/noop-task",
+    "copyright": "Copyright 2016, EMC, Inc.",
+    "title": "Noop Task",
+    "description": "The schema for noop task",
+    "describeJob": "Job.noop",
+    "allOf": [
+        { "$ref": "common#/definitions/Options" },
+        {
+            "type": "object",
+            "properties": {
+                "delay": {
+                    "type": "integer",
+                    "minimum": 0
+                },
+                "option1": {},
+                "option2": {},
+                "option3": {}
+            }
+        }
+    ]
+}

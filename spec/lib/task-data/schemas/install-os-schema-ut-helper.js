@@ -85,7 +85,8 @@ var positiveUnsetParam = [
     "networkDevices",
     "installDisk",
     "dnsServers",
-    "rootSshKey"
+    "rootSshKey",
+    "domain",
 ];
 
 var negativeUnsetParam = [
@@ -97,7 +98,6 @@ var negativeUnsetParam = [
     "version",
     "repo",
     "rootPassword",
-    "domain",
     "hostname",
     "networkDevices[0].device",
     "networkDevices[1].ipv4.ipAddr",

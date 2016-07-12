@@ -16,6 +16,7 @@ describe("Task", function () {
     var Errors;
     var catalogSearch;
     var _;
+    var validator;
 
     function literalCompare(objA, objB) {
         _.forEach(objA, function(v, k) {
@@ -49,6 +50,7 @@ describe("Task", function () {
         waterline = helper.injector.get('Services.Waterline');
         Errors = helper.injector.get("Errors");
         catalogSearch = helper.injector.get('JobUtils.CatalogSearchHelpers');
+        validator = helper.injector.get('TaskOption.Validator');
 
         _.forEach(taskData, function(definition) {
             if (definition.injectableName === 'Task.noop') {
@@ -68,6 +70,9 @@ describe("Task", function () {
         this.sandbox = sinon.sandbox.create();
         this.sandbox.stub(env, 'get').withArgs('config', {}, ['global']).resolves();
         this.sandbox.stub(Task.prototype, 'getSkuId').resolves();
+        this.sandbox.stub(validator, 'validate').returns(true);
+        this.sandbox.stub(validator, 'validateContextSkipped').returns(true);
+        this.sandbox.stub(validator, 'getSchema').returns({describeJob: 'Job.noop'});
     });
 
     afterEach('task-spec beforeEach', function() {
@@ -400,7 +405,7 @@ describe("Task", function () {
 
             beforeEach(function () {
                 definition = _.cloneDeep(noopDefinition);
-                return Task.create(noopDefinition, {}, {})
+                return Task.create(definition, {}, {})
                 .then(function(_task) {
                     task = _task;
                 });
@@ -424,7 +429,7 @@ describe("Task", function () {
 
     describe("serialization", function() {
         it("should serialize to a JSON object", function() {
-            return Task.create(noopDefinition, {}, {})
+            return Task.create(_.cloneDeep(noopDefinition), {}, {})
             .then(function(task) {
                 expect(task).to.have.property('serialize');
                 literalCompare(task, task.serialize());
@@ -433,7 +438,7 @@ describe("Task", function () {
 
         it("should serialize to a JSON string", function() {
             var taskJson;
-            return Task.create(noopDefinition, {}, {})
+            return Task.create(_.cloneDeep(noopDefinition), {}, {})
             .then(function(task) {
                 expect(task).to.have.property('serialize').that.is.a('function');
                 expect(function() {
@@ -446,7 +451,7 @@ describe("Task", function () {
         });
 
         it("should serialize a job for an instance", function() {
-            return Task.create(noopDefinition, {}, {})
+            return Task.create(_.cloneDeep(noopDefinition), {}, {})
             .then(function(task) {
                 task.instantiateJob();
                 expect(task.serialize().job).to.deep.equal(task.job.serialize());
@@ -704,7 +709,7 @@ describe("Task", function () {
             subscriptionStub.dispose.reset();
             eventsProtocol.publishTaskFinished.reset();
 
-            return Task.create(noopDefinition, {}, {})
+            return Task.create(_.cloneDeep(noopDefinition), {}, {})
             .then(function(_task) {
                 task = _task;
                 var subscription = {dispose: sinon.stub()};
@@ -802,6 +807,43 @@ describe("Task", function () {
                 return task.run().then(function() {
                     expect(task.job._subscribeActiveTaskExists).to.have.been.calledOnce;
                     expect(jobSubscriptionStub.dispose).to.have.been.calledThrice;
+                });
+            });
+        });
+    });
+
+    describe('task schema', function() {
+        it("should retrieve the task schema information", function() {
+            var definition = _.cloneDeep(noopDefinition);
+            return Task.create(definition, {}, {})
+            .then(function(task) {
+                expect(task).to.have.property('schema').and.deep.equal({describeJob: 'Job.noop'});
+            });
+        });
+
+        it("should throw error if schema validation (skip context) fails", function() {
+            var definition = _.cloneDeep(noopDefinition);
+            validator.validateContextSkipped.restore();
+            this.sandbox.stub(validator, 'validateContextSkipped')
+                .throws(new Error('validation fail'));
+
+            return expect(Task.create(definition, {compileOnly: true}, {}))
+                .to.be.rejectedWith('validation fail');
+        });
+
+        it("should fail task if schema full validation fails", function() {
+            var error = new Error('validation fail');
+            var definition = _.cloneDeep(noopDefinition);
+            validator.validate.restore();
+            this.sandbox.stub(validator, 'validate')
+                .throws(error);
+
+            return Task.create(definition, {}, {})
+            .then(function(task) {
+                return task.run().then(function() {
+                    expect(task.state).to.equal('failed');
+                    expect(task.error).to.equal(error);
+                    expect(validator.validate).to.be.calledOnce;
                 });
             });
         });
