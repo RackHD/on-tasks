@@ -19,7 +19,10 @@ describe("Job.Graph.RunSku", function () {
             helper.require('/spec/mocks/logger.js'),
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/run-sku-graph.js'),
+            helper.require('/lib/task-graph.js'),
+            helper.require('/lib/task.js'),
             helper.require('/lib/utils/job-utils/workflow-tool.js'),
+            helper.require('/lib/utils/task-option-validator.js'),
             helper.di.simpleWrapper(waterline, 'Services.Waterline'),
             helper.di.simpleWrapper({}, 'Task.taskLibrary')
         ]);
@@ -107,7 +110,7 @@ describe("Job.Graph.RunSku", function () {
         var proxy = "12.1.1.1";
         var job = new RunSkuGraphJob(
                 { nodeId: fakeNode.id },
-                { target: fakeNode.id, proxy: proxy }, 
+                { target: fakeNode.id, proxy: proxy },
                 uuid.v4()
                 );
         job._run();
@@ -145,7 +148,7 @@ describe("Job.Graph.RunSku", function () {
                 .that.equals(job.graphId);
         });
     });
-    
+
     it('should fail on a failed graph', function() {
         waterline.nodes.findByIdentifier.resolves(fakeNode);
         waterline.skus.needOne.resolves(fakeSku);

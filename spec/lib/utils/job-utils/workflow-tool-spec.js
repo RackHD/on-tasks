@@ -40,7 +40,10 @@ describe('JobUtils.WorkflowTool', function() {
         helper.setupInjector(
             _.flattenDeep([
                 helper.require('/lib/utils/job-utils/workflow-tool.js'),
+                helper.require('/lib/task.js'),
+                helper.require('/lib/task-graph.js'),
                 helper.di.simpleWrapper(waterline, 'Services.Waterline'),
+                helper.di.simpleWrapper({}, 'Task.Task'),
                 helper.di.simpleWrapper({}, 'Task.taskLibrary')
             ])
         );
@@ -63,6 +66,7 @@ describe('JobUtils.WorkflowTool', function() {
             .withArgs(graphName).resolves([graphDefinition]);
         sandbox.stub(TaskGraph, 'create').resolves(graphInstance);
         sandbox.stub(taskGraphProtocol, 'runTaskGraph').resolves();
+        sandbox.stub(TaskGraph.prototype, 'renderTasks').resolves(graphInstance);
         sandbox.spy(graphInstance, 'persist');
         sandbox.stub(env, 'get').resolves(graphName);
         sandbox.stub(waterline.nodes, 'needByIdentifier')

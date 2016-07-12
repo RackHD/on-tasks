@@ -90,6 +90,8 @@ describe("Message Cache Job", function () {
             sinon.stub(baseJob.prototype, '_subscribeIpmiCommandResult');
             sinon.stub(baseJob.prototype, '_subscribeSnmpCommandResult');
             sinon.stub(baseJob.prototype, '_subscribeRequestPollerCache');
+            sinon.stub(baseJob.prototype, '_subscribeRedfishCommandResult');
+            sinon.stub(baseJob.prototype, '_subscribeMetricResult');
         });
 
         beforeEach("Message Cache subscription callbacks beforeEach", function() {
