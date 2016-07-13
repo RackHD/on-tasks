@@ -4,23 +4,27 @@
 'use strict';
 
 describe(require('path').basename(__filename), function() {
-    var schemaFilePath = '/lib/task-data/schemas/install-centos.json';
+    var schemaFilePath = '/lib/task-data/schemas/install-photon-os.json';
 
     var partialCanonical = {
-        "rackhdCallbackScript": "centos.rackhdcallback",
+        "rackhdCallbackScript": "photon-os.rackhdcallback",
+        "installType": "minimal"
     };
 
     var positiveSetParam = {
+        "installType": ["minimal", "full"]
     };
 
     var negativeSetParam = {
+        "installType": ["someOtherStuff", "mini", 1]
     };
 
     var positiveUnsetParam = [
     ];
 
     var negativeUnsetParam = [
-        "rackhdCallbackScript"
+        "rackhdCallbackScript",
+        "installType"
     ];
 
     var installOsCommonHelper = require('./install-os-schema-ut-helper');
