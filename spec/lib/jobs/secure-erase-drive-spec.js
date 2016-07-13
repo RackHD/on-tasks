@@ -389,7 +389,7 @@ describe(require('path').basename(__filename), function () {
                             " -d \'{\"diskName\":\"/dev/sdg\",\"virtualDisk\":\"\"," +
                             "\"scsiId\":\"10:0:0:0\"}\'" +
                             " -t hdparm -o secure-erase -v lsi",
-                    "downloadUrl": "/api/1.1/templates/secure_erase.py"
+                    "downloadUrl": "/api/current/templates/secure_erase.py"
                 },
                 {
                     "cmd": "sudo python secure_erase.py -d \'{\"diskName\":\"/dev/sdb\"," +
