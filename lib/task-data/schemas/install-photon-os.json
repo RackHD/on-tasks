@@ -18,7 +18,7 @@
                     "$ref": "install-os-types#/definitions/RackHDCallbackScript"
                 }
             },
-            "required": ["rackhdCallbackScript"]
+            "required": ["installType", "rackhdCallbackScript"]
         }
     },
     "allOf": [
