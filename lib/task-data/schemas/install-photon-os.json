@@ -13,6 +13,9 @@
                     "description": "Photon OS install type",
                     "type": "string",
                     "enum": [ "minimal", "full" ]
+                },
+                "rackhdCallbackScript": {
+                    "$ref": "install-os-types#/definitions/RackHDCallbackScript"
                 }
             },
             "required": ["rackhdCallbackScript"]
