@@ -38,6 +38,7 @@ describe('Task Graph', function () {
         this.sandbox.stub(TaskGraph.prototype, 'renderTasks', function() {
             return this;
         });
+        this.sandbox.stub(Task, 'validateDefinition').returns();
         definitions = getDefinitions();
         while (taskLibrary.length) {
             taskLibrary.pop();
