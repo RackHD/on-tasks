@@ -45,7 +45,7 @@ describe("Job.Catalog.CleanWorkItems", function () {
         setImmediate(function () {
             try {
                 expect(waterline.workitems.setFailed).to.have.been.calledOnce;
-                expect(waterline.workitems.setFailed).to.have.been.calledWith(null, workItems);
+                expect(waterline.workitems.setFailed).to.have.been.calledWith(null, null, workItems);
                 done();
             } catch (e) {
                 done(e);
