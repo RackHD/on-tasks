@@ -57,7 +57,7 @@ describe("Poller Helper", function () {
         });
 
         it("should return empty alert message if only one node is inaccessible", function() {
-            mockPollers = _.fill(mockPollers, {state: "accessible"})
+            mockPollers = _.fill(mockPollers, {state: "accessible"});
             waterline.workitems.find = sinon.stub().resolves(mockPollers);
             return pollerHelper.getNodeAlertMsg("any", "accessible", "inaccessible")
                 .then(function(message){
