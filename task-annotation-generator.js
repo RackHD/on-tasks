@@ -4,9 +4,41 @@
 
 var fs = require('fs');
 
-function TaskAnnotation(validator) {
-    this.validator = validator;
+function TaskAnnotation(task) {
+    this.task = task;
 }
+
+/**
+ * Run the process to generate doc data with current existing task schemas
+ * @param {Array} tasks - list of task from task folder
+ *                        e.g. /lib/task-data/tasks/*.js
+ * @param {Object} validator - instance of task-option-validator
+ * @return {Promise} promise with value docData array
+ */
+TaskAnnotation.run = function (tasks, validator) {
+    return validator.register()
+    .return(tasks)
+    .filter(function (task) {
+        // filter all tasks, only those task has schema will be annotated.
+        return task.schemaRef ? true: false;
+    })
+    .map(function (task) {
+        var tn = new TaskAnnotation(task);
+        var schemaResolved = validator.getSchemaResolved(task.schemaRef);
+        var schemaMerged = tn.mergeSchema(schemaResolved);
+        tn.addDefault(schemaMerged);
+        return tn.generateDocData(schemaMerged, {
+            // url: '/' + task.injectableName,
+            name: 'option',
+            title: 'option',
+            group: task.injectableName.replace(/\./g, '_'),
+            groupTitle: task.friendlyName
+        });
+    })
+    .then(function (docData) {
+        return _.flatten(docData);
+    });
+};
 
 /**
  * Merge the schema (recusively) where `allOf` keyword found.
@@ -48,6 +80,20 @@ TaskAnnotation.prototype.mergeSchema = function (obj) {
 };
 
 /**
+ * add default value from task.options to schema
+ * @param  {Object} obj - JSON schema object
+ */
+TaskAnnotation.prototype.addDefault = function (obj) {
+    var self = this;
+    _.forOwn(self.task.options, function (value, name) {
+        var op = _.get(obj, 'properties.' + name);
+        if (op && op instanceof Object) {
+            op.default = value;
+        }
+    });
+};
+
+/**
  * Parse the JSON schema and generate doc data recusively.
  * The doc data will be rendered in apiDoc template
  *
@@ -58,12 +104,12 @@ TaskAnnotation.prototype.mergeSchema = function (obj) {
 TaskAnnotation.prototype.generateDocData = function (obj, dataTemplate) {
     var self = this;
     var data = {
-        type: obj.type,
+        type: getType(obj),
         description: obj.description,
-        url: dataTemplate.url,
+        // url: dataTemplate.url,
         name: dataTemplate.name,
         title: dataTemplate.title, 
-        version: '0.0.0',
+        // version: '0.0.0',
         group: dataTemplate.group,
         groupTitle: dataTemplate.groupTitle,
         parameter: {
@@ -73,11 +119,6 @@ TaskAnnotation.prototype.generateDocData = function (obj, dataTemplate) {
         }  
     };
 
-    function getProp(obj) {
-        return obj.properties || _.get(obj, 'items.properties') ||
-            obj.oneOf || obj.anyOf;
-    }
-    
     var subItems =[];
 
     _.forEach(getProp(obj), function (option, name) {
@@ -85,7 +126,7 @@ TaskAnnotation.prototype.generateDocData = function (obj, dataTemplate) {
         var subTemp = {};
         if (subProp) {
             subTemp = {
-                url: data.url + '/' + name,
+                // url: data.url + '/' + name,
                 name: data.name + '_' + name,
                 title: data.title + '.' + name,
                 group: data.group,
@@ -96,17 +137,15 @@ TaskAnnotation.prototype.generateDocData = function (obj, dataTemplate) {
 
         var fieldTemp = {
             group: 'g1', // TODO: find out group usage
-            type: option.type,
+            type: getType(option),
             optional: _.indexOf(obj.required, name) < 0,
             field: name + '',
-            description: '<p>' + option.description + '</p>'
+            description: getDescription(option)
         };
 
-        _.forOwn(option, function (val, key) {
-            if (key !== 'type' && key !== 'description') {
-                fieldTemp.description += '<p>' + key + ':<code>' + val +'</code></p>';
-            }
-        });
+        if (obj.oneOf || obj.anyOf) {
+            fieldTemp.field = data.type + '[' + name + ']';
+        }
 
         if (subProp) {
             fieldTemp.description += '<p>See details for <a href="#api-' +
@@ -117,38 +156,64 @@ TaskAnnotation.prototype.generateDocData = function (obj, dataTemplate) {
     });
 
     return [data].concat(subItems);
-};
 
-/**
- * Run the process to generate doc data with current existing task schemas
- */
-TaskAnnotation.prototype.run = function () {
-    var self = this;
-    var baseId = 'rackhd/schemas/v1/tasks/';
-    // TODO: move the list to config
-    var schemaIds = [
-        'install-os-general',
-        'install-centos',
-        'install-coreos',
-        'obm-control'
-    ];
+    function getProp(obj) {
+        return obj.properties || _.get(obj, 'items.properties') ||
+            obj.oneOf || obj.anyOf;
+    }
 
-    return self.validator.register().return(schemaIds)
-    .map(function (id) {
-        var schemaResolved = self.validator.getSchemaResolved(baseId + id);
-        var schemaMerged = self.mergeSchema(schemaResolved);
-        return self.generateDocData(schemaMerged, {
-            url: '/' + id,
-            name: 'option',
-            title: 'option',
-            group: id,
-            groupTitle: schemaMerged.title
+    function getType(option) {
+        if (option.enum) {
+            return 'enum';
+        }
+
+        if (option.oneOf) {
+            return 'oneOf';
+        }
+
+        if (option.anyOf) {
+            return 'anyOf';
+        }
+
+        return option.type;
+    }
+
+    function getDescription(option) {
+        var description = '';
+        if (option.description) {
+            description += '<p>' + option.description + '</p>';
+        }
+
+        if (option.properties) {
+            description += '<p>properties: <code>' +
+                _.keys(option.properties) + '</code></p>';
+        }
+
+        if (option.enum) {
+            description += '<p>value in: <ul><li>' +
+                option.enum.join('</li><li>') +'</li></ul></p>';
+        }
+
+        var skipKeys = {
+            type: 1,
+            description: 1,
+            properties: 1,
+            enum: 1,
+            items: 1,
+            oneOf: 1,
+            anyOf: 1
+        };
+
+        _.forOwn(option, function (val, key) {
+            if (key in skipKeys) {
+                return true;
+            }
+
+            description += '<p>' + key + ': <code>' + val +'</code></p>';
         });
-    }).then(function (docData) {
-        docData = _.flatten(docData);
-        // console.log(JSON.stringify(docData));        
-        fs.writeFileSync('task_doc_data.json', JSON.stringify(docData));
-    });
+
+        return description;
+    }
 };
 
 
@@ -160,8 +225,15 @@ if (require.main === module) {
     ]);
 
     var validator = helper.injector.get('TaskOption.Validator');
+    var tasks = helper.requireGlob('/lib/task-data/tasks/*.js');
 
-    var taskAnnotation = new TaskAnnotation(validator);
-    taskAnnotation.run();
-    console.log('========= task_doc_data.json generated =======');
+    TaskAnnotation.run(tasks, validator)
+    .then(function (docData) {
+        fs.writeFileSync('task_doc_data.json', JSON.stringify(docData));
+        console.log('========= task_doc_data.json generated =======');
+    })
+    .catch(function(err) {
+        console.error(err.toString());
+        process.exit(1);
+    });
 }
