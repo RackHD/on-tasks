@@ -229,7 +229,7 @@ if (require.main === module) {
 
     TaskAnnotation.run(tasks, validator)
     .then(function (docData) {
-        fs.writeFileSync('task_doc_data.json', JSON.stringify(docData));
+        fs.writeFileSync('task_doc_data.json', JSON.stringify(docData, null, 4));
         console.log('========= task_doc_data.json generated =======');
     })
     .catch(function(err) {
