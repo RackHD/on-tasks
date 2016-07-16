@@ -7,8 +7,8 @@ describe("Job.Catalog.GenerateSku", function () {
     var waterline = {};
     var taskProtocol = {};
     var eventsProtocol = {
-        publishSkuAssigned: sinon.stub(),
-        publishNodeAttrEvent: sinon.stub()
+        publishSkuAssigned: sinon.stub().resolves(),
+        publishNodeAttrEvent: sinon.stub().resolves()
     };
     var GenerateSku;
     var uuid;
