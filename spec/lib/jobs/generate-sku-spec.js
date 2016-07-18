@@ -7,7 +7,8 @@ describe("Job.Catalog.GenerateSku", function () {
     var waterline = {};
     var taskProtocol = {};
     var eventsProtocol = {
-        publishSkuAssigned: sinon.stub()
+        publishSkuAssigned: sinon.stub().resolves(),
+        publishNodeAttrEvent: sinon.stub().resolves()
     };
     var GenerateSku;
     var uuid;
@@ -35,6 +36,9 @@ describe("Job.Catalog.GenerateSku", function () {
         }
     };
 
+    var oldNode = { id: '123', sku: null };
+    var newNode = { id: '123', sku: 'abc' };
+
     before(function () {
         // create a child injector with on-core and the base pieces we need to test this
         helper.setupInjector([
@@ -56,18 +60,25 @@ describe("Job.Catalog.GenerateSku", function () {
             findMostRecent: sinon.stub()
         };
         waterline.nodes = {
-            updateByIdentifier: sinon.stub().resolves()
+            updateByIdentifier: sinon.stub().resolves(),
+            needByIdentifier: sinon.stub().resolves()
         };
     });
 
     beforeEach(function () {
         eventsProtocol.publishSkuAssigned.reset();
+        eventsProtocol.publishNodeAttrEvent.reset();
         waterline.skus.find.reset();
         waterline.catalogs.findMostRecent.reset();
         waterline.nodes.updateByIdentifier.reset();
+        waterline.nodes.needByIdentifier.reset();
+
         taskProtocol.subscribeActiveTaskExists = sinon.stub().resolves({
             dispose: sinon.stub()
         });
+
+        waterline.nodes.needByIdentifier.resolves(oldNode);
+        waterline.nodes.updateByIdentifier.resolves(newNode);
     });
 
     it('assigns a matching sku', function() {
@@ -286,6 +297,29 @@ describe("Job.Catalog.GenerateSku", function () {
             expect(waterline.nodes.updateByIdentifier).to.have.been.calledOnce;
             expect(waterline.nodes.updateByIdentifier.firstCall.args[1])
                 .to.have.property('sku', null);
+        });
+    });
+
+    it('publish node event', function() {
+        var job = new GenerateSku({}, { target: 'bc7dab7e8fb7d6abf8e7d6ab' }, uuid.v4());
+        var sku = {
+            id: '1',
+            createdAt: new Date('Feb 01 2015 12:00:00'),
+            name: 'Test Sku',
+            rules: [
+                {
+                    path: 'dmi.dmi.system.manufacturer',
+                    equals: 'Renasar'
+                }
+            ]
+        };
+        waterline.skus.find.resolves([sku]);
+        waterline.catalogs.findMostRecent.resolves(catalog1);
+
+        return job.run()
+        .then(function() {
+            expect(eventsProtocol.publishNodeAttrEvent).to.have.been.calledWith(
+                oldNode, newNode, 'sku');
         });
     });
 });

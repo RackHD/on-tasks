@@ -28,7 +28,7 @@ describe("Poller Helper", function () {
             waterline.workitems.find = sinon.stub().resolves(mockPollers);
             return pollerHelper.getNodeAlertMsg("any", "inaccessible", "accessible")
                 .then(function(message){
-                    expect(message).to.deep.equal({"nodeType": "compute"});
+                    expect(message).to.deep.equal({node: {"type": "compute"}});
                     expect(waterline.workitems.find).to.be.calledOnce;
                     expect(waterline.nodes.findByIdentifier).to.be.calledOnce;
                 });
