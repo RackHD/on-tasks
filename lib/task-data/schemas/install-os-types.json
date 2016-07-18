@@ -150,7 +150,7 @@
             "type": "object",
             "properties": {
                 "device": {
-                    "description": "The interface name",
+                    "description": "The interface name, or MAC address only for Esxi",
                     "type": "string"
                 },
                 "ipv4": {
