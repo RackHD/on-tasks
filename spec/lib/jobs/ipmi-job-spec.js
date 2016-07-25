@@ -44,6 +44,7 @@ describe(require('path').basename(__filename), function () {
             };
             var graphId = uuid.v4();
             this.ipmi = new this.Jobclass({}, { graphId: graphId }, uuid.v4());
+            this.ipmi._publishPollerAlert = this.sandbox.stub().resolves();
             expect(this.ipmi.routingKey).to.equal(graphId);
         });
 
@@ -108,6 +109,17 @@ describe(require('path').basename(__filename), function () {
             this.ipmi.addConcurrentRequest('test', 'chassis');
             expect(this.ipmi.concurrentRequests('test', 'chassis')).to.equal(true);
         });
-
+        
+        it("should send power state alert", function() {
+            var self = this;
+            var testState = {power:'ON'};
+            var testData = {workItemId: 'abc'};
+            self.ipmi.cachedPowerState[testData.workItemId] = 'OFF'
+            return self.ipmi.powerStateAlerter(testState, testData)
+            .then(function(status) {
+                expect(status).to.deep.equal(testState);
+                expect(self.ipmi.cachedPowerState[testData.workItemId]).to.equal(status.power);
+            });
+        });
     });
 });
