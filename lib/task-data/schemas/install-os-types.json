@@ -1,6 +1,5 @@
 {
-    "$schema": "rackhd/schemas/v1/task-schema",
-    "id": "rackhd/schemas/v1/tasks/install-os-types",
+    "$schema": "rackhd-task-schema.json",
     "copyright": "Copyright 2016, EMC, Inc.",
     "title": "Install OS Types",
     "description": "The paramters type definition schema for install os",

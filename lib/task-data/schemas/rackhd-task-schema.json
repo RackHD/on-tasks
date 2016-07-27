@@ -1,5 +1,4 @@
 {
-    "id": "rackhd/schemas/v1/task-schema",
     "type": "object",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "title": "RackHD Tasks Schema Extention",
@@ -34,5 +33,5 @@
             "$ref": "#/definitions/readonly"
         }
     },
-    "required": ["describeJob", "id", "description", "title"]
+    "required": ["describeJob", "description", "title"]
 }

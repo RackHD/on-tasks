@@ -4,26 +4,20 @@
 'use strict';
 
 /**
- * Get all task schemas' id
- * @return {Array<String>} the array of schema Ids
+ * Get all task schemas' name, this function is shared by all tasks and it will be called only once.
+ * @return {Array<String>} the array of schema name
  */
-function _getAllSchemaIds() {
-    var metaSchema = helper.require('/lib/task-data/schemas/rackhd-task-schema.json');
-    var schemas = helper.requireGlob('/lib/task-data/schemas/*.json');
-    return _.reduce(schemas, function(acc, schema) {
-        if (schema.id !== metaSchema.id && schema.hasOwnProperty('describeJob')) {
-            acc.push(schema.id);
-        }
-        return acc;
-    }, []);
-}
-
-/**
- * Get all task schemas' id, this function is shared by all tasks and it will be called only once.
- * @return {Array<String>} the array of schema Ids
- */
-var getAllSchemaIds = _.once(function() {
-    return _getAllSchemaIds();
+var getAllSchemaNames = _.once(function () {
+    var glob = require('glob');
+    var path = require('path');
+    var names = glob.sync(helper.relativeToRoot('/lib/task-data/schemas/*.json'));
+    return _(names).map(function (name) {
+        return path.basename(name);
+    }) 
+    .filter(function (name) {
+        return 'rackhd-task-schema.json' !== name && 'common-task-options.json' !== name;
+    })
+    .value();
 });
 
 module.exports = {
@@ -71,8 +65,8 @@ module.exports = {
                 //enable this test case for all tasks
                 //TODO: enable this test case for all tasks after all tasks have schema defined.
                 if (this.taskdefinition.hasOwnProperty('schemaRef')) {
-                    var schemaIds = getAllSchemaIds();
-                    expect(schemaIds.indexOf(this.taskdefinition.schemaRef)).to.be.at.least(0);
+                    var schemaNames = getAllSchemaNames();
+                    expect(schemaNames.indexOf(this.taskdefinition.schemaRef)).to.be.at.least(0);
                 }
             });
         });
