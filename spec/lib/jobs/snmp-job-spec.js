@@ -48,6 +48,7 @@ describe(require('path').basename(__filename), function () {
         var Snmptool;
         var Constants;
         var testEmitter;
+        var graphId = uuid.v4();
         before(function() {
             Constants = helper.injector.get('Constants');
         });
@@ -60,7 +61,6 @@ describe(require('path').basename(__filename), function () {
                 setSucceeded: this.sandbox.stub().resolves(),
                 update: this.sandbox.stub().resolves()
             };
-            var graphId = uuid.v4();
             this.snmp = new this.Jobclass({}, { graphId: graphId }, uuid.v4());
             Snmptool = helper.injector.get('JobUtils.Snmptool');
             expect(this.snmp.routingKey).to.equal(graphId);
@@ -320,8 +320,11 @@ describe(require('path').basename(__filename), function () {
                         pollInterval: 60000,
                         config: {
                             metric: metricType
-                        }
+                        },
+                        routingKey: graphId,
+                        cache: {}
                     };
+                    collectMetricDataStub.resolves({});
                     self.snmp._collectMetricData(data);
                     expect(collectMetricDataStub).to.have.been.calledOnce;
                     expect(collectMetricDataStub).to.have.been.calledWith(data);
