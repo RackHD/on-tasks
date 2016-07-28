@@ -10,6 +10,7 @@ describe('Install OS Job', function () {
     var subscribeRequestProfileStub;
     var subscribeRequestPropertiesStub;
     var subscribeHttpResponseStub;
+    var subscribeTaskNotification;
     var doneSpy;
     var job;
     var waterline;
@@ -34,6 +35,8 @@ describe('Install OS Job', function () {
             InstallOsJob.prototype, '_subscribeRequestProperties');
         subscribeHttpResponseStub = sinon.stub(
             InstallOsJob.prototype, '_subscribeHttpResponse');
+        subscribeTaskNotification = sinon.stub(
+            InstallOsJob.prototype, '_subscribeTaskNotification');
         doneSpy = sinon.spy(InstallOsJob.prototype, '_done');
     });
 
@@ -123,17 +126,24 @@ describe('Install OS Job', function () {
             expect(subscribeRequestProfileStub).to.have.been.called;
             expect(subscribeRequestPropertiesStub).to.have.been.called;
             expect(subscribeHttpResponseStub).to.have.been.called;
+            expect(subscribeTaskNotification).to.have.been.called;
 
             cb = subscribeRequestProfileStub.firstCall.args[0];
-            expect(cb).to.be.a.function;
+            expect(cb).to.be.a('function');
             expect(cb.call(job)).to.equal(job.profile);
 
             cb = subscribeRequestPropertiesStub.firstCall.args[0];
-            expect(cb).to.be.a.function;
+            expect(cb).to.be.a('function');
             expect(cb.call(job)).to.equal(job.options);
 
             cb = subscribeHttpResponseStub.firstCall.args[0];
-            expect(cb).to.be.a.function;
+            expect(cb).to.be.a('function');
+
+            var taskId = subscribeTaskNotification.firstCall.args[0];
+            expect(taskId).to.be.a('string');
+            cb = subscribeTaskNotification.firstCall.args[1];
+            expect(cb).to.be.a('function');
+
         });
     });
 
