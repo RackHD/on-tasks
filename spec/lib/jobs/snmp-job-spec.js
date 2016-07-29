@@ -48,6 +48,7 @@ describe(require('path').basename(__filename), function () {
         var Snmptool;
         var Constants;
         var testEmitter;
+        var graphId = uuid.v4();
         before(function() {
             Constants = helper.injector.get('Constants');
         });
@@ -60,7 +61,6 @@ describe(require('path').basename(__filename), function () {
                 setSucceeded: this.sandbox.stub().resolves(),
                 update: this.sandbox.stub().resolves()
             };
-            var graphId = uuid.v4();
             this.snmp = new this.Jobclass({}, { graphId: graphId }, uuid.v4());
             Snmptool = helper.injector.get('JobUtils.Snmptool');
             expect(this.snmp.routingKey).to.equal(graphId);
@@ -305,7 +305,8 @@ describe(require('path').basename(__filename), function () {
 
             it('should collect metric data', function() {
                 var self = this;
-
+                var workItemId = uuid.v4();
+                
                 _.forEach([
                     Constants.WorkItems.Pollers.Metrics.SnmpInterfaceBandwidthUtilization,
                     Constants.WorkItems.Pollers.Metrics.SnmpInterfaceState,
@@ -320,11 +321,19 @@ describe(require('path').basename(__filename), function () {
                         pollInterval: 60000,
                         config: {
                             metric: metricType
-                        }
+                        },
+                        workItemId: workItemId
                     };
+                    var dataCopy = _.cloneDeep(data);
+                    dataCopy.cache = {};
+                    dataCopy.cache[data.workItemId] = {};
+                    dataCopy.cache[data.workItemId][metricType] = {};
+                    dataCopy.routingKey = graphId;
+                    collectMetricDataStub.resolves({});
+                    self.snmp.resultCache = {};
                     self.snmp._collectMetricData(data);
                     expect(collectMetricDataStub).to.have.been.calledOnce;
-                    expect(collectMetricDataStub).to.have.been.calledWith(data);
+                    expect(collectMetricDataStub).to.have.been.calledWith(dataCopy);
                     collectMetricDataStub.reset();
                 });
             });
