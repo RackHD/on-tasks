@@ -23,7 +23,7 @@ describe("Job.Alert.Node.Discovered", function () {
         uuid = helper.injector.get('uuid');
 
         waterline.nodes = { needByIdentifier: function(){} };
-        eventsProtocol.publishNodeAlert = function(){};
+        eventsProtocol.publishNodeEvent = function(){};
     });
 
     beforeEach(function() {
@@ -46,12 +46,12 @@ describe("Job.Alert.Node.Discovered", function () {
 
         it("should _run() pass", function() {
             this.sandbox.stub(waterline.nodes, 'needByIdentifier').resolves({ type: 'compute' });
-            this.sandbox.stub(eventsProtocol, 'publishNodeAlert').resolves();
+            this.sandbox.stub(eventsProtocol, 'publishNodeEvent').resolves();
 
             return job._run()
             .then(function () {
                 expect(waterline.nodes.needByIdentifier).to.have.been.calledOnce;
-                expect(eventsProtocol.publishNodeAlert).to.have.been.calledOnce;
+                expect(eventsProtocol.publishNodeEvent).to.have.been.calledOnce;
             });
         });
 

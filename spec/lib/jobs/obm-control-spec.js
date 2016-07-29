@@ -218,6 +218,7 @@ describe("Job.Obm.Node", function () {
             mockWaterline.nodes.findByIdentifier.resolves(node);
             mockWaterline.obms.findByNode.resolves();
             mockWaterline.obms.find.resolves(obms);
+            mockWaterline.obms.findByNode.resolves(obms[0]);
 
             return job.run()
             .then(function() {

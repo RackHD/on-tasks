@@ -9,6 +9,7 @@ var uuid = require('node-uuid'),
 
 describe(require('path').basename(__filename), function () {
     var base = require('./base-spec');
+    var pollerHelper;
 
     base.before(function (context) {
         // create a child injector with on-core and the base pieces we need to test this
@@ -19,10 +20,12 @@ describe(require('path').basename(__filename), function () {
             helper.require('/lib/utils/job-utils/ipmi-parser.js'),
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/ipmi-job.js'),
+            helper.require('/lib/utils/job-utils/poller-helper.js'),
             helper.di.simpleWrapper(waterline,'Services.Waterline')
         ]);
 
         context.Jobclass = helper.injector.get('Job.Ipmi');
+        pollerHelper = helper.injector.get('JobUtils.PollerHelper');
     });
 
     describe('Base', function () {
@@ -31,17 +34,17 @@ describe(require('path').basename(__filename), function () {
 
     describe("ipmi-job", function() {
         var testEmitter = new events.EventEmitter();
-
         beforeEach(function() {
             this.sandbox = sinon.sandbox.create();
             waterline.workitems = {
                 update: this.sandbox.stub().resolves(),
-                findOne: this.sandbox.stub().resolves(),
+                findOne: this.sandbox.stub().resolves({node: "any"}),
                 setSucceeded: this.sandbox.stub().resolves(),
                 setFailed: this.sandbox.stub().resolves()
             };
             var graphId = uuid.v4();
             this.ipmi = new this.Jobclass({}, { graphId: graphId }, uuid.v4());
+            this.ipmi._publishPollerAlert = this.sandbox.stub().resolves();
             expect(this.ipmi.routingKey).to.equal(graphId);
         });
 
@@ -62,6 +65,7 @@ describe(require('path').basename(__filename), function () {
                 workItemId: 'testworkitemid'
             };
             self.ipmi.collectIpmiSdr = sinon.stub().resolves();
+            pollerHelper.getNodeAlertMsg = sinon.stub().resolves({});
             self.ipmi._publishIpmiCommandResult = sinon.stub();
             self.ipmi._subscribeRunIpmiCommand = function(routingKey, type, callback) {
                 if (type === 'sdr') {
@@ -84,6 +88,7 @@ describe(require('path').basename(__filename), function () {
                 setImmediate(function() {
                     try {
                         expect(self.ipmi.collectIpmiSdr.callCount).to.equal(100);
+                        expect(pollerHelper.getNodeAlertMsg.callCount).to.equal(100);
                         done();
                     } catch (e) {
                         done(e);
@@ -103,6 +108,18 @@ describe(require('path').basename(__filename), function () {
             expect(this.ipmi.concurrentRequests('test', 'chassis')).to.equal(false);
             this.ipmi.addConcurrentRequest('test', 'chassis');
             expect(this.ipmi.concurrentRequests('test', 'chassis')).to.equal(true);
+        });
+        
+        it("should send power state alert", function() {
+            var self = this;
+            var testState = {power:'ON'};
+            var testData = {workItemId: 'abc'};
+            self.ipmi.cachedPowerState[testData.workItemId] = 'OFF'
+            return self.ipmi.powerStateAlerter(testState, testData)
+            .then(function(status) {
+                expect(status).to.deep.equal(testState);
+                expect(self.ipmi.cachedPowerState[testData.workItemId]).to.equal(status.power);
+            });
         });
     });
 });

@@ -215,6 +215,10 @@ module.exports.get = function() {
             },
             'test-4': {
                 nonRequiredOption: 'add an option to an empty base task'
+            },
+            'test-5': {
+                option1: null,
+                option2: 'overidden all'
             }
         },
         tasks: [
@@ -257,7 +261,24 @@ module.exports.get = function() {
                     friendlyName: 'Test Inline Task no options',
                     injectableName: 'Task.test.inline-task-no-opts',
                     implementsTask: 'Task.Base.test-empty',
-                    options: {},
+                    options: {
+                        testName: 'fourthTask'
+                    },
+                    properties: {}
+                }
+            },
+            {
+                label: 'test-5',
+                taskDefinition: {
+                    friendlyName: 'Test Inline Task with schema',
+                    injectableName: 'Task.test.inline-task-with-schema',
+                    implementsTask: 'Task.Base.test-empty',
+                    schemaRef: 'testschema',
+                    options: {
+                        option1: 'default value of option 1',
+                        option5: 'default value of option 5',
+                        testName: 'fifthTask'
+                    },
                     properties: {}
                 }
             }

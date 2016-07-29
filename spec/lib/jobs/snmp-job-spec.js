@@ -11,6 +11,7 @@ describe(require('path').basename(__filename), function () {
     var collectMetricDataStub;
     var metricStub;
     var waterline = {};
+    var pollerHelper;
 
     base.before(function (context) {
         // create a child injector with on-core and the base pieces we need to test this
@@ -26,6 +27,7 @@ describe(require('path').basename(__filename), function () {
             helper.requireGlob('/lib/utils/metrics/base-metric.js'),
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/snmp-job.js'),
+            helper.require('/lib/utils/job-utils/poller-helper.js'),
             helper.di.simpleWrapper(metricStub,
                 'JobUtils.Metrics.Snmp.InterfaceBandwidthUtilizationMetric'),
             helper.di.simpleWrapper(metricStub, 'JobUtils.Metrics.Snmp.InterfaceStateMetric'),
@@ -35,6 +37,7 @@ describe(require('path').basename(__filename), function () {
             helper.di.simpleWrapper(waterline,'Services.Waterline')
         ]);
         context.Jobclass = helper.injector.get('Job.Snmp');
+        pollerHelper = helper.injector.get('JobUtils.PollerHelper');
     });
 
     describe('Base', function () {
@@ -62,6 +65,7 @@ describe(require('path').basename(__filename), function () {
             Snmptool = helper.injector.get('JobUtils.Snmptool');
             expect(this.snmp.routingKey).to.equal(graphId);
             testEmitter = new events.EventEmitter();
+            pollerHelper.getNodeAlertMsg = this.sandbox.stub().resolves({});
         });
 
         afterEach(function() {
@@ -119,6 +123,7 @@ describe(require('path').basename(__filename), function () {
                     try {
                         expect(self.snmp.concurrentRequests.callCount).to.equal(100);
                         expect(Snmptool.prototype.collectHostSnmp.callCount).to.equal(100);
+                        expect(pollerHelper.getNodeAlertMsg.callCount).to.equal(100);
                         expect(Snmptool.prototype.collectHostSnmp
                                 .alwaysCalledWith(['testoid'], { numericOutput: true }))
                                 .to.equal(true);

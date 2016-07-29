@@ -4,10 +4,10 @@
 'use strict';
 
 describe(require('path').basename(__filename), function() {
-    var schemaFilePath = '/lib/task-data/schemas/install-centos.json';
+    var schemaFilePath = '/lib/task-data/schemas/install-ubuntu.json';
 
     var partialCanonical = {
-        "rackhdCallbackScript": "centos.rackhdcallback",
+        "baseUrl": "ubuntu.baseUrl",
     };
 
     var positiveSetParam = {
@@ -20,7 +20,7 @@ describe(require('path').basename(__filename), function() {
     ];
 
     var negativeUnsetParam = [
-        "rackhdCallbackScript"
+        "baseUrl",
     ];
 
     var installOsCommonHelper = require('./install-os-schema-ut-helper');

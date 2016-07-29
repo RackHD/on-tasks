@@ -150,7 +150,7 @@
             "type": "object",
             "properties": {
                 "device": {
-                    "description": "The interface name",
+                    "description": "The interface name, or MAC address only for Esxi",
                     "type": "string"
                 },
                 "ipv4": {
@@ -232,6 +232,16 @@
             "items": {
                 "type": "string",
                 "format": "ipv4"
+            },
+            "uniqueItems": true
+        },
+        "NtpServers": {
+            "description": "The list of NTP servers",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "type": "string",
+                "minLength": 1
             },
             "uniqueItems": true
         },
@@ -335,6 +345,9 @@
                 "dnsServers": {
                     "$ref": "#/definitions/DnsServers"
                 },
+                "ntpServers": {
+                    "$ref": "#/definitions/NtpServers"
+                },
                 "networkDevices": {
                     "$ref": "#/definitions/NetworkDevices"
                 },
@@ -345,7 +358,7 @@
                     "$ref": "#/definitions/InstallPartitions"
                 }
             },
-            "required": ["rootPassword", "domain"]
+            "required": ["rootPassword"]
         },
         "AdvanceOptions": {
             "allOf": [

@@ -4,6 +4,7 @@
 
 describe('Redfish Discovery Job', function () {
     var uuid = require('node-uuid'),
+        sandbox = sinon.sandbox.create(),
         graphId = uuid.v4(),
         redfishJob,
         redfishTool,
@@ -12,9 +13,9 @@ describe('Redfish Discovery Job', function () {
         getChassisData,
         listSystemData,
         getSystemData,
+        ethernetInterfaces,
         waterline = {},
-        Error,
-        sandbox = sinon.sandbox.create();
+        Error;
         
     var obm = {
         service: 'redfish-obm-service',
@@ -51,6 +52,9 @@ describe('Redfish Discovery Job', function () {
             upsertByNode: sandbox.stub().resolves(obm),
             findByNode: sandbox.stub().resolves(obm)
         };
+        waterline.lookups = {
+            upsertNodeToMacAddress: sandbox.stub().resolves()
+        };
         Error = helper.injector.get('Errors');
     });
     
@@ -61,7 +65,7 @@ describe('Redfish Discovery Job', function () {
     beforeEach(function() {
         var Job = helper.injector.get('Job.Redfish.Discovery');
         redfishJob = new Job({
-            uri:'fake',
+            uri:'https://1.1.1.1/redfish/v1',
             username:'user',
             password:'pass'
         }, {}, graphId);
@@ -96,7 +100,12 @@ describe('Redfish Discovery Job', function () {
             body: {
                 Members: [
                     {'@odata.id':'/redfish/v1/Systems/abc123'}
-                ]
+                ]                
+            }
+        };
+        ethernetInterfaces = {
+            body: { 
+                Members: [] 
             }
         };
         getSystemData = {
@@ -105,6 +114,9 @@ describe('Redfish Discovery Job', function () {
                     Chassis: [
                         {'@odata.id':'/redfish/v1/Chassis/abc123'}
                     ]
+                },
+                EthernetInterfaces: {
+                    '@odata.id':'/redfish/v1/Systems/abc123/EthernetInterfaces'
                 },
                 Name: 'System'
             }
@@ -118,6 +130,8 @@ describe('Redfish Discovery Job', function () {
             redfishTool.clientRequest.onCall(2).resolves(getChassisData);
             redfishTool.clientRequest.onCall(3).resolves(listSystemData);
             redfishTool.clientRequest.onCall(4).resolves(getSystemData);
+            redfishTool.clientRequest.onCall(2).resolves(getSystemData);
+            redfishTool.clientRequest.onCall(3).resolves(ethernetInterfaces);
             redfishJob._run();
             return redfishJob._deferred
             .then(function() {
@@ -170,9 +184,17 @@ describe('Redfish Discovery Job', function () {
     });
     
     describe('redfish system', function() {
-        it('should create system node', function() { 
+        it('should create system node', function() {
+            ethernetInterfaces.body.Members = [
+                {'@odata.id':'/redfish/v1/Systems/abc123/EthernetInterfaces'}
+            ];
             redfishTool.clientRequest.onCall(0).resolves(listSystemData);
             redfishTool.clientRequest.onCall(1).resolves(getSystemData);
+            redfishTool.clientRequest.onCall(2).resolves(getSystemData);
+            redfishTool.clientRequest.onCall(3).resolves(ethernetInterfaces);
+            redfishTool.clientRequest.onCall(4).resolves({body: 
+                {'MACAddress':'00:01:02:03:04:05'}
+            });
             return redfishJob.createSystems(rootData.body)
             .then(function() {
                 expect(waterline.nodes.updateOne).to.be.called.once;
@@ -183,6 +205,8 @@ describe('Redfish Discovery Job', function () {
             delete getSystemData.body.Links;
             redfishTool.clientRequest.onCall(0).resolves(listSystemData);
             redfishTool.clientRequest.onCall(1).resolves(getSystemData);
+            redfishTool.clientRequest.onCall(2).resolves(getSystemData);
+            redfishTool.clientRequest.onCall(3).resolves(ethernetInterfaces);
             return redfishJob.createSystems(rootData.body)
             .then(function() {
                 expect(waterline.nodes.updateOne).to.be.called.once;

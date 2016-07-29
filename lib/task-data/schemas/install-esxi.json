@@ -29,7 +29,7 @@
                         "minLength": 1
                     },
                     "uniqueItems": true,
-                    "description": "list of uplink adapters that connected with the virtual switch, the example name of uplink adapter is 'vmnic0'"
+                    "description": "list of uplink adapters that connected with the virtual switch, the example name of uplink adapter is 'vmnic0' or MAC address"
                 }
             },
             "required": ["switchName"]

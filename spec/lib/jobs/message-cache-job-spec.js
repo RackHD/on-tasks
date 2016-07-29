@@ -9,6 +9,7 @@ describe("Message Cache Job", function () {
     var base = require('./base-spec');
     var Errors;
     var job;
+    var sandbox = sinon.sandbox.create();
 
     base.before(function (context) {
         helper.setupInjector([
@@ -19,19 +20,31 @@ describe("Message Cache Job", function () {
         ]);
 
         var configuration = helper.injector.get('Services.Configuration');
-        sinon.stub(configuration, 'get').withArgs('pollerCacheSize').returns(10);
+        sandbox.stub(configuration, 'get').withArgs('pollerCacheSize').returns(10);
 
         Errors = helper.injector.get('Errors');
         context.Jobclass = helper.injector.get('Job.Message.Cache');
     });
 
+    before("Message Cache Job before", function() {
+        var baseJob = helper.injector.get('Job.Base');
+        sandbox.stub(baseJob.prototype, '_subscribeIpmiCommandResult');
+        sandbox.stub(baseJob.prototype, '_subscribeSnmpCommandResult');
+        sandbox.stub(baseJob.prototype, '_subscribeRequestPollerCache');
+        sandbox.stub(baseJob.prototype, '_subscribeRedfishCommandResult');
+        sandbox.stub(baseJob.prototype, '_subscribeMetricResult');
+    });
+
+    after("Message Cache Job after", function() {
+        sandbox.restore();
+    });
+
     beforeEach("Message Cache Job beforeEach", function() {
-        this.sandbox = sinon.sandbox.create();
         job = new this.Jobclass({}, { graphId: uuid.v4() }, uuid.v4());
     });
 
     afterEach("Message Cache Job afterEach", function() {
-        this.sandbox.restore();
+        sandbox.reset();
     });
 
     describe("Base", function () {
@@ -83,29 +96,8 @@ describe("Message Cache Job", function () {
     });
 
     describe("subscription callbacks", function() {
-        var baseJob;
-
-        before("Message Cache subscription callbacks before", function() {
-            baseJob = helper.injector.get('Job.Base');
-            sinon.stub(baseJob.prototype, '_subscribeIpmiCommandResult');
-            sinon.stub(baseJob.prototype, '_subscribeSnmpCommandResult');
-            sinon.stub(baseJob.prototype, '_subscribeRequestPollerCache');
-        });
-
-        beforeEach("Message Cache subscription callbacks beforeEach", function() {
-            baseJob.prototype._subscribeIpmiCommandResult.reset();
-            baseJob.prototype._subscribeSnmpCommandResult.reset();
-            baseJob.prototype._subscribeRequestPollerCache.reset();
-        });
-
-        after("Message Cache subscription callbacks after", function() {
-            baseJob.prototype._subscribeIpmiCommandResult.restore();
-            baseJob.prototype._subscribeSnmpCommandResult.restore();
-            baseJob.prototype._subscribeRequestPollerCache.restore();
-        });
-
         it("should set subscription callbacks for ipmi results", function() {
-            this.sandbox.stub(job, 'createSetIpmiCommandResultCallback').returns('fn return stub');
+            sandbox.stub(job, 'createSetIpmiCommandResultCallback').returns('fn return stub');
             job._run();
             expect(job._subscribeIpmiCommandResult.callCount).to.equal(5);
             _.forEach(['sdr', 'selInformation', 'sel', 'chassis', 'driveHealth'],

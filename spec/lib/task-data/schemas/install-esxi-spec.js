@@ -33,6 +33,10 @@ describe(require('path').basename(__filename), function() {
             "172.12.88.91",
             "192.168.20.77"
         ],
+        "ntpServers": [
+            "0.vmware.pool.ntp.org",
+            "1.vmware.pool.ntp.org"
+        ],
         "networkDevices": [
             {
                 "device": "vmnic0",
@@ -94,13 +98,16 @@ describe(require('path').basename(__filename), function() {
     };
 
     var positiveSetParam = {
-        "comportaddress": ["0x3f8", "0x2f8", "0x3e8", "0x2e8"]
+        "comportaddress": ["0x3f8", "0x2f8", "0x3e8", "0x2e8"],
+        "networkDevices[0].device": "90:e2:ba:91:1b:e4",
+        "switchDevices[0].uplinks[0]": "90:e2:ba:91:1b:e4"
     };
 
     var negativeSetParam = {
         "comportaddress": ["com1", "com2", 1, 0x3f8],
         "switchDevices[0].uplinks[1]": "vmnic0", //cannot set duplicated uplinks
-        "switchDevices[0]": { "switchName": "vSwitch1" } //cannot set duplicated switchDevice
+        "switchDevices[0]": { "switchName": "vSwitch1" }, //cannot set duplicated switchDevice
+        "ntpServers[0]": "1.vmware.pool.ntp.org" //cannot set duplicated ntpServers
     };
 
     var positiveUnsetParam = [
