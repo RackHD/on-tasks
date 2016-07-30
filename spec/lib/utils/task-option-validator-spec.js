@@ -15,6 +15,7 @@ describe("TaskOption Validator", function () {
     };
     var testSchema2 = {
         id: 'test2',
+        test: 'test meta schema required property',
         definitions: {
             VlanId: {
                 type: 'integer',
@@ -32,40 +33,79 @@ describe("TaskOption Validator", function () {
         }
     };
 
+    var testMetaSchema = {
+        properties: {
+            test: {
+                type: 'string'
+            }
+        },
+        required: ['test']
+    };
+
     before(function() {
         helper.setupInjector([
             helper.require('/lib/utils/task-option-validator')
         ]);
-    });
-
-    beforeEach(function () {
         taskOptionValidator = helper.injector.get('TaskOption.Validator');
     });
 
     describe('register', function() {
+        var nodeFs;
+        before(function () {
+            nodeFs = helper.injector.get('fs');
+            sinon.stub(nodeFs, 'readdirAsync');
+            sinon.stub(nodeFs, 'readFileAsync');            
+        });
+
         beforeEach(function () {
-            taskOptionValidator.loader.getAll = sinon.stub().resolves({
-                'testSchema1.json': {
-                    contents: JSON.stringify(testSchema1),
-                    path: '/home/test/testSchema1.json'
-                },
-                'testSchema2.json': {
-                    contents: JSON.stringify(testSchema2),
-                    path: '/home/test/testSchema2.json'
-                }
-            });
+            nodeFs.readdirAsync.reset();
+            nodeFs.readFileAsync.reset();
         });
 
         afterEach(function () {
-            taskOptionValidator.loader.getAll.reset();
+            taskOptionValidator.reset();
+            delete testSchema2.$schema;            
+        });
+
+        after(function () {
+            nodeFs.readdirAsync.restore();
+            nodeFs.readFileAsync.restore();
+        });
+
+        it('should load all JSON schemas in default folder', function() {
+            testSchema2.$schema = 'rackhd-task-schema.json';
+            nodeFs.readdirAsync.resolves([
+                'testSchema1.json',
+                'testSchema2.json',
+                'rackhd-task-schema.json'
+            ]);
+            nodeFs.readFileAsync.onCall(0).resolves(JSON.stringify(testSchema1));
+            nodeFs.readFileAsync.onCall(1).resolves(JSON.stringify(testSchema2));
+            nodeFs.readFileAsync.onCall(2).resolves(JSON.stringify(testMetaSchema));
+            return taskOptionValidator.register()
+            .then(function () {
+                expect(nodeFs.readdirAsync).to.be.calledOnce;
+                expect(nodeFs.readFileAsync).to.have.calledThrice;
+                expect(taskOptionValidator.getSchema('testSchema1.json')).to.have.property('id')
+                    .that.equals('/schemas/tasks/testSchema1.json');
+                expect(taskOptionValidator.getSchema('testSchema2.json')).to.have.property('id')
+                    .that.equals('/schemas/tasks/testSchema2.json');
+            });
         });
 
         it('should load all JSON schemas in specific folder', function() {
-            return taskOptionValidator.register('/home', 'testSchema1.json')
+            nodeFs.readdirAsync.resolves([
+                'testSchema2.json',
+                'testMetaSchema.json'
+            ]);
+            nodeFs.readFileAsync.onCall(0).resolves(JSON.stringify(testSchema2));
+            nodeFs.readFileAsync.onCall(1).resolves(JSON.stringify(testMetaSchema));
+            return taskOptionValidator.register('/home', 'testMetaSchema.json')
             .then(function () {
-                expect(taskOptionValidator.loader.getAll).to.be.calledOnce;
-                expect(taskOptionValidator.getSchema('test1')).to.deep.equal(testSchema1);
-                expect(taskOptionValidator.getSchema('test2')).to.deep.equal(testSchema2);
+                expect(nodeFs.readdirAsync).to.be.calledOnce;
+                expect(nodeFs.readFileAsync).to.have.calledTwice;
+                expect(taskOptionValidator.getSchema('testSchema2.json')).to.have.property('id')
+                    .that.equals('/schemas/tasks/testSchema2.json');
             });
         });
     });
