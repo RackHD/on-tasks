@@ -6,6 +6,8 @@
 var Ajv = require('ajv');
 var _unset = require('lodash.unset');
 var _toString = require('lodash.tostring');
+var glob = require('glob');
+var path = require('path');
 
 /**
  * load all jobs' injectable names
@@ -34,13 +36,15 @@ function loadJobNames() {
  */
 function loadSchemas(ajv) {
     var metaSchema = helper.require('/lib/task-data/schemas/rackhd-task-schema.json');
-    ajv.addMetaSchema(metaSchema);
-    var schemas = helper.requireGlob('/lib/task-data/schemas/*.json');
-    schemas.forEach(function(schema) {
-        if (schema.id !== metaSchema.id) {
-            ajv.addSchema(schema);
-        }
-    });
+    ajv.addMetaSchema(metaSchema, 'rackhd-task-schema.json');
+    var fileNames = glob.sync(helper.relativeToRoot('/lib/task-data/schemas/*.json'));
+    _(fileNames).filter(function (filename) {
+        return path.basename(filename) !== 'rackhd-task-schema.json';
+    })
+    .forEach(function (filename) {
+        ajv.addSchema(require(filename), path.basename(filename));
+    })
+    .value();
     return ajv;
 }
 
@@ -88,7 +92,7 @@ function validateData(validator, schemaId, data, expected) {
 function validateSchemaDefinition(schema, jobNames) {
     before('Check schema definition', function() {
         expect(schema).to.be.a('object');
-        expect(schema).to.have.property('id').to.be.a('string');
+        // expect(schema).to.have.property('id').to.be.a('string');
         expect(schema).to.have.property('describeJob').to.be.a('string');
         expect(schema).to.have.property('copyright').to.be.a('string');
         expect(schema).to.have.property('title').to.be.a('string');
@@ -114,6 +118,7 @@ function SchemaUnitTestHelper(testfile, canonicalData, skipTaskSchemaDefValidati
     var self = this;
     this.validator = result.validator;
     this.schema = helper.require(testfile);
+    this.schemaName = path.basename(testfile);
     this.canonicalData = canonicalData;
 
     if (!skipTaskSchemaDefValidation) {
@@ -139,7 +144,7 @@ function SchemaUnitTestHelper(testfile, canonicalData, skipTaskSchemaDefValidati
  * @param {Function} done - The mocha unit-test hook "done" function
  */
 SchemaUnitTestHelper.prototype._validate = function(data, expected, done) {
-    return done(validateData(this.validator, this.schema.id, data, expected));
+    return done(validateData(this.validator, this.schemaName, data, expected));
 };
 
 /**

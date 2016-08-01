@@ -29,6 +29,7 @@
     "chai": "^2.0.0",
     "chai-as-promised": "^4.2.0",
     "coveralls": "^2.11.4",
+    "glob": "^4.3.2",
     "grunt": "^0.4.5",
     "grunt-cli": "^0.1.13",
     "grunt-contrib-jshint": "^0.11.0",

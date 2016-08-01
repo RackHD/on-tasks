@@ -1,6 +1,5 @@
 {
-    "$schema": "rackhd/schemas/v1/task-schema",
-    "id": "rackhd/schemas/v1/tasks/obm-control",
+    "$schema": "rackhd-task-schema.json",
     "copyright": "Copyright 2016, EMC, Inc.",
     "title": "OBM Control",
     "description": "The schema for all obm control tasks",
@@ -39,7 +38,7 @@
         }
     },
     "allOf": [
-        { "$ref": "common#/definitions/Options" },
+        { "$ref": "common-task-options.json#/definitions/Options" },
         {
             "type": "object",
             "properties": {

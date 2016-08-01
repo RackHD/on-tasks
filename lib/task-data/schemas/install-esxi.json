@@ -1,6 +1,5 @@
 {
-    "$schema": "rackhd/schemas/v1/task-schema",
-    "id": "rackhd/schemas/v1/tasks/install-esxi",
+    "$schema": "rackhd-task-schema.json",
     "copyright": "Copyright 2016, EMC, Inc.",
     "title": "Install ESXi",
     "description": "The parameters for ESXi installation",
@@ -65,7 +64,7 @@
             "type": "object",
             "properties": {
                 "users": {
-                    "$ref": "install-os-types#/definitions/UsersSimple"
+                    "$ref": "install-os-types.json#/definitions/UsersSimple"
                 },
                 "postInstallCommands": {
                     "$ref": "#/definitions/PostInstallCommands"
@@ -80,7 +79,7 @@
                     "$ref": "#/definitions/EsxBootConfigTemplateUri"
                 },
                 "rackhdCallbackScript": {
-                    "$ref": "install-os-types#/definitions/RackHDCallbackScript"
+                    "$ref": "install-os-types.json#/definitions/RackHDCallbackScript"
                 },
                 "comportaddress": {
                     "$ref": "#/definitions/ComportAddress"
@@ -95,9 +94,9 @@
         }
     },
     "allOf": [
-        { "$ref": "common#/definitions/Options" },
-        { "$ref": "install-os-types#/definitions/BasicOptions" },
-        { "$ref": "install-os-types#/definitions/AdvanceOptionsWithSimpleUser" },
+        { "$ref": "common-task-options.json#/definitions/Options" },
+        { "$ref": "install-os-types.json#/definitions/BasicOptions" },
+        { "$ref": "install-os-types.json#/definitions/AdvanceOptionsWithSimpleUser" },
         { "$ref": "#/definitions/EsxiSpecificOptions" }
     ]
 }
