@@ -87,9 +87,9 @@ describe("TaskOption Validator", function () {
                 expect(nodeFs.readdirAsync).to.be.calledOnce;
                 expect(nodeFs.readFileAsync).to.have.calledThrice;
                 expect(taskOptionValidator.getSchema('testSchema1.json')).to.have.property('id')
-                    .that.equals('/schemas/tasks/testSchema1.json');
+                    .that.equals('testSchema1.json');
                 expect(taskOptionValidator.getSchema('testSchema2.json')).to.have.property('id')
-                    .that.equals('/schemas/tasks/testSchema2.json');
+                    .that.equals('testSchema2.json');
             });
         });
 
@@ -105,7 +105,7 @@ describe("TaskOption Validator", function () {
                 expect(nodeFs.readdirAsync).to.be.calledOnce;
                 expect(nodeFs.readFileAsync).to.have.calledTwice;
                 expect(taskOptionValidator.getSchema('testSchema2.json')).to.have.property('id')
-                    .that.equals('/schemas/tasks/testSchema2.json');
+                    .that.equals('testSchema2.json');
             });
         });
     });
