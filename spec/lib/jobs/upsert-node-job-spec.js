@@ -39,8 +39,11 @@ describe('upsert-node-job', function(){
         };
     });
 
+    afterEach(function(){
+        waterline.nodes.updateByIdentifier.reset();
+    });
+
     it('Should modify node collection via waterline', function(){
-        // console.log(waterline.nodes.updateByIdentifier);
         return job.run().then(function(){
             expect(waterline.nodes.updateByIdentifier)
             .to.have.been.calledWith(options.target, options.data);
