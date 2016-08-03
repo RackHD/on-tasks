@@ -12,9 +12,9 @@ describe('Emc Redfish Catalog Job', function () {
             body: { 
                 Oem: { 
                     Emc: {
-                        Elements: { 
-                            '@odata.id':'/redfish/v1/Chassis/0/Elements' 
-                        }     
+                        Elements: {'@odata.id':'/redfish/v1/Chassis/0/Elements'},
+                        Hbas: {'@odata.id':'/redfish/v1/Chassis/0/Hbas'},
+                        Aggregators: {'@odata.id':'/redfish/v1/Chassis/0/Aggregators'}
                     }
                 }
             }
@@ -24,6 +24,16 @@ describe('Emc Redfish Catalog Job', function () {
                 Members: [
                     { '@odata.id':'/redfish/v1/Chassis/0/Elements/0'}
                 ]
+            }
+        },
+        hbaMembers = {
+            body: {
+                Members: [{'@odata.id':'/redfish/v1/Chassis/0/Hbas/Controllers'}]
+            }
+        },
+        aggregatorMembers = {
+            body: {
+                Members: [{'@odata.id':'/redfish/v1/Chassis/0/Hbas/Controllers'}]
             }
         },
         elementData = {
@@ -113,7 +123,13 @@ describe('Emc Redfish Catalog Job', function () {
             clientRequest.onCall(3).resolves(elementData);
             clientRequest.onCall(4).resolves(subElementData);
             clientRequest.onCall(5).resolves(subElementData2);
-            clientRequest.onCall(6).resolves(subElementData2);
+            clientRequest.onCall(6).resolves(rootData);
+            clientRequest.onCall(7).resolves(hbaMembers);
+            clientRequest.onCall(8).resolves(elementData);
+            clientRequest.onCall(9).resolves(rootData);
+            clientRequest.onCall(10).resolves(rootData);
+            clientRequest.onCall(11).resolves(aggregatorMembers);
+            clientRequest.onCall(12).resolves(elementData);
             redfishJob._run();
             return redfishJob._deferred
             .then(function() {
