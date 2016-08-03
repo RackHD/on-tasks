@@ -4,6 +4,7 @@
 'use strict';
 
 describe("Base Metric", function () {
+    var sandbox = sinon.sandbox.create();
     var waterline;
     var BaseMetric;
     var base;
@@ -24,11 +25,18 @@ describe("Base Metric", function () {
         // reset this shared object
         base.oidDescriptionMap = {};
         waterline.catalogs = {
-            findMostRecent: sinon.stub().resolves()
+            findMostRecent: sandbox.stub().resolves()
+        };
+        waterline.nodes = {
+            needByIdentifier: sandbox.stub().resolves({sku:'abc-xyz'})
+        };
+        waterline.environment = {
+            findOne: sandbox.stub().resolves()
         };
     });
 
     it('should identify a node type from snmp data', function() {
+        waterline.nodes.needByIdentifier.resolves({sku:null})
         waterline.catalogs.findMostRecent.resolves({
             data: { 'SNMPv2-MIB::sysDescr_0': 'Cisco' }
         });
@@ -61,7 +69,7 @@ describe("Base Metric", function () {
     });
 
     it('should update an oid description', function() {
-        base.snmptool = { collectHostSnmp: sinon.stub() };
+        base.snmptool = { collectHostSnmp: sandbox.stub() };
         base.snmptool.collectHostSnmp.resolves([
             { values: { testoid1: '1', testoid2: '2' } }
         ]);
