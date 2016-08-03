@@ -84,7 +84,7 @@ describe(require('path').basename(__filename), function () {
             var getConfigCatalog = this.sandbox.stub(racadmTool,'getConfigCatalog');
             var lookupHostStub = this.sandbox.stub(jobHelper,'lookupHost');
             mockWaterline.obms.findByNode.resolves(node);
-            lookupHostStub.resolves(node.obmSettings[0]);
+            lookupHostStub.resolves(node.obmSettings[0].config);
 
             return job.run()
                 .then(function() {
