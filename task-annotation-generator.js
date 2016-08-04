@@ -3,6 +3,9 @@
 'use strict';
 
 var fs = require('fs');
+var path = require('path');
+var url = require('url');
+var _ = require('lodash');
 
 function TaskAnnotation(task) {
     this.task = task;
@@ -10,13 +13,16 @@ function TaskAnnotation(task) {
 
 /**
  * Run the process to generate doc data with current existing task schemas
- * @param {Array} tasks - list of task from task folder
+ * @param {Array<Object>} tasks - list of task from task folder
  *                        e.g. /lib/task-data/tasks/*.js
- * @param {Object} validator - instance of task-option-validator
+ * @param {Object} validator - instance of JsonSchemaValidator
  * @return {Promise} promise with value docData array
  */
 TaskAnnotation.run = function (tasks, validator) {
-    return validator.register()
+    return validator.addSchemasByDir(
+        path.resolve(__dirname, 'lib/task-data/schemas'),
+        'rackhd-task-schema.json'
+    )
     .return(tasks)
     .filter(function (task) {
         // filter all tasks, only those task has schema will be annotated.
@@ -218,14 +224,23 @@ TaskAnnotation.prototype.generateDocData = function (obj, dataTemplate) {
 
 
 if (require.main === module) {
-    require('on-core/spec/helper');
+    var glob = require('on-core/node_modules/glob');
+    var pattern = path.resolve(__dirname, 'lib/task-data/tasks/*.js');
+    var tasks = _.map(glob.sync(pattern), function (filename) {
+        return require(filename);
+    });
 
-    helper.setupInjector([
-        helper.require('/lib/utils/task-option-validator')
-    ]);
-
-    var validator = helper.injector.get('TaskOption.Validator');
-    var tasks = helper.requireGlob('/lib/task-data/tasks/*.js');
+    var validatorFactory = require('on-core/lib/common/json-schema-validator');
+    var JsonSchemaValidator = validatorFactory(
+        require('ajv'),
+        require('on-core/node_modules/assert-plus'),
+        fs,
+        path,
+        require('on-core/node_modules/bluebird'),
+        url,
+        _
+    );
+    var validator = new JsonSchemaValidator({});
 
     TaskAnnotation.run(tasks, validator)
     .then(function (docData) {
