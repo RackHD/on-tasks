@@ -1,0 +1,35 @@
+{
+    "$schema": "rackhd-task-schema.json",
+    "copyright": "Copyright 2016, EMC, Inc.",
+    "title": "Firmware Update",
+    "description": "The schema for firmware update task",
+    "describeJob": "Job.Linux.Commands",
+    "definitions": {
+        "File": {
+            "description": "The filename of firmware image",
+            "type": "string",
+            "minLength": 1
+        },
+        "DownloadDir": {
+            "description": "The directory where the firmware image is stored",
+            "type": "string",
+            "minLength": 1
+        },
+        "Options": {
+            "type": "object",
+            "properties": {
+                "file": {
+                    "$ref": "#/definitions/File"
+                },
+                "downloadDir": {
+                    "$ref": "#/definitions/DownloadDir"
+                }
+            },
+            "required": ["file", "downloadDir"]
+        }
+    },
+    "allOf": [
+        { "$ref": "linux-command.json" },
+        { "$ref": "#/definitions/Options" }
+    ]
+}

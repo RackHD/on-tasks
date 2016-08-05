@@ -1,0 +1,19 @@
+{
+    "$schema": "rackhd-task-schema.json",
+    "copyright": "Copyright 2016, EMC, Inc.",
+    "title": "Evaluate Condition",
+    "description": "Evaluate condition, succeed task if condition meets, otherwise fail task",
+    "describeJob": "Job.Evaluate.Condition",
+    "allOf": [
+        { "$ref": "common-task-options.json#/definitions/Options" },
+        {
+            "type": "object",
+            "properties": {
+                "when": {
+                    "type": "string"
+                }
+            },
+            "required": ["when"]
+        }
+    ]
+}

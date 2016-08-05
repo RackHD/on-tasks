@@ -1,0 +1,28 @@
+{
+    "$schema": "rackhd-task-schema.json",
+    "copyright": "Copyright 2016, EMC, Inc.",
+    "title": "Provide Catalog Data",
+    "description": "Provide catalog data by source and path",
+    "describeJob": "Job.Catalogs.ProvideData",
+    "allOf": [
+        { "$ref": "common-task-options.json#/definitions/Options" },
+        {
+            "type": "object",
+            "properties": {
+                "source": {
+                    "description": "The name of catalog source",
+                    "type": "string",
+                    "minLength": 1,
+                    "readoly": true
+                },
+                "path": {
+                    "description": "The json path for the catalog data",
+                    "type": "string",
+                    "minLength": 1,
+                    "readoly": true
+                }
+            },
+            "required": ["source", "path"]
+        }
+    ]
+}

@@ -1,0 +1,60 @@
+{
+    "$schema": "rackhd-task-schema.json",
+    "copyright": "Copyright 2016, EMC, Inc.",
+    "title": "Firmware Update",
+    "description": "The schema for firmware update task",
+    "describeJob": "Job.Linux.Commands",
+    "definitions": {
+        "File": {
+            "description": "The filename that to download",
+            "type": "string",
+            "minLength": 1
+        },
+        "DownloadDir": {
+            "description": "The microkernel directory where the file will be downloaded to",
+            "type": "string",
+            "minLength": 1
+        },
+        "FileMd5Uri": {
+            "description": "The URL that return the MD5 of the target file",
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^https?://"
+        },
+        "FileUri": {
+            "description": "The URL that to download the target file",
+            "type": "string",
+            "minLength": 1,
+            "pattern": "^https?://"
+        },
+        "OutputPath": {
+            "description": "The stored filepath in microkernel",
+            "type": "string",
+            "minLength": 1
+        }
+    },
+    "allOf": [
+        { "$ref": "linux-command.json" },
+        {
+            "type": "object",
+            "properties": {
+                "file": {
+                    "$ref": "#/definitions/File"
+                },
+                "downloadDir": {
+                    "$ref": "#/definitions/DownloadDir"
+                },
+                "fileMd5Uri": {
+                    "$ref": "#/definitions/FileMd5Uri"
+                },
+                "fileUri": {
+                    "$ref": "#/definitions/FileUri"
+                },
+                "outputPath": {
+                    "$ref": "#/definitions/OutputPath"
+                }
+            },
+            "required": ["file", "downloadDir", "fileMd5Uri", "fileUri", "outputPath"]
+        }
+    ]
+}
