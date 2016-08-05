@@ -246,10 +246,13 @@ describe('Job.Redfish', function () {
         });
         
         it("should fail collectData with error", function() {
+            var error = new Error('error text');
             redfishTool.clientRequest.onCall(0).resolves(listChassisData);
-            redfishTool.clientRequest.onCall(1).rejects('error text');
-            return expect(redfishJob.collectData(data, 'power'))
-                .to.be.rejectedWith('error text');
+            redfishTool.clientRequest.onCall(1).rejects(error);
+            return redfishJob.collectData(data, 'power')
+            .then(function(data) {
+                expect(data).to.deep.equal({error:error});
+            });
         });
         
         it("should add a concurrent request", function() {
