@@ -36,7 +36,6 @@ describe("Job Helper", function () {
             var data = {
                 password: password
             };
-            console.log(jobHelper.revealSecrets(data));
             expect(jobHelper.revealSecrets(data)).to.deep.equal({
                 password: 'password'
             });
@@ -48,7 +47,6 @@ describe("Job Helper", function () {
             var data = {
                 community: community
             };
-            console.log(jobHelper.revealSecrets(data));
             expect(jobHelper.revealSecrets(data)).to.deep.equal({
                 community: 'community'
             });

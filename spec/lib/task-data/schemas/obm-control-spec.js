@@ -4,7 +4,7 @@
 'use strict';
 
 describe(require('path').basename(__filename), function() {
-    var schemaFilePath = '/lib/task-data/schemas/obm-control.json';
+    var schemaFileName = 'obm-control.json';
 
     var canonical = {
         "action": "powerOn",
@@ -18,8 +18,8 @@ describe(require('path').basename(__filename), function() {
 
     var positiveSetParam = {
         action: [
-            "clearSEL", "identifyOff", "identifyOn", "mcResetCold", "NMI", "powerButton", "powerOff",
-            "powerOn", "powerStatus", "reboot", "reset", "setBootPxe", "softReset"
+            "clearSEL", "identifyOff", "identifyOn", "mcResetCold", "NMI", "powerButton",
+            "powerOff", "powerOn", "powerStatus", "reboot", "reset", "setBootPxe", "softReset"
         ],
         obmService: [
             "amt-obm-service", "apc-obm-service", "ipmi-obm-service", "noop-obm-service",
@@ -38,6 +38,6 @@ describe(require('path').basename(__filename), function() {
     ];
 
     var SchemaUtHelper = require('./schema-ut-helper');
-    new SchemaUtHelper(schemaFilePath, canonical).batchTest(
+    new SchemaUtHelper(schemaFileName, canonical).batchTest(
         positiveSetParam, negativeSetParam, positiveUnsetParam, negativeUnsetParam);
 });
