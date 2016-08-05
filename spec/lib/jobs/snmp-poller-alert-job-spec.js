@@ -92,7 +92,6 @@ describe(require('path').basename(__filename), function () {
                     '.1.3.6.1.2.1.1.5': 'test value'
                 });
                 expect(out.alerts[0]).to.have.property('matches');
-                console.log(out.alerts[0].matches);
                 expect(out.alerts[0].matches).to.deep.equal({
                     '.1.3.6.1.2.1.1.5': "/test/",
                     inCondition: true
