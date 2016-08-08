@@ -4,7 +4,6 @@
 
 var fs = require('fs');
 var path = require('path');
-var url = require('url');
 var _ = require('lodash');
 
 function TaskAnnotation(task) {
@@ -224,22 +223,11 @@ TaskAnnotation.prototype.generateDocData = function (obj, dataTemplate) {
 
 
 if (require.main === module) {
-    var glob = require('on-core/node_modules/glob');
-    var pattern = path.resolve(__dirname, 'lib/task-data/tasks/*.js');
-    var tasks = _.map(glob.sync(pattern), function (filename) {
-        return require(filename);
-    });
-
-    var validatorFactory = require('on-core/lib/common/json-schema-validator');
-    var JsonSchemaValidator = validatorFactory(
-        require('ajv'),
-        require('on-core/node_modules/assert-plus'),
-        fs,
-        path,
-        require('on-core/node_modules/bluebird'),
-        url,
-        _
-    );
+    var di = require('di');
+    var core = require('on-core')(di);
+    var tasks = core.helper.requireGlob(__dirname, 'lib/task-data/tasks/*.js');
+    var injector = new di.Injector(core.injectables);
+    var JsonSchemaValidator = injector.get('JsonSchemaValidator');
     var validator = new JsonSchemaValidator({});
 
     TaskAnnotation.run(tasks, validator)
