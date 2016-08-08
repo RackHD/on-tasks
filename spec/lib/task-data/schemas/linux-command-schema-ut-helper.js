@@ -35,7 +35,8 @@ var negativeSetParamCommand = {
     'commands[1].acceptedResponseCodes': [[], 0, 1, -1],
     'commands[1].downloadUrl': ['', 'foo', 'http://abc.com/abc'],
     'commands[1].timeout': [-1, 2.5],
-    'commands[1].retries': [-1, 2.5]
+    'commands[1].retries': [-1, 2.5],
+    'commands[1].catalog.format': ['JSON', 'RAW', 'xml', 'html'] //now only support json & raw
 };
 
 var negativeSetParamExtra = {
@@ -48,7 +49,7 @@ var positiveSetParamCommand = {
     'commands[1].timeout': [0, 1, 100000],
     'commands[1].retries': [0, 1, 100000],
     'commands[1].acceptedResponseCodes': [[0]],
-    'commands[1].catalog.format': ['xml', 'raw', 'html']
+    'commands[1].catalog.format': ['raw']
 };
 
 var positiveSetParamExtra = {};

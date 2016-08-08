@@ -19,7 +19,7 @@
         },
         "readonly": {
             "type": "boolean",
-            "description": "This property shall designate a property to be readoly when set to true"
+            "description": "This property shall designate a property to be readonly when set to true"
         }
     },
     "properties": {

@@ -32,7 +32,7 @@
         { "$ref": "linux-command.json" },
         {
             "type": "object",
-            "description": "Delete specified RAIDs",
+            "description": "The parameters for RAID deletion",
             "properties": {
                 "path": {
                     "$ref": "#/definitions/Path"

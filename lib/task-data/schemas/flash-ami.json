@@ -6,7 +6,7 @@
     "describeJob": "Job.Linux.Commands",
     "definitions": {
         "BackupFile": {
-            "description": "The name of file which will be transfered back to rackhd as backup",
+            "description": "The name of file which will be transfered back to RackHD as backup",
             "type": "string",
             "minLength": 1
         }

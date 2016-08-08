@@ -26,7 +26,7 @@
                         "format": {
                             "description": "The catalog format, such as 'json', 'raw', .etc",
                             "type": "string",
-                            "minLength": 1
+                            "enum": ["json", "raw"]
                         }
                     },
                     "required": ["source"],
@@ -36,7 +36,7 @@
                     "$ref": "#/definitions/SimpleCommandItem"
                 },
                 "retries": {
-                    "description": "The totoal retry times if the command execution fails",
+                    "description": "The total retry times if the command execution fails",
                     "type": "integer",
                     "minimum": 0
                 },

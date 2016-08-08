@@ -13,13 +13,13 @@
                     "description": "The name of catalog source",
                     "type": "string",
                     "minLength": 1,
-                    "readoly": true
+                    "readonly": true
                 },
                 "path": {
                     "description": "The json path for the catalog data",
                     "type": "string",
                     "minLength": 1,
-                    "readoly": true
+                    "readonly": true
                 }
             },
             "required": ["source", "path"]

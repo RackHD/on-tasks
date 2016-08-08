@@ -6,7 +6,7 @@
     "describeJob": "Job.Linux.Commands",
     "definitions": {
         "File": {
-            "description": "The filename that to download",
+            "description": "The filename to download",
             "type": "string",
             "minLength": 1
         },
@@ -16,13 +16,13 @@
             "minLength": 1
         },
         "FileMd5Uri": {
-            "description": "The URL that return the MD5 of the target file",
+            "description": "The URL that returns the MD5 of the target file",
             "type": "string",
             "minLength": 1,
             "pattern": "^https?://"
         },
         "FileUri": {
-            "description": "The URL that to download the target file",
+            "description": "The URL that is used to download the target file",
             "type": "string",
             "minLength": 1,
             "pattern": "^https?://"

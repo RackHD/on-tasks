@@ -10,6 +10,7 @@
             "type": "object",
             "properties": {
                 "when": {
+                    "description": "The condition value that to be evaluated. Only string 'true' means condition meets",
                     "type": "string"
                 }
             },

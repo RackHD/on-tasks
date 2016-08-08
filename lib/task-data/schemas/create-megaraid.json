@@ -32,7 +32,7 @@
                     "enum": ["raid0", "raid1", "raid5", "raid6", "raid10", "raid50", "raid60"]
                 },
                 "drives": {
-                    "description": "Specify a list of physical drives (via slot ID) that to create the RAID",
+                    "description": "Specify a list of physical drives (via slot ID) that are used to create this RAID",
                     "type": "array",
                     "items": {
                         "type": "integer",
@@ -48,7 +48,7 @@
                     "maxLength": 15
                 },
                 "size": {
-                    "description": "The size of this RAID. The default value is for the capacity of all referenced disk, the maximum size based on the physical drives and RAID type",
+                    "description": "The size of this RAID. The default value is for the capacity of all referenced disk, the maximum size bases on the physical drives and RAID type",
                     "type": "string",
                     "oneOf": [
                         {
