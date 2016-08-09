@@ -12,9 +12,9 @@ describe('Emc Redfish Catalog Job', function () {
             body: { 
                 Oem: { 
                     Emc: {
-                        Elements: { 
-                            '@odata.id':'/redfish/v1/Chassis/0/Elements' 
-                        }     
+                        Elements: {'@odata.id':'/redfish/v1/Chassis/0/Elements'},
+                        Hbas: {'@odata.id':'/redfish/v1/Chassis/0/Hbas'},
+                        Aggregators: {'@odata.id':'/redfish/v1/Chassis/0/Aggregators'}
                     }
                 }
             }
@@ -26,10 +26,21 @@ describe('Emc Redfish Catalog Job', function () {
                 ]
             }
         },
+        hbaMembers = {
+            body: {
+                Members: [{'@odata.id':'/redfish/v1/Chassis/0/Hbas/Controllers'}]
+            }
+        },
+        aggregatorMembers = {
+            body: {
+                Members: [{'@odata.id':'/redfish/v1/Chassis/0/Hbas/Controllers'}]
+            }
+        },
         elementData = {
             body: {
-                Dimms:
-                {'@odata.id':'/redfish/v1/Chassis/0/Elements/Dimms' }
+                Dimms: {'@odata.id':'/redfish/v1/Chassis/0/Elements/Dimms' },
+                Controllers: {'@odata.id':'/redfish/v1/Chassis/0/Elements/Controllers'},
+                Switches: {'@odata.id':'/redfish/v1/Chassis/0/Elements/Switches'}
             }
         },
 
@@ -104,7 +115,7 @@ describe('Emc Redfish Catalog Job', function () {
         clientRequest.resetBehavior();
         clientRequest.reset();
     });
-    
+       
     describe('run catalog elements', function() {
         it('should successfully run job', function() {
             clientRequest.onCall(0).resolves(rootData);
@@ -113,11 +124,21 @@ describe('Emc Redfish Catalog Job', function () {
             clientRequest.onCall(3).resolves(elementData);
             clientRequest.onCall(4).resolves(subElementData);
             clientRequest.onCall(5).resolves(subElementData2);
-            clientRequest.onCall(6).resolves(subElementData2);
+            clientRequest.onCall(6).resolves(rootData);
+            clientRequest.onCall(7).resolves(hbaMembers);
+            clientRequest.onCall(8).resolves(elementData);
+            clientRequest.onCall(9).resolves(hbaMembers);
+            clientRequest.onCall(10).resolves(rootData);
+            clientRequest.onCall(11).resolves(rootData);
+            clientRequest.onCall(12).resolves(aggregatorMembers);
+            clientRequest.onCall(13).resolves(elementData);
+            clientRequest.onCall(14).resolves(elementData);
+            clientRequest.onCall(15).resolves(aggregatorMembers);
+            clientRequest.onCall(16).resolves(elementData);
             redfishJob._run();
             return redfishJob._deferred
             .then(function() {
-                expect(waterline.catalogs.create).to.be.called.once;
+                expect(waterline.catalogs.create).to.be.called.thrice;
             });
         });
         
