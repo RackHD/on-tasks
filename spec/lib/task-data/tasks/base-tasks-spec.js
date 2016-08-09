@@ -3,23 +3,6 @@
 
 'use strict';
 
-/**
- * Get all task schemas' name, this function is shared by all tasks and it will be called only once.
- * @return {Array<String>} the array of schema name
- */
-var getAllSchemaNames = _.once(function () {
-    var glob = require('glob');
-    var path = require('path');
-    var names = glob.sync(helper.relativeToRoot('/lib/task-data/schemas/*.json'));
-    return _(names).map(function (name) {
-        return path.basename(name);
-    }) 
-    .filter(function (name) {
-        return 'rackhd-task-schema.json' !== name && 'common-task-options.json' !== name;
-    })
-    .value();
-});
-
 module.exports = {
 
     before: function (callback) {
@@ -29,9 +12,36 @@ module.exports = {
     },
 
     examples: function () {
+        var validator, sandbox;
+        var mockWaterline = {
+            nodes: {
+                needByIdentifier: sinon.stub().resolves({})
+            }
+        };
+
         before(function () {
+            this.timeout(3000);
+            this.taskdefinition = _.cloneDeep(this.taskdefinition);
+            sandbox = sinon.sandbox.create();
             expect(this.taskdefinition).to.be.ok;
             expect(this.taskdefinition).to.be.an.Object;
+
+            return Promise.resolve()
+            .then(function() {
+                var taskModule = helper.require('/index');
+                helper.setupInjector(_.flattenDeep([
+                    taskModule.injectables,
+                    helper.di.simpleWrapper(mockWaterline, 'Services.Waterline')
+                ]));
+            })
+            .then(function() {
+                validator = helper.injector.get('TaskOption.Validator');
+                return validator.register();
+            });
+        });
+
+        afterEach(function() {
+            sandbox.restore();
         });
 
         describe('expected properties', function() {
@@ -65,9 +75,49 @@ module.exports = {
                 //enable this test case for all tasks
                 //TODO: enable this test case for all tasks after all tasks have schema defined.
                 if (this.taskdefinition.hasOwnProperty('schemaRef')) {
-                    var schemaNames = getAllSchemaNames();
-                    expect(schemaNames.indexOf(this.taskdefinition.schemaRef)).to.be.at.least(0);
+                    var schema = validator.getSchema(this.taskdefinition.schemaRef);
+                    expect(schema).to.be.an('object');
                 }
+            });
+
+            it('should have valid default option values', function() {
+                var self = this;
+
+                //since now not all task definition has corresponding schema, so I cannot
+                //enable this test case for all tasks
+                //TODO: enable this test case for all tasks after all tasks have schema defined.
+                if (!this.taskdefinition.hasOwnProperty('schemaRef')) {
+                    return;
+                }
+
+                var schema = _.cloneDeep(
+                    validator.getSchemaResolved(this.taskdefinition.schemaRef));
+                schema.$schema = "http://json-schema.org/draft-04/schema#"; //To make faker happy
+
+                var faker = require('json-schema-faker');
+                var fakeOptions = faker(schema); //generate fake options from schema
+                _.defaults(this.taskdefinition.options, fakeOptions);//default options dominate
+
+                //While running workflow, the runJob will be extracted from BaseTask in
+                //task-graph.js, but here doesn't run workflow, so the runJob need be manually
+                //set.
+                this.taskdefinition.runJob = schema.describeJob;
+
+                var env = helper.injector.get('Services.Environment');
+                sandbox.stub(env, 'get').resolves();
+
+                //If the task instance can be successfully created from task definition that
+                //proves the default values are correct.
+                var Task = helper.injector.get('Task.Task');
+                return Task.create(this.taskdefinition, {compileOnly: true}, {target: 'testId'})
+                .catch(function(err) {
+                    console.error(JSON.stringify({
+                        message: 'Create task "' + self.taskdefinition.injectableName + '" fails.',
+                        error: err.message,
+                        definitions: self.taskdefinition
+                    }, null, '    '));
+                    throw err;
+                });
             });
         });
     }

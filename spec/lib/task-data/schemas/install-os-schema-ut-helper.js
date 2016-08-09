@@ -63,7 +63,7 @@ var canonical = {
 };
 
 var positiveSetParam = {
-    version: ["trusty", "6"],
+    version: ["trusty", "6", "6.5", "6_8", "LATEST", "0.*"],
     installDisk: ["sda", "naa.123", "/dev/sdb", 0, 1, null],
     "networkDevices[0].ipv4.vlanIds[0]": [0, 1009, 4095]
 };
@@ -74,8 +74,8 @@ var negativeSetParam = {
     installScript: '',
     installScriptUri: 'foo',
     completionUri: '',
-    version: [7, 6.5],
-    repo: ["foo", 12, ''],
+    version: [7, 6.5, 'a b', 'a/b', 'a\\b', 'a\tb', 'a\nb'],
+    repo: ["foo", 12, '', 'https://abc.com/os', 'tftp://abc.com/abc'],
     installDisk: [-1],
     "networkDevices[0].ipv4.ipAddr": ["foo/bar", "300.100.9.0"],
     "networkDevices[0].ipv4.vlanIds[0]": [-1, 4096, 10000]
@@ -105,11 +105,11 @@ var negativeUnsetParam = [
 ];
 
 module.exports = {
-    test: function(schemaFilePath, canonicalData) {
+    test: function(schemaFileName, canonicalData) {
         describe('common install os schema validation', function() {
             canonicalData = canonicalData || canonical;
             var SchemaUtHelper = require('./schema-ut-helper');
-            new SchemaUtHelper(schemaFilePath, canonicalData).batchTest(
+            new SchemaUtHelper(schemaFileName, canonicalData).batchTest(
                 positiveSetParam, negativeSetParam, positiveUnsetParam, negativeUnsetParam);
         });
     },

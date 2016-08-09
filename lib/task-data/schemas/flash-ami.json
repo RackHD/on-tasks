@@ -1,0 +1,26 @@
+{
+    "$schema": "rackhd-task-schema.json",
+    "copyright": "Copyright 2016, EMC, Inc.",
+    "title": "Update AMI BIOS Firmware",
+    "description": "Update firmware of AMI BIOS",
+    "describeJob": "Job.Linux.Commands",
+    "definitions": {
+        "BackupFile": {
+            "description": "The name of file which will be transfered back to RackHD as backup",
+            "type": "string",
+            "minLength": 1
+        }
+    },
+    "allOf": [
+        { "$ref": "firmware-update.json" },
+        {
+            "type": "object",
+            "properties": {
+                "backupFile": {
+                    "$ref": "#/definitions/BackupFile"
+                }
+            },
+            "required": ["backupFile"]
+        }
+    ]
+}

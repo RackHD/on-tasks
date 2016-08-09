@@ -221,7 +221,7 @@
             ]
         },
         "Kvm": {
-            "description": "a flag to indicate whether install kmv packages",
+            "description": "a flag to indicate whether install kvm packages",
             "type": "boolean"
         },
         "DnsServers": {
@@ -246,12 +246,13 @@
         },
         "Version": {
             "description": "The version of target OS",
-            "type": "string"
+            "type": "string",
+            "pattern": "^[-0-9a-zA-Z._*+#]+$"
         },
         "Repo": {
-            "description": "The OS http repository which contains all data that required for os instllation",
+            "description": "The OS http repository which contains all data that required for os installation",
             "type": "string",
-            "format": "uri"
+            "pattern": "^http://"
         },
         "Hostname": {
             "description": "The hostname of target OS",
