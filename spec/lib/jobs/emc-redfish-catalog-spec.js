@@ -40,7 +40,10 @@ describe('Emc Redfish Catalog Job', function () {
             body: {
                 Dimms: {'@odata.id':'/redfish/v1/Chassis/0/Elements/Dimms' },
                 Controllers: {'@odata.id':'/redfish/v1/Chassis/0/Elements/Controllers'},
-                Switches: {'@odata.id':'/redfish/v1/Chassis/0/Elements/Switches'}
+                Switches: {'@odata.id':'/redfish/v1/Chassis/0/Elements/Switches'},
+                Drives:	[{
+                    "@odata.id":	"/redfish/v1/Chassis/0/Elements/3/Drives/0"
+                }]
             }
         },
 
@@ -59,6 +62,13 @@ describe('Emc Redfish Catalog Job', function () {
                 ]
             }
         },
+
+        subElementDataDrivesArray = {
+            body: {
+                "@odata.context": "/redfish/v1/$metadata#EmcDimm.EmcDimm"
+            }
+        },
+
         subElementData2 = {
             body: {
                 "@odata.context": "/redfish/v1/$metadata#EmcDimm.EmcDimm",
@@ -124,17 +134,18 @@ describe('Emc Redfish Catalog Job', function () {
             clientRequest.onCall(3).resolves(elementData);
             clientRequest.onCall(4).resolves(subElementData);
             clientRequest.onCall(5).resolves(subElementData2);
-            clientRequest.onCall(6).resolves(rootData);
-            clientRequest.onCall(7).resolves(hbaMembers);
-            clientRequest.onCall(8).resolves(elementData);
-            clientRequest.onCall(9).resolves(hbaMembers);
-            clientRequest.onCall(10).resolves(rootData);
+            clientRequest.onCall(6).resolves(subElementDataDrivesArray);
+            clientRequest.onCall(7).resolves(rootData);
+            clientRequest.onCall(8).resolves(hbaMembers);
+            clientRequest.onCall(9).resolves(elementData);
+            clientRequest.onCall(10).resolves(hbaMembers);
             clientRequest.onCall(11).resolves(rootData);
-            clientRequest.onCall(12).resolves(aggregatorMembers);
-            clientRequest.onCall(13).resolves(elementData);
+            clientRequest.onCall(12).resolves(rootData);
+            clientRequest.onCall(13).resolves(aggregatorMembers);
             clientRequest.onCall(14).resolves(elementData);
-            clientRequest.onCall(15).resolves(aggregatorMembers);
-            clientRequest.onCall(16).resolves(elementData);
+            clientRequest.onCall(15).resolves(elementData);
+            clientRequest.onCall(16).resolves(aggregatorMembers);
+            clientRequest.onCall(17).resolves(elementData);
             redfishJob._run();
             return redfishJob._deferred
             .then(function() {
