@@ -1,5 +1,4 @@
-// Copyright 2015, EMC, Inc.
-/* jshint node:true */
+// Copyright 2015-2016, EMC, Inc.
 
 'use strict';
 
@@ -30,6 +29,9 @@ describe(require('path').basename(__filename), function () {
         waterline.catalogs = {
             findLatestCatalogOfSource: sinon.stub().resolves()
         };
+
+        var encryption = helper.injector.get('Services.Encryption');
+        return encryption.start();
     });
 
     describe('Base', function () {
@@ -116,7 +118,7 @@ describe(require('path').basename(__filename), function () {
             var powerStatus = self.sandbox.stub(IpmiObmService.prototype, 'powerStatus');
             powerStatus.resolves();
             self.job.obmConfig.config.host = 'test';
-            return self.job.liveTestIpmiConfig()
+            return self.job.liveTestIpmiConfig(self.job.obmConfig)
             .then(function() {
                 expect(powerStatus).to.have.been.calledOnce;
             });

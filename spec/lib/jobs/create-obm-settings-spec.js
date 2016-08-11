@@ -1,5 +1,4 @@
-// Copyright 2015, EMC, Inc.
-/* jshint node:true */
+// Copyright 2015-2016, EMC, Inc.
 
 'use strict';
 
@@ -27,6 +26,9 @@ describe(require('path').basename(__filename), function () {
         waterline.obms = {
             upsertByNode: sinon.stub().resolves()
         };
+
+        var encryption = helper.injector.get('Services.Encryption');
+        return encryption.start();
     });
 
     describe('Base', function () {
@@ -65,9 +67,10 @@ describe(require('path').basename(__filename), function () {
 
         it('should run <obmService>.powerStatus in liveTestObmConfig()', function() {
             var self = this;
+
             var powerStatus = self.sandbox.stub(VboxObmService.prototype, 'powerStatus');
             powerStatus.resolves();
-            return self.job.liveTestObmConfig()
+            return self.job.liveTestObmConfig(self.job.obmSettings)
             .then(function() {
                 expect(powerStatus).to.have.been.calledOnce;
             });

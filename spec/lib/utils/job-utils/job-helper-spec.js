@@ -19,51 +19,6 @@ describe("Job Helper", function () {
         jobHelper = helper.injector.get('JobUtils.JobHelpers');
     });
 
-    describe('revealSecrets', function() {
-        beforeEach(function () {
-            this.sandbox = sinon.sandbox.create();
-            encryption.start();
-        });
-
-        afterEach(function () {
-            this.sandbox.restore();
-            encryption.stop();
-        });
-
-        it("should decrypt a password", function () {
-            var iv = 'vNtIgxV4kh0XHSa9ZJxkSg==';
-            var password = encryption.encrypt('password', iv);
-            var data = {
-                password: password
-            };
-            expect(jobHelper.revealSecrets(data)).to.deep.equal({
-                password: 'password'
-            });
-        });
-
-        it("should decrypt a community", function () {
-            var iv = 'vNtIgxV4kh0XHSa9ZJxkSg==';
-            var community = encryption.encrypt('community', iv);
-            var data = {
-                community: community
-            };
-            expect(jobHelper.revealSecrets(data)).to.deep.equal({
-                community: 'community'
-            });
-        });
-
-        it("should not decrypt an option without a key of password or community", function () {
-            var iv = 'vNtIgxV4kh0XHSa9ZJxkSg==';
-            var password = encryption.encrypt('password', iv);
-            var data = {
-                passwordTest: password
-            };
-            expect(jobHelper.revealSecrets(data)).to.deep.equal({
-                passwordTest: password
-            });
-        });
-    });
-
     describe('lookupHost', function() {
         beforeEach(function() {
             this.sandbox = sinon.sandbox.create();
