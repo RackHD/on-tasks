@@ -5,7 +5,7 @@
 
 var uuid = require('node-uuid');
 
-describe('upsert-node-job', function(){
+describe('update-node-job', function(){
     var job,
     NodeUpsertor, 
     taskId = uuid.v4(),
@@ -27,12 +27,12 @@ describe('upsert-node-job', function(){
 
     before(function(){
         helper.setupInjector([
-            helper.require('/lib/jobs/upsert-node-job.js'),
+            helper.require('/lib/jobs/update-node-job.js'),
             helper.require('/lib/jobs/base-job.js'),
             helper.di.simpleWrapper(waterline, 'Services.Waterline')
         ]);
         
-        NodeUpsertor = helper.injector.get('Job.Upsert.Node.Attribute');
+        NodeUpsertor = helper.injector.get('Job.Update.Node');
         job = new NodeUpsertor(options, context, taskId);    
         waterline.nodes = {
             updateByIdentifier: sandbox.stub().resolves()
