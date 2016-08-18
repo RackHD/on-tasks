@@ -10,7 +10,7 @@ describe('Install OS Job', function () {
     var subscribeRequestProfileStub;
     var subscribeRequestPropertiesStub;
     var subscribeHttpResponseStub;
-    var subscribeTaskNotification;
+    var subscribeNodeNotification;
     var doneSpy;
     var job;
     var waterline;
@@ -35,8 +35,8 @@ describe('Install OS Job', function () {
             InstallOsJob.prototype, '_subscribeRequestProperties');
         subscribeHttpResponseStub = sinon.stub(
             InstallOsJob.prototype, '_subscribeHttpResponse');
-        subscribeTaskNotification = sinon.stub(
-            InstallOsJob.prototype, '_subscribeTaskNotification');
+        subscribeNodeNotification = sinon.stub(
+            InstallOsJob.prototype, '_subscribeNodeNotification');
         doneSpy = sinon.spy(InstallOsJob.prototype, '_done');
     });
 
@@ -126,7 +126,7 @@ describe('Install OS Job', function () {
             expect(subscribeRequestProfileStub).to.have.been.called;
             expect(subscribeRequestPropertiesStub).to.have.been.called;
             expect(subscribeHttpResponseStub).to.have.been.called;
-            expect(subscribeTaskNotification).to.have.been.called;
+            expect(subscribeNodeNotification).to.have.been.called;
 
             cb = subscribeRequestProfileStub.firstCall.args[0];
             expect(cb).to.be.a('function');
@@ -139,11 +139,10 @@ describe('Install OS Job', function () {
             cb = subscribeHttpResponseStub.firstCall.args[0];
             expect(cb).to.be.a('function');
 
-            var taskId = subscribeTaskNotification.firstCall.args[0];
-            expect(taskId).to.be.a('string');
-            cb = subscribeTaskNotification.firstCall.args[1];
+            var nodeId = subscribeNodeNotification.firstCall.args[0];
+            expect(nodeId).to.be.a('string');
+            cb = subscribeNodeNotification.firstCall.args[1];
             expect(cb).to.be.a('function');
-
         });
     });
 
@@ -192,6 +191,22 @@ describe('Install OS Job', function () {
             expect(job._done).to.have.not.been.called;
         });
     });
+
+    it('should finish job if task notification received', function() {
+        subscribeNodeNotification.restore();
+        subscribeNodeNotification = sinon.stub(
+            InstallOsJob.prototype, '_subscribeNodeNotification', function(_nodeId, callback) {
+                callback({
+                    nodeId: job.nodeId
+                });
+            });
+        return job._run().then(function() {
+            expect(subscribeNodeNotification).to.have.callCount(1);
+            expect(job._done).to.have.callCount(1);
+            expect(job._done.firstCall.args[0]).to.equal(undefined);
+        });
+    });
+
 
     it('should provide the given user credentials to the context', function() {
         expect(job.context.users).to.deep.equal(
