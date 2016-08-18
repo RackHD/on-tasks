@@ -51,13 +51,16 @@ describe("SNMP Interface State Metric", function () {
             var values = {
                 'IF-MIB::ifSpeed.0': 100,
                 'IF-MIB::ifOperStatus.0': 'up',
-                'IF-MIB::ifMtu.0': 1500
+                'IF-MIB::ifMtu.0': 1500,
+                'IF-MIB::ifAdminStatus.0': 'up'
             };
             expect(metric.calculateState(values)).to.deep.equal({
                 TestInterface: {
                     state: 'up',
                     speed: 100,
-                    mtu: 1500
+                    mtu: 1500,
+                    adminState: 'up',
+                    linkError: false
                 }
             });
         });
