@@ -14,7 +14,8 @@ describe('Emc Redfish Catalog Job', function () {
                     Emc: {
                         Elements: {'@odata.id':'/redfish/v1/Chassis/0/Elements'},
                         Hbas: {'@odata.id':'/redfish/v1/Chassis/0/Hbas'},
-                        Aggregators: {'@odata.id':'/redfish/v1/Chassis/0/Aggregators'}
+                        Aggregators: {'@odata.id':'/redfish/v1/Chassis/0/Aggregators'},
+                        SpineModules: {'@odata.id':'/redfish/v1/Chassis/0/SpineModules'}
                     }
                 }
             }
@@ -33,7 +34,12 @@ describe('Emc Redfish Catalog Job', function () {
         },
         aggregatorMembers = {
             body: {
-                Members: [{'@odata.id':'/redfish/v1/Chassis/0/Hbas/Controllers'}]
+                Members: [{'@odata.id':'/redfish/v1/Chassis/0/Aggregators/Controllers'}]
+            }
+        },
+        spineModulesMembers = {
+            body: {
+                Members: [{'@odata.id':'/redfish/v1/Chassis/0/SpineModules/Controllers'}]
             }
         },
         elementData = {
@@ -46,7 +52,11 @@ describe('Emc Redfish Catalog Job', function () {
                 }]
             }
         },
-
+        spineData = {
+            body: {
+                Vpd: {'@odata.id':'/redfish/v1/Chassis/0/Elements/Vpd'}
+            }
+        },
         subElementData = {
             body: {
                 "@odata.context": "/redfish/v1/$metadata#EmcDimmCollection.EmcDimmCollection",
@@ -62,13 +72,11 @@ describe('Emc Redfish Catalog Job', function () {
                 ]
             }
         },
-
         subElementDataDrivesArray = {
             body: {
                 "@odata.context": "/redfish/v1/$metadata#EmcDimm.EmcDimm"
             }
         },
-
         subElementData2 = {
             body: {
                 "@odata.context": "/redfish/v1/$metadata#EmcDimm.EmcDimm",
@@ -124,10 +132,11 @@ describe('Emc Redfish Catalog Job', function () {
         }, {target:'abc'}, graphId);
         clientRequest.resetBehavior();
         clientRequest.reset();
+        waterline.catalogs.create.reset();
     });
        
-    describe('run catalog elements', function() {
-        it('should successfully run job', function() {
+    describe('run catalog elements', function() {   
+        it('should successfully catalog elements', function() {
             clientRequest.onCall(0).resolves(rootData);
             clientRequest.onCall(1).resolves(elementMembers);
             clientRequest.onCall(2).resolves(elementData);
@@ -135,21 +144,50 @@ describe('Emc Redfish Catalog Job', function () {
             clientRequest.onCall(4).resolves(subElementData);
             clientRequest.onCall(5).resolves(subElementData2);
             clientRequest.onCall(6).resolves(subElementDataDrivesArray);
-            clientRequest.onCall(7).resolves(rootData);
-            clientRequest.onCall(8).resolves(hbaMembers);
-            clientRequest.onCall(9).resolves(elementData);
-            clientRequest.onCall(10).resolves(hbaMembers);
-            clientRequest.onCall(11).resolves(rootData);
-            clientRequest.onCall(12).resolves(rootData);
-            clientRequest.onCall(13).resolves(aggregatorMembers);
-            clientRequest.onCall(14).resolves(elementData);
-            clientRequest.onCall(15).resolves(elementData);
-            clientRequest.onCall(16).resolves(aggregatorMembers);
-            clientRequest.onCall(17).resolves(elementData);
-            redfishJob._run();
-            return redfishJob._deferred
-            .then(function() {
-                expect(waterline.catalogs.create).to.be.called.thrice;
+            return redfishJob.catalogElements('xyz')
+            .then(function(node) {
+                expect(node).to.equal('xyz');
+                expect(waterline.catalogs.create).to.be.calledOnce;
+            });
+        });
+        
+        it('should successfully catalog hbas', function() {
+            clientRequest.onCall(0).resolves(rootData);
+            clientRequest.onCall(1).resolves(hbaMembers);
+            clientRequest.onCall(2).resolves(elementData);
+            clientRequest.onCall(3).resolves(hbaMembers);
+            clientRequest.onCall(4).resolves(elementData);
+            return redfishJob.catalogHbas('xyz')
+            .then(function(node) {
+                expect(node).to.equal('xyz');
+                expect(waterline.catalogs.create).to.be.calledOnce;
+            });
+        });
+        
+        it('should successfully catalog aggregators', function() {
+            clientRequest.onCall(0).resolves(rootData);
+            clientRequest.onCall(1).resolves(aggregatorMembers);
+            clientRequest.onCall(2).resolves(elementData);
+            clientRequest.onCall(3).resolves(elementData);
+            clientRequest.onCall(4).resolves(elementData);
+            return redfishJob.catalogAggregators('xyz')
+            .then(function(node) {
+                expect(node).to.equal('xyz');
+                expect(waterline.catalogs.create).to.be.calledOnce;
+            });
+        });
+       
+        it('should successfully catalog spine modules', function() {
+            clientRequest.onCall(0).resolves(rootData);
+            clientRequest.onCall(1).resolves(spineModulesMembers);
+            clientRequest.onCall(2).resolves(elementData);
+            clientRequest.onCall(3).resolves(elementData);
+            clientRequest.onCall(4).resolves(elementData);
+            clientRequest.onCall(5).resolves(spineData);
+            return redfishJob.catalogSpine('xyz')
+            .then(function(node) {
+                expect(node).to.equal('xyz');
+                expect(waterline.catalogs.create).to.be.calledOnce;
             });
         });
         

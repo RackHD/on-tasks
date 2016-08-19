@@ -40,7 +40,11 @@ var uuid = require('node-uuid'),
                 {'@odata.id': '/redfish/v1/Chassis/0/Elements/0'}
             ],
             Oem: {
-                Emc: {Elements: {'@odata.id': 'data'}}
+                Emc: {
+                    Elements: {'@odata.id': 'data'},
+                    SpineModules: {'@odata.id': 'data'},
+                    Aggregators: {'@odata.id': 'data'}
+                }
             },
             LogServices: {'@odata.id': 'data'},
             Managers: {'@odata.id': 'data'},
@@ -211,6 +215,28 @@ describe('Job.Redfish', function () {
             redfishTool.clientRequest.onCall(4).resolves(listOemElementThermalData);
             redfishTool.clientRequest.onCall(5).resolves(entryDataOemElementThermal);
             return redfishJob.collectData(data, 'elements.thermal')
+            .then(function(data) {
+                expect(data[0]).to.deep.equal(entryDataOemElementThermal.body);
+            });
+        });
+        
+        it("should run collectData for Emc Oem Spine Thermal", function() {
+            redfishTool.clientRequest.onCall(0).resolves(listOemElementThermalData);
+            redfishTool.clientRequest.onCall(1).resolves(listOemElementThermalData);
+            redfishTool.clientRequest.onCall(2).resolves(listOemElementThermalData);
+            redfishTool.clientRequest.onCall(3).resolves(entryDataOemElementThermal);
+            return redfishJob.collectOemSpineData(redfishTool, 'Thermal')
+            .then(function(data) {
+                expect(data[0]).to.deep.equal(entryDataOemElementThermal.body);
+            });
+        });
+        
+        it("should run collectData for Emc Oem Aggregator Thermal", function() {
+            redfishTool.clientRequest.onCall(0).resolves(listOemElementThermalData);
+            redfishTool.clientRequest.onCall(1).resolves(listOemElementThermalData);
+            redfishTool.clientRequest.onCall(2).resolves(listOemElementThermalData);
+            redfishTool.clientRequest.onCall(3).resolves(entryDataOemElementThermal);
+            return redfishJob.collectOemAggregatorData(redfishTool, 'Thermal')
             .then(function(data) {
                 expect(data[0]).to.deep.equal(entryDataOemElementThermal.body);
             });
