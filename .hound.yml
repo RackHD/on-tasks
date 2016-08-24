@@ -1,2 +1,2 @@
-javascript:
-      config_file: .jshintrc
+jshint:
+    config_file: .jshintrc
