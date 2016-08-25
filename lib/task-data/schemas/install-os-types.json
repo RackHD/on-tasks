@@ -162,7 +162,7 @@
                 }
             },
             "required": ["device"],
-            "additionalProperties": false
+            "additionalProperties": true
         },
         "NetworkDevices": {
             "description": "The network configuration for each NIC",
