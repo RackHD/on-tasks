@@ -19,6 +19,7 @@
   "dependencies": {
     "ajv": "^4.1.0",
     "di": "git+https://github.com/RackHD/di.js.git",
+    "dockerode": "^2.2.10",
     "lodash": "^3.10.1",
     "on-core": "git+https://github.com/RackHD/on-core.git",
     "ssh2": "0.5.0",
