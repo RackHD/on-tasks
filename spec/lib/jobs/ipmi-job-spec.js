@@ -23,6 +23,7 @@ describe(require('path').basename(__filename), function () {
             helper.require('/lib/utils/job-utils/poller-helper.js'),
             helper.di.simpleWrapper(waterline,'Services.Waterline')
         ]);
+
         context.Jobclass = helper.injector.get('Job.Ipmi');
         pollerHelper = helper.injector.get('JobUtils.PollerHelper');
     });
@@ -44,7 +45,6 @@ describe(require('path').basename(__filename), function () {
             var graphId = uuid.v4();
             this.ipmi = new this.Jobclass({}, { graphId: graphId }, uuid.v4());
             this.ipmi._publishPollerAlert = this.sandbox.stub().resolves();
-            this.ipmi.selInformation = this.sandbox.stub().resolves();
             expect(this.ipmi.routingKey).to.equal(graphId);
         });
 
@@ -121,96 +121,5 @@ describe(require('path').basename(__filename), function () {
                 expect(self.ipmi.cachedPowerState[testData.workItemId]).to.equal(status.power);
             });
         });
-        it("should send sel data", function() {
-            var self = this;
-            var data = {
-                "host": "172.31.128.188",
-                "password": "admin",
-                "user": "admin",
-                "node": "57b5f7dc293c94e846c5a44f",
-                "lastReportedSelEntryID": 1,
-                "lastUpdatedSelDate": "1970-01-01T00:00:29.000Z",
-                "workItemId": "57b5f82ae127bf154795114f"
-            };
-
-            var selInfo = {
-                "Version": "1.5 (v1.5, v2 compliant)",
-                "Entries": "1",
-                "Free Space": "15984 bytes",
-                "Percent Used": "0%",
-                "Last Add Time": "01/01/1970 00:00:29",
-                "Last Del Time": "Not Available",
-                "Overflow": "false",
-                "Supported Cmds": "'Delete' 'Reserve'"
-            };
-            
-            var workObj = {
-                "node": "57b5f7dc293c94e846c5a44f",
-                "config": {
-                    "command": "sel",
-                    "lastReportedSelEntryID": 1,
-                    "lastUpdatedSelDate": "1970-01-01T00:00:29.000Z"
-                },
-                "createdAt": "2016-08-18T18:02:18.413Z",
-                "failureCount": 1,
-                "lastFinished": "2016-08-21T20:13:57.012Z",
-                "lastStarted": "2016-08-21T20:13:58.995Z",
-                "leaseExpires": "2016-08-21T20:14:13.995Z",
-                "leaseToken": "5956c3b9-3cbb-450d-823b-646665b6034a",
-                "name": "Pollers.IPMI",
-                "nextScheduled": "2016-08-21T20:13:58.012Z",
-                "paused": false,
-                "pollInterval": 500,
-                "state": "accessible",
-                "updatedAt": "2016-08-21T20:13:58.995Z",
-                "id": "57b5f82ae127bf154795114f",
-                save: this.sandbox.stub().resolves()
-            } 
-
-            var selUnparsedSelData =   "SEL Record ID          : 0001\n"+
-                "Record Type           : 02 \n"+
-                "Timestamp             : 01/01/1970 00:00:29\n"+
-                "Generator ID          : 0000\n"+
-                "EvM Revision          : 04\n"+
-                "Sensor Type           : Power Unit\n"+
-                "Sensor Number         : 01\n"+
-                "Event Type            : Sensor-specific Discrete\n"+
-                "Event Direction       : Deassertion Event\n"+
-                "Event Data            : 00ffff\n"+
-                "Description           : Power off/down\n"
-
-            var rawSelData = " ff ff 01 00 02 2a 00 00 00 00 00 04 09 01 ef 00\n ff ff\n"
-            
-            var sel = [
-                {
-                    "Event Type Code": "6f",
-                    "Sensor Type Code": "09",
-                    "SEL Record ID": "0001",
-                    "Record Type": "02",
-                    "Timestamp": "01/01/1970 00:00:29",
-                    "Generator ID": "0000",
-                    "EvM Revision": "04",
-                    "Sensor Type": "Power Unit",
-                    "Sensor Number": "01",
-                    "Event Type": "Sensor-specific Discrete",
-                    "Event Direction": "Deassertion Event",
-                    "Event Data": "00ffff"
-                }
-            ]
-
-            waterline.workitems.findOne.resolves(workObj);
-            self.ipmi.collectIpmiSelInformation = this.sandbox.stub().resolves(selInfo);
-            waterline.workitems.findOne.resolves(workObj);
-            self.ipmi.getSelEntries = this.sandbox.stub().resolves(selUnparsedSelData);
-            self.ipmi.getRawSelEntry = this.sandbox.stub().resolves(rawSelData);
-            self.ipmi.collectIpmiSel(data)
-                .then(function(selData){
-                    expect(selData["Event Data"]).to.deep.equal(sel["Event Data"]);
-                    expect(selData["Sensor Type Code"]).to.deep.equal(sel["Sensor Type Code"]);
-                    expect(selData["Event Type Code"]).to.deep.equal(sel["Event Type Code"]);
-                    });
-        });
-
-
     });
 });
