@@ -99,7 +99,7 @@ describe("Message Cache Job", function () {
         it("should set subscription callbacks for ipmi results", function() {
             sandbox.stub(job, 'createSetIpmiCommandResultCallback').returns('fn return stub');
             job._run();
-            expect(job._subscribeIpmiCommandResult.callCount).to.equal(5);
+            expect(job._subscribeIpmiCommandResult.callCount).to.equal(6);
             _.forEach(['sdr', 'selInformation', 'sel', 'chassis', 'driveHealth'],
             function(command) {
                 expect(job._subscribeIpmiCommandResult).to.have.been.calledWith(
