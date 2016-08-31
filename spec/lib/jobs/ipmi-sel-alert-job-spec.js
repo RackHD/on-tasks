@@ -10,8 +10,8 @@ var env;
 describe(require('path').basename(__filename), function () {
     var base = require('./base-spec');
 
-    var selData =   "SEL Record ID          : 0001\n"+
-                    "Record Type           : 02 \n"+
+    var selData =   "SEL Record ID         : 0001\n"+
+                    "Record Type           : 02\n"+
                     "Timestamp             : 01/01/1970 00:00:29\n"+
                     "Generator ID          : 0000\n"+
                     "EvM Revision          : 04\n"+
@@ -79,10 +79,9 @@ describe(require('path').basename(__filename), function () {
                 expect(out).to.have.property('alerts').with.length(1);
                 expect(out.alerts[0]).to.have.property('data');
                 expect(out.alerts[0].data).to.deep.equal(
-
                     {
                         "SEL Record ID": "0001",
-                        "Record Type": "02 ",
+                        "Record Type": "02",
                         "Timestamp": "01/01/1970 00:00:29",
                         "Generator ID": "0000",
                         "EvM Revision": "04",
