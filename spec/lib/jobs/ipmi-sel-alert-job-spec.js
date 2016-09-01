@@ -4,37 +4,24 @@
 'use strict';
 
 var uuid = require('node-uuid');
+var waterline = {};
+var env;
 
 describe(require('path').basename(__filename), function () {
     var base = require('./base-spec');
 
-    var selData = "1,10/26/2014,20:17:30,Event Logging Disabled #0x07,Log area reset/cleared,Asserted\n" +  // jshint ignore:line
-                  "2,10/26/2014,20:17:47,Power Supply #0x51,Power Supply AC lost,Asserted\n" +  // jshint ignore:line
-                  "3,10/26/2014,20:17:48,Power Unit #0x02,Fully Redundant,Deasserted\n" +
-                  "4,10/26/2014,20:17:48,Power Unit #0x02,Redundancy Lost,Asserted\n" +
-                  "5,10/26/2014,20:17:48,Power Unit #0x02,Non-Redundant: Sufficient from Redundant,Asserted\n" +  // jshint ignore:line
-                  "6,10/26/2014,20:17:51,Power Supply #0x51,Presence detected,Deasserted\n";  // jshint ignore:line
+    var selData =   "SEL Record ID         : 0001\n"+
+                    "Record Type           : 02\n"+
+                    "Timestamp             : 01/01/1970 00:00:29\n"+
+                    "Generator ID          : 0000\n"+
+                    "EvM Revision          : 04\n"+
+                    "Sensor Type           : Power Unit\n"+
+                    "Sensor Number         : 01\n"+
+                    "Event Type            : Sensor-specific Discrete\n"+
+                    "Event Direction       : Deassertion Event\n"+
+                    "Event Data            : 00ffff\n"+
+                    "Description           : Power off/down\n";
 
-    var selDataAlt = "SEL Entry: 010002C5C157542000042AFF6FF2FFFF\n" +
-                     "0x0001,11/03/2014,09:56:21,Session Audit #0xFF,,Asserted\n" +
-                     "SEL Entry: 020002C5C157542000042AFF6FF2FFFF\n" +
-                     "0x0002,11/03/2014,09:56:21,Session Audit #0xFF,,Asserted\n" +
-                     "SEL Entry: 030002CCC157542000042AFF6FF2FFFF\n" +
-                     "0x0003,11/03/2014,09:56:28,Session Audit #0xFF,,Asserted\n" +
-                     "SEL Entry: 040002CDC157542000042AFF6FF2FFFF\n" +
-                     "0x0004,11/03/2014,09:56:29,Session Audit #0xFF,,Asserted\n" +
-                     "SEL Entry: 050002DAC157542000042AFF6FF2FFFF\n" +
-                     "0x0005,11/03/2014,09:56:42,Session Audit #0xFF,,Asserted\n" +
-                     "SEL Entry: 060002DAC157542000042AFF6FF2FFFF\n" +
-                     "0x0006,11/03/2014,09:56:42,Session Audit #0xFF,,Asserted\n" +
-                     "SEL Entry: 070002644075542000042AFF6FF2FFFF\n" +
-                     "0x0007,11/25/2014,18:52:20,Session Audit #0xFF,,Asserted\n" +
-                     "SEL Entry: 080002C9ED7C542000042AFF6FF2FFFF\n" +
-                     "0x0008,12/01/2014,14:38:01,Session Audit #0xFF,,Asserted\n" +
-                     "SEL Entry: 090002D3ED7C542000042AFF6FF2FFFF\n" +
-                     "0x0009,12/01/2014,14:38:11,Session Audit #0xFF,,Asserted\n" +
-                     "SEL Entry: 0A0002E7ED7C542000042AFF6FF2FFFF\n" +
-                     "0x000A,12/01/2014,14:38:31,Session Audit #0xFF,,Asserted\n";
 
     base.before(function (context) {
         // create a child injector with on-core and the base pieces we need to test this
@@ -44,13 +31,29 @@ describe(require('path').basename(__filename), function () {
             helper.require('/lib/utils/job-utils/ipmi-parser.js'),
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/ipmi-sel-alert-job.js'),
-            helper.require('/lib/jobs/poller-alert-job.js')
+            helper.require('/lib/jobs/poller-alert-job.js'),
+            helper.di.simpleWrapper(waterline, 'Services.Waterline')
         ]);
+
 
         context.parser = helper.injector.get('JobUtils.IpmiCommandParser');
         context.Jobclass = helper.injector.get('Job.Poller.Alert.Ipmi.Sel');
         var alertJob = new context.Jobclass({}, { graphId: uuid.v4() }, uuid.v4());
         context.determineAlert = alertJob._determineAlert;
+        env = helper.injector.get('Services.Environment');
+        waterline.nodes = {
+            findOne: sinon.stub().resolves()
+        };
+    });
+
+    beforeEach(function () {
+        this.sandbox = sinon.sandbox.create();
+        waterline.nodes.findOne.reset();
+        this.sandbox.stub(env, 'get');
+    });
+
+    afterEach(function() {
+        this.sandbox.restore();
     });
 
     describe('Base', function () {
@@ -63,78 +66,57 @@ describe(require('path').basename(__filename), function () {
         });
 
         it("should alert on sel data", function() {
-            var parsed = this.parser.parseSelData(selData);
+            var parsed = this.parser.parseSelDataEntries(selData);
             var data = {
-                sel: parsed,
-                alerts: [
-                    {
-                        "sensorType": "Power Unit",
-                        "sensorNumber": "#0x02",
-                        "event": "Fully Redundant"
-                    }
-                ]
+                node : "123",
+                sel: parsed
             };
+            var alerts = {alerts: [{"Generator ID" : "0000" }]};
+            env.get.resolves(alerts);
+
+            waterline.nodes.findOne.resolves({"id" :"123","sku":"sku123"});
             return this.determineAlert(data).then(function(out) {
                 expect(out).to.have.property('alerts').with.length(1);
                 expect(out.alerts[0]).to.have.property('data');
-                expect(out.alerts[0].data).to.deep.equal({
-                    logId: '3',
-                    date: '10/26/2014',
-                    time: '20:17:48',
-                    sensorType: "Power Unit",
-                    sensorNumber: "#0x02",
-                    event: 'Fully Redundant',
-                    value: 'Deasserted'
-                });
+                expect(out.alerts[0].data).to.deep.equal(
+                    {
+                        "SEL Record ID": "0001",
+                        "Record Type": "02",
+                        "Timestamp": "01/01/1970 00:00:29",
+                        "Generator ID": "0000",
+                        "EvM Revision": "04",
+                        "Sensor Type": "Power Unit",
+                        "Sensor Number": "01",
+                        "Event Type": "Sensor-specific Discrete",
+                        "Event Direction": "Deassertion Event",
+                        "Event Data": "00ffff"
+                    }
+                );
                 expect(out.alerts[0]).to.have.property('matches');
-                expect(out.alerts[0].matches).to.deep.equal(data.alerts);
+                expect(out.alerts[0].matches).to.deep.equal(alerts.alerts);
             });
         });
 
-        it("should alert on alternative sel data", function() {
-            var parsed = this.parser.parseSelData(selDataAlt);
-            var data = {
-                sel: parsed,
-                alerts: [
-                    {
-                        "time": "14:38:31",
-                        "sensorType": "Session Audit",
-                        "sensorNumber": "#0xFF",
-                        "value": "Asserted"
-                    }
-                ]
-            };
-            return this.determineAlert(data).then(function(out) {
-                expect(out).to.have.property('alerts').with.length(1);
-                expect(out.alerts[0]).to.have.property('data');
-                expect(out.alerts[0].data).to.deep.equal({
-                    logId: '0x000A',
-                    date: '12/01/2014',
-                    time: '14:38:31',
-                    sensorType: "Session Audit",
-                    sensorNumber: "#0xFF",
-                    event: '',
-                    value: 'Asserted'
-                });
-                expect(out.alerts[0]).to.have.property('matches');
-                expect(out.alerts[0].matches).to.deep.equal(data.alerts);
-            });
-        });
+
 
         it("should alert on sel data with regexes", function() {
-            var parsed = this.parser.parseSelData(selData);
+            var parsed = this.parser.parseSelDataEntries(selData);
             var data = {
                 sel: parsed,
-                alerts: [
-                    {
-                        "sensorType": "/Power.*/",
-                        "sensorNumber": "/.*/",
-                        "event": "/\\w*/"  // jshint ignore:line
-                    }
-                ]
+                node : "123"
             };
+            var alerts = {alerts: [
+                {
+                    "Sensor Type": "/Power.*/",
+                    //"sensorType": "/.*/",
+                    "Sensor Number": "/.*/",
+                    "Event Type": "/\\w*/"  // jshint ignore:line
+                }
+            ]};
+            env.get.resolves(alerts);
+            waterline.nodes.findOne.resolves({"id" :"123","sku":"sku123"});
             return this.determineAlert(data).then(function(out) {
-                expect(out).to.have.property('alerts').with.length(5);
+                expect(out).to.have.property('alerts').with.length(1);
             });
         });
 
