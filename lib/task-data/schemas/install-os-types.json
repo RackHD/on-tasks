@@ -18,7 +18,7 @@
         "UserPassword": {
             "description": "The account password",
             "type": "string",
-            "minLength": 5
+            "minLength": 1
         },
         "SshKey": {
             "type": "string",
