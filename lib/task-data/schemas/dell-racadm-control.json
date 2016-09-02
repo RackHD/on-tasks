@@ -1,0 +1,59 @@
+{
+    "$schema": "rackhd-task-schema.json",
+    "copyright": "Copyright 2016, EMC, Inc.",
+    "title": "Dell Racadm Control",
+    "description": "The schema for all dell racadm control tasks",
+    "describeJob": "Job.Dell.RacadmTool",
+    "definitions": {
+        "serverUsername": {
+            "description": "NFS/CIFS server usename if serverFilePath is nfs/cifs share foler",
+            "type": "string"
+        },
+        "serverPassword": {
+            "description": "NFS/CIFS server password if serverFilePath is nfs/cifs share foler",
+            "type": "string"
+        },
+        "serverFilePath": {
+            "description": "Full file path for image or configure file on cifs/nfs or local folder",
+            "type": "string",
+            "pattern": "^(\\\\|\/).*(exe|d7|EXE|xml)$"
+        },
+        "forceReboot": {
+            "description": "Specify if reboot after racadm control tasks are done", 
+            "type": "boolean"
+        },
+        "action": {
+            "description": "Specify racadm actions to implement specified control", 
+            "type": "string",
+            "enum": [
+                "setBiosConfig", "updateFirmware", "getBiosConfig",
+                "getConfigCatalog", "enableIpmi", "disableIpmi", 
+                "disableVTx", "enableVTx"
+            ]
+        }
+    },
+    "allOf": [
+        { "$ref": "common-task-options.json#/definitions/Options" },
+        {
+            "type": "object",
+            "properties": {
+                "serverUsername": {
+                    "$ref": "#/definitions/serverUsername"
+                },
+                "serverPassword": {
+                    "$ref": "#/definitions/serverPassword"
+                },
+                "serverFilePath": {
+                    "$ref": "#/definitions/serverFilePath"
+                },
+                "forceReboot": {
+                    "$ref": "#/definitions/forceReboot"
+                },
+                "action": {
+                    "$ref": "#/definitions/action"
+                }
+            },
+            "required": ["serverFilePath", "action"]
+        }
+    ]
+}

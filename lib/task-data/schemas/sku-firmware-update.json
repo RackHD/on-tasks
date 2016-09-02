@@ -1,0 +1,24 @@
+{
+    "$schema": "rackhd-task-schema.json",
+    "copyright": "Copyright 2016, EMC, Inc.",
+    "title": "SKU Firmware Update",
+    "description": "The schema for firmware update tasks via SKU pack",
+    "describeJob": "Job.Linux.Commands",
+    "definitions": {
+        "file": {
+            "description": "Image file, must have specified suffix and be placed in sku pack static/bios, static/bios folers or RackHD default file repo ",
+            "type": "string",
+            "pattern": "^(bios\/|bmc\/)?[^\/]+(.ima|.bin|.BIN|.zip|.img)$"
+        }
+    },
+    "allOf": [
+        { "$ref": "linux-command.json" },
+        {
+            "type": "object",
+            "properties": {
+                "file": { "$ref": "#/definitions/file" }
+            },
+            "required": ["file"]
+        }
+    ]
+}
