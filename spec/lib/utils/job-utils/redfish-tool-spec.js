@@ -85,9 +85,10 @@ describe('RedfishTool', function(){
     });
 
     it("should reject on having http error", function(){
+        var errorMsg = { error: '123456' };
         nock("https://fake:12345")
         .post('/this-should-fail')
-        .reply(404, '{"not-gonna-hit-me":123456}');
+        .reply(404, errorMsg);
         
         redfishTool.settings.protocol = 'https';
         redfishTool.settings.host = 'fake';
@@ -95,7 +96,7 @@ describe('RedfishTool', function(){
         
         return expect(redfishTool
             .clientRequest('/this-should-fail', 'POST', 'My secret data'))
-        .to.be.rejectedWith('Unknown Error');
+        .to.be.rejectedWith(errorMsg);
     });
 });
 
