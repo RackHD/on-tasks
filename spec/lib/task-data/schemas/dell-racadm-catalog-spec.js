@@ -25,10 +25,6 @@ describe(require('path').basename(__filename), function() {
         "action"
     ];
 
-    //var commonHelper = require('./linux-command-schema-ut-helper');
-    //var canonical = _.defaults(partialCanonical, commonHelper.canonical);
-    //commonHelper.test(schemaFileName, canonical);
-
     var SchemaUtHelper = require('./schema-ut-helper');
     new SchemaUtHelper(schemaFileName, partialCanonical).batchTest(
         positiveSetParam, negativeSetParam, positiveUnsetParam, negativeUnsetParam);
