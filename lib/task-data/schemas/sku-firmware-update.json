@@ -6,7 +6,7 @@
     "describeJob": "Job.Linux.Commands",
     "definitions": {
         "file": {
-            "description": "Image file, must have specified suffix and be placed in sku pack static/bios, static/bios folers or RackHD default file repo ",
+            "description": "Image file, must have specified suffix and be placed in sku pack static/bios, static/bmc folers or RackHD default file repo ",
             "type": "string",
             "pattern": "^(bios\/|bmc\/)?[^\/]+(.ima|.bin|.BIN|.zip|.img)$"
         }

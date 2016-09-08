@@ -6,11 +6,11 @@
     "describeJob": "Job.Dell.RacadmTool",
     "definitions": {
         "serverUsername": {
-            "description": "NFS/CIFS server usename if serverFilePath is nfs/cifs share foler",
+            "description": "NFS/CIFS server usename if serverFilePath is nfs/cifs share folder",
             "type": "string"
         },
         "serverPassword": {
-            "description": "NFS/CIFS server password if serverFilePath is nfs/cifs share foler",
+            "description": "NFS/CIFS server password if serverFilePath is nfs/cifs share folder",
             "type": "string"
         },
         "serverFilePath": {
