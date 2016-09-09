@@ -9,15 +9,13 @@ describe(require('path').basename(__filename), function() {
     var canonical = {
         'version': 'livecd',
         'repo': 'http://10.1.2.3/LiveCD/someOS',
-        'profile': 'boot-livecd.ipxe',
-        'completionUri': 'someUriPattern'
+        'profile': 'boot-livecd.ipxe'
     };
 
     var negativeSetParam = {
         'version': [null, 123, true],
         'repo': [null, '/foo/bar'],
-        'profile': [null, '', 123],
-        'completionUri': [null, '', 123]
+        'profile': [null, '', 123]
     };
 
     var positiveSetParam = {
@@ -28,8 +26,7 @@ describe(require('path').basename(__filename), function() {
     var negativeUnsetParam = [
         'version',
         'repo',
-        'profile',
-        'completionUri'
+        'profile'
     ];
 
     var positiveUnsetParam = [
