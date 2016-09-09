@@ -314,9 +314,6 @@
                 "profile": {
                     "$ref": "#/definitions/Profile"
                 },
-                "completionUri": {
-                    "$ref": "#/definitions/CompletionUri"
-                },
                 "installScript": {
                     "$ref": "#/definitions/InstallScript"
                 },
@@ -328,7 +325,7 @@
                 }
             },
             "required": ["osType", "version", "repo", "hostname", "profile",
-                "completionUri", "installScript", "installScriptUri", "comport"]
+                "installScript", "installScriptUri", "comport"]
         },
         "AdvanceOptionsCommon": {
             "type": "object",

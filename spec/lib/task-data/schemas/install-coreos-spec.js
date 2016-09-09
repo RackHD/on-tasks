@@ -7,7 +7,6 @@ describe(require('path').basename(__filename), function() {
     var schemaFileName = 'install-coreos.json';
 
     var canonical = {
-        "completionUri": "pxe-cloud-config.yml",
         "profile": "install-coreos.ipxe",
         "installScript": "install-coreos.sh",
         "installScriptUri": "http://172.31.128.9090/api/1.1/templates/install-coreos.sh",
@@ -34,7 +33,6 @@ describe(require('path').basename(__filename), function() {
 
     var negativeUnsetParam = [
         "osType",
-        "completionUri",
         "profile",
         "installScript",
         "installScriptUri",

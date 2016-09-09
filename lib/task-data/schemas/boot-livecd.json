@@ -17,12 +17,9 @@
                 },
                 "profile": {
                     "$ref": "install-os-types.json#/definitions/Profile"
-                },
-                "completionUri": {
-                    "$ref": "install-os-types.json#/definitions/CompletionUri"
                 }
             },
-            "required": ["version", "repo", "profile", "completionUri"]
+            "required": ["version", "repo", "profile"]
         }
     ]
 }

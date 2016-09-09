@@ -8,9 +8,8 @@ describe(require('path').basename(__filename), function () {
         WaitCompletionJob;
     var subscribeRequestPropertiesStub;
     var subscribeHttpResponseStub;
-    var subscribeNodeNotification;
 
-    before(function() { 
+    before(function() {
         helper.setupInjector([
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/wait-completion-uri.js'),
@@ -22,12 +21,6 @@ describe(require('path').basename(__filename), function () {
             WaitCompletionJob.prototype, '_subscribeHttpResponse', function(cb) {
                 cb({statusCode: 200, url: 'completion'});
         });
-        subscribeNodeNotification = sinon.stub(
-            WaitCompletionJob.prototype, '_subscribeNodeNotification', function(_nodeId, callback) {
-                callback({
-                    nodeId: job.nodeId
-                });
-            });
     });
 
     it("should run", function() {
@@ -35,7 +28,6 @@ describe(require('path').basename(__filename), function () {
         job._run().then(function() {
             expect(subscribeRequestPropertiesStub).to.have.been.called;
             expect(subscribeHttpResponseStub).to.have.been.called;
-            expect(subscribeNodeNotification).to.have.been.called;
         });
     });
 });
