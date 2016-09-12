@@ -1,0 +1,11 @@
+{
+    "$schema": "rackhd-task-schema.json",
+    "copyright": "Copyright 2016, EMC, Inc.",
+    "title": "Wait notifiction",
+    "description": "The schema for wait notification job",
+    "describeJob": "Job.Wait.Notification",
+    "allOf": [
+        { "$ref": "common-task-options.json#/definitions/Options" }
+    ]
+}
+

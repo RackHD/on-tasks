@@ -140,7 +140,7 @@ describe('Install OS Job', function () {
         subscribeNodeNotification = sinon.stub(
             InstallOsJob.prototype, '_subscribeNodeNotification', function(_nodeId, callback) {
                 callback({
-                    nodeId: job.nodeId
+                    nodeId: _nodeId
                 });
             });
         return job._run().then(function() {
@@ -149,7 +149,6 @@ describe('Install OS Job', function () {
             expect(job._done.firstCall.args[0]).to.equal(undefined);
         });
     });
-
 
     it('should provide the given user credentials to the context', function() {
         expect(job.context.users).to.deep.equal(
