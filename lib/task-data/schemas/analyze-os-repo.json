@@ -16,7 +16,7 @@
                     "$ref": "install-os-types.json#/definitions/Repo"
                 },
                 "osName": {
-                    "enum": ["esx"],
+                    "enum": ["ESXi"],
                     "readonly": true
                 }
             },

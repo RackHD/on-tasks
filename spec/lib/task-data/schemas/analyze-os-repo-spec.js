@@ -9,7 +9,7 @@ describe(require('path').basename(__filename), function() {
     var canonical = {
         "version": "6.0",
         "repo": "http://10.1.2.3/foo/bar",
-        "osName": "esx"
+        "osName": "ESXi"
     };
 
     var negativeSetParam = {
