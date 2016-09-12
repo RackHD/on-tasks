@@ -272,11 +272,6 @@
             "description": "The ipxe script name for this particular OS installation",
             "minLength": 1
         },
-        "CompletionUri": {
-            "type": "string",
-            "description": "The url pattern that indicates the OS installation task has finished",
-            "minLength": 1
-        },
         "InstallScript": {
             "type": "string",
             "description": "The script name that used to auto-config the target OS, such as kickstart for CentOS and preseed for Ubuntu",
@@ -314,9 +309,6 @@
                 "profile": {
                     "$ref": "#/definitions/Profile"
                 },
-                "completionUri": {
-                    "$ref": "#/definitions/CompletionUri"
-                },
                 "installScript": {
                     "$ref": "#/definitions/InstallScript"
                 },
@@ -328,7 +320,7 @@
                 }
             },
             "required": ["osType", "version", "repo", "hostname", "profile",
-                "completionUri", "installScript", "installScriptUri", "comport"]
+                "installScript", "installScriptUri", "comport"]
         },
         "AdvanceOptionsCommon": {
             "type": "object",

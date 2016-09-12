@@ -6,7 +6,6 @@
 var canonical = {
     "osType": "linux",
     "comport": "ttyS0",
-    "completionUri": "renasar-ansible.pub",
     "profile": "install-centos.ipxe",
     "installScript": "centos-ks",
     "installScriptUri": "http://172.31.128.1:8090/api/1.1/templates/centos-ks",
@@ -73,7 +72,6 @@ var negativeSetParam = {
     profile: '',
     installScript: '',
     installScriptUri: 'foo',
-    completionUri: '',
     version: [7, 6.5, 'a b', 'a/b', 'a\\b', 'a\tb', 'a\nb'],
     repo: ["foo", 12, '', 'https://abc.com/os', 'tftp://abc.com/abc'],
     installDisk: [-1],
@@ -91,7 +89,6 @@ var positiveUnsetParam = [
 
 var negativeUnsetParam = [
     "comport",
-    "completionUri",
     "profile",
     "installScript",
     "installScriptUri",
