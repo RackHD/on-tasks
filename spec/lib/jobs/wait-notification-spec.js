@@ -8,6 +8,7 @@ describe(require('path').basename(__filename), function () {
         WaitNotificationJob;
     var subscribeRequestPropertiesStub;
     var subscribeNodeNotificationStub;
+    var doneStub;
 
     before(function() {
         helper.setupInjector([
@@ -23,13 +24,16 @@ describe(require('path').basename(__filename), function () {
                     nodeId: _nodeId
                 });
             });
+        doneStub = sinon.stub(WaitNotificationJob.prototype, '_done');
     });
 
-    it("should run", function() {
+    it("should finish job if notification has been received", function() {
         var job = new WaitNotificationJob({}, {}, graphId);
-        job._run().then(function() {
-            expect(subscribeRequestPropertiesStub).to.have.been.called;
-            expect(subscribeNodeNotificationStub).to.have.been.called;
+        return job._run().then(function() {
+            expect(subscribeRequestPropertiesStub).to.have.callCount(1);
+            expect(subscribeNodeNotificationStub).to.have.callCount(1);
+            expect(job._done).to.have.callCount(1);
+            expect(job._done.firstCall.args[0]).to.equal(undefined);
         });
     });
 });
