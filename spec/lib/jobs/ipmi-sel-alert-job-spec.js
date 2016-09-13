@@ -69,7 +69,7 @@ describe(require('path').basename(__filename), function () {
             var parsed = this.parser.parseSelDataEntries(selData);
             var data = {
                 node : "123",
-                sel: parsed
+                selEntries: parsed
             };
             var alerts = {alerts: [{"Generator ID" : "0000" }]};
             env.get.resolves(alerts);
@@ -102,7 +102,7 @@ describe(require('path').basename(__filename), function () {
         it("should alert on sel data with regexes", function() {
             var parsed = this.parser.parseSelDataEntries(selData);
             var data = {
-                sel: parsed,
+                selEntries: parsed,
                 node : "123"
             };
             var alerts = {alerts: [
