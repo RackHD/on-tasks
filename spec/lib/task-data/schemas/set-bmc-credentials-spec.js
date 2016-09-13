@@ -16,11 +16,6 @@ describe(require('path').basename(__filename), function() {
         password: ['a', '11223344556677889900']
     };
 
-    var negativeSetParam = {
-        user: ['', null, '11223344556677889', 'a测试b', '~そうですね', '♥'],
-        password: ['', null, '11223344556677889900a', 'a测试b', '~そうですね', '♥']
-    };
-
     var positiveUnsetParam = [
     ];
 
@@ -35,5 +30,5 @@ describe(require('path').basename(__filename), function() {
 
     var SchemaUtHelper = require('./schema-ut-helper');
     new SchemaUtHelper(schemaFileName, canonical).batchTest(
-        positiveSetParam, negativeSetParam, positiveUnsetParam, negativeUnsetParam);
+        positiveSetParam, positiveUnsetParam, negativeUnsetParam);
 });
