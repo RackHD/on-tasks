@@ -5,7 +5,7 @@
 
 var uuid = require('node-uuid');
 
-describe('update-node-job', function(){
+describe('add-misc-node-properties-job', function(){
     var job,
     NodeUpsertor, 
     taskId = uuid.v4(),
@@ -27,12 +27,12 @@ describe('update-node-job', function(){
 
     before(function(){
         helper.setupInjector([
-            helper.require('/lib/jobs/update-node-job.js'),
+            helper.require('/lib/jobs/add-misc-node-property-job.js'),
             helper.require('/lib/jobs/base-job.js'),
             helper.di.simpleWrapper(waterline, 'Services.Waterline')
         ]);
         
-        NodeUpsertor = helper.injector.get('Job.Update.Node');
+        NodeUpsertor = helper.injector.get('Job.Add.Misc.Node.Properties');
         job = new NodeUpsertor(options, context, taskId);    
         waterline.nodes = {
             updateByIdentifier: sandbox.stub().resolves()
@@ -45,8 +45,12 @@ describe('update-node-job', function(){
 
     it('Should modify node collection via waterline', function(){
         return job.run().then(function(){
+            var formatedData = {
+                miscProperties:options.data
+            };
+
             expect(waterline.nodes.updateByIdentifier)
-            .to.have.been.calledWith(options.target, options.data);
+            .to.have.been.calledWith(options.target, formatedData);
         });
 
     });
