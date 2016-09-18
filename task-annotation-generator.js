@@ -225,7 +225,7 @@ TaskAnnotation.prototype.generateDocData = function (obj, dataTemplate) {
 if (require.main === module) {
     var di = require('di');
     var core = require('on-core')(di);
-    var tasks = core.helper.requireGlob(__dirname, 'lib/task-data/tasks/*.js');
+    var tasks = core.helper.requireGlob(path.resolve(__dirname, 'lib/task-data/tasks/*.js'));
     var injector = new di.Injector(core.injectables);
     var JsonSchemaValidator = injector.get('JsonSchemaValidator');
     var validator = new JsonSchemaValidator({});
