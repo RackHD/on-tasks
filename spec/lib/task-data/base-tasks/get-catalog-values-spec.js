@@ -1,4 +1,4 @@
-'use strict'
+'use strict';
 
 describe(require('path').basename(__filename), function() {
     var base = require('./base-task-data-spec');
