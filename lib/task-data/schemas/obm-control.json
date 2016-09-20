@@ -10,6 +10,7 @@
                 "clearSEL",
                 "identifyOff",
                 "identifyOn",
+                "identifyBlink",
                 "mcResetCold",
                 "NMI",
                 "powerButton",
