@@ -255,6 +255,50 @@ describe("racadm-tool", function() {
 
         });
 
+        describe('waitConnectBack', function(){
+            var waitConnectBackSpy, runCommandStub;
+            beforeEach('waitConnectBack before', function() {
+                runCommandStub = this.sandbox.stub(instance, 'runCommand');
+                waitConnectBackSpy = this.sandbox.spy(instance, 'waitConnectBack');
+            });
+            afterEach('waitConnectBack after', function() {
+                this.sandbox.restore();
+            });
+
+            it('should get network connectly correctly', function() {
+                runCommandStub.resolves();
+                return instance.waitConnectBack('192.168.188.103','admin', 'admin', 0, 100)
+                    .then(function(){
+                        expect(instance.runCommand).to.have.been.calledOnce;
+                    });
+            });
+
+            it('should throw fail to get connect back errors', function(done) {
+                runCommandStub.rejects();
+                return instance.waitConnectBack('192.168.188.103','admin', 'admin', 0, 0)
+                    .then(function() {
+                        done(new Error("Expected waitConnectBack to throw errors"));
+                    })
+                    .catch(function(err){
+                        expect(instance.waitConnectBack.callCount).to.equal(11);
+                        expect(instance.runCommand.callCount).to.equal(11);
+                        expect(err).to.deep.equals(
+                            new Error('Failed to get iDRAC network back, time is out')
+                        );
+                        done();
+                    });
+            });
+
+            it('should get network back correctly after iteration', function() {
+                runCommandStub.rejects().onCall(3).resolves();
+                return instance.waitConnectBack('192.168.188.103','admin', 'admin', 0, 0)
+                    .then(function() {
+                        expect(instance.waitConnectBack.callCount).to.equal(4);
+                        expect(instance.runCommand.callCount).to.equal(4);
+                    });
+            });
+        });
+
         describe('run async commands', function(){
             var runCommandStub, getJobIdStub, waitJobDoneStub;
             beforeEach('run async commands before', function() {
@@ -363,12 +407,15 @@ describe("racadm-tool", function() {
         });
 
         describe('updateFirmware', function(){
-            var runCommandStub, getPathFilenameStub, getLatestJobIdStub, waitJobDoneStub;
+            var runCommandStub, getPathFilenameStub, 
+                getLatestJobIdStub, waitJobDoneStub, waitConnectBackStub;
             beforeEach('updateFirmware before', function() {
                 runCommandStub = this.sandbox.stub(instance, 'runCommand');
                 getPathFilenameStub = this.sandbox.stub(parser, 'getPathFilename');
                 getLatestJobIdStub = this.sandbox.stub(instance, 'getLatestJobId');
                 waitJobDoneStub = this.sandbox.stub(instance, 'waitJobDone');
+                waitConnectBackStub = this.sandbox.stub(instance, 'waitConnectBack');
+                this.sandbox.stub(global, 'setTimeout', setImmediate);
                 this.cifsConfig = {
                     user: 'onrack',
                     password: 'onrack',
@@ -394,12 +441,13 @@ describe("racadm-tool", function() {
             it('should update idrac image via remote file', function(){
                 var self = this,
                     command = "update -f firmimg.d7 -u onrack -p onrack -l //192.168.188.113/share";
+                //self.timeout(6000);
                 getPathFilenameStub.returns(self.fileInfo);
                 runCommandStub.resolves();
+                waitConnectBackStub.resolves();
                 getLatestJobIdStub.returns('JID_xxxxxxxx');
                 waitJobDoneStub.resolves();
-                return instance.updateFirmware('192.168.188.113','admin', 'admin',
-                    self.cifsConfig)
+                return instance.updateFirmware('192.168.188.113','admin', 'admin', self.cifsConfig)
                     .then(function(){
                         expect(instance.runCommand).to.be.calledWith('192.168.188.113',
                             'admin', 'admin', command, 0, 1000);
@@ -409,21 +457,28 @@ describe("racadm-tool", function() {
             it('should set BIOS configure via local file', function(){
                 var self = this,
                     command = "update -f /home/share/firmimg.d7";
+                //self.timeout(6000);
                 self.fileInfo.path = '/home/share';
                 self.fileInfo.style = 'local';
                 getPathFilenameStub.returns(self.fileInfo);
                 runCommandStub.resolves();
                 getLatestJobIdStub.returns('JID_xxxxxxxx');
+                waitConnectBackStub.resolves();
                 waitJobDoneStub.resolves();
                 return instance.updateFirmware('192.168.188.113','admin', 'admin',
                     {filePath: "/home/share/firmimg.d7"})
                     .then(function(){
                         expect(instance.runCommand).to.be.calledWith('192.168.188.113',
                             'admin', 'admin', command, 0, 1000);
-                        expect(instance.runCommand).to.be.calledTwice;
+                        expect(instance.runCommand).to.be.calledWith('192.168.188.113',
+                            'admin', 'admin', "serveraction powercycle", 0, 1000);
                         expect(parser.getPathFilename).to.have.been.calledOnce;
-                        expect(instance.getLatestJobId).to.have.been.calledOnce;
-                        expect(instance.waitJobDone).to.have.been.calledOnce;
+                        expect(instance.getLatestJobId).to.have.been.calledWith('192.168.188.113',
+                            'admin', 'admin');
+                        expect(instance.waitJobDone).to.have.been.calledWith('192.168.188.113',
+                            'admin', 'admin', 'JID_xxxxxxxx', 0, 1000);
+                        expect(instance.waitConnectBack).to.have.been.calledWith('192.168.188.113',
+                            'admin', 'admin', 0, 1000);
                     });
             });
 
