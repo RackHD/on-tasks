@@ -419,7 +419,8 @@ describe("racadm-tool", function() {
                 this.cifsConfig = {
                     user: 'onrack',
                     password: 'onrack',
-                    filePath: '//192.168.188.113/share/firmimg.d7'
+                    filePath: '//192.168.188.113/share/firmimg.d7',
+                    forceReboot: true
                 };
                 this.fileInfo = {
                     name: 'firmimg.d7',
@@ -458,6 +459,7 @@ describe("racadm-tool", function() {
                 var self = this,
                     command = "update -f /home/share/firmimg.d7";
                 //self.timeout(6000);
+                delete self.cifsConfig.forceReboot;
                 self.fileInfo.path = '/home/share';
                 self.fileInfo.style = 'local';
                 getPathFilenameStub.returns(self.fileInfo);
@@ -496,6 +498,17 @@ describe("racadm-tool", function() {
                 getPathFilenameStub.returns(self.fileInfo);
                 return instance.updateFirmware('192.168.188.103', 'admin', 'admin',self.cifsConfig)
                     .should.be.rejectedWith(Error, 'Image format is not supported');
+            });
+
+            it('should run without reboot if forcedReboot is false', function(){
+                var self = this;
+                self.cifsConfig.forceReboot = false;
+                runCommandStub.resolves();
+                getPathFilenameStub.returns(self.fileInfo);
+                return instance.updateFirmware('192.168.188.103', 'admin', 'admin',self.cifsConfig)
+                .then(function(){
+                    runCommandStub.should.be.callOnce;
+                });
             });
 
         });
