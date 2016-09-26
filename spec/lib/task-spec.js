@@ -273,11 +273,14 @@ describe("Task", function () {
             });
         });
 
-        it("should render api and server values", function() {
+        it("should render api, server and fileServer values", function() {
             Task.configCache = {
                 testConfigValue: 'test config value',
                 apiServerAddress: '10.1.1.1',
-                apiServerPort: '80'
+                apiServerPort: '80',
+                fileServerAddress: '10.2.2.2',
+                fileServerPort: '8000',
+                fileServerPath: '/'
             };
 
             var server = 'http://%s:%s'.format(
@@ -285,8 +288,17 @@ describe("Task", function () {
                 Task.configCache.apiServerPort
             );
 
+            var fileServerUri = 'http://%s:%s%s'.format(
+                Task.configCache.fileServerAddress,
+                Task.configCache.fileServerPort,
+                Task.configCache.fileServerPath
+            );
+            fileServerUri = _.trimRight(fileServerUri, '/');
+
+
             definition.options = {
                 server: '{{ api.server }}',
+                fileServer: '{{ file.server }}',
                 baseRoute: '{{ api.base }}',
                 templatesRoute: '{{ api.templates }}',
                 profilesRoute: '{{ api.profiles }}',
@@ -299,6 +311,7 @@ describe("Task", function () {
             .then(function(task) {
                 return task.run().then(function() {
                     expect(task.options.server).to.equal(server);
+                    expect(task.options.fileServer).to.equal(fileServerUri);
                     expect(task.options.baseRoute).to.equal(server + '/api/current');
                     expect(task.options.templatesRoute).to.equal(server + '/api/current/templates');
                     expect(task.options.profilesRoute).to.equal(server + '/api/current/profiles');
@@ -311,17 +324,27 @@ describe("Task", function () {
             });
         });
 
-        it("should render proxy api and server values", function() {
+        it("should render proxy api, server and fileServer values", function() {
             Task.configCache = {
                 testConfigValue: 'test config value',
                 apiServerAddress: '10.1.1.1',
-                apiServerPort: '80'
+                apiServerPort: '80',
+                fileServerAddress: '10.2.2.2',
+                fileServerPort: '8000',
+                fileServerPath: '/'
             };
 
             var proxy = 'http://12.1.1.1:8080';
+            var fileServerUri = 'http://%s:%s%s'.format(
+                Task.configCache.fileServerAddress,
+                Task.configCache.fileServerPort,
+                Task.configCache.fileServerPath
+            );
+            fileServerUri = _.trimRight(fileServerUri, '/');
 
             definition.options = {
                 server: '{{ api.server }}',
+                fileServer: '{{ file.server }}',
                 baseRoute: '{{ api.base }}',
                 filesRoute: '{{ api.files }}',
                 nodesRoute: '{{ api.nodes }}',
@@ -331,6 +354,7 @@ describe("Task", function () {
             .then(function(task) {
                 return task.run().then(function() {
                     expect(task.options.server).to.equal(proxy);
+                    expect(task.options.fileServer).to.equal(fileServerUri);
                     expect(task.options.baseRoute).to.equal(proxy + '/api/current');
                     expect(task.options.filesRoute).to.equal(proxy + '/api/current/files');
                     expect(task.options.nodesRoute).to.equal(proxy + '/api/current/nodes');
