@@ -501,6 +501,8 @@ describe('Task Graph', function () {
                 expect(items.length).to.equal(2);
                 expect(_.has(graph.tasks, items[0].taskId)).to.equal(true);
                 expect(_.has(graph.tasks, items[1].taskId)).to.equal(true);
+                expect(items[0].ignoreFailure).to.equal(true);
+                expect(items[1].ignoreFailure).to.equal(false);
                 var noDepsTask = _.find(items, function(item) {
                     return _.isEmpty(item.dependencies);
                 });
