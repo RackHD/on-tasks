@@ -5,11 +5,13 @@
 var di = require('di'),
     _ = require('lodash'),
     core = require('on-core')(di);
+var temp = require('temp');
 
 module.exports = {
     injectables: _.flattenDeep([
         core.helper.requireWrapper('ssh2', 'ssh', undefined, __dirname),
         core.helper.requireWrapper('dockerode', 'Docker', undefined, __dirname),
+        core.helper.simpleWrapper(temp, 'temp'),
         core.helper.requireGlob(__dirname + '/lib/*.js'),
         core.helper.requireGlob(__dirname + '/lib/jobs/*.js'),
         core.helper.requireGlob(__dirname + '/lib/utils/**/*.js'),

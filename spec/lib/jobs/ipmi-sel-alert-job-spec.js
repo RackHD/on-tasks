@@ -89,7 +89,8 @@ describe(require('path').basename(__filename), function () {
                         "Sensor Number": "01",
                         "Event Type": "Sensor-specific Discrete",
                         "Event Direction": "Deassertion Event",
-                        "Event Data": "00ffff"
+                        "Event Data": "00ffff",
+                        "Description": "Power off/down"
                     }
                 );
                 expect(out.alerts[0]).to.have.property('matches');
