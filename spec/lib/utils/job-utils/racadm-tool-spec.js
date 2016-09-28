@@ -143,19 +143,14 @@ describe("racadm-tool", function() {
                     });
             });
 
-            it('should throw errors', function(done) {
+            it('should not throw errors but return error message', function() {
                 var self = this ;
                 this.sandbox.stub(parser, 'getJobStatus').returns();
-                this.sandbox.stub(instance, 'runCommand').rejects({error: "Error happened"});
+                this.sandbox.stub(instance, 'runCommand').rejects("Error happened");
                 return instance.getJobStatus('192.168.188.103','admin', 'admin', self.jobId)
-                    .then(function() {
-                        done(new Error("Expected getJobStatus to throw errors"));
-                    })
-                    .catch(function(err){
-                        expect(instance.runCommand).to.have.been.calledOnce;
-                        expect(parser.getJobStatus).to.not.have.been.called;
-                        expect(err.error).to.equals("Error happened");
-                        done();
+                    .then(function(jobStatus) {
+                        expect(jobStatus.status).to.equals("unknown");
+                        expect(jobStatus.error.message).to.equals("Error happened");
                     });
             });
 
@@ -176,6 +171,10 @@ describe("racadm-tool", function() {
                     message:
                         'SYS053: Successfully imported and applied system configuration XML file.',
                     percentComplete: '100'
+                };
+                this.errorStatus = {
+                    "status": "unknown",
+                    "error": {"name": "Error", "message": "Invalid username"}
                 };
             });
             afterEach('waitJobDone after', function() {
@@ -253,50 +252,31 @@ describe("racadm-tool", function() {
                     });
             });
 
-        });
-
-        describe('waitConnectBack', function(){
-            var waitConnectBackSpy, runCommandStub;
-            beforeEach('waitConnectBack before', function() {
-                runCommandStub = this.sandbox.stub(instance, 'runCommand');
-                waitConnectBackSpy = this.sandbox.spy(instance, 'waitConnectBack');
-            });
-            afterEach('waitConnectBack after', function() {
-                this.sandbox.restore();
-            });
-
-            it('should get network connectly correctly', function() {
-                runCommandStub.resolves();
-                return instance.waitConnectBack('192.168.188.103','admin', 'admin', 0, 100)
-                    .then(function(){
-                        expect(instance.runCommand).to.have.been.calledOnce;
+            it('should ignore getJobStatus failures', function() {
+                var self = this ;
+                getJobStatusStub.resolves(self.errorStatus).onCall(9).resolves(self.jobStatus);
+                return instance.waitJobDone('192.168.188.103','admin', 'admin', self.jobId, 0, 0)
+                    .then(function() {
+                        expect(instance.waitJobDone.callCount).to.equal(10);
+                        expect(instance.getJobStatus.callCount).to.equal(10);
                     });
             });
 
-            it('should throw fail to get connect back errors', function(done) {
-                runCommandStub.rejects();
-                return instance.waitConnectBack('192.168.188.103','admin', 'admin', 0, 0)
+            it('should throw getJobStatus failures if timeout', function(done) {
+                var self = this ;
+                getJobStatusStub.resolves(self.errorStatus);
+                return instance.waitJobDone('192.168.188.103','admin', 'admin', self.jobId, 0, 0)
                     .then(function() {
-                        done(new Error("Expected waitConnectBack to throw errors"));
+                        done(new Error("Expected waitJobDone to fail"));
                     })
-                    .catch(function(err){
-                        expect(instance.waitConnectBack.callCount).to.equal(11);
-                        expect(instance.runCommand.callCount).to.equal(11);
-                        expect(err).to.deep.equals(
-                            new Error('Failed to get iDRAC network back, time is out')
-                        );
+                    .catch(function(err) {
+                        expect(instance.waitJobDone.callCount).to.equal(11);
+                        expect(instance.getJobStatus.callCount).to.equal(11);
+                        expect(err.message).to.equals("Invalid username");
                         done();
                     });
             });
 
-            it('should get network back correctly after iteration', function() {
-                runCommandStub.rejects().onCall(3).resolves();
-                return instance.waitConnectBack('192.168.188.103','admin', 'admin', 0, 0)
-                    .then(function() {
-                        expect(instance.waitConnectBack.callCount).to.equal(4);
-                        expect(instance.runCommand.callCount).to.equal(4);
-                    });
-            });
         });
 
         describe('run async commands', function(){
@@ -408,13 +388,12 @@ describe("racadm-tool", function() {
 
         describe('updateFirmware', function(){
             var runCommandStub, getPathFilenameStub, 
-                getLatestJobIdStub, waitJobDoneStub, waitConnectBackStub;
+                getLatestJobIdStub, waitJobDoneStub;
             beforeEach('updateFirmware before', function() {
                 runCommandStub = this.sandbox.stub(instance, 'runCommand');
                 getPathFilenameStub = this.sandbox.stub(parser, 'getPathFilename');
                 getLatestJobIdStub = this.sandbox.stub(instance, 'getLatestJobId');
                 waitJobDoneStub = this.sandbox.stub(instance, 'waitJobDone');
-                waitConnectBackStub = this.sandbox.stub(instance, 'waitConnectBack');
                 this.sandbox.stub(global, 'setTimeout', setImmediate);
                 this.cifsConfig = {
                     user: 'onrack',
@@ -445,7 +424,6 @@ describe("racadm-tool", function() {
                 //self.timeout(6000);
                 getPathFilenameStub.returns(self.fileInfo);
                 runCommandStub.resolves();
-                waitConnectBackStub.resolves();
                 getLatestJobIdStub.returns('JID_xxxxxxxx');
                 waitJobDoneStub.resolves();
                 return instance.updateFirmware('192.168.188.113','admin', 'admin', self.cifsConfig)
@@ -465,7 +443,6 @@ describe("racadm-tool", function() {
                 getPathFilenameStub.returns(self.fileInfo);
                 runCommandStub.resolves();
                 getLatestJobIdStub.returns('JID_xxxxxxxx');
-                waitConnectBackStub.resolves();
                 waitJobDoneStub.resolves();
                 return instance.updateFirmware('192.168.188.113','admin', 'admin',
                     {filePath: "/home/share/firmimg.d7"})
@@ -479,8 +456,6 @@ describe("racadm-tool", function() {
                             'admin', 'admin');
                         expect(instance.waitJobDone).to.have.been.calledWith('192.168.188.113',
                             'admin', 'admin', 'JID_xxxxxxxx', 0, 1000);
-                        expect(instance.waitConnectBack).to.have.been.calledWith('192.168.188.113',
-                            'admin', 'admin', 0, 1000);
                     });
             });
 
