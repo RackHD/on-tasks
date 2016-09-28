@@ -67,7 +67,7 @@ describe('Job.Get.Catalog.Values', function(){
         return jobObject.run()
            .then(function(){
                 expect(jobObject.context.data.failCase).to.be.null;
-            })
+            });
     });
 
     it('should find requested properties', function(){
@@ -109,7 +109,7 @@ describe('Job.Get.Catalog.Values', function(){
                     "cpuCores": "2",
                     "ip": "1.1.1.1"
                 });
-            })
+            });
     });
 
     it('should handle exceptions gracefully', function(){
