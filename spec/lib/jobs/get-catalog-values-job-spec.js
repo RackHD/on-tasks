@@ -23,7 +23,7 @@ describe('Job.Get.Catalog.Values', function(){
         fakeNodeId = uuid.v4();
 
         waterline = helper.injector.get('Services.Waterline');
-        waterline.catalogs = {findOne: sandbox.stub()};        
+        waterline.catalogs = { findMostRecent: sandbox.stub() };
     });
 
     afterEach(function(){
@@ -31,7 +31,7 @@ describe('Job.Get.Catalog.Values', function(){
     });
 
     it('should gracefully fail when asked for a non-existent property', function(){
-        waterline.catalogs.findOne.resolves({
+        waterline.catalogs.findMostRecent.resolves({
             "node": fakeNodeId,
             "source": "ohai",
             "data": {
@@ -50,9 +50,9 @@ describe('Job.Get.Catalog.Values', function(){
                     {
                         "source": "ohai",
                         "keys": {
-                            "cpu_cores": "data.cpu.0.cores",
-                            "primaryip_address": "data.ipaddress",
-                            "fail_case": "failed.poorly"
+                            "cpuCores": "data.cpu.0.cores",
+                            "ip": "data.ipaddress",
+                            "failCase": "failed.poorly"
                         }
                     }
                 ]
@@ -66,16 +66,12 @@ describe('Job.Get.Catalog.Values', function(){
 
         return jobObject.run()
            .then(function(){
-                expect(jobObject.context.data.fail_case).to.be.empty;
+                expect(jobObject.context.data.failCase).to.be.null;
             })
-           .catch(function(err){
-               console.log(err);
-               expect(err).to.not.be.ok;
-           });
     });
 
     it('should find requested properties', function(){
-        waterline.catalogs.findOne.resolves({
+        waterline.catalogs.findMostRecent.resolves({
             "node": fakeNodeId,
             "source": "ohai",
             "data": {
@@ -85,7 +81,7 @@ describe('Job.Get.Catalog.Values', function(){
                     }
                 },
                 "ipaddress": "1.1.1.1"
-            },
+            }
         });
 
         var jobObject = new GetCatalogValuesJob(
@@ -94,8 +90,8 @@ describe('Job.Get.Catalog.Values', function(){
                     {
                         "source": "ohai",
                         "keys": {
-                            "cpu_cores": "data.cpu.0.cores",
-                            "primaryip_address": "data.ipaddress"
+                            "cpuCores": "data.cpu.0.cores",
+                            "ip": "data.ipaddress"
                         }
                     },
                 ]
@@ -110,13 +106,34 @@ describe('Job.Get.Catalog.Values', function(){
         return jobObject.run()
             .then(function() {
                 expect(jobObject.context.data).to.eql({
-                    "cpu_cores": "2",
-                    "primaryip_address": "1.1.1.1"
+                    "cpuCores": "2",
+                    "ip": "1.1.1.1"
                 });
             })
-            .catch(function(err){
-                console.log(err);
-                expect(err).to.not.be.ok;
-            });
+    });
+
+    it('should handle exceptions gracefully', function(){
+        waterline.catalogs.findMostRecent.rejects('Expected Error');
+
+        var jobObject = new GetCatalogValuesJob(
+            {
+                'requestedData': [
+                    {
+                        "source": "ohai",
+                        "keys": {
+                            "cpuCores": "data.cpu.0.cores",
+                            "ip": "data.ipaddress"
+                        }
+                    },
+                ]
+            },
+            {
+                "target": fakeNodeId
+            },
+            uuid.v4()
+        );
+        sandbox.stub(jobObject, '_subscribeActiveTaskExists').resolves();
+
+        return expect(jobObject.run()).to.be.rejectedWith('Expected Error');
     });
 });
