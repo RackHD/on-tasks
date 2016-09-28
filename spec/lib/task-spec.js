@@ -288,13 +288,7 @@ describe("Task", function () {
                 Task.configCache.apiServerPort
             );
 
-            var fileServerUri = 'http://%s:%s%s'.format(
-                Task.configCache.fileServerAddress,
-                Task.configCache.fileServerPort,
-                Task.configCache.fileServerPath
-            );
-            fileServerUri = _.trimRight(fileServerUri, '/');
-
+            var fileServerUri = 'http://10.2.2.2:8000';
 
             definition.options = {
                 server: '{{ api.server }}',
@@ -335,12 +329,7 @@ describe("Task", function () {
             };
 
             var proxy = 'http://12.1.1.1:8080';
-            var fileServerUri = 'http://%s:%s%s'.format(
-                Task.configCache.fileServerAddress,
-                Task.configCache.fileServerPort,
-                Task.configCache.fileServerPath
-            );
-            fileServerUri = _.trimRight(fileServerUri, '/');
+            var fileServerUri = 'http://10.2.2.2:8000';
 
             definition.options = {
                 server: '{{ api.server }}',
