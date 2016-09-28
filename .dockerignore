@@ -1,0 +1,15 @@
+.dockerignore
+.git
+.gitignore
+.hound.yml
+.jshintrc
+.travis.yml
+build_children.sh
+coverage/
+Dockerfile
+Gruntfile.js
+HWIMO-*
+LICENSE
+node_modules/
+README.md
+spec/

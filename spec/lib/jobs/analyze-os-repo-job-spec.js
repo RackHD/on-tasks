@@ -37,8 +37,8 @@ describe('Analyze OS Repo Job', function () {
         repoTool = helper.injector.get('JobUtils.OsRepoTool');
     });
 
-    describe('analyze esxi repository', function() {
-        var esxParseResult = {
+    describe('analyze ESXi repository', function() {
+        var esxiParseResult = {
             tbootFile: 'http://testrepo.com/tboot.b00',
             mbootFile: 'http://testrepo.com/mboot.c32',
             moduleFiles: 'http://testrepo.com/a.b00 --- http://testrepo.com/ipmi.m0'
@@ -52,7 +52,7 @@ describe('Analyze OS Repo Job', function () {
                 {
                     version: '6.0',
                     repo: 'http://testrepo.com',
-                    osName: 'esx'
+                    osName: 'ESXi'
                 },
                 context,
                 taskId
@@ -65,15 +65,15 @@ describe('Analyze OS Repo Job', function () {
         afterEach(function() {
             safeRestoreStub(repoTool.downloadViaHttp);
             safeRestoreStub(repoTool.parseEsxBootCfgFile);
-            safeRestoreStub(repoTool._esxHandle);
+            safeRestoreStub(repoTool._ESXiHandle);
         });
 
-        describe('test function _esxHandle', function() {
+        describe('test function _ESXiHandle', function() {
             it('should get correct result from boot.cfg', function() {
                 repoTool.downloadViaHttp.resolves('');
-                repoTool.parseEsxBootCfgFile.returns(esxParseResult);
-                return job._esxHandle(repo).then(function(result) {
-                    expect(result).to.deep.equal(esxParseResult);
+                repoTool.parseEsxBootCfgFile.returns(esxiParseResult);
+                return job._ESXiHandle(repo).then(function(result) {
+                    expect(result).to.deep.equal(esxiParseResult);
                     expect(repoTool.downloadViaHttp).to.have.callCount(1);
                     expect(repoTool.downloadViaHttp).to.
                         have.been.calledWithExactly(repo + '/boot.cfg');
@@ -84,9 +84,9 @@ describe('Analyze OS Repo Job', function () {
             it('should fetch BOOT.CFG if boot.cfg is not avaiable', function() {
                 repoTool.downloadViaHttp.withArgs(repo + '/boot.cfg').rejects();
                 repoTool.downloadViaHttp.withArgs(repo + '/BOOT.CFG').resolves();
-                repoTool.parseEsxBootCfgFile.returns(esxParseResult);
-                return job._esxHandle(repo).then(function(result) {
-                    expect(result).to.deep.equal(esxParseResult);
+                repoTool.parseEsxBootCfgFile.returns(esxiParseResult);
+                return job._ESXiHandle(repo).then(function(result) {
+                    expect(result).to.deep.equal(esxiParseResult);
                     expect(repoTool.downloadViaHttp).to.have.callCount(2);
                     expect(repoTool.downloadViaHttp.firstCall.args[0])
                         .to.equal(repo + '/boot.cfg');
@@ -98,33 +98,33 @@ describe('Analyze OS Repo Job', function () {
 
             it('should throw error if both boot.cfg and BOOT.CFG is not avaiable', function() {
                 repoTool.downloadViaHttp.rejects();
-                return expect(job._esxHandle(repo)).to.be.rejected;
+                return expect(job._ESXiHandle(repo)).to.be.rejected;
             });
 
             describe('test the behavior if boot.cfg misses some required options', function() {
                 var keys = ['mbootFile', 'tbootFile', 'moduleFiles'];
                 keys.forEach(function(key) {
                     it('should throw error if not have required option [' + key + ']', function() {
-                        var data = _.cloneDeep(esxParseResult);
+                        var data = _.cloneDeep(esxiParseResult);
                         delete data[key];
                         repoTool.downloadViaHttp.resolves();
                         repoTool.parseEsxBootCfgFile.returns(data);
-                        return expect(job._esxHandle(repo)).to.be.rejected;
+                        return expect(job._ESXiHandle(repo)).to.be.rejected;
                     });
                 });
             });
 
             it('should return correct result for normal input', function() {
-                job._esxHandle = sinon.stub().resolves(esxParseResult);
+                job._ESXiHandle = sinon.stub().resolves(esxiParseResult);
                 return job._run().then(function() {
                     expect(job).have.property('nodeId').to.equal('testId');
                     expect(job.context).have.property('repoOptions').to.deep.equal(
-                        _.merge(esxParseResult, { repo: repo }));
-                    expect(job._esxHandle).to.have.been.called;
+                        _.merge(esxiParseResult, { repo: repo }));
+                    expect(job._ESXiHandle).to.have.been.called;
                 });
             });
 
-            it('should not call the esxi handling function if osName is not \'esx\'', function() {
+            it('should not call the ESXi handling function if osName is not \'ESXi\'', function() {
                 job = new AnalyzeOsRepoJob(
                     {
                         version: '6.0',
@@ -134,9 +134,9 @@ describe('Analyze OS Repo Job', function () {
                     context,
                     taskId
                 );
-                job._esxHandle = sinon.stub().resolves(esxParseResult);
+                job._ESXiHandle = sinon.stub().resolves(esxiParseResult);
                 return job._run().then(function() {
-                    expect(job._esxHandle).to.not.have.been.called;
+                    expect(job._ESXiHandle).to.not.have.been.called;
                 });
             });
         });
@@ -169,7 +169,7 @@ describe('Analyze OS Repo Job', function () {
                     var tempOptions = _.cloneDeep(options);
                     delete tempOptions[key];
                     expect(function() {
-                        new AnalyzeOsRepoJob(tempOptions, context, taskId);
+                        new AnalyzeOsRepoJob(tempOptions, context, taskId); //jshint ignore: line
                     }).to.throw(Error);
                 });
             });
@@ -198,10 +198,10 @@ describe('Analyze OS Repo Job', function () {
 
         it('should find correct handle function', function() {
             job[handleFnName] = sinon.stub();
-            sinon.spy(job, '_esxHandle');
+            sinon.spy(job, '_ESXiHandle');
             return job._run().then(function() {
                 expect(job[handleFnName]).to.have.been.called;
-                expect(job._esxHandle).to.not.have.been.called;
+                expect(job._ESXiHandle).to.not.have.been.called;
             });
         });
 

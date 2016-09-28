@@ -6,7 +6,8 @@ module.exports.get = function() {
         injectableName: 'Graph.test',
         tasks: [
             { label: 'test-1',
-              taskName: 'Task.test' },
+              taskName: 'Task.test',
+              ignoreFailure: true },
             { label: 'test-2',
               taskName: 'Task.test',
               waitOn: { 'test-1': 'finished' } }

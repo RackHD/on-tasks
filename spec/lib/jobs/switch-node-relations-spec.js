@@ -16,7 +16,8 @@ describe(require('path').basename(__filename), function () {
             find: function () { },
             create: function () { },
             updateByIdentifier: function () { },
-            findByIdentifier: function () { }
+            findByIdentifier: function () { },
+            needByIdentifier: function () { }
         },
         catalogs: {
             findMostRecent: function () { },
@@ -155,7 +156,6 @@ describe(require('path').basename(__filename), function () {
                 "node": "123",
                 "source": "snmp-1",
             };
-
             var lldpCatalogs = [
                 {
                     source: 'lldp',
@@ -258,6 +258,7 @@ describe(require('path').basename(__filename), function () {
             var findMostRecent = this.sandbox.stub(mockWaterline.catalogs, 'findMostRecent');
             var find = this.sandbox.stub(mockWaterline.catalogs, 'find');
             this.sandbox.stub(mockWaterline.nodes, 'findByIdentifier').resolves(null);
+
             var switchCatalog = {
                 "data": {
                     "IF-MIB::ifPhysAddress_1": "0:1c:73:e1:6:32",
@@ -315,6 +316,7 @@ describe(require('path').basename(__filename), function () {
 
     describe('Update connectsTo relationtype in nodes', function () {
         var findByIdentifier;
+        var needByIdentifier;
 
         beforeEach('Switch node relations job update node', function () {
 
@@ -355,6 +357,7 @@ describe(require('path').basename(__filename), function () {
             this.sandbox.stub(mockWaterline.nodes, 'updateByIdentifier').resolves();
             var findMostRecent = this.sandbox.stub(mockWaterline.catalogs, 'findMostRecent');
             var find = this.sandbox.stub(mockWaterline.catalogs, 'find');
+            needByIdentifier = this.sandbox.stub(mockWaterline.nodes, 'needByIdentifier');
             find.withArgs({
                 source: 'lldp'
             }).resolves(lldpCatalogs);
@@ -392,11 +395,32 @@ describe(require('path').basename(__filename), function () {
                     }
                 ]
             };
+
+            var switchNode = {
+                id: nodeId,
+                relations: []
+            };
+
+            var switchRelation = {
+                relations: [
+                    {
+                        'relationType': 'connects',
+                        'targets': ['nodeid']
+                    }
+                ]
+            };
+
+            needByIdentifier.resolves(switchNode);
             findByIdentifier.resolves(node);
-            job.run()
+            return job.run()
             .then(function () {
                 expect(mockWaterline.nodes.updateByIdentifier)
                 .to.have.been.calledWith('nodeid', nodeRelation);
+                expect(mockWaterline.nodes.updateByIdentifier)
+                .to.have.been.calledWith(nodeId, switchRelation);
+            })
+            .catch(function (err) {
+                throw new Error(err);
             });
         });
 
@@ -431,11 +455,35 @@ describe(require('path').basename(__filename), function () {
                     }
                 ]
             };
+            var switchNode = {
+                id: nodeId,
+                relations: [
+                    {
+                        'relationType': 'connects',
+                        'targets': ['existingnodeId']
+                    }
+                ]
+            };
+
+            var switchRelation = {
+                relations: [
+                    {
+                        'relationType': 'connects',
+                        'targets': ['existingnodeId', 'nodeid']
+                    }
+                ]
+            };
+
+            needByIdentifier.resolves(switchNode);
             findByIdentifier.resolves(node);
-            job.run()
+            return job.run()
             .then(function () {
                 expect(mockWaterline.nodes.updateByIdentifier)
-                .to.have.been.calledWith('nodeid', nodeRelation);
+                .to.have.been.calledWith('nodeid', nodeRelation)
+                .to.have.been.calledWith(nodeId, switchRelation);
+            })
+            .catch(function (err) {
+                throw new Error(err);
             });
         });
     });
