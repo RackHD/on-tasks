@@ -10,8 +10,10 @@
             "type": "object",
             "properties": {
                 "requestedData": {
+                    "description": "Array of objects describing the catalog values to retrieve.",
                     "type": "array",
                     "items": {
+                        "description": "Which catalog and the values to retrieve. Values from the same catalog may be grouped in one object.",
                         "type": "object",
                         "properties": {
                             "source": {
@@ -19,7 +21,7 @@
                                 "type": "string"
                             },
                             "keys": {
-                                "description": "Key/Value pairs. Keys are requester defined strings. Values are the JSON path for the catalog data.",
+                                "description": "Key/Value pairs. Keys are requester defined strings. Values are the JSON path for the property in the catalog object.",
                                 "type": "object"
                             }
                         },
