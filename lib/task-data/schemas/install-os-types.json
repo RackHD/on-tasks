@@ -22,9 +22,9 @@
             "minLength": 5
         },
         "SshKey": {
-            "type": "string",
+            "type":  "string",
             "description": "The trusted ssh key for the particular user",
-            "minLength": 1
+            "minLength": 0
         },
         "UserID": {
             "description": "The unique user identifier for this user account",
@@ -68,7 +68,7 @@
         "UsersSimple": {
             "description": "The list of user account that will be created during OS installation, it supports simple user account information",
             "type": "array",
-            "minItems": 1,
+            "minItems": 0,
             "items": {
                 "$ref": "#/definitions/UserAccountInfoSimple"
             },
@@ -77,7 +77,7 @@
         "UsersFull": {
             "description": "The list of user account that will be created during OS installation, it supports full user account information",
             "type": "array",
-            "minItems": 1,
+            "minItems": 0,
             "items": {
                 "$ref": "#/definitions/UserAccountInfoFull"
             },
@@ -168,7 +168,7 @@
         "NetworkDevices": {
             "description": "The network configuration for each NIC",
             "type": "array",
-            "minItems": 1,
+            "minItems": 0,
             "items": {
                 "$ref": "#/definitions/NetworkConfig"
             },
