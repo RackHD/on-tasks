@@ -4,7 +4,7 @@
 var uuid = require('node-uuid');
 
 describe('copy-key job', function() {
-    var waterline = { nodes: {}, catalogs: {} },
+    var waterline = { ibms: {}, catalogs: {} },
         CopyKeyJob,
         copyKeyJob,
         commandUtil = {};
@@ -37,8 +37,8 @@ describe('copy-key job', function() {
                 publicKey: 'a somewhat long string',
                 privateKey: 'a pretty long string',
             };
-            waterline.nodes.needByIdentifier = this.sandbox.stub().resolves(
-                {sshSettings: sshSettings}
+            waterline.ibms.findByNode = this.sandbox.stub().resolves(
+                sshSettings
             );
         });
 

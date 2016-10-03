@@ -4,7 +4,7 @@
 var uuid = require('node-uuid');
 
 describe('sftp-job', function() {
-    var waterline = { nodes: {} },
+    var waterline = { ibms: {} },
         Emitter = require('events').EventEmitter,
         mockEncryption = { decrypt: function() {} },
         SftpJob,
@@ -63,8 +63,8 @@ describe('sftp-job', function() {
                 password: 'somePassword',
                 privateKey: 'a pretty long, encrypted string',
             };
-            waterline.nodes.needByIdentifier = this.sandbox.stub()
-                .resolves({sshSettings:sshSettings});
+            waterline.ibms.findByNode = this.sandbox.stub()
+                .resolves(sshSettings);
             options = {fileSource: 'testSource', fileDestination: 'testDest'};
             sftpJob = new SftpJob(options, { target: 'someNodeId' }, uuid.v4());
         });
@@ -77,7 +77,7 @@ describe('sftp-job', function() {
             this.sandbox.stub(sftpJob, 'runSftp').resolves();
             return sftpJob._run()
             .then(function() {
-                expect(waterline.nodes.needByIdentifier).to.have.been.calledOnce;
+                expect(waterline.ibms.findByNode).to.have.been.calledOnce;
                 expect(sftpJob.runSftp).to.have.been.calledWith(sshSettings, {});
             });
         });
