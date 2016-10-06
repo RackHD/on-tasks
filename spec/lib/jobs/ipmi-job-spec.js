@@ -5,7 +5,9 @@
 
 var uuid = require('node-uuid'),
     events = require('events'),
-    waterline = {};
+    waterline = {},
+    temp = require('temp').track(),
+    fs;
 
 describe(require('path').basename(__filename), function () {
     var base = require('./base-spec');
@@ -21,12 +23,24 @@ describe(require('path').basename(__filename), function () {
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/ipmi-job.js'),
             helper.require('/lib/utils/job-utils/poller-helper.js'),
-            helper.di.simpleWrapper(waterline,'Services.Waterline')
+            helper.di.simpleWrapper(waterline,'Services.Waterline'),
+            helper.di.simpleWrapper(temp,'temp')
         ]);
         context.Jobclass = helper.injector.get('Job.Ipmi');
         pollerHelper = helper.injector.get('JobUtils.PollerHelper');
     });
+    before(function () {
+        fs = helper.injector.get('fs');
+        sinon.stub(fs, 'readFile');
+    });
 
+    beforeEach(function() {
+        fs.readFile.reset();
+    });
+
+    helper.after(function () {
+        fs.readFile.restore();
+    });
     describe('Base', function () {
         base.examples();
     });
@@ -78,23 +92,23 @@ describe(require('path').basename(__filename), function () {
             };
 
             self.ipmi._run()
-            .then(function() {
-                _.forEach(_.range(100), function(i) {
-                    var _config = _.cloneDeep(config);
-                    _config.host += i;
-                    testEmitter.emit('test-subscribe-ipmi-sdr-command', _config);
-                });
+                .then(function() {
+                    _.forEach(_.range(100), function(i) {
+                        var _config = _.cloneDeep(config);
+                        _config.host += i;
+                        testEmitter.emit('test-subscribe-ipmi-sdr-command', _config);
+                    });
 
-                setImmediate(function() {
-                    try {
-                        expect(self.ipmi.collectIpmiSdr.callCount).to.equal(100);
-                        expect(pollerHelper.getNodeAlertMsg.callCount).to.equal(100);
-                        done();
-                    } catch (e) {
-                        done(e);
-                    }
+                    setImmediate(function() {
+                        try {
+                            expect(self.ipmi.collectIpmiSdr.callCount).to.equal(100);
+                            expect(pollerHelper.getNodeAlertMsg.callCount).to.equal(100);
+                            done();
+                        } catch (e) {
+                            done(e);
+                        }
+                    });
                 });
-            });
         });
 
         it("should add a concurrent request", function() {
@@ -109,17 +123,17 @@ describe(require('path').basename(__filename), function () {
             this.ipmi.addConcurrentRequest('test', 'chassis');
             expect(this.ipmi.concurrentRequests('test', 'chassis')).to.equal(true);
         });
-        
+
         it("should send power state alert", function() {
             var self = this;
             var testState = {power:'ON'};
             var testData = {workItemId: 'abc'};
             self.ipmi.cachedPowerState[testData.workItemId] = 'OFF';
             return self.ipmi.powerStateAlerter(testState, testData)
-            .then(function(status) {
-                expect(status).to.deep.equal(testState);
-                expect(self.ipmi.cachedPowerState[testData.workItemId]).to.equal(status.power);
-            });
+                .then(function(status) {
+                    expect(status).to.deep.equal(testState);
+                    expect(self.ipmi.cachedPowerState[testData.workItemId]).to.equal(status.power);
+                });
         });
         it("should send sel data", function() {
             var self = this;
@@ -197,19 +211,48 @@ describe(require('path').basename(__filename), function () {
                     "Event Data": "00ffff"
                 }
             ];
+            var verboseFile= "<<OPEN SESSION RESPONSE\n"+
+                "<<  Message tag                        : 0x00\n"+
+                "<<  RMCP+ status                       : no errors\n"+
+                "<<  Maximum privilege level            : Unknown (0x00)\n"+
+                "<<  Console Session ID                 : 0xa0a2a3a4\n"+
+
+                "<<RAKP 2 MESSAGE\n"+
+                "<<  Message tag                   : 0x00\n"+
+                "<<  RMCP+ status                  : no errorsf\n"+
+
+                "<<RAKP 4 MESSAGE\n"+
+                "<<  Message tag                   : 0x00\n"+
+
+                "SEL Record ID          : 0467\n"+
+                "Record Type           : 02\n"+
+                "Timestamp             : 01/01/1970 21:33:30\n"+
+                "Generator ID          : 0000\n"+
+                "EvM Revision          : 04\n"+
+                "Sensor Type           : Event Logging Disabled\n"+
+                "Sensor Number         : 07\n"+
+                "Event Type            : Sensor-specific Discrete\n"+
+                "Event Direction       : Assertion Event\n"+
+                "Event Data            : 02ffff\n"+
+                "Description           : Log area reset/cleared\n";
+            var hexBuffer= Buffer[16];
+            hexBuffer =  [103,4,2,42,7,1,0,0,0,4,16,7,111,2,255,255];
 
             waterline.workitems.findOne.resolves(workObj);
             self.ipmi.collectIpmiSelInformation = this.sandbox.stub().resolves(selInfo);
             waterline.workitems.findOne.resolves(workObj);
             self.ipmi.getSelEntries = this.sandbox.stub().resolves(selUnparsedSelData);
-            self.ipmi.getRawSelEntry = this.sandbox.stub().resolves(rawSelData);
+            self.ipmi.genericCommand = this.sandbox.stub().resolves(verboseFile);
+            fs.readFile.callsArgWith(1, null, hexBuffer);
             self.ipmi.collectIpmiSelEntries(data)
                 .then(function(selData){
                     expect(selData["Event Data"]).to.deep.equal(sel["Event Data"]);
                     expect(selData["Sensor Type Code"]).to.deep.equal(sel["Sensor Type Code"]);
                     expect(selData["Event Type Code"]).to.deep.equal(sel["Event Type Code"]);
-                    });
+                });
         });
+
+
 
 
     });

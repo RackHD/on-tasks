@@ -24,7 +24,8 @@
     "on-core": "git+https://github.com/RackHD/on-core.git",
     "ssh2": "0.5.0",
     "url-parse": "~1.0.5",
-    "xml2js": "^0.4.4"
+    "xml2js": "^0.4.4",
+    "temp": "~0.8.3"
   },
   "devDependencies": {
     "chai": "^2.0.0",
