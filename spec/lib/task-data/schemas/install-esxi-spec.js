@@ -56,7 +56,8 @@ describe(require('path').basename(__filename), function() {
                         101,
                         106
                     ]
-                }
+                },
+                "esxSwitchName": "vSwitch0"
             },
             {
                 "device": "vmnic1",
@@ -111,7 +112,8 @@ describe(require('path').basename(__filename), function() {
 
     var positiveUnsetParam = [
         "postInstallCommands",
-        "switchDevices"
+        "switchDevices",
+        "networkDevices[0].esxSwitchName"
     ];
 
     var negativeUnsetParam = [
