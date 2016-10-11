@@ -1,5 +1,4 @@
 {
-    "id": "rackhd/schemas/v1/tasks/common",
     "$schema": "http://json-schema.org/draft-04/schema#",
     "title": "RackHD Task Common Options",
     "description": "The common options that shared by all tasks",

@@ -1,0 +1,35 @@
+{
+    "$schema": "rackhd-task-schema.json",
+    "copyright": "Copyright 2016, Adobe Systems Incorporated",
+    "title": "Get Catalog Values",
+    "description": "The schema for getting requested catalog values",
+    "describeJob": "Job.Get.Catalog.Values",
+    "allOf": [
+        { "$ref": "common-task-options.json#/definitions/Options" },
+        {
+            "type": "object",
+            "properties": {
+                "requestedData": {
+                    "description": "Array of objects describing the catalog values to retrieve.",
+                    "type": "array",
+                    "items": {
+                        "description": "Which catalog and the values to retrieve. Values from the same catalog may be grouped in one object.",
+                        "type": "object",
+                        "properties": {
+                            "source": {
+                                "description": "The name of the catalog source.",
+                                "type": "string"
+                            },
+                            "keys": {
+                                "description": "Key/Value pairs. Keys are requester defined strings. Values are the JSON path for the property in the catalog object.",
+                                "type": "object"
+                            }
+                        },
+                        "required": ["source", "keys"]
+                    }
+                }
+            },
+            "required": ["requestedData"]
+        }
+    ]
+}

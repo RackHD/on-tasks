@@ -1,13 +1,12 @@
 {
-    "$schema": "rackhd/schemas/v1/task-schema",
-    "id": "rackhd/schemas/v1/tasks/install-os-general",
+    "$schema": "rackhd-task-schema.json",
     "copyright": "Copyright 2016, EMC, Inc.",
     "title": "Install OS General Support",
     "description": "The parameters for OS general installation",
     "describeJob": "Job.Os.Install",
     "allOf": [
-        { "$ref": "common#/definitions/Options" },
-        { "$ref": "install-os-types#/definitions/BasicOptions" },
-        { "$ref": "install-os-types#/definitions/AdvanceOptions" }
+        { "$ref": "common-task-options.json#/definitions/Options" },
+        { "$ref": "install-os-types.json#/definitions/BasicOptions" },
+        { "$ref": "install-os-types.json#/definitions/AdvanceOptions" }
     ]
 }

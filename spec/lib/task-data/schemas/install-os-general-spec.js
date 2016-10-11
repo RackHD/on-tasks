@@ -4,7 +4,7 @@
 'use strict';
 
 describe(require('path').basename(__filename), function() {
-    var schemaFilePath = '/lib/task-data/schemas/install-os-general.json';
+    var schemaFileName = 'install-os-general.json';
 
     var partialCanonical = {
         "users": [
@@ -62,9 +62,9 @@ describe(require('path').basename(__filename), function() {
 
     var installOsCommonHelper = require('./install-os-schema-ut-helper');
     var canonical = _.defaults(partialCanonical, installOsCommonHelper.canonical);
-    installOsCommonHelper.test(schemaFilePath, canonical);
+    installOsCommonHelper.test(schemaFileName, canonical);
 
     var SchemaUtHelper = require('./schema-ut-helper');
-    new SchemaUtHelper(schemaFilePath, canonical).batchTest(
+    new SchemaUtHelper(schemaFileName, canonical).batchTest(
         positiveSetParam, negativeSetParam, positiveUnsetParam, negativeUnsetParam);
 });

@@ -4,11 +4,10 @@
 'use strict';
 
 describe(require('path').basename(__filename), function() {
-    var schemaFilePath = '/lib/task-data/schemas/install-esxi.json';
+    var schemaFileName = 'install-esxi.json';
 
     var canonical = {
         "osType": "esx",
-        "completionUri": "esx-ks",
         "profile": "install-esx.ipxe",
         "installScript": "esx-ks",
         "installScriptUri": "http://172.31.128.9090/api/1.1/templates/esx-ks",
@@ -123,9 +122,9 @@ describe(require('path').basename(__filename), function() {
         "switchDevices[0].switchName"
     ];
 
-    require('./install-os-schema-ut-helper').test(schemaFilePath, canonical);
+    require('./install-os-schema-ut-helper').test(schemaFileName, canonical);
 
     var SchemaUtHelper = require('./schema-ut-helper');
-    new SchemaUtHelper(schemaFilePath, canonical).batchTest(
+    new SchemaUtHelper(schemaFileName, canonical).batchTest(
         positiveSetParam, negativeSetParam, positiveUnsetParam, negativeUnsetParam);
 });

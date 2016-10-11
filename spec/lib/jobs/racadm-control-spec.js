@@ -127,7 +127,7 @@ describe(require('path').basename(__filename), function () {
             );
             var lookupHostStub = this.sandbox.stub(job,'lookupHost');
             mockWaterline.obms.findByNode.resolves(node);
-            lookupHostStub.resolves(node.obmSettings[0]);
+            lookupHostStub.resolves(node.obmSettings[0].config);
             return job.run()
                 .then(function() {
                     expect(setBiosStub).to.have.been.calledWith(
@@ -183,7 +183,7 @@ describe(require('path').basename(__filename), function () {
             );
             var lookupHostStub = this.sandbox.stub(job,'lookupHost');
             mockWaterline.obms.findByNode.resolves(node);
-            lookupHostStub.resolves(node.obmSettings[0]);
+            lookupHostStub.resolves(node.obmSettings[0].config);
             return job.run()
                 .then(function() {
                     expect(updateFirmwareStub).to.have.been.calledWith(
@@ -240,7 +240,7 @@ describe(require('path').basename(__filename), function () {
             );
             var lookupHostStub = this.sandbox.stub(job,'lookupHost');
             mockWaterline.obms.findByNode.resolves(node);
-            lookupHostStub.resolves(node.obmSettings[0]);
+            lookupHostStub.resolves(node.obmSettings[0].config);
             return job.run()
                 .then(function() {
                     expect(getBiosStub).to.have.been.calledWith(
@@ -295,7 +295,7 @@ describe(require('path').basename(__filename), function () {
             );
             var lookupHostStub = this.sandbox.stub(job,'lookupHost');
             mockWaterline.obms.findByNode.resolves(node);
-            lookupHostStub.resolves(node.obmSettings[0]);
+            lookupHostStub.resolves(node.obmSettings[0].config);
             return job.run()
                 .then(function() {
                     done(new Error("Should not run into this piece of code!"));

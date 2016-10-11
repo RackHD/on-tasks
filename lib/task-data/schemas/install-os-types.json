@@ -1,6 +1,5 @@
 {
-    "$schema": "rackhd/schemas/v1/task-schema",
-    "id": "rackhd/schemas/v1/tasks/install-os-types",
+    "$schema": "rackhd-task-schema.json",
     "copyright": "Copyright 2016, EMC, Inc.",
     "title": "Install OS Types",
     "description": "The paramters type definition schema for install os",
@@ -19,7 +18,7 @@
         "UserPassword": {
             "description": "The account password",
             "type": "string",
-            "minLength": 5
+            "minLength": 1
         },
         "SshKey": {
             "type":  "string",
@@ -163,7 +162,7 @@
                 }
             },
             "required": ["device"],
-            "additionalProperties": false
+            "additionalProperties": true
         },
         "NetworkDevices": {
             "description": "The network configuration for each NIC",
@@ -222,7 +221,7 @@
             ]
         },
         "Kvm": {
-            "description": "a flag to indicate whether install kmv packages",
+            "description": "a flag to indicate whether install kvm packages",
             "type": "boolean"
         },
         "DnsServers": {
@@ -247,12 +246,13 @@
         },
         "Version": {
             "description": "The version of target OS",
-            "type": "string"
+            "type": "string",
+            "pattern": "^[-0-9a-zA-Z._*+#]+$"
         },
         "Repo": {
-            "description": "The OS http repository which contains all data that required for os instllation",
+            "description": "The OS http repository which contains all data that required for os installation",
             "type": "string",
-            "format": "uri"
+            "pattern": "^http://"
         },
         "Hostname": {
             "description": "The hostname of target OS",
@@ -270,11 +270,6 @@
         "Profile": {
             "type": "string",
             "description": "The ipxe script name for this particular OS installation",
-            "minLength": 1
-        },
-        "CompletionUri": {
-            "type": "string",
-            "description": "The url pattern that indicates the OS installation task has finished",
             "minLength": 1
         },
         "InstallScript": {
@@ -314,9 +309,6 @@
                 "profile": {
                     "$ref": "#/definitions/Profile"
                 },
-                "completionUri": {
-                    "$ref": "#/definitions/CompletionUri"
-                },
                 "installScript": {
                     "$ref": "#/definitions/InstallScript"
                 },
@@ -328,7 +320,7 @@
                 }
             },
             "required": ["osType", "version", "repo", "hostname", "profile",
-                "completionUri", "installScript", "installScriptUri", "comport"]
+                "installScript", "installScriptUri", "comport"]
         },
         "AdvanceOptionsCommon": {
             "type": "object",

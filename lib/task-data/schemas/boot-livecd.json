@@ -1,0 +1,25 @@
+{
+    "$schema": "rackhd-task-schema.json",
+    "copyright": "Copyright 2016, EMC, Inc.",
+    "title": "Boot LiveCD",
+    "description": "Bootup to LiveCD",
+    "describeJob": "Job.Os.Install",
+    "allOf": [
+        { "$ref": "common-task-options.json#/definitions/Options" },
+        {
+            "type": "object",
+            "properties": {
+                "version": {
+                    "$ref": "install-os-types.json#/definitions/Version"
+                },
+                "repo": {
+                    "$ref": "install-os-types.json#/definitions/Repo"
+                },
+                "profile": {
+                    "$ref": "install-os-types.json#/definitions/Profile"
+                }
+            },
+            "required": ["version", "repo", "profile"]
+        }
+    ]
+}

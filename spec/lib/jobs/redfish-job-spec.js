@@ -40,7 +40,11 @@ var uuid = require('node-uuid'),
                 {'@odata.id': '/redfish/v1/Chassis/0/Elements/0'}
             ],
             Oem: {
-                Emc: {Elements: {'@odata.id': 'data'}}
+                Emc: {
+                    Elements: {'@odata.id': 'data'},
+                    SpineModules: {'@odata.id': 'data'},
+                    Aggregators: {'@odata.id': 'data'}
+                }
             },
             LogServices: {'@odata.id': 'data'},
             Managers: {'@odata.id': 'data'},
@@ -216,6 +220,28 @@ describe('Job.Redfish', function () {
             });
         });
         
+        it("should run collectData for Emc Oem Spine Thermal", function() {
+            redfishTool.clientRequest.onCall(0).resolves(listOemElementThermalData);
+            redfishTool.clientRequest.onCall(1).resolves(listOemElementThermalData);
+            redfishTool.clientRequest.onCall(2).resolves(listOemElementThermalData);
+            redfishTool.clientRequest.onCall(3).resolves(entryDataOemElementThermal);
+            return redfishJob.collectOemSpineData(redfishTool, 'Thermal')
+            .then(function(data) {
+                expect(data[0]).to.deep.equal(entryDataOemElementThermal.body);
+            });
+        });
+        
+        it("should run collectData for Emc Oem Aggregator Thermal", function() {
+            redfishTool.clientRequest.onCall(0).resolves(listOemElementThermalData);
+            redfishTool.clientRequest.onCall(1).resolves(listOemElementThermalData);
+            redfishTool.clientRequest.onCall(2).resolves(listOemElementThermalData);
+            redfishTool.clientRequest.onCall(3).resolves(entryDataOemElementThermal);
+            return redfishJob.collectOemAggregatorData(redfishTool, 'Thermal')
+            .then(function(data) {
+                expect(data[0]).to.deep.equal(entryDataOemElementThermal.body);
+            });
+        });
+        
         it("should run collectData for Managers LogServices", function() {
             redfishTool.clientRequest.onCall(0).resolves(listChassisData);
             redfishTool.clientRequest.onCall(1).resolves(listChassisData);
@@ -246,10 +272,13 @@ describe('Job.Redfish', function () {
         });
         
         it("should fail collectData with error", function() {
+            var error = new Error('error text');
             redfishTool.clientRequest.onCall(0).resolves(listChassisData);
-            redfishTool.clientRequest.onCall(1).rejects('error text');
-            return expect(redfishJob.collectData(data, 'power'))
-                .to.be.rejectedWith('error text');
+            redfishTool.clientRequest.onCall(1).rejects(error);
+            return redfishJob.collectData(data, 'power')
+            .then(function(data) {
+                expect(data).to.deep.equal({error:error});
+            });
         });
         
         it("should add a concurrent request", function() {

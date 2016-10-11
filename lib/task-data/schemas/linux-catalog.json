@@ -1,0 +1,10 @@
+{
+    "$schema": "rackhd-task-schema.json",
+    "copyright": "Copyright 2016, EMC, Inc.",
+    "title": "Linux Catalog",
+    "description": "Collect catalog data in microkernel",
+    "describeJob": "Job.Linux.Catalog",
+    "allOf": [
+        { "$ref": "linux-command.json" }
+    ]
+}

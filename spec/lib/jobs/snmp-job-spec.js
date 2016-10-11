@@ -12,6 +12,8 @@ describe(require('path').basename(__filename), function () {
     var metricStub;
     var waterline = {};
     var pollerHelper;
+    var loopCount = 10;
+    var taskProtocol;
 
     base.before(function (context) {
         // create a child injector with on-core and the base pieces we need to test this
@@ -34,10 +36,14 @@ describe(require('path').basename(__filename), function () {
             helper.di.simpleWrapper(metricStub, 'JobUtils.Metrics.Snmp.ProcessorLoadMetric'),
             helper.di.simpleWrapper(metricStub, 'JobUtils.Metrics.Snmp.MemoryUsageMetric'),
             helper.di.simpleWrapper(metricStub, 'JobUtils.Metrics.Snmp.TxRxCountersMetric'),
+            helper.di.simpleWrapper(metricStub, 'JobUtils.Metrics.Snmp.PduPowerMetric'),
+            helper.di.simpleWrapper(metricStub, 'JobUtils.Metrics.Snmp.PduSensorMetric'),
+            helper.di.simpleWrapper(metricStub, 'JobUtils.Metrics.Snmp.SwitchSensorMetric'),
             helper.di.simpleWrapper(waterline,'Services.Waterline')
         ]);
         context.Jobclass = helper.injector.get('Job.Snmp');
         pollerHelper = helper.injector.get('JobUtils.PollerHelper');
+        taskProtocol = helper.injector.get('Protocol.Task');
     });
 
     describe('Base', function () {
@@ -48,6 +54,7 @@ describe(require('path').basename(__filename), function () {
         var Snmptool;
         var Constants;
         var testEmitter;
+        var graphId = uuid.v4();
         before(function() {
             Constants = helper.injector.get('Constants');
         });
@@ -60,7 +67,9 @@ describe(require('path').basename(__filename), function () {
                 setSucceeded: this.sandbox.stub().resolves(),
                 update: this.sandbox.stub().resolves()
             };
-            var graphId = uuid.v4();
+            waterline.nodes = {
+                needByIdentifier: this.sandbox.stub()
+            };
             this.snmp = new this.Jobclass({}, { graphId: graphId }, uuid.v4());
             Snmptool = helper.injector.get('JobUtils.Snmptool');
             expect(this.snmp.routingKey).to.equal(graphId);
@@ -80,7 +89,6 @@ describe(require('path').basename(__filename), function () {
             expect(this.snmp).to.have.property('_subscribeRunSnmpCommand').with.length(2);
         });
 
-
         it("should listen for snmp command requests", function(done) {
             var self = this;
             var workItem = {
@@ -97,7 +105,8 @@ describe(require('path').basename(__filename), function () {
             this.sandbox.stub(this.snmp, 'removeConcurrentRequest');
             Snmptool.prototype.collectHostSnmp.resolves();
             waterline.workitems.findOne.resolves(workItem);
-            self.snmp._publishSnmpCommandResult = sinon.stub();
+            waterline.nodes.needByIdentifier.resolves({});
+            self.snmp._publishSnmpCommandResult = sinon.stub().resolves();
             self.snmp._subscribeRunSnmpCommand = function(routingKey, callback) {
                 testEmitter.on('test-subscribe-snmp-command', function(config) {
                     callback(config);
@@ -106,7 +115,7 @@ describe(require('path').basename(__filename), function () {
 
             return self.snmp._run()
             .then(function() {
-                _.forEach(_.range(100), function() {
+                _.forEach(_.range(loopCount), function() {
                     testEmitter.emit('test-subscribe-snmp-command', {
                         host: 'test',
                         community: 'test',
@@ -121,13 +130,13 @@ describe(require('path').basename(__filename), function () {
 
                 setImmediate(function() {
                     try {
-                        expect(self.snmp.concurrentRequests.callCount).to.equal(100);
-                        expect(Snmptool.prototype.collectHostSnmp.callCount).to.equal(100);
-                        expect(pollerHelper.getNodeAlertMsg.callCount).to.equal(100);
+                        expect(self.snmp.concurrentRequests.callCount).to.equal(loopCount);
+                        expect(Snmptool.prototype.collectHostSnmp.callCount).to.equal(loopCount);
+                        expect(pollerHelper.getNodeAlertMsg.callCount).to.equal(loopCount);
                         expect(Snmptool.prototype.collectHostSnmp
                                 .alwaysCalledWith(['testoid'], { numericOutput: true }))
                                 .to.equal(true);
-                        expect(self.snmp._publishSnmpCommandResult.callCount).to.equal(100);
+                        expect(self.snmp._publishSnmpCommandResult.callCount).to.equal(loopCount);
                         expect(self.snmp._publishSnmpCommandResult)
                             .to.have.been.calledWith(self.snmp.routingKey);
                         done();
@@ -154,7 +163,8 @@ describe(require('path').basename(__filename), function () {
             this.sandbox.stub(this.snmp, 'removeConcurrentRequest');
             Snmptool.prototype.collectHostSnmp.resolves();
             waterline.workitems.findOne.resolves(workItem);
-            self.snmp._publishSnmpCommandResult = sinon.stub();
+            waterline.nodes.needByIdentifier.resolves({});
+            self.snmp._publishSnmpCommandResult = sinon.stub().resolves();
             self.snmp._subscribeRunSnmpCommand = function(routingKey, callback) {
                 testEmitter.on('test-subscribe-snmp-command', function(config) {
                     callback(config);
@@ -204,6 +214,7 @@ describe(require('path').basename(__filename), function () {
             this.sandbox.stub(this.snmp, 'addConcurrentRequest');
             this.sandbox.stub(this.snmp, 'removeConcurrentRequest');
             waterline.workitems.findOne.resolves(workItem);
+            waterline.nodes.needByIdentifier.resolves({});
             self.snmp._collectMetricData.resolves();
             self.snmp._publishMetricResult = sinon.stub();
             self.snmp._subscribeRunSnmpCommand = function(routingKey, callback) {
@@ -214,7 +225,7 @@ describe(require('path').basename(__filename), function () {
 
             self.snmp._run()
             .then(function() {
-                _.forEach(_.range(100), function() {
+                _.forEach(_.range(loopCount), function() {
                     testEmitter.emit('test-subscribe-snmp-command', {
                         host: 'test',
                         community: 'test',
@@ -229,9 +240,9 @@ describe(require('path').basename(__filename), function () {
 
                 setImmediate(function() {
                     try {
-                        expect(self.snmp.concurrentRequests.callCount).to.equal(100);
-                        expect(self.snmp._collectMetricData.callCount).to.equal(100);
-                        expect(self.snmp._publishMetricResult.callCount).to.equal(100);
+                        expect(self.snmp.concurrentRequests.callCount).to.equal(loopCount);
+                        expect(self.snmp._collectMetricData.callCount).to.equal(loopCount);
+                        expect(self.snmp._publishMetricResult.callCount).to.equal(loopCount);
                         expect(self.snmp._publishMetricResult)
                             .to.have.been.calledWith(self.snmp.routingKey);
                         done();
@@ -259,7 +270,8 @@ describe(require('path').basename(__filename), function () {
             this.sandbox.spy(this.snmp, 'removeConcurrentRequest');
             Snmptool.prototype.collectHostSnmp.resolves();
             waterline.workitems.findOne.resolves(workItem);
-            self.snmp._publishSnmpCommandResult = sinon.stub();
+            waterline.nodes.needByIdentifier.resolves({});
+            self.snmp._publishSnmpCommandResult = sinon.stub().resolves();
             self.snmp._subscribeRunSnmpCommand = function(routingKey, callback) {
                 testEmitter.on('test-subscribe-snmp-command', function(config) {
                     callback(config);
@@ -268,7 +280,7 @@ describe(require('path').basename(__filename), function () {
 
             self.snmp._run()
             .then(function() {
-                _.forEach(_.range(100), function() {
+                _.forEach(_.range(loopCount), function() {
                     testEmitter.emit('test-subscribe-snmp-command', {
                         host: 'test',
                         community: 'test',
@@ -283,7 +295,7 @@ describe(require('path').basename(__filename), function () {
 
                 setImmediate(function() {
                     try {
-                        expect(self.snmp.concurrentRequests.callCount).to.equal(100);
+                        expect(self.snmp.concurrentRequests.callCount).to.equal(loopCount);
                         expect(Snmptool.prototype.collectHostSnmp.callCount).to
                             .equal(self.snmp.addConcurrentRequest.callCount);
                         expect(self.snmp._publishSnmpCommandResult.callCount).to
@@ -305,13 +317,17 @@ describe(require('path').basename(__filename), function () {
 
             it('should collect metric data', function() {
                 var self = this;
-
+                var workItemId = uuid.v4();
+                
                 _.forEach([
                     Constants.WorkItems.Pollers.Metrics.SnmpInterfaceBandwidthUtilization,
                     Constants.WorkItems.Pollers.Metrics.SnmpInterfaceState,
                     Constants.WorkItems.Pollers.Metrics.SnmpProcessorLoad,
                     Constants.WorkItems.Pollers.Metrics.SnmpMemoryUsage,
-                    Constants.WorkItems.Pollers.Metrics.SnmpTxRxCounters
+                    Constants.WorkItems.Pollers.Metrics.SnmpTxRxCounters,
+                    Constants.WorkItems.Pollers.Metrics.SnmpPduPowerStatus,
+                    Constants.WorkItems.Pollers.Metrics.SnmpPduSensorStatus,
+                    Constants.WorkItems.Pollers.Metrics.SnmpSwitchSensorStatus
                 ], function(metricType) {
                     var data = {
                         host: 'test',
@@ -320,11 +336,19 @@ describe(require('path').basename(__filename), function () {
                         pollInterval: 60000,
                         config: {
                             metric: metricType
-                        }
+                        },
+                        workItemId: workItemId
                     };
+                    var dataCopy = _.cloneDeep(data);
+                    dataCopy.cache = {};
+                    dataCopy.cache[data.workItemId] = {};
+                    dataCopy.cache[data.workItemId][metricType] = {};
+                    dataCopy.routingKey = graphId;
+                    collectMetricDataStub.resolves({});
+                    self.snmp.resultCache = {};
                     self.snmp._collectMetricData(data);
                     expect(collectMetricDataStub).to.have.been.calledOnce;
-                    expect(collectMetricDataStub).to.have.been.calledWith(data);
+                    expect(collectMetricDataStub).to.have.been.calledWith(dataCopy);
                     collectMetricDataStub.reset();
                 });
             });
@@ -343,6 +367,150 @@ describe(require('path').basename(__filename), function () {
                 expect(function() {
                     self.snmp._collectMetricData(data);
                 }).to.throw(/Unknown poller metric name: unknown/);
+            });
+        });
+
+        describe('alerting', function() {
+            var snmpData = {
+                config: {
+                    oids:[],
+                    alerts:[]
+                },
+                host: '1.2.3.4',
+                community: 'test',
+                workItemId: 'aWorkItemId',
+                node: 'aNodeId',
+                result: []
+            };
+
+            beforeEach(function() {
+                this.sandbox.stub(taskProtocol, 'publishPollerAlert').resolves();
+                snmpData.config.alerts = [];
+            });
+
+            it('should not alert if there are no alerts', function() {
+                return this.snmp._determineAlert(snmpData).should.become([])
+                .then(function() {
+                    expect(taskProtocol.publishPollerAlert).to.not.have.been.called;
+                });
+            });
+
+            it('should alert on matching alert string', function() {
+                snmpData.config.alerts.push({'.1.3.6.1.2.1.1.5': 'test value'});
+                snmpData.result.push({
+                    source: '.1.3.6.1.2.1.1.5',
+                    values: {'.1.3.6.1.2.1.1.5': 'test value'}
+                });
+
+                return this.snmp._determineAlert(snmpData)
+                .then(function(out) {
+                    expect(out).to.be.an('Array').with.length(1)
+                    expect(out[0]).to.have.property('oid');
+                    expect(out[0]).to.have.property('value');
+                    expect(out[0]).to.have.property('matched');
+                    expect(out[0]).to.deep.equal({
+                        oid: '.1.3.6.1.2.1.1.5',
+                        value: 'test value',
+                        matched: 'test value'
+                    });
+                    expect(taskProtocol.publishPollerAlert).to.have.been.calledWith(graphId, 'snmp', {
+                        host: '1.2.3.4',
+                        oid: '.1.3.6.1.2.1.1.5',
+                        value: 'test value',
+                        nodeRef: '/nodes/aNodeId',
+                        dataRef: '/pollers/aWorkItemId/data/current',
+                        matched: 'test value'
+                    });
+                });
+            });
+
+            it('should alert on matching alert regex', function() {
+                snmpData.config.alerts.push({'.1.3.6.1.2.1.1.5': '/test/'});
+                snmpData.result.push({
+                    source: '.1.3.6.1.2.1.1.5',
+                    values: {'.1.3.6.1.2.1.1.5': 'test value'}
+                });
+
+                return this.snmp._determineAlert(snmpData)
+                .then(function(out) {
+                    expect(out).to.be.an('Array').with.length(1)
+                    expect(out[0]).to.have.property('oid');
+                    expect(out[0]).to.have.property('value');
+                    expect(out[0]).to.have.property('matched');
+                    expect(out[0]).to.deep.equal({
+                        oid: '.1.3.6.1.2.1.1.5',
+                        value: 'test value',
+                        matched: '/test/'
+                    });
+                    expect(taskProtocol.publishPollerAlert).to.have.been.calledWith(graphId, 'snmp', {
+                        host: '1.2.3.4',
+                        oid: '.1.3.6.1.2.1.1.5',
+                        value: 'test value',
+                        nodeRef: '/nodes/aNodeId',
+                        dataRef: '/pollers/aWorkItemId/data/current',
+                        matched: '/test/'
+                    });
+                });
+            });
+
+            it('should alert on matching alert with compound logic', function() {
+                snmpData.config.alerts.push({'.1.3.6.1.2.1.1.5': {
+                    "greaterThan": 42,
+                    "integer": true
+                }});
+                snmpData.result.push({
+                    source: '.1.3.6.1.2.1.1.5',
+                    values: {'.1.3.6.1.2.1.1.5': '45'}
+                });
+                return this.snmp._determineAlert(snmpData)
+                .then(function(out) {
+                    expect(out).to.be.an('Array').with.length(1)
+                    expect(out[0]).to.have.property('oid');
+                    expect(out[0]).to.have.property('value');
+                    expect(out[0]).to.have.property('matched');
+                    expect(out[0]).to.deep.equal({
+                        oid: '.1.3.6.1.2.1.1.5',
+                        value: '45',
+                        matched: snmpData.config.alerts[0]['.1.3.6.1.2.1.1.5']
+                    });
+                    expect(taskProtocol.publishPollerAlert).to.have.been.calledWith(graphId, 'snmp', {
+                        host: '1.2.3.4',
+                        oid: '.1.3.6.1.2.1.1.5',
+                        value: '45',
+                        nodeRef: '/nodes/aNodeId',
+                        dataRef: '/pollers/aWorkItemId/data/current',
+                        matched: snmpData.config.alerts[0]['.1.3.6.1.2.1.1.5']
+                    });
+                });
+            });
+
+            it('should not alert on non-matching alert with compound logic', function() {
+                snmpData.config.alerts.push({'.1.3.6.1.2.1.1.5': {
+                    "greaterThan": 42,
+                    "integer": true
+                }});
+                snmpData.result.push({
+                    source: '.1.3.6.1.2.1.1.5',
+                    values: {'.1.3.6.1.2.1.1.5': '41'}
+                });
+
+                return this.snmp._determineAlert(snmpData, snmpData.result[0].values).should.become([])
+                .then(function() {
+                    expect(taskProtocol.publishPollerAlert).to.not.have.been.called;
+                });
+            });
+
+            it('should not alert if there is no change in status', function() {
+                snmpData.config.alerts.push({'.1.3.6.1.2.1.1.5': '/test/'});
+                snmpData.result.push({
+                    source: '.1.3.6.1.2.1.1.5',
+                    values: {'.1.3.6.1.2.1.1.5': 'test value'}
+                });
+
+                return this.snmp._determineAlert(snmpData, snmpData.result[0].values).should.become([])
+                .then(function() {
+                    expect(taskProtocol.publishPollerAlert).to.not.have.been.called;
+                });
             });
         });
     });

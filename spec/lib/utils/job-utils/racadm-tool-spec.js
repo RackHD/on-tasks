@@ -143,19 +143,14 @@ describe("racadm-tool", function() {
                     });
             });
 
-            it('should throw errors', function(done) {
+            it('should not throw errors but return error message', function() {
                 var self = this ;
                 this.sandbox.stub(parser, 'getJobStatus').returns();
-                this.sandbox.stub(instance, 'runCommand').rejects({error: "Error happened"});
+                this.sandbox.stub(instance, 'runCommand').rejects("Error happened");
                 return instance.getJobStatus('192.168.188.103','admin', 'admin', self.jobId)
-                    .then(function() {
-                        done(new Error("Expected getJobStatus to throw errors"));
-                    })
-                    .catch(function(err){
-                        expect(instance.runCommand).to.have.been.calledOnce;
-                        expect(parser.getJobStatus).to.not.have.been.called;
-                        expect(err.error).to.equals("Error happened");
-                        done();
+                    .then(function(jobStatus) {
+                        expect(jobStatus.status).to.equals("unknown");
+                        expect(jobStatus.error.message).to.equals("Error happened");
                     });
             });
 
@@ -176,6 +171,10 @@ describe("racadm-tool", function() {
                     message:
                         'SYS053: Successfully imported and applied system configuration XML file.',
                     percentComplete: '100'
+                };
+                this.errorStatus = {
+                    "status": "unknown",
+                    "error": {"name": "Error", "message": "Invalid username"}
                 };
             });
             afterEach('waitJobDone after', function() {
@@ -249,6 +248,31 @@ describe("racadm-tool", function() {
                             new Error('Job Timeout, jobStatus: ' +
                                 JSON.stringify(self.jobStatus))
                         );
+                        done();
+                    });
+            });
+
+            it('should ignore getJobStatus failures', function() {
+                var self = this ;
+                getJobStatusStub.resolves(self.errorStatus).onCall(9).resolves(self.jobStatus);
+                return instance.waitJobDone('192.168.188.103','admin', 'admin', self.jobId, 0, 0)
+                    .then(function() {
+                        expect(instance.waitJobDone.callCount).to.equal(10);
+                        expect(instance.getJobStatus.callCount).to.equal(10);
+                    });
+            });
+
+            it('should throw getJobStatus failures if timeout', function(done) {
+                var self = this ;
+                getJobStatusStub.resolves(self.errorStatus);
+                return instance.waitJobDone('192.168.188.103','admin', 'admin', self.jobId, 0, 0)
+                    .then(function() {
+                        done(new Error("Expected waitJobDone to fail"));
+                    })
+                    .catch(function(err) {
+                        expect(instance.waitJobDone.callCount).to.equal(11);
+                        expect(instance.getJobStatus.callCount).to.equal(11);
+                        expect(err.message).to.equals("Invalid username");
                         done();
                     });
             });
@@ -363,16 +387,19 @@ describe("racadm-tool", function() {
         });
 
         describe('updateFirmware', function(){
-            var runCommandStub, getPathFilenameStub, getLatestJobIdStub, waitJobDoneStub;
+            var runCommandStub, getPathFilenameStub, 
+                getLatestJobIdStub, waitJobDoneStub;
             beforeEach('updateFirmware before', function() {
                 runCommandStub = this.sandbox.stub(instance, 'runCommand');
                 getPathFilenameStub = this.sandbox.stub(parser, 'getPathFilename');
                 getLatestJobIdStub = this.sandbox.stub(instance, 'getLatestJobId');
                 waitJobDoneStub = this.sandbox.stub(instance, 'waitJobDone');
+                this.sandbox.stub(global, 'setTimeout', setImmediate);
                 this.cifsConfig = {
                     user: 'onrack',
                     password: 'onrack',
-                    filePath: '//192.168.188.113/share/firmimg.d7'
+                    filePath: '//192.168.188.113/share/firmimg.d7',
+                    forceReboot: true
                 };
                 this.fileInfo = {
                     name: 'firmimg.d7',
@@ -394,12 +421,12 @@ describe("racadm-tool", function() {
             it('should update idrac image via remote file', function(){
                 var self = this,
                     command = "update -f firmimg.d7 -u onrack -p onrack -l //192.168.188.113/share";
+                //self.timeout(6000);
                 getPathFilenameStub.returns(self.fileInfo);
                 runCommandStub.resolves();
                 getLatestJobIdStub.returns('JID_xxxxxxxx');
                 waitJobDoneStub.resolves();
-                return instance.updateFirmware('192.168.188.113','admin', 'admin',
-                    self.cifsConfig)
+                return instance.updateFirmware('192.168.188.113','admin', 'admin', self.cifsConfig)
                     .then(function(){
                         expect(instance.runCommand).to.be.calledWith('192.168.188.113',
                             'admin', 'admin', command, 0, 1000);
@@ -409,6 +436,8 @@ describe("racadm-tool", function() {
             it('should set BIOS configure via local file', function(){
                 var self = this,
                     command = "update -f /home/share/firmimg.d7";
+                //self.timeout(6000);
+                delete self.cifsConfig.forceReboot;
                 self.fileInfo.path = '/home/share';
                 self.fileInfo.style = 'local';
                 getPathFilenameStub.returns(self.fileInfo);
@@ -420,10 +449,13 @@ describe("racadm-tool", function() {
                     .then(function(){
                         expect(instance.runCommand).to.be.calledWith('192.168.188.113',
                             'admin', 'admin', command, 0, 1000);
-                        expect(instance.runCommand).to.be.calledTwice;
+                        expect(instance.runCommand).to.be.calledWith('192.168.188.113',
+                            'admin', 'admin', "serveraction powercycle", 0, 1000);
                         expect(parser.getPathFilename).to.have.been.calledOnce;
-                        expect(instance.getLatestJobId).to.have.been.calledOnce;
-                        expect(instance.waitJobDone).to.have.been.calledOnce;
+                        expect(instance.getLatestJobId).to.have.been.calledWith('192.168.188.113',
+                            'admin', 'admin');
+                        expect(instance.waitJobDone).to.have.been.calledWith('192.168.188.113',
+                            'admin', 'admin', 'JID_xxxxxxxx', 0, 1000);
                     });
             });
 
@@ -441,6 +473,17 @@ describe("racadm-tool", function() {
                 getPathFilenameStub.returns(self.fileInfo);
                 return instance.updateFirmware('192.168.188.103', 'admin', 'admin',self.cifsConfig)
                     .should.be.rejectedWith(Error, 'Image format is not supported');
+            });
+
+            it('should run without reboot if forcedReboot is false', function(){
+                var self = this;
+                self.cifsConfig.forceReboot = false;
+                runCommandStub.resolves();
+                getPathFilenameStub.returns(self.fileInfo);
+                return instance.updateFirmware('192.168.188.103', 'admin', 'admin',self.cifsConfig)
+                .then(function(){
+                    runCommandStub.should.be.callOnce;
+                });
             });
 
         });

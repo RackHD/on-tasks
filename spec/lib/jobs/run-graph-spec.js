@@ -1,5 +1,4 @@
-// Copyright 2015, EMC, Inc.
-/* jshint node:true */
+// Copyright 2015, EMC, Inc.  /* jshint node:true */
 
 'use strict';
 
@@ -7,9 +6,12 @@ describe("Job.Graph.Run", function () {
     var uuid;
     var RunGraphJob;
     var workflowTool;
+    var Errors;
     var Constants;
     var fakeNode;
     var taskOptions;
+    var taskGraphProtocol = {};
+    var taskGraphStore = {};
 
     before(function () {
         // create a child injector with on-core and the base pieces we need to test this
@@ -21,11 +23,14 @@ describe("Job.Graph.Run", function () {
             helper.require('/lib/task.js'),
             helper.require('/lib/utils/job-utils/workflow-tool.js'),
             helper.require('/lib/utils/task-option-validator.js'),
-            helper.di.simpleWrapper({}, 'Task.taskLibrary')
+            helper.di.simpleWrapper({}, 'Task.taskLibrary'),
+            helper.di.simpleWrapper(taskGraphStore, 'TaskGraph.Store'),
+            helper.di.simpleWrapper(taskGraphProtocol, 'Protocol.TaskGraphRunner')
         ]);
 
         RunGraphJob = helper.injector.get('Job.Graph.Run');
         workflowTool = helper.injector.get('JobUtils.WorkflowTool');
+        Errors = helper.injector.get('Errors');
         Constants = helper.injector.get('Constants');
         uuid = helper.injector.get('uuid');
     });
@@ -46,6 +51,8 @@ describe("Job.Graph.Run", function () {
         this.sandbox.stub(RunGraphJob.prototype, '_subscribeActiveTaskExists');
         this.sandbox.stub(RunGraphJob.prototype, '_subscribeGraphFinished');
         this.sandbox.stub(workflowTool, 'runGraph').resolves();
+        taskGraphStore.findChildGraph = this.sandbox.stub().resolves();
+        taskGraphProtocol.cancelTaskGraph = this.sandbox.stub().resolves();
     });
 
     afterEach(function() {
@@ -56,15 +63,16 @@ describe("Job.Graph.Run", function () {
         var job = new RunGraphJob(taskOptions, {}, uuid.v4());
         job._run();
 
-        expect(job._subscribeGraphFinished).to.have.been.calledOnce;
-        var cb = job._subscribeGraphFinished.firstCall.args[0];
-
         setImmediate(function() {
-            cb(Constants.Task.States.Succeeded);
+            job.finishWithState(Constants.Task.States.Succeeded);
         });
 
         return job._deferred
         .then(function() {
+            expect(job._subscribeGraphFinished).to.have.been.calledOnce;
+            expect(job._subscribeGraphFinished).to.have.been.calledWith(
+                job.finishWithState
+            );
             expect(workflowTool.runGraph).to.have.been.calledOnce;
             expect(workflowTool.runGraph).to.have.been.calledWith(
                 job.graphTarget,
@@ -87,15 +95,16 @@ describe("Job.Graph.Run", function () {
         var job = new RunGraphJob(taskOptions, {proxy: proxy}, uuid.v4());
         job._run();
 
-        expect(job._subscribeGraphFinished).to.have.been.calledOnce;
-        var cb = job._subscribeGraphFinished.firstCall.args[0];
-
         setImmediate(function() {
-            cb(Constants.Task.States.Succeeded);
+            job.finishWithState(Constants.Task.States.Succeeded);
         });
 
         return job._deferred
         .then(function() {
+            expect(job._subscribeGraphFinished).to.have.been.calledOnce;
+            expect(job._subscribeGraphFinished).to.have.been.calledWith(
+                job.finishWithState
+            );
             expect(workflowTool.runGraph).to.have.been.calledOnce;
             expect(workflowTool.runGraph).to.have.been.calledWith(
                 job.graphTarget,
@@ -123,15 +132,16 @@ describe("Job.Graph.Run", function () {
 
         expect(job.graphTarget).to.equal(taskOptions.graphOptions.target);
 
-        expect(job._subscribeGraphFinished).to.have.been.calledOnce;
-        var cb = job._subscribeGraphFinished.firstCall.args[0];
-
         setImmediate(function() {
-            cb(Constants.Task.States.Succeeded);
+            job.finishWithState(Constants.Task.States.Succeeded);
         });
 
         return job._deferred
         .then(function() {
+            expect(job._subscribeGraphFinished).to.have.been.calledOnce;
+            expect(job._subscribeGraphFinished).to.have.been.calledWith(
+                job.finishWithState
+            );
             expect(workflowTool.runGraph).to.have.been.calledOnce;
             expect(workflowTool.runGraph).to.have.been.calledWith(
                 'testnodeid',
@@ -145,11 +155,8 @@ describe("Job.Graph.Run", function () {
         var job = new RunGraphJob(taskOptions, {}, uuid.v4());
         job._run();
 
-        expect(job._subscribeGraphFinished).to.have.been.calledOnce;
-        var cb = job._subscribeGraphFinished.firstCall.args[0];
-
         setImmediate(function() {
-            cb(Constants.Task.States.Failed);
+            job.finishWithState(Constants.Task.States.Failed);
         });
 
         return expect(job._deferred).to.be.rejectedWith(/Graph.*failed with status/);
@@ -162,5 +169,84 @@ describe("Job.Graph.Run", function () {
         job._run();
 
         return expect(job._deferred).to.be.rejectedWith('test');
+    });
+
+    it('should subscribeGraphFinished before running a new graph', function() {
+        var job = new RunGraphJob(taskOptions, {}, uuid.v4());
+        workflowTool.runGraph.restore();
+        this.sandbox.stub(workflowTool, 'runGraph', function() {
+            expect(job._subscribeGraphFinished).to.be.calledOnce;
+            expect(job._subscribeGraphFinished).to.be.calledWith(
+                job.finishWithState
+            );
+            return Promise.resolve();
+        });
+        job._run();
+
+        setImmediate(function() {
+            job.finishWithState(Constants.Task.States.Succeeded);
+        });
+
+        return job._deferred
+        .then(function() {
+            expect(workflowTool.runGraph).to.have.been.calledOnce;
+        });
+    });
+
+    it('should not run a subgraph if one already exists', function() {
+        var job = new RunGraphJob(taskOptions, {}, uuid.v4());
+        taskGraphStore.findChildGraph.resolves(
+            {
+                instanceId: 'some graphId',
+                context: {graphId: 'the graphId'},
+                name: 'fake test graph'
+            }
+        );
+        job._run();
+
+        setImmediate(function() {
+            job.finishWithState(Constants.Task.States.Succeeded);
+        });
+
+        return job._deferred
+        .then(function() {
+            expect(taskGraphStore.findChildGraph).to.be.calledOnce;
+            expect(taskGraphStore.findChildGraph).to.be.calledWith(job.taskId);
+            expect(workflowTool.runGraph).to.not.have.been.called;
+        });
+    });
+
+    it('should poll the subgraph and finish if the subgraph is finished', function() {
+        var finishedGraph = {
+                instanceId: 'some graphId',
+                context: {graphId: 'the graphId'},
+                name: 'fake test graph',
+                _status: Constants.Task.States.Succeeded
+        };
+        taskGraphStore.findChildGraph.onCall(4).resolves(finishedGraph);
+
+        taskOptions.graphPollInterval = 1; // one millisecond
+        var job = new RunGraphJob(taskOptions, {}, uuid.v4());
+        job._run();
+
+        return job._deferred
+        .then(function() {
+            taskGraphStore.findChildGraph.args.slice(1).forEach(function(arg) {
+                expect(arg[0]).to.deep.equal(job.taskId);
+            });
+        });
+    });
+
+    it('should cancel a subgraph in cleanup if it is cancelled', function() {
+        var job = new RunGraphJob(taskOptions, {}, uuid.v4());
+        setImmediate(function() {
+            job.cancel(new Errors.TaskCancellationError());
+        });
+
+        return job.run()
+        .catch(function() {
+            expect(taskGraphProtocol.cancelTaskGraph).to.have.been.calledOnce;
+            expect(taskGraphProtocol.cancelTaskGraph).to.have.been.calledWith(job.graphId);
+        });
     });
 });

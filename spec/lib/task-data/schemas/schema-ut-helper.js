@@ -5,7 +5,10 @@
 
 var Ajv = require('ajv');
 var _unset = require('lodash.unset');
-var _toString = require('lodash.tostring');
+var glob = require('glob');
+var path = require('path');
+var jsonlint = require('jsonlint');
+var fs = require('fs');
 
 /**
  * load all jobs' injectable names
@@ -34,14 +37,38 @@ function loadJobNames() {
  */
 function loadSchemas(ajv) {
     var metaSchema = helper.require('/lib/task-data/schemas/rackhd-task-schema.json');
-    ajv.addMetaSchema(metaSchema);
-    var schemas = helper.requireGlob('/lib/task-data/schemas/*.json');
-    schemas.forEach(function(schema) {
-        if (schema.id !== metaSchema.id) {
-            ajv.addSchema(schema);
+    ajv.addMetaSchema(metaSchema, 'rackhd-task-schema.json');
+    var fileNames = glob.sync(helper.relativeToRoot('/lib/task-data/schemas/*.json'));
+    _(fileNames).filter(function (filename) {
+        return path.basename(filename) !== 'rackhd-task-schema.json';
+    })
+    .forEach(function (filename) {
+        try {
+            var data = fs.readFileSync(filename).toString();
+            jsonlint.parse(data);
+            ajv.addSchema(JSON.parse(data), path.basename(filename));
         }
-    });
+        catch(err) {
+            console.error('fail to add schema: ' + filename);
+            throw err;
+        }
+    })
+    .value();
     return ajv;
+}
+
+/**
+ * Get the schema definition via name
+ * @param {Object} ajv - The Ajv instance
+ * @param {String} name - The schema name or id
+ * @return {Object} The schema definition.
+ */
+function getSchema(ajv, name) {
+    var result = ajv.getSchema(name);
+    if (!result || !result.schema) {
+        throw new Error('cannot find the schema with name "' + name + '".');
+    }
+    return result.schema;
 }
 
 /**
@@ -88,7 +115,7 @@ function validateData(validator, schemaId, data, expected) {
 function validateSchemaDefinition(schema, jobNames) {
     before('Check schema definition', function() {
         expect(schema).to.be.a('object');
-        expect(schema).to.have.property('id').to.be.a('string');
+        // expect(schema).to.have.property('id').to.be.a('string');
         expect(schema).to.have.property('describeJob').to.be.a('string');
         expect(schema).to.have.property('copyright').to.be.a('string');
         expect(schema).to.have.property('title').to.be.a('string');
@@ -101,19 +128,20 @@ function validateSchemaDefinition(schema, jobNames) {
 
 /**
  * A Helper Class for Schema Unit-Testing
- * @param {String} testfile - The file path of target schema
+ * @param {String} schemaFileName - The file name of test schema
  * @param {Object} [canonicalData] - The canonical data for target schema
  * @param {Boolean} [skipTaskSchemaDefValidation=false] - True to skip the validation for task
  * schema definition itself.
  * @param {Boolean} [skipCommonOptionsValidation=false] - True to skip the common task options
  * validation, this depends the the canonical data is specified
  */
-function SchemaUnitTestHelper(testfile, canonicalData, skipTaskSchemaDefValidation,
+function SchemaUnitTestHelper(schemaFileName, canonicalData, skipTaskSchemaDefValidation,
                               skipCommonOptionsValidation) {
     var result = init();
     var self = this;
     this.validator = result.validator;
-    this.schema = helper.require(testfile);
+    this.schema = getSchema(this.validator, schemaFileName);
+    this.schemaName = schemaFileName;
     this.canonicalData = canonicalData;
 
     if (!skipTaskSchemaDefValidation) {
@@ -139,7 +167,7 @@ function SchemaUnitTestHelper(testfile, canonicalData, skipTaskSchemaDefValidati
  * @param {Function} done - The mocha unit-test hook "done" function
  */
 SchemaUnitTestHelper.prototype._validate = function(data, expected, done) {
-    return done(validateData(this.validator, this.schema.id, data, expected));
+    return done(validateData(this.validator, this.schemaName, data, expected));
 };
 
 /**
@@ -252,7 +280,7 @@ SchemaUnitTestHelper.prototype.setTest = function(setParams, expected, overrideC
             }
             _.forEach(setValues, function(val) {
                 it('should ' + (expected ? 'conform to ' : 'violate ') + 'the schema if ' +
-                        key + '=' + _toString(val), function(done) {
+                        key + '=' + JSON.stringify(val), function(done) {
                     if (_.get(canonicalData, key) === undefined) {
                         return done(new Error("The path " + key + "doesn't exist!"));
                     }
@@ -299,7 +327,7 @@ SchemaUnitTestHelper.prototype.unsetTest = function(unsetParams, expected, overr
 
         _.forEach(unsetParams, function(unsetParam) {
             it('should ' + (expected ? 'conform to ' : 'violate ') + 'the schema if ' +
-                    _toString(unsetParam) + " is unset" , function(done) {
+                    JSON.stringify(unsetParam) + " is unset" , function(done) {
 
                 if (!_.isArray(unsetParam)) {
                     unsetParam = [unsetParam];

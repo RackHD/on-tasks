@@ -123,8 +123,7 @@ describe('JobUtils.WorkflowTool', function() {
                                 definition: graphDefinition,
                                 options: graphOptions,
                                 context: {
-                                  target: nodeId,
-                                  _parent: { graphId: 'parentGraphId', taskId: 'taskId' }
+                                  target: nodeId
                                 }
                             }
                         );
