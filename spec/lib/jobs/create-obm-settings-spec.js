@@ -1,5 +1,4 @@
-// Copyright 2015, EMC, Inc.
-/* jshint node:true */
+// Copyright 2015-2016, EMC, Inc.
 
 'use strict';
 
@@ -24,9 +23,12 @@ describe(require('path').basename(__filename), function () {
         VboxObmService = helper.injector.get('vbox-obm-service');
         waterline = helper.injector.get('Services.Waterline');
 
-        waterline.nodes = {
-            updateByIdentifier: sinon.stub().resolves()
+        waterline.obms = {
+            upsertByNode: sinon.stub().resolves()
         };
+
+        var encryption = helper.injector.get('Services.Encryption');
+        return encryption.start();
     });
 
     describe('Base', function () {
@@ -56,22 +58,19 @@ describe(require('path').basename(__filename), function () {
             self.sandbox.stub(self.job, '_done');
             self.sandbox.stub(self.job, 'liveTestObmConfig').resolves();
 
-            var expectedUpdateData = {
-                obmSettings: [ self.job.obmSettings ]
-            };
-
             return self.job._run()
             .then(function() {
-                expect(waterline.nodes.updateByIdentifier)
-                    .to.have.been.calledWith(self.job.nodeId, expectedUpdateData);
+                expect(waterline.obms.upsertByNode)
+                    .to.have.been.calledWith(self.job.nodeId, self.job.obmSettings);
             });
         });
 
         it('should run <obmService>.powerStatus in liveTestObmConfig()', function() {
             var self = this;
+
             var powerStatus = self.sandbox.stub(VboxObmService.prototype, 'powerStatus');
             powerStatus.resolves();
-            return self.job.liveTestObmConfig()
+            return self.job.liveTestObmConfig(self.job.obmSettings)
             .then(function() {
                 expect(powerStatus).to.have.been.calledOnce;
             });

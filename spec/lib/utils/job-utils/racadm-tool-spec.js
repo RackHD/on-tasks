@@ -86,48 +86,6 @@ describe("racadm-tool", function() {
 
         });
 
-        describe('enableIpmi', function(){
-            afterEach('runCommand after', function() {
-                this.sandbox.restore();
-            });
-
-            it('enableIpmi exists', function() {
-                should.exist(instance.enableIpmi);
-            });
-            it('enableIpmi is a function', function() {
-                expect(instance.enableIpmi).is.a('function');
-            });
-
-            it('should enable IPMI', function(){
-                this.sandbox.stub(instance, 'runCommand').resolves();
-                return instance.enableIpmi('any','any','any')
-                    .then(function(){
-                        expect(instance.runCommand).to.have.been.calledOnce;
-                    });
-            });
-        });
-
-        describe('disableIpmi', function(){
-            afterEach('runCommand after', function() {
-                this.sandbox.restore();
-            });
-
-            it('disableIpmi exists', function() {
-                should.exist(instance.disableIpmi);
-            });
-            it('disableIpmi is a function', function() {
-                expect(instance.disableIpmi).is.a('function');
-            });
-
-            it('should disable IPMI', function(){
-                this.sandbox.stub(instance, 'runCommand').resolves();
-                return instance.disableIpmi('any','any','any')
-                    .then(function(){
-                        expect(instance.runCommand).to.have.been.calledOnce;
-                    });
-            });
-        });
-
         describe('getLatestJobId', function(){
             var jobqueueMock = require('./stdout-helper').racadmJobqueueData;
             var runCommandStub;
@@ -185,19 +143,14 @@ describe("racadm-tool", function() {
                     });
             });
 
-            it('should throw errors', function(done) {
+            it('should not throw errors but return error message', function() {
                 var self = this ;
                 this.sandbox.stub(parser, 'getJobStatus').returns();
-                this.sandbox.stub(instance, 'runCommand').rejects({error: "Error happened"});
+                this.sandbox.stub(instance, 'runCommand').rejects("Error happened");
                 return instance.getJobStatus('192.168.188.103','admin', 'admin', self.jobId)
-                    .then(function() {
-                        done(new Error("Expected getJobStatus to throw errors"));
-                    })
-                    .catch(function(err){
-                        expect(instance.runCommand).to.have.been.calledOnce;
-                        expect(parser.getJobStatus).to.not.have.been.called;
-                        expect(err.error).to.equals("Error happened");
-                        done();
+                    .then(function(jobStatus) {
+                        expect(jobStatus.status).to.equals("unknown");
+                        expect(jobStatus.error.message).to.equals("Error happened");
                     });
             });
 
@@ -218,6 +171,10 @@ describe("racadm-tool", function() {
                     message:
                         'SYS053: Successfully imported and applied system configuration XML file.',
                     percentComplete: '100'
+                };
+                this.errorStatus = {
+                    "status": "unknown",
+                    "error": {"name": "Error", "message": "Invalid username"}
                 };
             });
             afterEach('waitJobDone after', function() {
@@ -291,6 +248,31 @@ describe("racadm-tool", function() {
                             new Error('Job Timeout, jobStatus: ' +
                                 JSON.stringify(self.jobStatus))
                         );
+                        done();
+                    });
+            });
+
+            it('should ignore getJobStatus failures', function() {
+                var self = this ;
+                getJobStatusStub.resolves(self.errorStatus).onCall(9).resolves(self.jobStatus);
+                return instance.waitJobDone('192.168.188.103','admin', 'admin', self.jobId, 0, 0)
+                    .then(function() {
+                        expect(instance.waitJobDone.callCount).to.equal(10);
+                        expect(instance.getJobStatus.callCount).to.equal(10);
+                    });
+            });
+
+            it('should throw getJobStatus failures if timeout', function(done) {
+                var self = this ;
+                getJobStatusStub.resolves(self.errorStatus);
+                return instance.waitJobDone('192.168.188.103','admin', 'admin', self.jobId, 0, 0)
+                    .then(function() {
+                        done(new Error("Expected waitJobDone to fail"));
+                    })
+                    .catch(function(err) {
+                        expect(instance.waitJobDone.callCount).to.equal(11);
+                        expect(instance.getJobStatus.callCount).to.equal(11);
+                        expect(err.message).to.equals("Invalid username");
                         done();
                     });
             });
@@ -405,16 +387,19 @@ describe("racadm-tool", function() {
         });
 
         describe('updateFirmware', function(){
-            var runCommandStub, getPathFilenameStub, getLatestJobIdStub, waitJobDoneStub;
+            var runCommandStub, getPathFilenameStub, 
+                getLatestJobIdStub, waitJobDoneStub;
             beforeEach('updateFirmware before', function() {
                 runCommandStub = this.sandbox.stub(instance, 'runCommand');
                 getPathFilenameStub = this.sandbox.stub(parser, 'getPathFilename');
                 getLatestJobIdStub = this.sandbox.stub(instance, 'getLatestJobId');
                 waitJobDoneStub = this.sandbox.stub(instance, 'waitJobDone');
+                this.sandbox.stub(global, 'setTimeout', setImmediate);
                 this.cifsConfig = {
                     user: 'onrack',
                     password: 'onrack',
-                    filePath: '//192.168.188.113/share/firmimg.d7'
+                    filePath: '//192.168.188.113/share/firmimg.d7',
+                    forceReboot: true
                 };
                 this.fileInfo = {
                     name: 'firmimg.d7',
@@ -436,12 +421,12 @@ describe("racadm-tool", function() {
             it('should update idrac image via remote file', function(){
                 var self = this,
                     command = "update -f firmimg.d7 -u onrack -p onrack -l //192.168.188.113/share";
+                //self.timeout(6000);
                 getPathFilenameStub.returns(self.fileInfo);
                 runCommandStub.resolves();
                 getLatestJobIdStub.returns('JID_xxxxxxxx');
                 waitJobDoneStub.resolves();
-                return instance.updateFirmware('192.168.188.113','admin', 'admin',
-                    self.cifsConfig)
+                return instance.updateFirmware('192.168.188.113','admin', 'admin', self.cifsConfig)
                     .then(function(){
                         expect(instance.runCommand).to.be.calledWith('192.168.188.113',
                             'admin', 'admin', command, 0, 1000);
@@ -451,6 +436,8 @@ describe("racadm-tool", function() {
             it('should set BIOS configure via local file', function(){
                 var self = this,
                     command = "update -f /home/share/firmimg.d7";
+                //self.timeout(6000);
+                delete self.cifsConfig.forceReboot;
                 self.fileInfo.path = '/home/share';
                 self.fileInfo.style = 'local';
                 getPathFilenameStub.returns(self.fileInfo);
@@ -462,10 +449,13 @@ describe("racadm-tool", function() {
                     .then(function(){
                         expect(instance.runCommand).to.be.calledWith('192.168.188.113',
                             'admin', 'admin', command, 0, 1000);
-                        expect(instance.runCommand).to.be.calledTwice;
+                        expect(instance.runCommand).to.be.calledWith('192.168.188.113',
+                            'admin', 'admin', "serveraction powercycle", 0, 1000);
                         expect(parser.getPathFilename).to.have.been.calledOnce;
-                        expect(instance.getLatestJobId).to.have.been.calledOnce;
-                        expect(instance.waitJobDone).to.have.been.calledOnce;
+                        expect(instance.getLatestJobId).to.have.been.calledWith('192.168.188.113',
+                            'admin', 'admin');
+                        expect(instance.waitJobDone).to.have.been.calledWith('192.168.188.113',
+                            'admin', 'admin', 'JID_xxxxxxxx', 0, 1000);
                     });
             });
 
@@ -483,6 +473,17 @@ describe("racadm-tool", function() {
                 getPathFilenameStub.returns(self.fileInfo);
                 return instance.updateFirmware('192.168.188.103', 'admin', 'admin',self.cifsConfig)
                     .should.be.rejectedWith(Error, 'Image format is not supported');
+            });
+
+            it('should run without reboot if forcedReboot is false', function(){
+                var self = this;
+                self.cifsConfig.forceReboot = false;
+                runCommandStub.resolves();
+                getPathFilenameStub.returns(self.fileInfo);
+                return instance.updateFirmware('192.168.188.103', 'admin', 'admin',self.cifsConfig)
+                .then(function(){
+                    runCommandStub.should.be.callOnce;
+                });
             });
 
         });
@@ -609,6 +610,154 @@ describe("racadm-tool", function() {
                             'File /tmp/idra_configure.xml does not exist'
                         );
                         expect(instance.runCommand).to.be.calledOnce;
+                    });
+            });
+        });
+        
+        describe('enableIpmi', function(){
+            afterEach('enable IPMI after', function() {
+                this.sandbox.restore();
+            });
+
+            it('enableIpmi exists', function() {
+                should.exist(instance.enableIpmi);
+            });
+            it('enableIpmi is a function', function() {
+                expect(instance.enableIpmi).is.a('function');
+            });
+
+            it('should enable IPMI', function(){
+                this.sandbox.stub(instance, 'runCommand').resolves();
+                return instance.enableIpmi('any','any','any')
+                    .then(function(){
+                        expect(instance.runCommand).to.have.been.calledOnce;
+                    });
+            });
+        });
+
+        describe('disableIpmi', function(){
+            afterEach('disable IPMI after', function() {
+                this.sandbox.restore();
+            });
+
+            it('disableIpmi exists', function() {
+                should.exist(instance.disableIpmi);
+            });
+            it('disableIpmi is a function', function() {
+                expect(instance.disableIpmi).is.a('function');
+            });
+
+            it('should disable IPMI', function(){
+                this.sandbox.stub(instance, 'runCommand').resolves();
+                return instance.disableIpmi('any','any','any')
+                    .then(function(){
+                        expect(instance.runCommand).to.have.been.calledOnce;
+                    });
+            });
+        });
+
+        describe('_configBiosAttr', function(){
+            afterEach('configure bios attribute after', function() {
+                this.sandbox.restore();
+            });
+
+            it('should throw an error if BIOS fqdd does not exist', function(done) {
+                this.sandbox.stub(instance, 'getSoftwareList').resolves("Anything");
+                this.sandbox.stub(instance, 'runCommand').resolves("Anything");
+                return instance._configBiosAttr('any', 'any', 'any', 'any', 'any')
+                    .then(function(){
+                        done(new Error("Expected getLatestJobId to fail"));
+                    })
+                    .catch(function(err){
+                        expect(instance.runCommand).to.be.calledOnce;
+                        expect(instance.getSoftwareList).to.be.calledOnce;
+                        expect(err.message).to.equal('Can not get BIOS FQDD');
+                        done();
+                    });
+            });
+
+            it('should be called with reboot', function() {
+                var command = 'jobqueue create Any -r pwrcycle -s TIME_NOW -e TIME_NA';
+                this.sandbox.stub(instance, 'getSoftwareList').resolves({"BIOS": {"FQDD": "Any"}});
+                this.sandbox.stub(instance, 'runCommand').resolves("Anything");
+                this.sandbox.stub(parser, 'getJobId').returns("Anything");
+                this.sandbox.stub(instance, 'waitJobDone').returns("Completed");
+                return instance._configBiosAttr('any', 'any', 'any', true, 'any')
+                    .then(function(result){
+                        expect(result).to.equal("Completed");
+                        expect(instance.getSoftwareList).to.have.been.calledOnce;
+                        expect(instance.runCommand).to.have.been.calledTwice;
+                        expect(instance.runCommand)
+                            .to.have.been.calledWith('any', 'any', 'any', command); 
+                        expect(parser.getJobId).to.have.been.calledOnce;
+                        expect(instance.waitJobDone).to.have.been.calledOnce;
+                    });
+            });
+
+            it('should be called without reboot', function() {
+                this.sandbox.stub(instance, 'getSoftwareList').resolves({"BIOS": {"FQDD": "Any"}});
+                this.sandbox.stub(instance, 'runCommand').resolves("Anything");
+                this.sandbox.stub(parser, 'getJobId').returns("Anything");
+                this.sandbox.stub(instance, 'waitJobDone').returns("Completed");
+                return instance._configBiosAttr('any', 'any', 'any', false, 'any')
+                    .then(function(result){
+                        expect(result).to.equal("Anything");
+                        expect(instance.getSoftwareList).to.have.been.calledOnce;
+                        expect(instance.runCommand).to.have.been.calledTwice;
+                        expect(instance.runCommand)
+                            .to.have.been.calledWith('any', 'any', 'any', 
+                                                     'jobqueue create Any');
+                        expect(parser.getJobId).to.have.been.calledOnce;
+                    });
+            });
+        });
+
+        describe('disableVTx', function(){
+            afterEach('disable virtualization after', function() {
+                this.sandbox.restore();
+            });
+
+            it('disableVTx exists', function() {
+                should.exist(instance.disableVTx);
+            });
+
+            it('disableVTx is a function', function() {
+                expect(instance.disableVTx).is.a('function');
+            });
+
+            it('should disable virtualization', function(){
+                this.sandbox.stub(instance, '_configBiosAttr').resolves();
+                return instance.disableVTx('any','any','any', {"forceReboot": true})
+                    .then(function(){
+                        expect(instance._configBiosAttr)
+                            .to.have.been
+                            .calledWith('any', 'any', 'any', true, 
+                                        "set BIOS.ProcSettings.ProcVirtualization Disabled");
+                    });
+            });
+        });
+
+        describe('enableVTx', function(){
+            afterEach('enable virtualization after', function() {
+                this.sandbox.restore();
+            });
+
+            it('enableVTx exists', function() {
+                should.exist(instance.enableVTx);
+            });
+
+            it('enableVTx is a function', function() {
+                expect(instance.enableVTx).is.a('function');
+            });
+
+            it('should enable virtualization', function(){
+                this.sandbox.stub(instance, '_configBiosAttr').resolves();
+                return instance.enableVTx('any','any','any', {"forceReboot": true})
+                    .then(function(){
+                        expect(instance._configBiosAttr)
+                            .to.have.been
+                            .calledWith('any', 'any', 'any', true, 
+                                        "set BIOS.ProcSettings.ProcVirtualization Enabled");
                     });
             });
         });

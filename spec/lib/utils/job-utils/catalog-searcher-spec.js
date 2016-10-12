@@ -6,11 +6,14 @@
 var catalogSearch;
 
 describe("Catalog Searcher", function () {
+    var waterline;
+
     before("Catalog Searcher before", function() {
         helper.setupInjector([
             helper.require('/lib/utils/job-utils/catalog-searcher')
         ]);
         catalogSearch = helper.injector.get('JobUtils.CatalogSearchHelpers');
+        waterline = helper.injector.get('Services.Waterline');
     });
 
     describe('get path', function() {
@@ -86,6 +89,105 @@ describe("Catalog Searcher", function () {
             expect(catalogSearch.findDriveWwidByIndex([], false, 0)).to.be.null;
             expect(catalogSearch.findDriveWwidByIndex([], false, 1)).to.be.null;
             expect(catalogSearch.findDriveWwidByIndex(undefined, false, 0)).to.be.null;
+        });
+    });
+
+    describe('getDriveIdCatalogExt', function () {
+        var stdoutMocks,
+            driveIdExt1,
+            driveIdData,
+            virtualDiskData,
+            controllerData;
+
+        before('before', function() {
+            stdoutMocks = require('./stdout-helper');
+            driveIdData = JSON.parse(stdoutMocks.driveidOutput);
+            driveIdExt1 = _.merge(
+                {
+                    size: '558.406 GB',
+                    type: 'RAID0',
+                    physicalDisks: [
+                        {
+                            deviceId: 23,
+                            enclosureId: '36',
+                            slotId: '0',
+                            size: '558.406 GB',
+                            protocol: 'SAS',
+                            type: 'HDD',
+                            model: 'ST3600057SS '
+                        }
+                    ],
+                    deviceIds: [23],
+                    slotIds: ['/c0/e36/s0'],
+                    controllerId: '0',
+                    controllerVender: 'lsi'
+                },
+                driveIdData[1]);
+            virtualDiskData = JSON.parse(stdoutMocks.storcliVirtualDiskInfo);
+            controllerData = JSON.parse(stdoutMocks.storcliAdapterInfo);
+            waterline.catalogs = { findMostRecent: sinon.stub() };
+        });
+
+        beforeEach('before each', function () {
+            waterline.catalogs.findMostRecent.reset();
+            waterline.catalogs.findMostRecent
+                .withArgs({ node: '1234', source: 'driveId'})
+                .resolves({ data: driveIdData });
+            waterline.catalogs.findMostRecent
+                .withArgs({ node: '1234', source: 'megaraid-virtual-disks'})
+                .resolves({ data: virtualDiskData});
+            waterline.catalogs.findMostRecent
+                .withArgs({ node: '1234', source: 'megaraid-controllers'})
+                .resolves({ data: controllerData});
+            driveIdData = JSON.parse(stdoutMocks.driveidOutput);
+        });
+
+        it('should return correct extended driveId catalogs', function () {
+            return catalogSearch.getDriveIdCatalogExt('1234')
+                .then(function (catalogExt) {
+                    expect(catalogExt).that.is.an('array').with.length(4);
+                    expect(catalogExt[1]).to.deep.equals(driveIdExt1);
+                    expect(waterline.catalogs.findMostRecent).to.have.been.calledThrice;
+                });
+        });
+
+        it('should return correct extended driveId catalogs with filter', function () {
+            return catalogSearch.getDriveIdCatalogExt('1234', { 'sda': 1, '5': 1 })
+                .then(function (catalogExt) {
+                    expect(catalogExt).that.is.an('array').with.length(2);
+                    expect(catalogExt[0]).to.deep.equals(driveIdExt1);
+                    expect(waterline.catalogs.findMostRecent).to.have.been.calledThrice;
+                });
+        });
+
+        it('should skip extention when all virtualDisk field empty', function () {
+            waterline.catalogs.findMostRecent
+                .withArgs({ node: '5678', source: 'driveId'})
+                .resolves({ data: [ driveIdData[0] ] });
+            return catalogSearch.getDriveIdCatalogExt('5678')
+                .then(function (catalogExt) {
+                    expect(catalogExt).that.is.an('array').with.length(1);
+                    expect(catalogExt[0]).to.deep.equals(driveIdData[0]);
+                    expect(waterline.catalogs.findMostRecent).to.have.been.calledOnce; 
+                });
+        });
+
+        it('should be rejected with driveId catalog not found', function () {
+            waterline.catalogs.findMostRecent
+                .withArgs({ node: '5678', source: 'driveId'}).resolves();
+            return expect(catalogSearch.getDriveIdCatalogExt('5678')).to.be
+                .rejectedWith('Could not find driveId catalog data.');
+        });
+
+        it('should be rejected with megaraid-virtual-disks catalog not found', function () {
+            waterline.catalogs.findMostRecent
+                .withArgs({ node: '5678', source: 'driveId'})
+                .resolves({ data: driveIdData });
+            waterline.catalogs.findMostRecent
+                .withArgs({ node: '5678', source: 'megaraid-virtual-disks'})
+                .resolves();
+            return expect(catalogSearch.getDriveIdCatalogExt('5678')).to.be
+                .rejectedWith('Could not find megaraid-virtual-disks catalog data.');
         });
     });
 });

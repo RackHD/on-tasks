@@ -3644,7 +3644,12 @@ module.exports.racadmJobStatusData = 'Security Alert: Certificate is invalid - s
                                     '----------------------------------------------------------\n' +
                                     '\n';
 
+
 var fs = require('fs');
+
+module.exports.ipAddrLinkOutput = fs
+    .readFileSync(__dirname+"/samplefiles/ip_addr_link_output.txt")
+    .toString();
 
 module.exports.storcliAdapterInfo = fs
     .readFileSync(__dirname+"/samplefiles/storcli_adapter_info.txt")

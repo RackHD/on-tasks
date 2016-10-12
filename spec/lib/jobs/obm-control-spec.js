@@ -19,6 +19,10 @@ describe("Job.Obm.Node", function () {
     var mockWaterline = {
         nodes: {
             findByIdentifier: sinon.stub()
+        },
+        obms: {
+            findByNode: sinon.stub(),
+            find: sinon.stub()
         }
     };
 
@@ -29,6 +33,7 @@ describe("Job.Obm.Node", function () {
             helper.require('/lib/jobs/obm-control.js'),
             helper.require('/lib/services/base-obm-service.js'),
             helper.require('/lib/services/ipmi-obm-service.js'),
+            helper.require('/lib/services/noop-obm-service.js'),
             helper.require('/lib/services/obm-service.js'),
             helper.di.simpleWrapper(mockWaterline, 'Services.Waterline')
         ]);
@@ -38,6 +43,10 @@ describe("Job.Obm.Node", function () {
     });
 
     beforeEach("Job.Obm.Node beforeEach", function () {
+        mockWaterline.obms.findByNode.reset();
+        mockWaterline.obms.findByNode.resolves();
+        mockWaterline.obms.find.reset();
+        mockWaterline.obms.find.resolves();
         mockWaterline.nodes.findByIdentifier.reset();
         mockWaterline.nodes.findByIdentifier.resolves();
     });
@@ -70,6 +79,7 @@ describe("Job.Obm.Node", function () {
         });
 
         it('should fail if node does not exist', function(done) {
+            mockWaterline.obms.findByNode.resolves(null);
             mockWaterline.nodes.findByIdentifier.resolves(null);
 
             job.run()
@@ -89,7 +99,9 @@ describe("Job.Obm.Node", function () {
         });
 
         it('should fail if node does not have obmSettings', function(done) {
-            mockWaterline.nodes.findByIdentifier.resolves({});
+            mockWaterline.obms.findByNode.resolves(null);
+            mockWaterline.obms.find.resolves([]);
+            mockWaterline.nodes.findByIdentifier.resolves({name: 'a node'});
 
             job.run()
             .then(function() {
@@ -99,7 +111,7 @@ describe("Job.Obm.Node", function () {
                 try {
                     expect(e).to.have.property('name').that.equals('AssertionError');
                     expect(e).to.have.property('message').that.equals(
-                        'Node should have OBM settings to run OBM command');
+                        'No OBM service assigned to this node.');
                     done();
                 } catch (e) {
                     done(e);
@@ -108,12 +120,10 @@ describe("Job.Obm.Node", function () {
         });
 
         it('should fail if node does not have an obm config for the obm service', function(done) {
-            var node = {
-                obmSettings: {
-                    'bad-obm-service': {}
-                }
+            var obm = {
+                service: 'bad-obm-service'
             };
-            mockWaterline.nodes.findByIdentifier.resolves(node);
+            mockWaterline.obms.findByNode.resolves(obm);
 
             job.run()
             .then(function() {
@@ -123,7 +133,8 @@ describe("Job.Obm.Node", function () {
                 try {
                     expect(e).to.have.property('name').that.equals('AssertionError');
                     expect(e).to.have.property('message').that.equals(
-                        'Node should have OBM settings for service: ' + 'ipmi-obm-service');
+                        'OBM should have settings for service: bad-obm-service (object) is required'
+                    );
                     done();
                 } catch (e) {
                     done(e);
@@ -131,20 +142,102 @@ describe("Job.Obm.Node", function () {
             });
         });
 
-        it('should run an OBM command with nodeId specified in options', function() {
-            var node = {
-                obmSettings: [
-                    {
-                        service: 'ipmi-obm-service',
-                        config: {
-                            "user": "admin",
-                            "password": "admin",
-                            "host": "10.0.0.254"
-                        }
-                    }
-                ]
+        it('should fail if there is no OBM services and no default', function(){
+            // user is not passing any default obm service to use for this test...
+            var testOptions = {
+                action: 'reboot',
+                delay: 1,
+                retries: 1
             };
+
+            job = new Job(testOptions, { target: '54da9d7bf33e0405c75f7111' }, uuid.v4());
+            job._subscribeActiveTaskExists = sinon.stub().resolves();
+            job.killObm = sinon.stub().resolves();
+            mockWaterline.obms.findByNode.resolves();
+            mockWaterline.obms.find.resolves([]);
+            mockWaterline.nodes.findByIdentifier.resolves({name: 'a node'});
+
+            return expect(job.run()).to.be.rejectedWith(Error,
+                 'No OBM service assigned to this node.');
+
+        });
+
+        it('should fail if there is more than one OBM service with no default', function(){
+          // user is not passing any default obm service to use for this test...
+          var testOptions = {
+              action: 'reboot',
+              delay: 1,
+              retries: 1
+          };
+
+          job = new Job(testOptions, { target: '54da9d7bf33e0405c75f7111' }, uuid.v4());
+          job._subscribeActiveTaskExists = sinon.stub().resolves();
+          job.killObm = sinon.stub().resolves();
+          var node = {name: 'a node'};
+          var obms = [
+              {
+                  service: 'noop-obm-service',
+                  config: {}
+              },
+              {
+                  service: 'foo',
+                  config: {
+                      "user": "admin",
+                      "password": "admin",
+                      "host": "10.0.0.254"
+                  }
+              }
+          ];
+          mockWaterline.nodes.findByIdentifier.resolves(node);
+          mockWaterline.obms.findByNode.resolves();
+          mockWaterline.obms.find.resolves(obms);
+          return expect(job.run()).to.be.rejectedWith(Error,
+               'More than one OBM service assigned to this node.');
+
+        });
+
+        it('should set default OBM setting if only one exists', function(){
+            // user is not passing any default obm service to use for this test...
+            var testOptions = {
+                action: 'reboot',
+                delay: 1,
+                retries: 1
+            };
+
+            job = new Job(testOptions, { target: '54da9d7bf33e0405c75f7111' }, uuid.v4());
+            job._subscribeActiveTaskExists = sinon.stub().resolves();
+            job.killObm = sinon.stub().resolves();
+
+            var node = {name: 'a node'};
+            var obms = [
+              {
+                  service: 'noop-obm-service',
+                  config: {}
+              }
+            ];
             mockWaterline.nodes.findByIdentifier.resolves(node);
+            mockWaterline.obms.findByNode.resolves();
+            mockWaterline.obms.find.resolves(obms);
+            mockWaterline.obms.findByNode.resolves(obms[0]);
+
+            return job.run()
+            .then(function() {
+                expect(job.settings).to.equal(obms[0]);
+            });
+        });
+
+
+        it('should run an OBM command with nodeId specified in options', function() {
+            var obm =
+            {
+                service: 'ipmi-obm-service',
+                config: {
+                    "user": "admin",
+                    "password": "admin",
+                    "host": "10.0.0.254"
+                }
+            };
+            mockWaterline.obms.findByNode.resolves(obm);
 
             testOptions.nodeId = job.context.target;
             job = new Job(testOptions, { }, uuid.v4());
@@ -155,31 +248,28 @@ describe("Job.Obm.Node", function () {
             .then(function() {
                 var ipmiObmServiceFactory = helper.injector.get('ipmi-obm-service');
                 expect(ObmServiceSpy).to.have.been.calledWith(
-                    job.nodeId, ipmiObmServiceFactory, node.obmSettings[0], testOptions);
+                    job.nodeId, ipmiObmServiceFactory, obm, testOptions);
                 expect(ObmService.prototype.reboot).to.have.been.calledOnce;
             });
         });
 
         it('should run an OBM command', function() {
-            var node = {
-                obmSettings: [
-                    {
-                        service: 'ipmi-obm-service',
-                        config: {
-                            "user": "admin",
-                            "password": "admin",
-                            "host": "10.0.0.254"
-                        }
-                    }
-                ]
+            var obm =
+            {
+                service: 'ipmi-obm-service',
+                config: {
+                    "user": "admin",
+                    "password": "admin",
+                    "host": "10.0.0.254"
+                }
             };
-            mockWaterline.nodes.findByIdentifier.resolves(node);
+            mockWaterline.obms.findByNode.resolves(obm);
 
             return job.run()
             .then(function() {
                 var ipmiObmServiceFactory = helper.injector.get('ipmi-obm-service');
                 expect(ObmServiceSpy).to.have.been.calledWith(
-                    job.nodeId, ipmiObmServiceFactory, node.obmSettings[0], 
+                    job.nodeId, ipmiObmServiceFactory, obm,
                     testOptions);
                 expect(ObmService.prototype.reboot).to.have.been.calledOnce;
             });

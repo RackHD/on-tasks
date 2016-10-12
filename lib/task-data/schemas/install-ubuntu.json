@@ -1,0 +1,26 @@
+{
+    "$schema": "rackhd-task-schema.json",
+    "copyright": "Copyright 2016, EMC, Inc.",
+    "title": "Install Ubuntu",
+    "description": "The parameters for Ubuntu installation",
+    "describeJob": "Job.Os.Install",
+    "definitions": {
+        "UbuntuSpecificOptions": {
+            "type": "object",
+            "properties": {
+                "baseUrl": {
+                    "type": "string",
+                    "description":"Url path to netboot installer directory",
+                    "minLength": 1
+                }
+            },
+            "required": ["baseUrl"]
+        }
+    },
+    "allOf": [
+        { "$ref": "common-task-options.json#/definitions/Options" },
+        { "$ref": "install-os-types.json#/definitions/BasicOptions" },
+        { "$ref": "install-os-types.json#/definitions/AdvanceOptions" },
+        { "$ref": "#/definitions/UbuntuSpecificOptions" }
+    ]
+}

@@ -1,0 +1,102 @@
+{
+    "$schema": "rackhd-task-schema.json",
+    "copyright": "Copyright 2016, EMC, Inc.",
+    "title": "Install ESXi",
+    "description": "The parameters for ESXi installation",
+    "describeJob": "Job.Os.Install",
+    "definitions": {
+        "PostInstallCommands": {
+            "type": "array",
+            "description": "A list of commands that will be run at the end of the post installation step, this can be used by the customer to tweak final system configuration",
+            "items": {
+                "type": "string",
+                "minLength": 1
+            }
+        },
+        "SwitchDeviceItem": {
+            "type": "object",
+            "properties": {
+                "switchName": {
+                    "type": "string",
+                    "minLength": 1,
+                    "description": "virtual switch name, such as 'vSwitch0'"
+                },
+                "uplinks": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "uniqueItems": true,
+                    "description": "list of uplink adapters that connected with the virtual switch, the example name of uplink adapter is 'vmnic0' or MAC address"
+                }
+            },
+            "required": ["switchName"]
+        },
+        "SwitchDevices": {
+            "type": "array",
+            "description": "Virtual switch configuration",
+            "items": {
+                "$ref": "#/definitions/SwitchDeviceItem"
+            },
+            "uniqueItems": true
+        },
+        "EsxBootConfigTemplate": {
+            "type": "string",
+            "description": "The template file name for ESXi boot config",
+            "minLength": 1
+        },
+        "EsxBootConfigTemplateUri": {
+            "type": "string",
+            "description": "The URL address that to download the ESXi boot config file",
+            "minLength": 1
+        },
+        "ComportAddress": {
+            "description": "The COM port address, com1=0x3f8, com2=0x2f8, com3=0x3e8, com4=0x2e8",
+            "enum": [
+                "0x3f8",
+                "0x2f8",
+                "0x3e8",
+                "0x2e8"
+            ]
+        },
+        "EsxiSpecificOptions": {
+            "type": "object",
+            "properties": {
+                "users": {
+                    "$ref": "install-os-types.json#/definitions/UsersSimple"
+                },
+                "postInstallCommands": {
+                    "$ref": "#/definitions/PostInstallCommands"
+                },
+                "switchDevices": {
+                    "$ref": "#/definitions/SwitchDevices"
+                },
+                "esxBootConfigTemplate": {
+                    "$ref": "#/definitions/EsxBootConfigTemplate"
+                },
+                "esxBootConfigTemplateUri": {
+                    "$ref": "#/definitions/EsxBootConfigTemplateUri"
+                },
+                "rackhdCallbackScript": {
+                    "$ref": "install-os-types.json#/definitions/RackHDCallbackScript"
+                },
+                "comportaddress": {
+                    "$ref": "#/definitions/ComportAddress"
+                }
+            },
+            "required": [
+                "esxBootConfigTemplate",
+                "esxBootConfigTemplateUri",
+                "rackhdCallbackScript",
+                "comportaddress"
+            ]
+        }
+    },
+    "allOf": [
+        { "$ref": "common-task-options.json#/definitions/Options" },
+        { "$ref": "install-os-types.json#/definitions/BasicOptions" },
+        { "$ref": "install-os-types.json#/definitions/AdvanceOptionsWithSimpleUser" },
+        { "$ref": "#/definitions/EsxiSpecificOptions" }
+    ]
+}

@@ -32,7 +32,7 @@ describe("Job.Catalog.GenerateTag", function () {
         }
     };
 
-    var targetId = 'bc7dab7e8fb7d6abf8e7d6ab';
+    var testNodeIds = [ 'bc7dab7e8fb7d6abf8e7d6ab' ];
 
     before(function () {
         // create a child injector with on-core and the base pieces we need to test this
@@ -68,7 +68,7 @@ describe("Job.Catalog.GenerateTag", function () {
     });
 
     it('assigns a matching tag', function() {
-        var job = new GenerateTag({}, { target: targetId }, uuid.v4());
+        var job = new GenerateTag({ nodeIds: testNodeIds }, {}, uuid.v4());
         var tags = [ {
             id: '1',
             createdAt: new Date('Feb 01 2015 12:00:00'),
@@ -98,12 +98,55 @@ describe("Job.Catalog.GenerateTag", function () {
         return job.run()
         .then(function() {
             expect(waterline.nodes.addTags).to.have.been.calledOnce;
-            expect(waterline.nodes.addTags).to.have.been.calledWith(targetId, ['Test Tag']);
+            expect(waterline.nodes.addTags).to.have.been.calledWith(testNodeIds[0], ['Test Tag']);
+        });
+    });
+
+    it('assigns a matching tag against an array of node IDs', function() {
+        var nodeIds = [
+            '579b7e45dc1c6c180e39d457',
+            '579b7e47dc1c6c180e39d458',
+            '579b7de7a39b92ee0da4f26a'
+        ];
+        var job = new GenerateTag({ nodeIds: nodeIds }, {}, uuid.v4());
+
+        var tags = [ {
+            id: '1',
+            createdAt: new Date('Feb 01 2015 12:00:00'),
+            name: 'Test Tag',
+            rules: [
+                {
+                    path: 'dmi.dmi.system.manufacturer',
+                    regex: /[On]*[Rr]ack[HD]*/
+                }
+            ]
+        },
+        {
+            id: '2',
+            createdAt: new Date('Feb 01 2015 12:00:00'),
+            name: 'Test Tag 2',
+            rules: [
+                {
+                    path: 'dmi.dmi.system.manufacturer',
+                    equals: 'Other'
+                }
+            ]
+        }];
+
+        waterline.tags.find.resolves(tags);
+        waterline.catalogs.findMostRecent.resolves(catalog1);
+
+        return job.run()
+        .then(function() {
+            expect(waterline.nodes.addTags).to.have.been.calledThrice;
+            expect(waterline.nodes.addTags).to.have.been.calledWith(nodeIds[0], ['Test Tag']);
+            expect(waterline.nodes.addTags).to.have.been.calledWith(nodeIds[1], ['Test Tag']);
+            expect(waterline.nodes.addTags).to.have.been.calledWith(nodeIds[2], ['Test Tag']);
         });
     });
 
     it('assigns nothing when no tags match', function() {
-        var job = new GenerateTag({}, { target: targetId }, uuid.v4());
+        var job = new GenerateTag({ nodeIds: testNodeIds }, {}, uuid.v4());
         var tag = {
             id: '1',
             createdAt: new Date('Feb 01 2015 12:00:00'),
@@ -125,7 +168,7 @@ describe("Job.Catalog.GenerateTag", function () {
     });
 
     it('assigns all tags when multiples match', function() {
-        var job = new GenerateTag({}, { target: targetId }, uuid.v4());
+        var job = new GenerateTag({ nodeIds: testNodeIds }, {}, uuid.v4());
         var tags = [{
             id: '1',
             createdAt: new Date('Feb 01 2015 12:00:00'),
@@ -158,12 +201,12 @@ describe("Job.Catalog.GenerateTag", function () {
         .then(function() {
             expect(waterline.nodes.addTags).to.have.been.calledOnce;
             expect(waterline.nodes.addTags).to.have.been.calledWith(
-                targetId, ['Test Tag', 'Test Tag 2']);
+                testNodeIds[0], ['Test Tag', 'Test Tag 2']);
         });
     });
 
     it('assigns a matching tag against multiple catalogs', function() {
-        var job = new GenerateTag({}, { target: targetId }, uuid.v4());
+        var job = new GenerateTag({ nodeIds: testNodeIds }, {}, uuid.v4());
         var tag = {
             id: '1',
             createdAt: new Date('Feb 01 2015 12:00:00'),
@@ -186,12 +229,12 @@ describe("Job.Catalog.GenerateTag", function () {
         return job.run()
         .then(function() {
             expect(waterline.nodes.addTags).to.have.been.calledOnce;
-            expect(waterline.nodes.addTags).to.have.been.calledWith(targetId, ['Test Tag']);
+            expect(waterline.nodes.addTags).to.have.been.calledWith(testNodeIds[0], ['Test Tag']);
         });
     });
 
     it('assigns nothing when no tags match against multiple catalogs', function() {
-        var job = new GenerateTag({}, { target: targetId }, uuid.v4());
+        var job = new GenerateTag({ nodeIds: testNodeIds }, {}, uuid.v4());
         var tag = {
             id: '1',
             createdAt: new Date('Feb 01 2015 12:00:00'),
@@ -219,7 +262,7 @@ describe("Job.Catalog.GenerateTag", function () {
 
 
     it('assigns nothing when no catalogs present', function() {
-        var job = new GenerateTag({}, { target: targetId }, uuid.v4());
+        var job = new GenerateTag({ nodeIds: testNodeIds }, {}, uuid.v4());
         var tag = {
             id: '1',
             createdAt: new Date('Feb 01 2015 12:00:00'),
@@ -245,7 +288,7 @@ describe("Job.Catalog.GenerateTag", function () {
     });
 
     it('assigns nothing when no tags present', function() {
-        var job = new GenerateTag({}, { target: targetId }, uuid.v4());
+        var job = new GenerateTag({ nodeIds: testNodeIds }, {}, uuid.v4());
 
         waterline.tags.find.resolves([]);
         waterline.catalogs.findMostRecent.resolves();

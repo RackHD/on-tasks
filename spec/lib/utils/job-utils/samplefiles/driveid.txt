@@ -14,5 +14,21 @@
         "linuxWwid": "/dev/disk/by-id/scsi-36001636001940a481ddebecb45264d4a",
         "scsiId": "0:2:0:0",
         "virtualDisk": "/c0/v0"
+    },
+    {
+        "devName": "sdb",
+        "esxiWwid": "naa.5000c5008f0641fb",
+        "identifier": 5,
+        "linuxWwid": "/dev/disk/by-id/scsi-35000c5008f0641fb",
+        "scsiId": "0:0:18:0",
+        "virtualDisk": "/c0/v18"
+    },
+    {
+        "devName": "sdd",
+        "esxiWwid": "naa.5000c5008f06f68b",
+        "identifier": 6,
+        "linuxWwid": "/dev/disk/by-id/scsi-35000c5008f06f68b",
+        "scsiId": "0:0:20:0",
+        "virtualDisk": "20"
     }
 ]

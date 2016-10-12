@@ -1,0 +1,19 @@
+{
+    "$schema": "rackhd-task-schema.json",
+    "copyright": "Copyright 2016, EMC, Inc.",
+    "title": "Catalog RAID data",
+    "description": "Collect catalog data about RAID in microkernel",
+    "describeJob": "Job.Linux.Catalog",
+    "allOf": [
+        { "$ref": "linux-catalog.json" },
+        {
+            "type": "object",
+            "properties": {
+                "adapter": {
+                    "$ref": "flash-megaraid.json#/definitions/Adapter"
+                }
+            },
+            "required": ["adapter"]
+        }
+    ]
+}

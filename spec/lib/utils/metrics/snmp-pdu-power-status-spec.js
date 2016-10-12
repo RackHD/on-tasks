@@ -4,16 +4,25 @@
 'use strict';
 
 describe("SNMP PDU Power Metric", function () {
+    var sandbox = sinon.sandbox.create();
     var waterline;
     var SnmpPduPowerMetric;
     var metric;
+    var taskProtocol = {
+        publishPollerAlert: sandbox.stub().resolves()
+    };
+    var env = {
+        get: sandbox.stub().resolves([['mib-x'],['mib-y']])
+    };
 
     before('SNMP PDU Power Metric before', function () {
         helper.setupInjector([
             helper.require('/lib/utils/metrics/base-metric.js'),
             helper.require('/lib/utils/metrics/snmp-pdu-power-status.js'),
             helper.require('/lib/utils/job-utils/net-snmp-tool.js'),
-            helper.require('/lib/utils/job-utils/net-snmp-parser.js')
+            helper.require('/lib/utils/job-utils/net-snmp-parser.js'),
+            helper.di.simpleWrapper(taskProtocol, 'Protocol.Task'),
+            helper.di.simpleWrapper(env, 'Services.Environment')
         ]);
 
         SnmpPduPowerMetric =
@@ -24,8 +33,15 @@ describe("SNMP PDU Power Metric", function () {
     beforeEach('SNMP PDU Power Metric beforeEach', function() {
         metric = new SnmpPduPowerMetric('testnodeid', 'testhost', 'testcommunity');
         waterline.catalogs = {
-            findMostRecent: sinon.stub().resolves()
+            findMostRecent: sandbox.stub().resolves()
         };
+        waterline.nodes = {
+            needByIdentifier: sandbox.stub().resolves({sku:'abc-xyz'})
+        };
+        waterline.environment = {
+            findOne: sandbox.stub().resolves()
+        };
+        taskProtocol.publishPollerAlert.reset();
     });
 
     it('should have a collectMetricData function', function() {
@@ -33,7 +49,7 @@ describe("SNMP PDU Power Metric", function () {
     });
 
     it('should collect pdu power data for Sinetica(Panduit) iPDU', function() {
-        metric.snmptool = { collectHostSnmp: sinon.stub() };
+        metric.snmptool = { collectHostSnmp: sandbox.stub() };
         var values = { testoid1: '1'};
         var expectValues = {
              pdusResult: [
@@ -89,7 +105,7 @@ describe("SNMP PDU Power Metric", function () {
     });
 
     it('should call correct power collection function based on node type', function() {
-        metric._collectSineticaPowerData = sinon.stub();
+        metric._collectSineticaPowerData = sandbox.stub();
 
         metric.nodeType = 'sinetica';
         metric.collectPowerData({});
@@ -97,11 +113,33 @@ describe("SNMP PDU Power Metric", function () {
     });
 
     it('should call correct power calculation function based on node type', function() {
-        metric._calculateSineticaPowerData = sinon.stub();
-
+        var currentResult = {
+            'PDU_1': {
+                'outlets': {
+                    'outlet_1': {
+                        'pduOutOn': 'on',
+                        'pduOutName': 'A01'
+                    }
+                }
+            },
+            'PDU_Aggregate': {}
+        };
+        var lastResult = _.cloneDeep(currentResult);
+        lastResult['PDU_1']['outlets']['outlet_1']['pduOutOn'] = 'off';
+        var testData = {
+            cache: { 'abc': { 'snmp-pdu-power-status': lastResult } },
+            config: { metric: 'snmp-pdu-power-status' },
+            workItemId: 'abc',
+            routingKey: '0e2c320f-f29e-47c6-be18-0c833e0f080c'
+        };
+        metric._calculateSineticaPowerData = sandbox.stub().resolves(currentResult);
+        metric.data = testData;
         metric.nodeType = 'sinetica';
-        metric.calculatePowerData({});
-        expect(metric._calculateSineticaPowerData).to.have.been.calledOnce;
+        return metric.calculatePowerData(testData)
+        .then(function(result) {
+            expect(result).to.deep.equal(currentResult);
+            expect(metric._calculateSineticaPowerData).to.have.been.calledOnce;
+            expect(taskProtocol.publishPollerAlert).to.have.been.calledOnce;       
+        });
     });
-
 });

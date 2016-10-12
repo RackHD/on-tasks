@@ -1,0 +1,22 @@
+{
+    "$schema": "rackhd-task-schema.json",
+    "copyright": "Copyright 2016, EMC, Inc.",
+    "title": "Generate Tag Task",
+    "description": "The schema for generate-tag",
+    "describeJob": "Job.Catalog.GenerateTag",
+    "allOf": [
+        { "$ref": "common-task-options.json#/definitions/Options" },
+        {
+            "properties": {
+                "nodeIds": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    },
+                    "description": "An array of nodeIds to process tags against"
+                }
+            },
+            "required": ["nodeIds"]
+        }
+    ]
+}

@@ -9,7 +9,8 @@ describe('Install OS Job', function () {
     var InstallOsJob;
     var subscribeRequestProfileStub;
     var subscribeRequestPropertiesStub;
-    var subscribeHttpResponseStub;
+    var subscribeNodeNotification;
+    var doneSpy;
     var job;
     var waterline;
     var Promise;
@@ -31,28 +32,28 @@ describe('Install OS Job', function () {
             InstallOsJob.prototype, '_subscribeRequestProfile');
         subscribeRequestPropertiesStub = sinon.stub(
             InstallOsJob.prototype, '_subscribeRequestProperties');
-        subscribeHttpResponseStub = sinon.stub(
-            InstallOsJob.prototype, '_subscribeHttpResponse');
+        subscribeNodeNotification = sinon.stub(
+            InstallOsJob.prototype, '_subscribeNodeNotification');
+        doneSpy = sinon.spy(InstallOsJob.prototype, '_done');
     });
 
     beforeEach(function() {
         subscribeRequestProfileStub.reset();
         subscribeRequestPropertiesStub.reset();
-        subscribeHttpResponseStub.reset();
+        doneSpy.reset();
         job = new InstallOsJob(
             {
                 profile: 'testprofile',
-                completionUri: '',
                 version: '7.0',
                 repo: 'http://127.0.0.1:8080/myrepo/7.0/x86_64',
                 rootPassword: 'rackhd',
-                rootSshKey: null,
+                rootSshKey: 'testkey',
                 kvm: null,
                 users: [
                     {
                         name: 'test',
                         password: 'testPassword',
-                        uid: 100,
+                        uid: 600,
                         sshKey: ''
                     }
                 ],
@@ -67,7 +68,7 @@ describe('Install OS Job', function () {
     after(function() {
         subscribeRequestProfileStub.restore();
         subscribeRequestPropertiesStub.restore();
-        subscribeHttpResponseStub.restore();
+        doneSpy.restore();
     });
 
     it("should have a nodeId value", function() {
@@ -83,30 +84,20 @@ describe('Install OS Job', function () {
         expect(job.options.users[0].encryptedPassword).to.match(/^\$6\$*\$*/);
     });
 
-    it("should remove empty ssh key", function() {
-        expect(job.options).to.not.have.property('rootSshKey');
-        expect(job.options.users[0]).to.not.have.property('sshKey');
-    });
-
-    it("should remove empty kvm flag", function() {
-        expect(job.options).to.not.have.property('kvm');
-    });
-
     it("should preserve an existing/positive kvm flag", function() {
         var jobWithKVM = new InstallOsJob(
             {
                 profile: 'testprofile',
-                completionUri: '',
                 version: '7.0',
                 repo: 'http://127.0.0.1:8080/myrepo/7.0/x86_64',
                 rootPassword: 'rackhd',
-                rootSshKey: null,
+                rootSshKey: 'testkey',
                 kvm: true,
                 users: [
                     {
                         name: 'test',
                         password: 'testPassword',
-                        uid: 100,
+                        uid: 600,
                         sshKey: ''
                     }
                 ],
@@ -121,29 +112,48 @@ describe('Install OS Job', function () {
     });
 
 
-    it("should convert some option to empty array", function() {
-        expect(job.options.dnsServers).to.have.length(0);
-    });
-
     it("should set up message subscribers", function() {
         var cb;
         waterline.catalogs.findMostRecent = sinon.stub().resolves({});
         return job._run().then(function() {
             expect(subscribeRequestProfileStub).to.have.been.called;
             expect(subscribeRequestPropertiesStub).to.have.been.called;
-            expect(subscribeHttpResponseStub).to.have.been.called;
+            expect(subscribeNodeNotification).to.have.been.called;
 
             cb = subscribeRequestProfileStub.firstCall.args[0];
-            expect(cb).to.be.a.function;
+            expect(cb).to.be.a('function');
             expect(cb.call(job)).to.equal(job.profile);
 
             cb = subscribeRequestPropertiesStub.firstCall.args[0];
-            expect(cb).to.be.a.function;
+            expect(cb).to.be.a('function');
             expect(cb.call(job)).to.equal(job.options);
 
-            cb = subscribeHttpResponseStub.firstCall.args[0];
-            expect(cb).to.be.a.function;
+            var nodeId = subscribeNodeNotification.firstCall.args[0];
+            expect(nodeId).to.be.a('string');
+            cb = subscribeNodeNotification.firstCall.args[1];
+            expect(cb).to.be.a('function');
         });
+    });
+
+    it('should finish job if task notification received', function() {
+        subscribeNodeNotification.restore();
+        subscribeNodeNotification = sinon.stub(
+            InstallOsJob.prototype, '_subscribeNodeNotification', function(_nodeId, callback) {
+                callback({
+                    nodeId: _nodeId
+                });
+            });
+        return job._run().then(function() {
+            expect(subscribeNodeNotification).to.have.callCount(1);
+            expect(job._done).to.have.callCount(1);
+            expect(job._done.firstCall.args[0]).to.equal(undefined);
+        });
+    });
+
+    it('should provide the given user credentials to the context', function() {
+        expect(job.context.users).to.deep.equal(
+            job.options.users.concat({name: 'root', password: 'rackhd', privateKey: 'testkey'})
+        );
     });
 
     describe('test _convertInstallDisk', function() {
@@ -171,16 +181,15 @@ describe('Install OS Job', function () {
             job = new InstallOsJob(
                 {
                     profile: 'testprofile',
-                    completionUri: '',
                     version: '7.0',
                     repo: 'http://127.0.0.1:8080/myrepo/7.0/x86_64',
                     rootPassword: 'rackhd',
-                    rootSshKey: null,
+                    rootSshKey: 'testkey',
                     users: [
                         {
                             name: 'test',
                             password: 'testPassword',
-                            uid: 100,
+                            uid: 600,
                             sshKey: ''
                         }
                     ],
@@ -271,5 +280,81 @@ describe('Install OS Job', function () {
                 expect(job.options.installDisk).to.equal('firstdisk');
             });
         });
+    });
+
+    describe('test _validateOptions', function() {
+        it('should throw ipAddr AssertionError', function () {
+            job.options.networkDevices = [
+                {
+                    device: "eth0",
+                    ipv4:{
+                        ipAddr: '292.168.1.1',
+                        gateway: "192.168.1.1",
+                        netmask: "255.255.255.0"
+                    }
+                }
+            ];
+            expect(function() { job._validateOptions(); })
+                .to.throw(Error.AssertionError, 'Violated isIP constraint');
+        });
+
+        it('should throw netmask AssertionError', function () {
+            job.options.networkDevices = [
+                {
+                    device: "eth0",
+                    ipv4:{
+                        ipAddr: '192.168.1.1',
+                        gateway: '192.168.1.1',
+                        netmask: '255.255.192.1'
+                    }
+                }
+            ];
+            expect(function() { job._validateOptions(); })
+                .to.throw(Error.AssertionError, 'Invalid ipv4 netmask.');
+        });
+
+        it('should throw ipAddress AssertionError', function () {
+            job.options.networkDevices = [
+                {
+                    device: "eth0",
+                    ipv6:{
+                        ipAddr: "10ec0::6ab4:0:5efe:157.60.14.21",
+                        gateway: "fe80::5efe:131.107.25.1",
+                        netmask: "ffff.ffff.ffff.ffff.0.0.1.0"
+                    }
+                }
+            ];
+            expect(function() { job._validateOptions(); })
+                .to.throw(Error.AssertionError, 'Violated isIP constraint');
+        });
+
+        it('should throw netmask AssertionError', function () {
+            job.options.networkDevices = [
+                {
+                    device: "eth0",
+                    ipv6:{
+                        ipAddr: "fec0::6ab4:0:5efe:157.60.14.21",
+                        gateway: "fe80::5efe:131.107.25.1",
+                        netmask: "ffff.ffff.ffff.ffff.0.0.1.0"
+                    }
+                }
+            ];
+            expect(function() { job._validateOptions(); })
+                .to.throw(Error, 'Invalid ipv6 netmask.');
+        });
+
+        it('should throw error when size is not a number string and not "auto"', function() {
+            job.options.installPartitions = [{ mountPoint:'/boot', size:"abc", fsType:'ext3' }];
+            return expect(job._validateOptions.bind(job,{}))
+                   .to.throw('size must be a number string or "auto"');
+        });
+
+
+        it('should correct fsType when mountPoint is swap but fsType is not swap', function() {
+            job.options.installPartitions = [{ mountPoint:'swap', size:'500', fsType:'ext3' }];
+            job._validateOptions.bind(job,{})();
+            expect(job.options.installPartitions[0].fsType).to.equal('swap');
+        });
+
     });
 });

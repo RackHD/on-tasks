@@ -1,0 +1,24 @@
+{
+    "$schema": "rackhd-task-schema.json",
+    "copyright": "Copyright 2016, EMC, Inc.",
+    "title": "Install CentOS",
+    "description": "The parameters for CentOS installation",
+    "describeJob": "Job.Os.Install",
+    "definitions": {
+        "CentOsSpecificOptions": {
+            "type": "object",
+            "properties": {
+                "rackhdCallbackScript": {
+                    "$ref": "install-os-types.json#/definitions/RackHDCallbackScript"
+                }
+            },
+            "required": ["rackhdCallbackScript"]
+        }
+    },
+    "allOf": [
+        { "$ref": "common-task-options.json#/definitions/Options" },
+        { "$ref": "install-os-types.json#/definitions/BasicOptions" },
+        { "$ref": "install-os-types.json#/definitions/AdvanceOptions" },
+        { "$ref": "#/definitions/CentOsSpecificOptions" }
+    ]
+}

@@ -34,6 +34,9 @@ describe("Job.Catalog.RunWorkItem", function () {
         waterline.nodes = {
             findOne: sinon.stub()
         };
+        waterline.obms = {
+            findByNode: sinon.stub()
+        };
     });
 
     beforeEach(function () {
@@ -41,6 +44,7 @@ describe("Job.Catalog.RunWorkItem", function () {
         waterline.workitems.setSucceeded.reset();
         waterline.workitems.setFailed.reset();
         waterline.nodes.findOne.reset();
+        waterline.obms.findByNode.reset();
         taskProtocol.publishRunIpmiCommand.reset();
         taskProtocol.publishRunSnmpCommand.reset();
     });
@@ -88,23 +92,20 @@ describe("Job.Catalog.RunWorkItem", function () {
     it('should run an IPMI Poller work item against a node', function(done) {
         var node = {
             id: 'bc7dab7e8fb7d6abf8e7d6ac',
-            obmSettings: [
-                {
-                    service: 'ipmi-obm-service',
-                    config: {
-                        ip: '1.2.3.4',
-                        user: 'myuser',
-                        password: 'mypass'
-                    }
-                }
-            ]
+        };
+        var obm = {
+            node: 'bc7dab7e8fb7d6abf8e7d6ac',
+            config: {}
         };
         var workItem = {
             id: 'bc7dab7e8fb7d6abf8e7d6ad',
             name: 'Pollers.IPMI',
             node: node.id,
             config: {
-                command: 'power'
+                command: 'power',
+                ip: '1.2.3.4',
+                user: 'myuser',
+                password: 'mypass'
             }
         };
 
@@ -112,15 +113,13 @@ describe("Job.Catalog.RunWorkItem", function () {
 
         waterline.workitems.startNextScheduled.onCall(0).resolves(workItem);
         waterline.nodes.findOne.resolves(node);
+        waterline.obms.findByNode.resolves(obm);
         job.run();
 
         // This is guaranteed to run because job._deferred won't resolve until
         // we call job.cancel()
         setImmediate(function () {
             try {
-                expect(waterline.nodes.findOne).to.have.been.calledOnce;
-                expect(waterline.nodes.findOne).to.have.been.calledWith(node.id);
-
                 expect(taskProtocol.publishRunIpmiCommand).to.have.been.calledOnce;
                 expect(taskProtocol.publishRunIpmiCommand.firstCall.args[1]).to.equal('power');
                 expect(taskProtocol.publishRunIpmiCommand.firstCall.args[2])
@@ -221,7 +220,7 @@ describe("Job.Catalog.RunWorkItem", function () {
         setImmediate(function () {
             try {
                 expect(waterline.workitems.setFailed).to.have.been.calledOnce;
-                expect(waterline.workitems.setFailed.firstCall.args[1]).to.equal(workItem);
+                expect(waterline.workitems.setFailed.firstCall.args[2]).to.equal(workItem);
                 job.cancel();
                 done();
             } catch (e) {

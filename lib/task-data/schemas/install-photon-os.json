@@ -1,0 +1,29 @@
+{
+    "$schema": "rackhd-task-schema.json",
+    "copyright": "Copyright 2016, EMC, Inc.",
+    "title": "Install Photon OS",
+    "description": "The parameters for Photon OS installation",
+    "describeJob": "Job.Os.Install",
+    "definitions": {
+        "PhotonOsSpecificOptions": {
+            "type": "object",
+            "properties": {
+                "installType": {
+                    "description": "Photon OS install type",
+                    "type": "string",
+                    "enum": [ "minimal", "full" ]
+                },
+                "rackhdCallbackScript": {
+                    "$ref": "install-os-types.json#/definitions/RackHDCallbackScript"
+                }
+            },
+            "required": ["installType", "rackhdCallbackScript"]
+        }
+    },
+    "allOf": [
+        { "$ref": "common-task-options.json#/definitions/Options" },
+        { "$ref": "install-os-types.json#/definitions/BasicOptions" },
+        { "$ref": "install-os-types.json#/definitions/AdvanceOptions" },
+        { "$ref": "#/definitions/PhotonOsSpecificOptions" }
+    ]
+}

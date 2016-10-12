@@ -17,16 +17,21 @@
   },
   "homepage": "https://github.com/RackHD/on-tasks",
   "dependencies": {
+    "ajv": "^4.1.0",
     "di": "git+https://github.com/RackHD/di.js.git",
+    "dockerode": "^2.2.10",
     "lodash": "^3.10.1",
     "on-core": "git+https://github.com/RackHD/on-core.git",
+    "ssh2": "0.5.0",
+    "url-parse": "~1.0.5",
     "xml2js": "^0.4.4",
-    "redfish-client-node": "git+https://github.com/RackHD/redfish-client-node.git"
+    "temp": "~0.8.3"
   },
   "devDependencies": {
     "chai": "^2.0.0",
     "chai-as-promised": "^4.2.0",
     "coveralls": "^2.11.4",
+    "glob": "^4.3.2",
     "grunt": "^0.4.5",
     "grunt-cli": "^0.1.13",
     "grunt-contrib-jshint": "^0.11.0",
@@ -37,13 +42,16 @@
     "istanbul": "^0.3.5",
     "jsdoc": "^3.3.0-alpha13",
     "jshint": "^2.5.11",
+    "json-schema-faker": "^0.3.6",
+    "jsonlint": "^1.6.2",
+    "lodash.unset": "^4.4.0",
     "mocha": "^2.1.0",
+    "nock": "^2.17.0",
     "node-uuid": "^1.4.2",
     "sinon": "^1.12.2",
     "sinon-as-promised": "^2.0.3",
     "sinon-chai": "^2.7.0",
     "supertest": "^0.15.0",
-    "xunit-file": "0.0.6",
-    "nock": "^2.17.0"
+    "xunit-file": "0.0.6"
   }
 }

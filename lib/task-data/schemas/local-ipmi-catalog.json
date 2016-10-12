@@ -1,0 +1,19 @@
+{
+    "$schema": "rackhd-task-schema.json",
+    "copyright": "Copyright 2016, EMC, Inc.",
+    "title": "Local IPMI Catalog",
+    "description": "Fetch IPMI catalog data remotely (in RackHD local environment)",
+    "describeJob": "Job.LocalIpmi.Catalog",
+    "allOf": [
+        { "$ref": "common-task-options.json#/definitions/Options" },
+        {
+            "type": "object",
+            "properties": {
+                "commands": {
+                    "$ref": "linux-command.json#/definitions/Commands"
+                }
+            },
+            "required": ["commands"]
+        }
+    ]
+}

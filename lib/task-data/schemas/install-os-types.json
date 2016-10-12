@@ -1,0 +1,378 @@
+{
+    "$schema": "rackhd-task-schema.json",
+    "copyright": "Copyright 2016, EMC, Inc.",
+    "title": "Install OS Types",
+    "description": "The paramters type definition schema for install os",
+    "describeJob": "Job.Os.Install",
+    "definitions": {
+        "OsType": {
+            "description": "The type of OS which is used by code internally",
+            "enum": [ "esx", "linux" ]
+        },
+        "UserName": {
+            "description": "The user account name",
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_]",
+            "minLength": 1
+        },
+        "UserPassword": {
+            "description": "The account password",
+            "type": "string",
+            "minLength": 1
+        },
+        "SshKey": {
+            "type": "string",
+            "description": "The trusted ssh key for the particular user",
+            "minLength": 1
+        },
+        "UserID": {
+            "description": "The unique user identifier for this user account",
+            "type": "integer",
+            "minimum": 500,
+            "maximum": 65535
+        },
+        "UserAccountInfoSimple": {
+            "type": "object",
+            "description": "The simple information for an user account",
+            "properties": {
+                "name": {
+                    "$ref": "#/definitions/UserName"
+                },
+                "password": {
+                    "$ref": "#/definitions/UserPassword"
+                },
+                "sshKey": {
+                    "$ref": "#/definitions/SshKey"
+                }
+            },
+            "required": ["name", "password"]
+        },
+        "UserAccountInfoFull": {
+            "type": "object",
+            "description": "The full information for an user account",
+            "allOf": [
+                {
+                    "$ref": "#/definitions/UserAccountInfoSimple"
+                },
+                {
+                    "type": "object",
+                    "properties": {
+                        "uid": {
+                            "$ref": "#/definitions/UserID"
+                        }
+                    }
+                }
+            ]
+        },
+        "UsersSimple": {
+            "description": "The list of user account that will be created during OS installation, it supports simple user account information",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "$ref": "#/definitions/UserAccountInfoSimple"
+            },
+            "uniqueItems": true
+        },
+        "UsersFull": {
+            "description": "The list of user account that will be created during OS installation, it supports full user account information",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "$ref": "#/definitions/UserAccountInfoFull"
+            },
+            "uniqueItems": true
+        },
+        "VlanId": {
+            "type": "integer",
+            "minimum": 0,
+            "maximum": 4095
+        },
+        "Ipv4Configuration": {
+            "type": "object",
+            "properties": {
+                "ipAddr": {
+                    "description": "The ipv4 address",
+                    "type": "string",
+                    "format": "ipv4"
+                },
+                "netmask": {
+                    "description": "The ipv4 netmask",
+                    "type": "string",
+                    "format": "ipv4"
+                },
+                "gateway": {
+                    "description": "The ipv4 gateway",
+                    "type": "string",
+                    "format": "ipv4"
+                },
+                "vlanIds": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/VlanId"
+                    },
+                    "uniqueItems": true
+                }
+            },
+            "required": ["ipAddr", "netmask", "gateway"],
+            "additionalProperties": false
+        },
+        "Ipv6Configuration": {
+            "type": "object",
+            "properties": {
+                "ipAddr": {
+                    "description": "The ipv6 address",
+                    "type": "string",
+                    "format": "ipv6"
+                },
+                "netmask": {
+                    "description": "The ipv6 netmask",
+                    "type": "string"
+                },
+                "gateway": {
+                    "description": "The ipv6 gateway",
+                    "type": "string",
+                    "format": "ipv6"
+                },
+                "vlanIds": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/VlanId"
+                    },
+                    "uniqueItems": true
+                }
+            },
+            "required": ["ipAddr", "netmask", "gateway"],
+            "additionalProperties": false
+        },
+        "NetworkConfig": {
+            "description": "The network configuration for an interface",
+            "type": "object",
+            "properties": {
+                "device": {
+                    "description": "The interface name, or MAC address only for Esxi",
+                    "type": "string"
+                },
+                "ipv4": {
+                    "description": "the ipv4 configuration for this interface",
+                    "$ref": "#/definitions/Ipv4Configuration"
+                },
+                "ipv6": {
+                    "description": "the ipv6 configuration for this interface",
+                    "$ref": "#/definitions/Ipv6Configuration"
+                }
+            },
+            "required": ["device"],
+            "additionalProperties": true
+        },
+        "NetworkDevices": {
+            "description": "The network configuration for each NIC",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "$ref": "#/definitions/NetworkConfig"
+            },
+            "uniqueItems": true
+        },
+        "PartitionConfig": {
+            "description": "The configuration for a disk partition",
+            "type": "object",
+            "properties": {
+                "mountPoint": {
+                    "description": "Mount point, it could be '/boot', '/', 'swap', etc. just like the mount point input when manually installing OS.",
+                    "type": "string"
+                },
+                "size": {
+                    "description": "Partition size",
+                    "type": "string"
+                },
+                "fsType": {
+                    "description": "File system supported by OS",
+                    "type": "string"
+                }
+            },
+            "required": ["mountPoint", "size"]
+        },
+        "InstallPartitions": {
+            "description": "specify the installDisk's partition if you don't like OS's auto partition policy",
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/PartitionConfig"
+            },
+            "uniqueItems": true,
+            "minItems": 1
+        },
+        "InstallDisk": {
+            "description": "The disk that OS will be installed on",
+            "oneOf": [
+                {
+                    "type": "string",
+                    "description": "a disk path that the OS can recongize",
+                    "minLength": 1
+                },
+                {
+                    "type": "integer",
+                    "description": "The rackhd generated disk identifier, obtain from driveId catalog",
+                    "minimum": 0
+                },
+                {
+                    "type": "null",
+                    "description": "use default disk, '/dev/sda' for linux os, 'firstdisk' for esxi"
+                }
+            ]
+        },
+        "Kvm": {
+            "description": "a flag to indicate whether install kvm packages",
+            "type": "boolean"
+        },
+        "DnsServers": {
+            "description": "The list of DNS servers",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "type": "string",
+                "format": "ipv4"
+            },
+            "uniqueItems": true
+        },
+        "NtpServers": {
+            "description": "The list of NTP servers",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "type": "string",
+                "minLength": 1
+            },
+            "uniqueItems": true
+        },
+        "Version": {
+            "description": "The version of target OS",
+            "type": "string",
+            "pattern": "^[-0-9a-zA-Z._*+#]+$"
+        },
+        "Repo": {
+            "description": "The OS http repository which contains all data that required for os installation",
+            "type": "string",
+            "pattern": "^http://"
+        },
+        "Hostname": {
+            "description": "The hostname of target OS",
+            "type": "string",
+            "format": "hostname"
+        },
+        "Domain": {
+            "description": "The DNS domain suffix for target OS",
+            "type": "string"
+        },
+        "Comport": {
+            "type": "string",
+            "description": "Specify a console device, such as 'com1', 'ttyS0'"
+        },
+        "Profile": {
+            "type": "string",
+            "description": "The ipxe script name for this particular OS installation",
+            "minLength": 1
+        },
+        "InstallScript": {
+            "type": "string",
+            "description": "The script name that used to auto-config the target OS, such as kickstart for CentOS and preseed for Ubuntu",
+            "minLength": 1
+        },
+        "InstallScriptUri": {
+            "type": "string",
+            "description": "The URL address the node used to download the install script",
+            "format": "uri"
+        },
+        "RackHDCallbackScript": {
+            "type": "string",
+            "description": "The file name of callback script that will be called when the first time the OS boots up",
+            "minLength": 1
+        },
+        "BasicOptions": {
+            "type": "object",
+            "properties": {
+                "osType": {
+                    "$ref": "#/definitions/OsType",
+                    "readonly": true
+                },
+                "version": {
+                    "$ref": "#/definitions/Version"
+                },
+                "repo": {
+                    "$ref": "#/definitions/Repo"
+                },
+                "hostname": {
+                    "$ref": "#/definitions/Hostname"
+                },
+                "installDisk": {
+                    "$ref": "#/definitions/InstallDisk"
+                },
+                "profile": {
+                    "$ref": "#/definitions/Profile"
+                },
+                "installScript": {
+                    "$ref": "#/definitions/InstallScript"
+                },
+                "installScriptUri": {
+                    "$ref": "#/definitions/InstallScriptUri"
+                },
+                "comport": {
+                    "$ref": "#/definitions/Comport"
+                }
+            },
+            "required": ["osType", "version", "repo", "hostname", "profile",
+                "installScript", "installScriptUri", "comport"]
+        },
+        "AdvanceOptionsCommon": {
+            "type": "object",
+            "properties": {
+                "rootPassword": {
+                    "$ref": "#/definitions/UserPassword"
+                },
+                "rootSshKey": {
+                    "$ref": "#/definitions/SshKey"
+                },
+                "domain": {
+                    "$ref": "#/definitions/Domain"
+                },
+                "dnsServers": {
+                    "$ref": "#/definitions/DnsServers"
+                },
+                "ntpServers": {
+                    "$ref": "#/definitions/NtpServers"
+                },
+                "networkDevices": {
+                    "$ref": "#/definitions/NetworkDevices"
+                },
+                "kvm": {
+                    "$ref": "#/definitions/Kvm"
+                },
+                "installPartitions": {
+                    "$ref": "#/definitions/InstallPartitions"
+                }
+            },
+            "required": ["rootPassword"]
+        },
+        "AdvanceOptions": {
+            "allOf": [
+                { "$ref": "#/definitions/AdvanceOptionsCommon" },
+                {
+                    "type": "object",
+                    "properties": {
+                        "users": { "$ref": "#/definitions/UsersFull" }
+                    }
+                }
+            ]
+        },
+        "AdvanceOptionsWithSimpleUser": {
+            "allOf": [
+                { "$ref": "#/definitions/AdvanceOptionsCommon" },
+                {
+                    "type": "object",
+                    "properties": {
+                        "users": { "$ref": "#/definitions/UsersSimple" }
+                    }
+                }
+            ]
+        }
+    }
+}

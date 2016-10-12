@@ -1,0 +1,11 @@
+{
+    "$schema": "rackhd-task-schema.json",
+    "copyright": "Copyright 2016, EMC, Inc.",
+    "title": "Install CoreOS",
+    "description": "The paramters schema for CoreOS installation",
+    "describeJob": "Job.Os.Install",
+    "allOf": [
+        { "$ref": "common-task-options.json#/definitions/Options" },
+        { "$ref": "install-os-types.json#/definitions/BasicOptions" }
+    ]
+}

@@ -1,5 +1,4 @@
-// Copyright 2015, EMC, Inc.
-/* jshint node:true */
+// Copyright 2015-2016, EMC, Inc.
 
 'use strict';
 
@@ -24,12 +23,15 @@ describe(require('path').basename(__filename), function () {
         IpmiObmService = helper.injector.get('ipmi-obm-service');
         waterline = helper.injector.get('Services.Waterline');
 
-        waterline.nodes = {
-            updateByIdentifier: sinon.stub().resolves()
+        waterline.obms = {
+            upsertByNode: sinon.stub().resolves()
         };
         waterline.catalogs = {
             findLatestCatalogOfSource: sinon.stub().resolves()
         };
+
+        var encryption = helper.injector.get('Services.Encryption');
+        return encryption.start();
     });
 
     describe('Base', function () {
@@ -46,7 +48,7 @@ describe(require('path').basename(__filename), function () {
             this.job = new this.Jobclass(
                 jobOptions, { target: '554c0de769bb1ea853cf9db1' }, uuid.v4());
 
-            waterline.nodes.updateByIdentifier.reset();
+            waterline.obms.upsertByNode.reset();
             waterline.catalogs.findLatestCatalogOfSource.reset();
         });
 
@@ -56,7 +58,7 @@ describe(require('path').basename(__filename), function () {
 
         describe('catalog source', function() {
             before('catalog source before', function() {
-                waterline.nodes.updateByIdentifier.resolves();
+                waterline.obms.upsertByNode.resolves();
                 waterline.catalogs.findLatestCatalogOfSource.resolves(
                     { data: { 'IP Address': 'testIp' } } );
             });
@@ -104,14 +106,10 @@ describe(require('path').basename(__filename), function () {
             waterline.catalogs.findLatestCatalogOfSource.resolves(
                 { data: { 'IP Address': 'testIp' } } );
 
-            var expectedUpdateData = {
-                obmSettings: [ self.job.obmConfig ]
-            };
-
             return self.job._run()
             .then(function() {
-                expect(waterline.nodes.updateByIdentifier)
-                    .to.have.been.calledWith(self.job.nodeId, expectedUpdateData);
+                expect(waterline.obms.upsertByNode)
+                    .to.have.been.calledWith(self.job.nodeId, self.job.obmConfig);
             });
         });
 
@@ -120,7 +118,7 @@ describe(require('path').basename(__filename), function () {
             var powerStatus = self.sandbox.stub(IpmiObmService.prototype, 'powerStatus');
             powerStatus.resolves();
             self.job.obmConfig.config.host = 'test';
-            return self.job.liveTestIpmiConfig()
+            return self.job.liveTestIpmiConfig(self.job.obmConfig)
             .then(function() {
                 expect(powerStatus).to.have.been.calledOnce;
             });

@@ -116,7 +116,7 @@ describe("racadm-parser", function() {
             var data = 'any string';
             expect(function() {
                 parser.getJobId(data);
-            }).to.throw(Error, 'can not find JID_ index in console standard output message');
+            }).to.throw(Error, 'can not find JID_ index or find more than one JID');
         });
 
     });

@@ -1,69 +1,102 @@
-// Copyright 2016, EMC, Inc.
+#! /usr/bin/env node
+
+// Copyright, 2016, EMC, Inc.
 /* jshint node: true */
 
 'use strict';
 
-describe("redfish-tool", function() {
-    var redfishTool;
-    var tlsEnv = process.env.NODE_TLS_REJECT_UNAUTHORIZED;
-    
-    before(function() {
-         helper.setupInjector([
+var nock = require('nock');
+
+describe('RedfishTool', function(){
+    var redfishTool,
+        waterline = {}, 
+        sandbox = sinon.sandbox.create();
+
+    before(function(){
+        helper.setupInjector([
             helper.require('/lib/utils/job-utils/redfish-tool.js'),
+            helper.require('/lib/utils/job-utils/http-tool.js'),
+            helper.di.simpleWrapper(waterline, 'Services.Waterline')
         ]);
-        redfishTool = helper.injector.get('JobUtils.RedfishTool');
+
+        var Tool = helper.injector.get('JobUtils.RedfishTool');
+        redfishTool = new Tool();
     });
 
-    after(function() {
-        process.env.NODE_TLS_REJECT_UNAUTHORIZED = tlsEnv;
-    });
-    
-    it("should initialize redfish client with no credentials", function() {
-        return expect(redfishTool.clientInit({
-            uri: 'http://testapi',
-            verifySSL: true
-        })).to.be.fullfilled;
-    });
-    
-    it("should initialize redfish client with SSLVerify true", function() {
-        return expect(redfishTool.clientInit({
-            username:'user', 
-            password:'password',
-            uri: 'http://testapi',
-            verifySSL: true
-        })).to.be.fullfilled;
+    beforeEach(function() {
+        waterline.obms = {
+            findByNode: sandbox.stub().resolves(
+                {
+                    service: 'redfish-obm-service',
+                    config: { uri: 'http://fake'}
+                }
+            )
+        };
     });
 
-    it("should initialize redfish client with SSLVerify undefined", function() {
-        return expect(redfishTool.clientInit({
-            username:'user', 
-            password:'password',
-            uri: 'http://testapi'
-        })).to.be.fullfilled;
+    after(function(){
+        sandbox.restore();
     });
-    
-    it("should cleanup redfish client with undefined ENV", function() {
-        redfishTool.savedTLSEnv = undefined;
-        redfishTool.clientDone();
-        expect(process.env.NODE_TLS_REJECT_UNAUTHORIZED)
-            .to.equal(redfishTool.savedTLSEnv);
+
+    it("should setup settings", function() {
+        return redfishTool.setup('abc')
+        .then(function() {
+            expect(waterline.obms.findByNode)
+                .to.be.calledOnce;
+            return;
+        })
+        .then(function() {
+            expect(redfishTool.settings).to.deep.equal({
+                uri: 'http://fake'
+            });
+        });
     });
-    
-    it("should cleanup redfish client with defined ENV", function() {
-        redfishTool.savedTLSEnv = "1";
-        redfishTool.clientDone();
-        expect(process.env.NODE_TLS_REJECT_UNAUTHORIZED)
-            .to.equal(redfishTool.savedTLSEnv);
+            
+    it("should fail to setup settings", function() {
+        waterline.obms.findByNode = sandbox.stub()
+            .resolves();
+        return expect(redfishTool.setup('abc'))
+            .to.be.rejectedWith('Failed to find Redfish settings');
     });
-    
-    it("should set tls option", function() {
-        redfishTool.setTLSEnv("0");
-        expect(process.env.NODE_TLS_REJECT_UNAUTHORIZED).to.equal("0");
+
+    it("should do ClientRequest on good setup", function(){
+        nock("http://fake").get('/happy').reply(200, '{"Hello":"World"}');
+        redfishTool.settings.protocol = 'http';
+        redfishTool.settings.host = 'fake';
+        
+        return redfishTool.clientRequest('/happy', 'GET', '')
+        .then(function(res){
+            expect(res).to.have.property('body').to.have.property('Hello').to.deep.equal('World');
+        });
     });
-    
-    it("should get tls option", function() {
-        redfishTool.setTLSEnv("1");
-        var tls = redfishTool.getTLSEnv();
-        expect(tls).to.equal("1");
+
+    it("should do ClientRequest for POST", function(){
+        nock("https://localhost:12345")
+        .post('/happy-post').reply(201, '{"data": "HAPPY"}');
+
+        redfishTool.settings.protocol = 'https';
+        redfishTool.settings.host = 'localhost';
+        redfishTool.settings.port = "12345";
+
+        return redfishTool.clientRequest("/happy-post", 'POST', '{data: "make me happy"}')
+        .then(function(response){
+            expect(response).to.have.property('httpStatusCode').to.equal(201);
+        });
+    });
+
+    it("should reject on having http error", function(){
+        var errorMsg = { error: '123456' };
+        nock("https://fake:12345")
+        .post('/this-should-fail')
+        .reply(404, errorMsg);
+        
+        redfishTool.settings.protocol = 'https';
+        redfishTool.settings.host = 'fake';
+        redfishTool.settings.port = 12345;
+        
+        return expect(redfishTool
+            .clientRequest('/this-should-fail', 'POST', 'My secret data'))
+        .to.be.rejectedWith(errorMsg);
     });
 });
+
