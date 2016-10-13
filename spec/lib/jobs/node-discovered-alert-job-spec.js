@@ -44,7 +44,7 @@ describe("Job.Alert.Node.Discovered", function () {
             job = new NodeAlertJob({}, { target: 'bc7dab7e8fb7d6abf8e7d6ab' }, uuid.v4());
         });
 
-        it("should _run() pass", function() {
+        it("should _run() pass without additional data", function() {
             this.sandbox.stub(waterline.nodes, 'needByIdentifier').resolves({ type: 'compute' });
             this.sandbox.stub(eventsProtocol, 'publishNodeEvent').resolves();
 
@@ -52,6 +52,28 @@ describe("Job.Alert.Node.Discovered", function () {
             .then(function () {
                 expect(waterline.nodes.needByIdentifier).to.have.been.calledOnce;
                 expect(eventsProtocol.publishNodeEvent).to.have.been.calledOnce;
+                expect(eventsProtocol.publishNodeEvent).to.have.been.calledWith(
+                    { type: 'compute' },
+                    'discovered'
+                );
+            });
+        });
+
+        it("should _run() pass with additional data", function() {
+            this.sandbox.stub(waterline.nodes, 'needByIdentifier').resolves({ type: 'compute' });
+            this.sandbox.stub(eventsProtocol, 'publishNodeEvent').resolves();
+
+            job.context.data = {"something": "passed in"};
+
+            return job._run()
+            .then(function () {
+                expect(waterline.nodes.needByIdentifier).to.have.been.calledOnce;
+                expect(eventsProtocol.publishNodeEvent).to.have.been.calledOnce;
+                expect(eventsProtocol.publishNodeEvent).to.have.been.calledWith(
+                    { type: 'compute' },
+                    'discovered',
+                    job.context.data
+                );
             });
         });
 
