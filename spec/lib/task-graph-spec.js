@@ -25,7 +25,7 @@ describe('Task Graph', function () {
                 persistTaskDependencies: sinon.stub().resolves(),
                 persistGraphObject: sinon.stub().resolves(),
                 publishGraphRecord: sinon.stub().resolves(),
-                updateTaskProgress: function(data){ return Promise.resolves();},
+                updateTaskProgress: function(data){ return Promise.resolves(data);},
                 updateGraphProgress: sinon.stub()
             }, 'TaskGraph.Store')
         ]);
@@ -550,13 +550,11 @@ describe('Task Graph', function () {
     });
 
     describe('Graph progress update', function() {
-        var nodeId = uuid.v4(), 
-            graphId = uuid.v4(),
+        var graphId = uuid.v4(),
             taskId = uuid.v4(),
             progressData;
         
         beforeEach(function() {
-            //this.sandbox.stub(store, 'updateTaskProgress').returns();
             this.sandbox.stub(messenger, 'publishProgressEvent').returns();
             progressData = {
                 graphId: graphId,
@@ -584,12 +582,12 @@ describe('Task Graph', function () {
         it('should update task and graph progress', function(){
             store.updateGraphProgress.resolves(progressData);
             this.sandbox.stub(store, 'updateTaskProgress').resolves();
-            return TaskGraph.prototype.updateGraphProgress(nodeId, progressData)
+            return TaskGraph.prototype.updateGraphProgress(progressData)
             .then(function(){
                 expect(store.updateGraphProgress).to.be.calledWith(progressData);
                 expect(store.updateTaskProgress).to.be.calledWith(progressData.taskProgress);
                 _.omit(progressData, "taskProgress.graphId");
-                expect(messenger.publishProgressEvent).to.be.calledWith(nodeId, progressData);
+                expect(messenger.publishProgressEvent).to.be.calledWith(progressData);
             });
         });
 
@@ -597,12 +595,12 @@ describe('Task Graph', function () {
             progressData.taskProgress = {};
             store.updateGraphProgress.resolves(progressData);
             this.sandbox.spy(store, 'updateTaskProgress');
-            return TaskGraph.prototype.updateGraphProgress(nodeId, progressData)
+            return TaskGraph.prototype.updateGraphProgress(progressData)
             .then(function(){
                 expect(store.updateGraphProgress).to.be.calledWith(progressData);
                 expect(store.updateTaskProgress).to.have.not.been.called;
                 _.omit(progressData, "taskProgress.graphId");
-                expect(messenger.publishProgressEvent).to.be.calledWith(nodeId, progressData);
+                expect(messenger.publishProgressEvent).to.be.calledWith(progressData);
             });
         });
     });
