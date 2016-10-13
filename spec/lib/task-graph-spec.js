@@ -599,7 +599,7 @@ describe('Task Graph', function () {
             .then(function(){
                 expect(store.updateGraphProgress).to.be.calledWith(progressData);
                 expect(store.updateTaskProgress).to.have.not.been.called;
-                _.omit(progressData, "taskProgress.graphId");
+                progressData = _.omit(progressData, "taskProgress.graphId");
                 expect(messenger.publishProgressEvent).to.be.calledWith(progressData);
             });
         });
