@@ -51,13 +51,12 @@ describe("os-repo-tool", function () {
             var fileData =  'bootstate=0\ntitle=Loading ESXi installer\n' +
                             'kernel=/tBoot.b00\nkernelopt=runweasel\n' +
                             'modules=/B.B00 --- /jumpSTRt.gz --- /useropts.gz\nbuild=\nupdated=0';
-            var repo = 'http://testrepo.com';
-            var result = repoTool.parseEsxBootCfgFile(fileData, repo);
-            expect(result).to.have.property('tbootFile').to.equal(repo + '/tboot.b00');
-            expect(result).to.have.property('mbootFile').to.equal(repo + '/mboot.c32');
-            expect(result).to.have.property('moduleFiles').to.equal(repo + '/b.b00 --- ' +
-                                                                    repo + '/jumpstrt.gz --- ' +
-                                                                    repo + '/useropts.gz');
+            var result = repoTool.parseEsxBootCfgFile(fileData);
+            expect(result).to.have.property('tbootFile').to.equal('tboot.b00');
+            expect(result).to.have.property('mbootFile').to.equal('mboot.c32');
+            expect(result).to.have.property('moduleFiles').to.equal('b.b00 --- ' +
+                                                                    'jumpstrt.gz --- ' +
+                                                                    'useropts.gz');
         });
     });
 });
