@@ -1,14 +1,9 @@
 {
-    "$schema": "rackhd-task-schema.json",
     "copyright": "Copyright 2016, EMC, Inc.",
-    "title": "Linux Command in Microkernel",
-    "description": "The schema for linux command job",
-    "describeJob": "Job.Linux.Commands",
     "definitions": {
         "SimpleCommandItem": {
             "description": "The command line including the arguments",
             "type": "string",
-            "minLength": 1,
             "readonly": true
         },
         "AdvanceCommandItem": {
@@ -69,35 +64,29 @@
                 { "$ref": "#/definitions/AdvanceCommandItem" }
             ]
         },
-        "Commands": {
+        "CommandArray": {
             "description": "The list of commands that will be exuected in microkernel, all commands are exuected one by one in order",
             "type": "array",
             "items": {
                 "$ref": "#/definitions/CommandItem"
             },
-            "minItems": 1,
             "readonly": true
         },
         "RunOnlyOnce": {
             "description": "Indicate whether all commands should only be run once by node, if true, any additional request from node will be ignored. Default is true",
             "type": "boolean"
-        },
-        "Options": {
-            "description": "The options of linux-command job",
-            "type": "object",
-            "properties": {
-                "commands": {
-                    "$ref": "#/definitions/Commands"
-                },
-                "runOnlyOnce": {
-                    "$ref": "#/definitions/RunOnlyOnce"
-                }
-            },
-            "required": ["commands"]
         }
     },
-    "allOf": [
-        { "$ref": "common-task-options.json#/definitions/Options" },
-        { "$ref": "#/definitions/Options" }
-    ]
+    "properties": {
+        "commands": {
+            "oneOf": [
+                { "$ref": "#/definitions/CommandArray" },
+                { "$ref": "#/definitions/CommandItem" }
+            ]
+        },
+        "runOnlyOnce": {
+            "$ref": "#/definitions/RunOnlyOnce"
+        }
+    },
+    "required": ["commands"]
 }

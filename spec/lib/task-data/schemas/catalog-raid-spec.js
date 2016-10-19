@@ -6,7 +6,7 @@
 describe(require('path').basename(__filename), function() {
     var schemaFileName = 'catalog-raid.json';
 
-    var partialCanonical = {
+    var canonical = {
         adapter: 0
     };
 
@@ -24,10 +24,6 @@ describe(require('path').basename(__filename), function() {
     var negativeUnsetParam = [
         'adapter',
     ];
-
-    var commonHelper = require('./linux-command-schema-ut-helper');
-    var canonical = _.defaults(partialCanonical, commonHelper.canonical);
-    commonHelper.test(schemaFileName, canonical);
 
     var SchemaUtHelper = require('./schema-ut-helper');
     new SchemaUtHelper(schemaFileName, canonical).batchTest(

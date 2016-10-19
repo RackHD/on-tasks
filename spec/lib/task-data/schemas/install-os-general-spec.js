@@ -57,7 +57,8 @@ describe(require('path').basename(__filename), function() {
 
     var negativeUnsetParam = [
         "users[0].name",
-        "users[1].password"
+        "users[1].password",
+        "hostname"
     ];
 
     var installOsCommonHelper = require('./install-os-schema-ut-helper');

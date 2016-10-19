@@ -826,14 +826,6 @@ describe("Task", function () {
     });
 
     describe('task schema', function() {
-        it("should retrieve the task schema information", function() {
-            var definition = _.cloneDeep(noopDefinition);
-            return Task.create(definition, {}, {})
-            .then(function(task) {
-                expect(task).to.have.property('schema').and.deep.equal({describeJob: 'Job.noop'});
-            });
-        });
-
         it("should throw error if schema validation (skip context) fails", function() {
             var definition = _.cloneDeep(noopDefinition);
             validator.validateContextSkipped.restore();

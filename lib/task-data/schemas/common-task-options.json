@@ -16,16 +16,14 @@
                     "$ref": "#/definitions/Timeout"
                 }
             }
+        }
+    },
+    "properties": {
+        "_taskTimeout": {
+            "$ref": "#/definitions/Timeout"
         },
-        "Options": {
-            "properties": {
-                "_timeout": {
-                    "$ref": "#/definitions/Timeout"
-                },
-                "schedulerOverrides": {
-                    "$ref": "#/definitions/SchedulerOverrides"
-                }
-            }
+        "schedulerOverrides": {
+            "$ref": "#/definitions/SchedulerOverrides"
         }
     }
 }

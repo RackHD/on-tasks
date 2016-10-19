@@ -6,7 +6,7 @@
 describe(require('path').basename(__filename), function() {
     var schemaFileName = 'create-megaraid.json';
 
-    var partialCanonical = {
+    var canonical = {
         createDefault: false,
         path: '/opt/monorail/storcli',
         controller: 0,
@@ -81,10 +81,6 @@ describe(require('path').basename(__filename), function() {
         ['createDefault', 'raidList'],
         'raidList[0].enclosure', 'raidList[0].type', 'raidList[0].drives', 'raidList[0].name'
     ];
-
-    var commonHelper = require('./linux-command-schema-ut-helper');
-    var canonical = _.defaults(partialCanonical, commonHelper.canonical);
-    commonHelper.test(schemaFileName, canonical);
 
     var SchemaUtHelper = require('./schema-ut-helper');
     new SchemaUtHelper(schemaFileName, canonical).batchTest(

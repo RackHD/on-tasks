@@ -6,7 +6,7 @@
 describe(require('path').basename(__filename), function() {
     var schemaFileName = 'delete-megaraid.json';
 
-    var partialCanonical = {
+    var canonical = {
         deleteAll: false,
         path: '/opt/monorail/storcli',
         controller: 0,
@@ -36,10 +36,6 @@ describe(require('path').basename(__filename), function() {
         'controller',
         ['deleteAll', 'raidIds']
     ];
-
-    var commonHelper = require('./linux-command-schema-ut-helper');
-    var canonical = _.defaults(partialCanonical, commonHelper.canonical);
-    commonHelper.test(schemaFileName, canonical);
 
     var SchemaUtHelper = require('./schema-ut-helper');
     new SchemaUtHelper(schemaFileName, canonical).batchTest(

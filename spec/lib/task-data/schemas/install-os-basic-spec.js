@@ -4,7 +4,7 @@
 'use strict';
 
 describe(require('path').basename(__filename), function() {
-    var schemaFileName = 'install-coreos.json';
+    var schemaFileName = 'install-os-basic.json';
 
     var canonical = {
         "profile": "install-coreos.ipxe",

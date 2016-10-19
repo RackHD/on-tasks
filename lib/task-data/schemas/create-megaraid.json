@@ -1,9 +1,5 @@
 {
-    "$schema": "rackhd-task-schema.json",
     "copyright": "Copyright 2016, EMC, Inc.",
-    "title": "Create RAID in MegaRAID controller",
-    "description": "Create RAID in MegaRAID controller via storcli",
-    "describeJob": "Job.Linux.Commands",
     "definitions": {
         "CreateDefault": {
             "description": "Indicate whether to create default RAIDs, the default is creating raid0 for each disk",
@@ -77,29 +73,22 @@
             }
         }
     },
-    "allOf": [
-        { "$ref": "linux-command.json" },
-        {
-            "type": "object",
-            "description": "The parameters for RAID creation",
-            "properties": {
-                "createDefault": {
-                    "$ref": "#/definitions/CreateDefault"
-                },
-                "controller": {
-                    "$ref": "#/definitions/Controller"
-                },
-                "raidList": {
-                    "$ref": "#/definitions/RaidList"
-                },
-                "path": {
-                    "$ref": "#/definitions/Path"
-                }
-            },
-            "anyOf": [
-                { "required": ["controller", "path", "raidList"] },
-                { "required": ["controller", "path", "createDefault"] }
-            ]
+    "properties": {
+        "createDefault": {
+            "$ref": "#/definitions/CreateDefault"
+        },
+        "controller": {
+            "$ref": "#/definitions/Controller"
+        },
+        "raidList": {
+            "$ref": "#/definitions/RaidList"
+        },
+        "path": {
+            "$ref": "#/definitions/Path"
         }
+    },
+    "anyOf": [
+        { "required": ["controller", "path", "raidList"] },
+        { "required": ["controller", "path", "createDefault"] }
     ]
 }

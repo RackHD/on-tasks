@@ -95,7 +95,6 @@ var negativeUnsetParam = [
     "version",
     "repo",
     "rootPassword",
-    "hostname",
     "networkDevices[0].device",
     "networkDevices[1].ipv4.ipAddr",
     "networkDevices[2].ipv6.netmask"
