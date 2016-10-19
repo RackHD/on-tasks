@@ -22,6 +22,9 @@ describe(require('path').basename(__filename), function() {
             },
             {
                 command: 'ls /usr/bin'
+            },
+            {
+                downloadUrl: '/api/templates/run.py'
             }
         ],
         runOnlyOnce: true
@@ -61,9 +64,10 @@ describe(require('path').basename(__filename), function() {
 
     var negativeUnsetParam = [
         'commands',
-        'commands[1].command',
+        ['commands[1].command', 'commands[1].downloadUrl'],
         'commands[1].catalog.source',
-        'commands[2].command'
+        'commands[2].command',
+        'commands[3].downloadUrl'
     ];
 
     var SchemaUtHelper = require('./schema-ut-helper');

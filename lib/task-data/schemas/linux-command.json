@@ -55,7 +55,10 @@
                     "minimum": 0
                 }
             },
-            "required": ["command"],
+            "anyOf": [
+                { "required": [ "command" ] },
+                { "required": [ "downloadUrl" ] }
+            ],
             "additionalProperties": false
         },
         "CommandItem": {
