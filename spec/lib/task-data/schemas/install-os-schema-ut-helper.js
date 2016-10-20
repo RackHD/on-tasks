@@ -8,7 +8,7 @@ var canonical = {
     "comport": "ttyS0",
     "profile": "install-centos.ipxe",
     "installScript": "centos-ks",
-    "installScriptUri": "http://172.31.128.1:8090/api/1.1/templates/centos-ks",
+    "installScriptUri": "http://172.31.128.1:8090/api/current/templates/centos-ks",
     "version": "7",
     "repo": "http://172.31.128.1:9080/centos/7/os/x86_64",
     "rootPassword": "RackHDRocks!",
