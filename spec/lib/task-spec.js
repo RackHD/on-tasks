@@ -54,9 +54,9 @@ describe("Task", function () {
 
         _.forEach(taskData, function(definition) {
             if (definition.injectableName === 'Task.noop') {
-                noopTask = definition;
+                noopTask = _.clone(definition);
             } else if (definition.injectableName === 'Task.Base.noop') {
-                baseNoopTask = definition;
+                baseNoopTask = _.clone(definition);
             }
         });
 
