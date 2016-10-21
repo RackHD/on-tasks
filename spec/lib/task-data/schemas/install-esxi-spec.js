@@ -10,7 +10,7 @@ describe(require('path').basename(__filename), function() {
         "osType": "esx",
         "profile": "install-esx.ipxe",
         "installScript": "esx-ks",
-        "installScriptUri": "http://172.31.128.9090/api/1.1/templates/esx-ks",
+        "installScriptUri": "http://172.31.128.9090/api/current/templates/esx-ks",
         "version": "5.5",
         "repo": "http://172.31.128.1:9080/esxi/5.5",
         "rootPassword": "RackHDRocks!",
@@ -91,7 +91,7 @@ describe(require('path').basename(__filename), function() {
         ],
         "rackhdCallbackScript": "esx.rackhdcallback",
         "esxBootConfigTemplate": "esx-boot-cfg",
-        "esxBootConfigTemplateUri": "http://172.31.128.1:9080/api/1.1/templates/esx-boot-cfg",
+        "esxBootConfigTemplateUri": "http://172.31.128.1:9080/api/current/templates/esx-boot-cfg",
         "comport": "com1",
         "comportaddress": "0x3f8"
     };
