@@ -149,7 +149,7 @@
             "type": "object",
             "properties": {
                 "device": {
-                    "description": "The interface name, or MAC address only for Esxi",
+                    "description": "The interface name. For ESXi, it is portgroup name, also MAC Address is allowed for ESXi",
                     "type": "string"
                 },
                 "ipv4": {
@@ -159,6 +159,11 @@
                 "ipv6": {
                     "description": "the ipv6 configuration for this interface",
                     "$ref": "#/definitions/Ipv6Configuration"
+                },
+                "esxSwitchName": {
+                    "type": "string",
+                    "description": "ESXi only. The name of vSwitch that the portgroup is attached to, if not specified, it is always attached to vSwitch0",
+                    "minLength": 1
                 }
             },
             "required": ["device"],
