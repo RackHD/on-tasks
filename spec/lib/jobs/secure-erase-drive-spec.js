@@ -378,13 +378,15 @@ describe(require('path').basename(__filename), function () {
     describe('format commands', function() {
 
         beforeEach('Secure erase job format commands', function() {
-            job = new SEJob({eraseSettings:[]}, { target: nodeId }, taskId);
+            job = new SEJob({eraseSettings:[], baseUri: "http://172.31.128.1:9080" }, 
+                            { target: nodeId }, taskId);
         });
 
         it('should format commands correctly', function() {
             var result = [
                 {
                     "cmd": "sudo python secure_erase.py -i " + taskId +
+                            " -s http://172.31.128.1:9080/api/current/notification" +
                             " -d \'{\"diskName\":\"/dev/sda\"," +
                             "\"virtualDisk\":\"/c0/v0\",\"scsiId\":\"0:2:0:0\"," +
                             "\"deviceIds\":[23],\"slotIds\":[\"/c0/e36/s0\"]}\'" +
@@ -395,6 +397,7 @@ describe(require('path').basename(__filename), function () {
                 },
                 {
                     "cmd": "sudo python secure_erase.py -i " + taskId +
+                            " -s http://172.31.128.1:9080/api/current/notification" +
                             " -d \'{\"diskName\":\"/dev/sdb\"," +
                             "\"virtualDisk\":\"\",\"scsiId\":\"0:2:0:1\"}\' -t scrub"
                 }
