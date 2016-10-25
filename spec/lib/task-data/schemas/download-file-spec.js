@@ -9,8 +9,8 @@ describe(require('path').basename(__filename), function() {
     var partialCanonical = {
         file: 'abc.txt',
         downloadDir: '/home/rackhd/tmp',
-        fileMd5Uri: 'http://172.31.128.1:9080/api/2.0/files/abc.txt/md5',
-        fileUri: 'http://172.31.128.1:9080/api/2.0/files/abc.txt/latest',
+        fileMd5Uri: 'http://172.31.128.1:9080/api/current/files/abc.txt/md5',
+        fileUri: 'http://172.31.128.1:9080/api/current/files/abc.txt/',
         outputPath: '/var/rackhd/abc-mod.txt'
     };
 

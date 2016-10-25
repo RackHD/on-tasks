@@ -9,7 +9,7 @@ describe(require('path').basename(__filename), function() {
     var canonical = {
         "profile": "install-coreos.ipxe",
         "installScript": "install-coreos.sh",
-        "installScriptUri": "http://172.31.128.9090/api/1.1/templates/install-coreos.sh",
+        "installScriptUri": "http://172.31.128.9090/api/current/templates/install-coreos.sh",
         "version": "current",
         "repo": "http://172.31.128.1:9080/coreos/current",
         "hostname": "rackhd-node",
