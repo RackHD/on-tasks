@@ -4,7 +4,7 @@
 var uuid = require('node-uuid');
 
 describe('ssh-job', function() {
-    var waterline = { nodes: {}, catalogs: {} },
+    var waterline = { ibms: {}, catalogs: {} },
         mockParser = {},
         SshJob,
         sshJob;
@@ -37,7 +37,7 @@ describe('ssh-job', function() {
             ];
             commandUtil.buildCommands = this.sandbox.stub().returns(testCommands);
             sshJob = new SshJob({}, { target: 'someNodeId' }, uuid.v4());
-            waterline.nodes.needByIdentifier = this.sandbox.stub();
+            waterline.ibms.findByNode = this.sandbox.stub();
             commandUtil.sshExec = this.sandbox.stub().resolves();
             mockParser.parseTasks = this.sandbox.stub().resolves();
             mockParser.parseUnknownTasks = this.sandbox.stub().resolves();
@@ -67,8 +67,7 @@ describe('ssh-job', function() {
             );
             commandUtil.updateLookups = this.sandbox.stub().resolves();
 
-            var node = { sshSettings: sshSettings };
-            waterline.nodes.needByIdentifier.resolves(node);
+            waterline.ibms.findByNode.resolves(sshSettings);
             commandUtil.sshExec.onCall(0).resolves({stdout: 'data', cmd: 'aCommand'});
             commandUtil.sshExec.onCall(1).resolves({stdout: 'more data', cmd: 'testCommand'});
             sshJob.commands = testCommands;
