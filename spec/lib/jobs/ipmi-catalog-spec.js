@@ -11,6 +11,7 @@ describe('LocalIpmi Catalog Job', function () {
         obms: {},
         catalogs: {}
     };
+    var mockLookups = {};
 
     before(function() {
         helper.setupInjector(
@@ -18,7 +19,8 @@ describe('LocalIpmi Catalog Job', function () {
                 helper.require('/lib/jobs/base-job'),
                 helper.require('/lib/jobs/ipmi-catalog'),
                 helper.require('/lib/utils/job-utils/command-parser'),
-                helper.di.simpleWrapper(mockWaterline, 'Services.Waterline')
+                helper.di.simpleWrapper(mockWaterline, 'Services.Waterline'),
+                helper.di.simpleWrapper(mockLookups, 'Services.Lookup')
             ])
         );
 
@@ -148,6 +150,32 @@ describe('LocalIpmi Catalog Job', function () {
                 },
                 null
             ]);
+        });
+
+        it('should resolve MAC addresses', function () {
+            mockLookups.macAddressToIp = function (){};
+            this.sandbox.stub(mockLookups, 'macAddressToIp');
+
+            var obm = {
+                service: 'ipmi-obm-service',
+                config: {
+                    host: '00:50:56:a3:79:65',
+                    user: 'admin',
+                    password: 'password'
+                }
+            };
+
+            this.sandbox.stub(job, 'runCommand').resolves();
+            this.sandbox.stub(job, 'handleResponse').resolves();
+
+            mockWaterline.obms.findByNode.resolves(obm);
+            mockLookups.macAddressToIp.resolves("1.1.1.1");
+
+            return job.run()
+            .then(function () {
+                expect(mockLookups.macAddressToIp).to.have.been.called;
+                expect(obm.config.host).to.eql("1.1.1.1");
+            });
         });
 
         it('should run command and process response', function() {
