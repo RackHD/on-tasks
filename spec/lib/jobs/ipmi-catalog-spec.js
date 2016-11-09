@@ -19,6 +19,7 @@ describe('LocalIpmi Catalog Job', function () {
                 helper.require('/lib/jobs/base-job'),
                 helper.require('/lib/jobs/ipmi-catalog'),
                 helper.require('/lib/utils/job-utils/command-parser'),
+                helper.require('/lib/utils/job-utils/job-helper'),
                 helper.di.simpleWrapper(mockWaterline, 'Services.Waterline'),
                 helper.di.simpleWrapper(mockLookups, 'Services.Lookup')
             ])
