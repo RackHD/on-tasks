@@ -14,7 +14,7 @@ var canonicalCommand = {
                 format: 'json'
             },
             retries: 10,
-            downloadUrl: '/api/current/foo/ipmitool',
+            downloadUrl: 'http://10.0.0.1:8080/api/current/foo/ipmitool?nodeId=123',
             timeout: 100
         },
         {
@@ -33,7 +33,7 @@ var negativeSetParamCommand = {
     'commands': ['', null, []],
     'commands[0]': ['', null],
     'commands[1].acceptedResponseCodes': [[], 0, 1, -1],
-    'commands[1].downloadUrl': ['', 'foo', 'http://abc.com/abc'],
+    'commands[1].downloadUrl': [''],
     'commands[1].timeout': [-1, 2.5],
     'commands[1].retries': [-1, 2.5],
     'commands[1].catalog.format': ['JSON', 'RAW', 'xml', 'html'] //now only support json & raw
@@ -45,7 +45,7 @@ var negativeSetParamExtra = {
 
 var positiveSetParamCommand = {
     'commands[1]': 'touch foo.txt', //allow duplicated command
-    'commands[1].downloadUrl': ['/foo', '/foo123/123/bar'],
+    'commands[1].downloadUrl': ['http://abc.com/foo', 'http://10.0.0.1:8080/foo123/123/bar?nodeId=123', 'www.abc.com/abc'],
     'commands[1].timeout': [0, 1, 100000],
     'commands[1].retries': [0, 1, 100000],
     'commands[1].acceptedResponseCodes': [[0]],
