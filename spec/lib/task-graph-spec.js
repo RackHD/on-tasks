@@ -10,6 +10,8 @@ describe('Task Graph', function () {
     var taskLibrary;
     var Promise;
     var Constants;
+    var messenger;
+    var uuid = require('node-uuid');
 
     before(function() {
         getDefinitions = require('./test-definitions').get;
@@ -23,6 +25,8 @@ describe('Task Graph', function () {
                 persistTaskDependencies: sinon.stub().resolves(),
                 persistGraphObject: sinon.stub().resolves(),
                 publishGraphRecord: sinon.stub().resolves(),
+                updateTaskProgress: function(data){ return Promise.resolves(data);},
+                updateGraphProgress: sinon.stub()
             }, 'TaskGraph.Store')
         ]);
         Constants = helper.injector.get('Constants');
@@ -31,6 +35,7 @@ describe('Task Graph', function () {
         Task = helper.injector.get('Task.Task');
         taskLibrary = helper.injector.get('Task.taskLibrary');
         store = helper.injector.get('TaskGraph.Store');
+        messenger = helper.injector.get('Task.Messenger');
         this.sandbox = sinon.sandbox.create();
     });
 
@@ -540,6 +545,78 @@ describe('Task Graph', function () {
                     expect(store.persistTaskDependencies)
                         .to.have.been.calledWith(item, graph.instanceId);
                 });
+            });
+        });
+    });
+
+    describe('Graph progress update', function() {
+        var graphId = uuid.v4(),
+            taskId = uuid.v4(),
+            progressData;
+        
+        beforeEach(function() {
+            this.sandbox.stub(messenger, 'publishProgressEvent').returns();
+            progressData = {
+                graphId: graphId,
+                graphName: "test graph",
+                progress: {
+                    percentage: "100%",
+                    description: "task completed"
+                },
+                taskProgress: {
+                    graphId: graphId,
+                    taskId: taskId,
+                    taskName: "test task",
+                    progress: {
+                        percentage: "100%",
+                        description: "Task completed"
+                    }
+                }
+            };
+        });
+        
+        afterEach(function(){
+            this.sandbox.restore();
+        });
+
+        it('should update task and graph progress', function(){
+            store.updateGraphProgress.resolves(progressData);
+            this.sandbox.stub(store, 'updateTaskProgress').resolves();
+            return TaskGraph.updateGraphProgress(progressData)
+            .then(function(){
+                expect(store.updateGraphProgress).to.be.calledWith(progressData);
+                expect(store.updateTaskProgress).to.be.calledWith(progressData.taskProgress);
+                _.omit(progressData, "taskProgress.graphId");
+                expect(messenger.publishProgressEvent).to.be.calledWith(progressData);
+            });
+        });
+
+        it('should update task and graph progress', function(){
+            progressData.taskProgress.progress.percentage = "NA";
+            store.updateGraphProgress.resolves(progressData);
+            this.sandbox.stub(store, 'updateTaskProgress').resolves();
+            return TaskGraph.updateGraphProgress(progressData)
+            .then(function(){
+                progressData.taskProgress.progress.percentage = "Not Available";
+                expect(store.updateGraphProgress).to.be.calledWith(progressData);
+                expect(store.updateTaskProgress).to.be.calledWith(progressData.taskProgress);
+                _.omit(progressData, "taskProgress.graphId");
+                expect(messenger.publishProgressEvent).to.be.calledWith(progressData);
+            });
+        });
+
+        it('should update only graph progress', function(){
+            progressData.taskProgress = {};
+            progressData.progress.percentage = null;
+            store.updateGraphProgress.resolves(progressData);
+            this.sandbox.spy(store, 'updateTaskProgress');
+            return TaskGraph.updateGraphProgress(progressData)
+            .then(function(){
+                expect(store.updateGraphProgress).to.be.calledWith(progressData);
+                expect(store.updateTaskProgress).to.have.not.been.called;
+                progressData = _.omit(progressData, "taskProgress.graphId");
+                progressData.progress.percentage = "Not Available";
+                expect(messenger.publishProgressEvent).to.be.calledWith(progressData);
             });
         });
     });
