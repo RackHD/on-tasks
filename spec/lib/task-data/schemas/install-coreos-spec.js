@@ -15,7 +15,8 @@ describe(require('path').basename(__filename), function() {
         "hostname": "rackhd-node",
         "installDisk": "/dev/sda",
         "comport": "ttyS0",
-        "osType": "linux"
+        "osType": "linux",
+        "rootPassword": "RackHD"
     };
 
     var positiveSetParam = {
