@@ -16,7 +16,8 @@ describe(require('path').basename(__filename), function() {
         "installDisk": "/dev/sda",
         "comport": "ttyS0",
         "osType": "linux",
-        "rootPassword": "RackHD"
+        "rootPassword": "RackHD",
+        "ignitionScriptUri": "generic.json"
     };
 
     var positiveSetParam = {
