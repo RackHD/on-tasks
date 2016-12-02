@@ -564,7 +564,6 @@ describe('Task Graph', function () {
                     description: "task completed"
                 },
                 taskProgress: {
-                    graphId: graphId,
                     taskId: taskId,
                     taskName: "test task",
                     progress: {
@@ -585,22 +584,24 @@ describe('Task Graph', function () {
             return TaskGraph.updateGraphProgress(progressData)
             .then(function(){
                 expect(store.updateGraphProgress).to.be.calledWith(progressData);
-                expect(store.updateTaskProgress).to.be.calledWith(progressData.taskProgress);
-                _.omit(progressData, "taskProgress.graphId");
+                expect(store.updateTaskProgress).to.be.calledWith(progressData.taskProgress,
+                                                                  progressData.graphId);
                 expect(messenger.publishProgressEvent).to.be.calledWith(progressData);
             });
         });
 
         it('should update task and graph progress', function(){
+            progressData.percentage = "NA";
             progressData.taskProgress.progress.percentage = "NA";
             store.updateGraphProgress.resolves(progressData);
             this.sandbox.stub(store, 'updateTaskProgress').resolves();
             return TaskGraph.updateGraphProgress(progressData)
             .then(function(){
                 progressData.taskProgress.progress.percentage = "Not Available";
+                progressData.percentage = "Not Available";
                 expect(store.updateGraphProgress).to.be.calledWith(progressData);
-                expect(store.updateTaskProgress).to.be.calledWith(progressData.taskProgress);
-                _.omit(progressData, "taskProgress.graphId");
+                expect(store.updateTaskProgress).to.be.calledWith(progressData.taskProgress,
+                                                                  progressData.graphId);
                 expect(messenger.publishProgressEvent).to.be.calledWith(progressData);
             });
         });
