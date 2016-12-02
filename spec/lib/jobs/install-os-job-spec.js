@@ -67,7 +67,7 @@ describe('Install OS Job', function () {
                     }
                 ],
                 dnsServers: null,
-                steps: 4,
+                totalSteps: 4,
             },
             {
                 target: 'testid',
