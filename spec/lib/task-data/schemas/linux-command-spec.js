@@ -33,7 +33,7 @@ describe(require('path').basename(__filename), function() {
     var positiveSetParam = {
         'commands': ['', 'touch abc', [], { command: 'touch abc' }],
         'commands[1]': 'touch foo.txt', //allow duplicated command
-        'commands[1].downloadUrl': ['/foo', '/foo123/123/bar'],
+        'commands[1].downloadUrl': ['http://abc.com/xyz'],
         'commands[1].timeout': [0, 1, 100000],
         'commands[1].retries': [0, 1, 100000],
         'commands[1].acceptedResponseCodes': [[0]],
@@ -45,7 +45,7 @@ describe(require('path').basename(__filename), function() {
         'commands': [null, {}, {timeout: 100}],
         'commands[0]': [null],
         'commands[1].acceptedResponseCodes': [[], 0, 1, -1],
-        'commands[1].downloadUrl': ['', 'foo', 'http://abc.com/abc'],
+        'commands[1].downloadUrl': [''],
         'commands[1].timeout': [-1, 2.5],
         'commands[1].retries': [-1, 2.5],
         'commands[1].catalog.format': ['JSON', 'RAW', 'xml', 'html'], //now only support json & raw
