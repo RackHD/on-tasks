@@ -374,29 +374,23 @@ describe('Install OS Job', function () {
 
     describe('test updateProgress', function() {
         it('should call updateGraphProgress', function () {
-            var description = "Reboot suceeded, starting initrd download.";
+            var descript = "Reboot suceeded, starting kernel download.";
             var progressData = {
-                    graphId: graphId,
-                    progress: {
-                        percentage: null,
-                        description: description
-                    },
+                    progress: {value: null, maximum: null, description: descript},
                     taskProgress: {
                         taskId: taskId,
-                        progress: {
-                            progressRate: '1/4',
-                            description: description
-                        }
+                        progress: {value: 1, maximum: 4, description: descript},
                     }
             };
+            progressStub.reset();
             subscribeRequestProfileStub.resolves();
             subscribeRequestPropertiesStub.resolves();
             progressStub.resolves();
-            progressStub.reset();
-            return job.updateProgress(description, 1)
+            return job.updateProgress(descript, 1)
             .then(function(){
                 expect(TaskGraph.updateGraphProgress).to.have.been.calledOnce;
-                expect(TaskGraph.updateGraphProgress).to.have.been.calledWith(progressData);
+                expect(TaskGraph.updateGraphProgress).to.have.been
+                    .calledWith(graphId, progressData);
             });
         });
     });
