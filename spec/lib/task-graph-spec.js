@@ -566,7 +566,6 @@ describe('Task Graph', function () {
                 graphId: graphId,
                 graphName: "Test graph",
                 progress: {
-                    //percentage: "50%",
                     description: "task completed",
                     value: "2",
                     maximum: "4"
@@ -575,7 +574,6 @@ describe('Task Graph', function () {
                     taskId: taskId,
                     taskName: "test task",
                     progress: {
-                        //percentage: "100%",
                         description: "Task completed",
                         value: "100",
                         maximum: "100"
@@ -592,14 +590,16 @@ describe('Task Graph', function () {
         });
 
         it('should update graph progress normally', function(){
-            progressData.progress.percentage = '50%';
             progressData.taskProgress.progress.percentage = 'any';
+            _progressData.progress.percentage = '50%';
+            _progressData.taskProgress.progress.percentage = 'any';
+            _progressData.taskProgress.progress.maximum = 4;
+            graphObject.tasks[taskId]= {options: {totalSteps: 4}};
             waterline.graphobjects.findOne.resolves(graphObject);
-            
             return TaskGraph.updateGraphProgress(graphId, progressData)
             .then(function(){
                 expect(messenger.publishProgressEvent).to.be.calledOnce;
-                expect(messenger.publishProgressEvent).to.be.calledWith(progressData);
+                expect(messenger.publishProgressEvent).to.be.calledWith(_progressData);
                 expect(waterline.graphobjects.findOne).to.be.calledOnce;
                 expect(waterline.graphobjects.findOne).to.be.calledWith({instanceId: graphId});
             });
