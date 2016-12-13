@@ -10,9 +10,6 @@ describe('Task Graph', function () {
     var taskLibrary;
     var Promise;
     var Constants;
-    var messenger;
-    var uuid = require('node-uuid');
-    var waterline;
 
     before(function() {
         getDefinitions = require('./test-definitions').get;
@@ -35,8 +32,6 @@ describe('Task Graph', function () {
         Task = helper.injector.get('Task.Task');
         taskLibrary = helper.injector.get('Task.taskLibrary');
         store = helper.injector.get('TaskGraph.Store');
-        messenger = helper.injector.get('Task.Messenger');
-        waterline = helper.injector.get('Services.Waterline');
         this.sandbox = sinon.sandbox.create();
     });
 
@@ -550,124 +545,4 @@ describe('Task Graph', function () {
         });
     });
 
-    describe('Graph progress update', function() {
-        var graphId = uuid.v4(),
-            taskId = uuid.v4(),
-            _progressData,
-            progressData,
-            graphObject = {
-            definition: {friendlyName: 'Test graph'},
-            tasks: {}
-        };
-        
-        beforeEach(function() {
-            this.sandbox.stub(messenger, 'publishProgressEvent').returns();
-            progressData = {
-                graphId: graphId,
-                graphName: "Test graph",
-                progress: {
-                    description: "task completed",
-                    value: "2",
-                    maximum: "4"
-                },
-                taskProgress: {
-                    taskId: taskId,
-                    taskName: "test task",
-                    progress: {
-                        description: "Task completed",
-                        value: "100",
-                        maximum: "100"
-                    }
-                }
-            };
-            _progressData = _.cloneDeep(progressData);
-            graphObject.tasks[taskId] = {friendlyName: "test task"};
-        });
-        
-        afterEach(function(){
-            waterline.graphobjects.findOne.reset();
-            this.sandbox.restore();
-        });
-
-        it('should update graph progress normally', function(){
-            progressData.taskProgress.progress.percentage = 'any';
-            _progressData.progress.percentage = '50%';
-            _progressData.taskProgress.progress.percentage = 'any';
-            _progressData.taskProgress.progress.maximum = 4;
-            graphObject.tasks[taskId]= {options: {totalSteps: 4}};
-            waterline.graphobjects.findOne.resolves(graphObject);
-            return TaskGraph.updateGraphProgress(graphId, progressData)
-            .then(function(){
-                expect(messenger.publishProgressEvent).to.be.calledOnce;
-                expect(messenger.publishProgressEvent).to.be.calledWith(_progressData);
-                expect(waterline.graphobjects.findOne).to.be.calledOnce;
-                expect(waterline.graphobjects.findOne).to.be.calledWith({instanceId: graphId});
-            });
-        });
-
-        it('should update graph progress and calculate percentage number', function(){
-            _progressData = _.omit(_progressData, ['graphName', 'graphId']);
-            _progressData.progress.maximum = '3';
-            delete _progressData.taskProgress.taskId;
-            delete _progressData.taskProgress.taskName;
-            progressData.progress.maximum = '3';
-            progressData.progress.percentage = '67%';
-            progressData.taskProgress.progress.percentage = '100%';
-            delete progressData.taskProgress.taskId;
-            delete progressData.taskProgress.taskName;
-            waterline.graphobjects.findOne.resolves(graphObject);
-            
-            return TaskGraph.updateGraphProgress(graphId, _progressData)
-            .then(function(){
-                expect(messenger.publishProgressEvent).to.be.calledOnce;
-                expect(messenger.publishProgressEvent).to.be.calledWith(progressData);
-                expect(waterline.graphobjects.findOne).to.be.calledOnce;
-                expect(waterline.graphobjects.findOne).to.be.calledWith({instanceId: graphId});
-            });
-        });
-
-        it('should graph progress with percentage Not Available', function(){
-            _progressData.progress.maximum = null;
-            delete _progressData.taskProgress.taskName;
-            progressData.progress.maximum = null;
-            progressData.progress.percentage = 'Not Available';
-            progressData.taskProgress.progress.percentage = '100%';
-            waterline.graphobjects.findOne.resolves(graphObject);
-            return TaskGraph.updateGraphProgress(graphId, _progressData)
-            .then(function(){
-                expect(messenger.publishProgressEvent).to.be.calledOnce;
-                expect(messenger.publishProgressEvent).to.be.calledWith(progressData);
-                expect(waterline.graphobjects.findOne).to.be.calledOnce;
-                expect(waterline.graphobjects.findOne).to.be.calledWith({instanceId: graphId});
-            });
-        });
-
-        it('should graph progress without taskProgress', function(){
-            delete _progressData.taskProgress;
-            delete progressData.taskProgress;
-            progressData.progress.percentage = '50%';
-            waterline.graphobjects.findOne.resolves(graphObject);
-            return TaskGraph.updateGraphProgress(graphId, _progressData)
-            .then(function(){
-                expect(messenger.publishProgressEvent).to.be.calledOnce;
-                expect(messenger.publishProgressEvent).to.be.calledWith(progressData);
-            });
-        });
-
-        it('should graph progress without taskName and graphName', function(){
-            delete _progressData.taskProgress.taskName;
-            delete _progressData.graphName;
-            delete progressData.taskProgress.taskName;
-            delete progressData.graphName;
-            progressData.progress.percentage = '50%';
-            progressData.taskProgress.progress.percentage = '100%';
-            waterline.graphobjects.findOne.resolves();
-            return TaskGraph.updateGraphProgress(graphId, _progressData)
-            .then(function(){
-                expect(messenger.publishProgressEvent).to.be.calledOnce;
-                expect(messenger.publishProgressEvent).to.be.calledWith(progressData);
-            });
-        });
-
-    });
 });

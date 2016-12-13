@@ -14,10 +14,10 @@ describe('Install OS Job', function () {
     var job;
     var waterline;
     var Promise;
-    var TaskGraph = { updateGraphProgress: function () {}};
-    var progressStub;
+    var taskMessengerMock = { publishProgressEvent: sinon.stub().resolves()};
     var taskId;
     var graphId;
+    var taskMessenger;
 
     before(function() {
         helper.setupInjector(
@@ -26,13 +26,13 @@ describe('Install OS Job', function () {
                 helper.require('/lib/jobs/install-os'),
                 helper.require('/lib/utils/job-utils/catalog-searcher'),
                 helper.di.simpleWrapper({ catalogs:  {} }, 'Services.Waterline'),
-                helper.di.simpleWrapper(TaskGraph, 'TaskGraph.TaskGraph')
+                helper.di.simpleWrapper(taskMessengerMock, 'Task.Messenger')
             ])
         );
 
         InstallOsJob = helper.injector.get('Job.Os.Install');
         waterline = helper.injector.get('Services.Waterline');
-        TaskGraph = helper.injector.get('TaskGraph.TaskGraph');
+        taskMessenger = helper.injector.get('Task.Messenger');
         Promise = helper.injector.get('Promise');
         subscribeRequestProfileStub = sinon.stub(
             InstallOsJob.prototype, '_subscribeRequestProfile');
@@ -41,7 +41,6 @@ describe('Install OS Job', function () {
         subscribeNodeNotification = sinon.stub(
             InstallOsJob.prototype, '_subscribeNodeNotification');
         doneSpy = sinon.spy(InstallOsJob.prototype, '_done');
-        progressStub = sinon.stub(TaskGraph, 'updateGraphProgress').resolves();
     });
 
     beforeEach(function() {
@@ -79,7 +78,6 @@ describe('Install OS Job', function () {
     after(function() {
         subscribeRequestProfileStub.restore();
         subscribeRequestPropertiesStub.restore();
-        progressStub.restore();
         doneSpy.restore();
     });
 
@@ -382,14 +380,13 @@ describe('Install OS Job', function () {
                         progress: {value: 1, maximum: 4, description: descript},
                     }
             };
-            progressStub.reset();
+            taskMessenger.publishProgressEvent.reset();
             subscribeRequestProfileStub.resolves();
             subscribeRequestPropertiesStub.resolves();
-            progressStub.resolves();
             return job.updateProgress(descript, 1)
             .then(function(){
-                expect(TaskGraph.updateGraphProgress).to.have.been.calledOnce;
-                expect(TaskGraph.updateGraphProgress).to.have.been
+                expect(taskMessenger.publishProgressEvent).to.have.been.calledOnce;
+                expect(taskMessenger.publishProgressEvent).to.have.been
                     .calledWith(graphId, progressData);
             });
         });
