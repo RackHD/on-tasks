@@ -41,8 +41,7 @@ describe(require('path').basename(__filename), function() {
         "version",
         "repo",
         "hostname",
-        "comport",
-        "ignitionScriptUri"
+        "comport"
     ];
 
     var SchemaUtHelper = require('./schema-ut-helper');
