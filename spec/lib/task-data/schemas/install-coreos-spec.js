@@ -17,7 +17,7 @@ describe(require('path').basename(__filename), function() {
         "comport": "ttyS0",
         "osType": "linux",
         "rootPassword": "RackHD",
-        "ignitionScriptUri": "generic.json"
+        "ignitionScriptUri": "http://172.31.128.9090/api/current/templates/ignition.json"
     };
 
     var positiveSetParam = {
@@ -41,7 +41,8 @@ describe(require('path').basename(__filename), function() {
         "version",
         "repo",
         "hostname",
-        "comport"
+        "comport",
+        "ignitionScriptUri"
     ];
 
     var SchemaUtHelper = require('./schema-ut-helper');
