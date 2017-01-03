@@ -12,6 +12,7 @@
                     "description": "The URI used to download the CoreOS Ignition configuration file",
                     "type": "string",
                     "minLength": 1
+                }
             }
         }
     },
