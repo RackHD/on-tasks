@@ -14,6 +14,10 @@ describe('Install OS Job', function () {
     var job;
     var waterline;
     var Promise;
+    var taskMessengerMock = { publishProgressEvent: sinon.stub().resolves()};
+    var taskId;
+    var graphId;
+    var taskMessenger;
 
     before(function() {
         helper.setupInjector(
@@ -21,12 +25,14 @@ describe('Install OS Job', function () {
                 helper.require('/lib/jobs/base-job'),
                 helper.require('/lib/jobs/install-os'),
                 helper.require('/lib/utils/job-utils/catalog-searcher'),
-                helper.di.simpleWrapper({ catalogs:  {} }, 'Services.Waterline')
+                helper.di.simpleWrapper({ catalogs:  {} }, 'Services.Waterline'),
+                helper.di.simpleWrapper(taskMessengerMock, 'Task.Messenger')
             ])
         );
 
         InstallOsJob = helper.injector.get('Job.Os.Install');
         waterline = helper.injector.get('Services.Waterline');
+        taskMessenger = helper.injector.get('Task.Messenger');
         Promise = helper.injector.get('Promise');
         subscribeRequestProfileStub = sinon.stub(
             InstallOsJob.prototype, '_subscribeRequestProfile');
@@ -38,6 +44,8 @@ describe('Install OS Job', function () {
     });
 
     beforeEach(function() {
+        taskId = uuid.v4();
+        graphId = uuid.v4();
         subscribeRequestProfileStub.reset();
         subscribeRequestPropertiesStub.reset();
         doneSpy.reset();
@@ -57,12 +65,14 @@ describe('Install OS Job', function () {
                         sshKey: ''
                     }
                 ],
-                dnsServers: null
+                dnsServers: null,
+                totalSteps: 4,
             },
             {
-                target: 'testid'
+                target: 'testid',
+                graphId: graphId
             },
-            uuid.v4());
+            taskId);
     });
 
     after(function() {
@@ -111,7 +121,6 @@ describe('Install OS Job', function () {
         expect(jobWithKVM.options.kvm).to.equal(true);
     });
 
-
     it("should set up message subscribers", function() {
         var cb;
         waterline.catalogs.findMostRecent = sinon.stub().resolves({});
@@ -119,11 +128,7 @@ describe('Install OS Job', function () {
             expect(subscribeRequestProfileStub).to.have.been.called;
             expect(subscribeRequestPropertiesStub).to.have.been.called;
             expect(subscribeNodeNotification).to.have.been.called;
-
-            cb = subscribeRequestProfileStub.firstCall.args[0];
-            expect(cb).to.be.a('function');
-            expect(cb.call(job)).to.equal(job.profile);
-
+            
             cb = subscribeRequestPropertiesStub.firstCall.args[0];
             expect(cb).to.be.a('function');
             expect(cb.call(job)).to.equal(job.options);
@@ -132,6 +137,13 @@ describe('Install OS Job', function () {
             expect(nodeId).to.be.a('string');
             cb = subscribeNodeNotification.firstCall.args[1];
             expect(cb).to.be.a('function');
+
+            cb = subscribeRequestProfileStub.firstCall.args[0];
+            expect(cb).to.be.a('function');
+            return cb.call(job).then(function (data){
+                expect(data).to.deep.equal(job.profile);
+            });
+            //expect(cb.call(job)).to.equal(job.profile);
         });
     });
 
@@ -356,5 +368,27 @@ describe('Install OS Job', function () {
             expect(job.options.installPartitions[0].fsType).to.equal('swap');
         });
 
+    });
+
+    describe('test updateProgress', function() {
+        it('should call updateGraphProgress', function () {
+            var descript = "Reboot suceeded, starting kernel download.";
+            var progressData = {
+                    progress: {value: null, maximum: null, description: descript},
+                    taskProgress: {
+                        taskId: taskId,
+                        progress: {value: 1, maximum: 4, description: descript},
+                    }
+            };
+            taskMessenger.publishProgressEvent.reset();
+            subscribeRequestProfileStub.resolves();
+            subscribeRequestPropertiesStub.resolves();
+            return job.updateProgress(descript, 1)
+            .then(function(){
+                expect(taskMessenger.publishProgressEvent).to.have.been.calledOnce;
+                expect(taskMessenger.publishProgressEvent).to.have.been
+                    .calledWith(graphId, progressData);
+            });
+        });
     });
 });
