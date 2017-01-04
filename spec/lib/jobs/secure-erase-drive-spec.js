@@ -377,8 +377,9 @@ describe(require('path').basename(__filename), function () {
 
     describe('format commands', function() {
 
+        var baseUri = "http://172.31.128.1:9080";
         beforeEach('Secure erase job format commands', function() {
-            job = new SEJob({eraseSettings:[], baseUri: "http://172.31.128.1:9080" }, 
+            job = new SEJob({eraseSettings:[], baseUri: baseUri }, 
                             { target: nodeId }, taskId);
         });
 
@@ -393,7 +394,8 @@ describe(require('path').basename(__filename), function () {
                             " -d \'{\"diskName\":\"/dev/sdg\",\"virtualDisk\":\"\"," +
                             "\"scsiId\":\"10:0:0:0\"}\'" +
                             " -t hdparm -o secure-erase -v lsi",
-                    "downloadUrl": "/api/current/templates/secure_erase.py"
+                    "downloadUrl": 
+                        baseUri + "/api/current/templates/secure_erase.py?nodeId=" + nodeId
                 },
                 {
                     "cmd": "sudo python secure_erase.py -i " + taskId +

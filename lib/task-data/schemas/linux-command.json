@@ -41,9 +41,9 @@
                     "minimum": 0
                 },
                 "downloadUrl": {
-                    "description": "Specify the download URL (relative to RackHD southbound API server) if the command needs to download some data or script from RackHD before execution",
+                    "description": "Specify the download URL if the command needs to download some data or script before execution",
                     "type": "string",
-                    "pattern": "^/[a-zA-Z0-9+-.#?=\\\/]+"
+                    "minLength": 1
                 },
                 "acceptedResponseCodes": {
                     "description": "The acceptable exit codes to mark the command success. Defaultly, exit code 0 means the command success, otherwise failure. If you want to specify other exit codes as success, write them here",
