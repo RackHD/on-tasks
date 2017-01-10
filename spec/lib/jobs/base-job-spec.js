@@ -132,13 +132,13 @@ describe("Base Job", function () {
         });
         
         beforeEach('Base Job Publish beforeEach', function() {
-            sinon.stub(messenger, 'publish').resolves();
+            sinon.stub(messenger, 'publishInternalEvents').resolves();
             MockJob.prototype._run.reset();
             job = new MockJob();
         });
         
         afterEach('Base Job Publish afterEach', function() {
-            messenger.publish.restore();
+            messenger.publishInternalEvents.restore();
         });
         
         after('Base Job Publish after', function() {
@@ -148,14 +148,14 @@ describe("Base Job", function () {
         it ('should publish a redfish command result data', function() {
             return job._publishRedfishCommandResult(uuid.v4(), '123', 'data')
             .then(function() {
-                expect(messenger.publish).to.be.calledOnce;
+                expect(messenger.publishInternalEvents).to.be.calledOnce;
             });
         });
         
         it ('should publish a redfish command', function() {
             return job._publishRunRedfishCommand(uuid.v4(), 'data')
             .then(function() {
-                expect(messenger.publish).to.be.calledOnce;
+                expect(messenger.publishInternalEvents).to.be.calledOnce;
             });
         });
     });
