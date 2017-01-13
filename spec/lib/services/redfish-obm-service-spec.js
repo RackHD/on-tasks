@@ -7,8 +7,7 @@ var base = require('./base-obm-services-spec');
 
 describe('Redfish OBM Service', function() {
     var servicePath = [ '/lib/services/redfish-obm-service', 
-                        '/lib/utils/job-utils/redfish-tool',
-                        '/lib/utils/job-utils/http-tool'],
+                        '/lib/utils/job-utils/redfish-tool'],
         sandbox = sinon.sandbox.create(),
         testOptions = {
             config: {
