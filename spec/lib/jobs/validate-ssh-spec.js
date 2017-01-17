@@ -43,7 +43,8 @@ describe('Validate Ssh', function() {
             sshSettings = {
                 username: 'a username',
                 password: 'a password',
-                privateKey: 'a pretty long string'
+                publicKey: 'a pretty long, publicKey string',
+                privateKey: 'a pretty long, privateKey string'
             };
             users = [
                 {name: 'someUser', password: 'somePassword'},
@@ -81,10 +82,13 @@ describe('Validate Ssh', function() {
                 expect(settings).to.have.property('user').that.equals(sshSettings.username);
                 expect(settings).to.have.property('password')
                     .that.not.equal(sshSettings.password);
+                expect(settings).to.have.property('publicKey')
+                    .that.not.equal(sshSettings.publicKey);
                 expect(settings).to.have.property('privateKey')
                     .that.not.equal(sshSettings.privateKey);
 
                 expect(encryption.decrypt(settings.password)).to.equal(sshSettings.password);
+                expect(encryption.decrypt(settings.publicKey)).to.equal(sshSettings.publicKey);
                 expect(encryption.decrypt(settings.privateKey)).to.equal(sshSettings.privateKey);
             });
         });
@@ -139,7 +143,7 @@ describe('Validate Ssh', function() {
                 host: '1.2.3.4',
                 user:'user',
                 password: 'pass',
-                privateKey: 'key',
+                publicKey: 'key',
                 tryKeyboard: true
             });
         });

@@ -1,0 +1,10 @@
+{
+    "$schema": "rackhd-task-schema.json",
+    "copyright": "Copyright 2016, EMC, Inc.",
+    "title": "Local Catalog",
+    "description": "Do catalog in RacKHD local environment",
+    "describeJob": "Job.Local.Catalog",
+    "allOf": [
+        { "$ref": "linux-command.json" }
+    ]
+}

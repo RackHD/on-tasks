@@ -10,6 +10,7 @@ describe(require('path').basename(__filename), function () {
         paramArray,
         uuid = require('node-uuid'),
         nodeId = '561885426cb1f2ea4486589d',
+        taskId = uuid.v4(),
         sandbox = sinon.sandbox.create(),
         cataSearchMock = {},
         cmdUtlMock = {};
@@ -376,23 +377,30 @@ describe(require('path').basename(__filename), function () {
 
     describe('format commands', function() {
 
+        var baseUri = "http://172.31.128.1:9080";
         beforeEach('Secure erase job format commands', function() {
-            job = new SEJob({eraseSettings:[]}, { target: nodeId }, uuid.v4());
+            job = new SEJob({eraseSettings:[], baseUri: baseUri }, 
+                            { target: nodeId }, taskId);
         });
 
         it('should format commands correctly', function() {
             var result = [
                 {
-                    "cmd": "sudo python secure_erase.py -d \'{\"diskName\":\"/dev/sda\"," +
+                    "cmd": "sudo python secure_erase.py -i " + taskId +
+                            " -s http://172.31.128.1:9080/api/current/notification" +
+                            " -d \'{\"diskName\":\"/dev/sda\"," +
                             "\"virtualDisk\":\"/c0/v0\",\"scsiId\":\"0:2:0:0\"," +
                             "\"deviceIds\":[23],\"slotIds\":[\"/c0/e36/s0\"]}\'" +
                             " -d \'{\"diskName\":\"/dev/sdg\",\"virtualDisk\":\"\"," +
                             "\"scsiId\":\"10:0:0:0\"}\'" +
                             " -t hdparm -o secure-erase -v lsi",
-                    "downloadUrl": "/api/current/templates/secure_erase.py"
+                    "downloadUrl": 
+                        baseUri + "/api/current/templates/secure_erase.py?nodeId=" + nodeId
                 },
                 {
-                    "cmd": "sudo python secure_erase.py -d \'{\"diskName\":\"/dev/sdb\"," +
+                    "cmd": "sudo python secure_erase.py -i " + taskId +
+                            " -s http://172.31.128.1:9080/api/current/notification" +
+                            " -d \'{\"diskName\":\"/dev/sdb\"," +
                             "\"virtualDisk\":\"\",\"scsiId\":\"0:2:0:1\"}\' -t scrub"
                 }
             ];
