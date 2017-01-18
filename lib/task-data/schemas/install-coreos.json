@@ -4,9 +4,22 @@
     "title": "Install CoreOS",
     "description": "The paramters schema for CoreOS installation",
     "describeJob": "Job.Os.Install",
+    "definitions": {
+        "CoreOsSpecificOptions": {
+            "type": "object",
+            "properties": {
+                "ignitionScriptUri": {
+                    "description": "The URI used to download the CoreOS Ignition configuration file",
+                    "type": "string",
+                    "minLength": 1
+                }
+            }
+        }
+    },
     "allOf": [
         { "$ref": "common-task-options.json#/definitions/Options" },
         { "$ref": "install-os-types.json#/definitions/BasicOptions" },
-        { "$ref": "install-os-types.json#/definitions/AdvanceOptionsWithSimpleUser" }
+        { "$ref": "install-os-types.json#/definitions/AdvanceOptionsWithSimpleUser" },
+        { "$ref": "#/definitions/CoreOsSpecificOptions" }
     ]
 }
