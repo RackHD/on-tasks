@@ -6,6 +6,7 @@
     "describeJob": "Job.Os.Install",
     "allOf": [
         { "$ref": "common-task-options.json#/definitions/Options" },
-        { "$ref": "install-os-types.json#/definitions/BasicOptions" }
+        { "$ref": "install-os-types.json#/definitions/BasicOptions" },
+        { "$ref": "install-os-types.json#/definitions/AdvanceOptionsWithSimpleUser" }
     ]
 }

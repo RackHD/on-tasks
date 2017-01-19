@@ -358,7 +358,7 @@ describe('Command Util', function() {
                     command: 'doSomething', retries: 3, acceptedResponseCodes: [0, 127]
                 },
                 {
-                    command: 'runSomething', downloadUrl: 'api/downloadScript'
+                    command: 'runSomething', downloadUrl: 'http://10.0.0.1:8080/api/downloadScript?nodeId=123'
                 },
                 {
                     command: 'doStuff', timeout: 20 //milliseconds
@@ -373,7 +373,7 @@ describe('Command Util', function() {
                 retries: 3, acceptedResponseCodes: [0, 127]
             });
             expect(builtCommands[2]).to.deep.equal({
-                cmd: 'runSomething', downloadUrl: 'api/downloadScript'
+                cmd: 'runSomething', downloadUrl: 'http://10.0.0.1:8080/api/downloadScript?nodeId=123'
             });
             expect(builtCommands[3]).to.deep.equal({ cmd: 'doStuff', timeout: 20 });
         });

@@ -19,6 +19,7 @@
                 "powerStatus",
                 "reboot",
                 "reset",
+                "setBootDisk",
                 "setBootPxe",
                 "softReset"
             ]

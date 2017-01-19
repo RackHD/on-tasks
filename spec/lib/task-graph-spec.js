@@ -18,11 +18,12 @@ describe('Task Graph', function () {
             helper.require('/lib/task.js'),
             helper.require('/lib/utils/task-option-validator.js'),
             helper.di.simpleWrapper([], 'Task.taskLibrary'),
+            helper.di.simpleWrapper({graphobjects: {findOne: sinon.stub()}}, 'Services.Waterline'),
             helper.di.simpleWrapper({
                 getTaskDefinition: sinon.stub().resolves(),
                 persistTaskDependencies: sinon.stub().resolves(),
                 persistGraphObject: sinon.stub().resolves(),
-                publishGraphRecord: sinon.stub().resolves(),
+                publishGraphRecord: sinon.stub().resolves()
             }, 'TaskGraph.Store')
         ]);
         Constants = helper.injector.get('Constants');
@@ -543,4 +544,5 @@ describe('Task Graph', function () {
             });
         });
     });
+
 });
