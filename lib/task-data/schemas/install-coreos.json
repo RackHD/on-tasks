@@ -1,6 +1,6 @@
 {
     "copyright": "Copyright 2016, EMC, Inc.",
-   "definitions": {
+    "definitions": {
         "IgnitionScriptUri": {
             "description": "The URI used to download the CoreOS Ignition configuration file",
             "type": "string",
