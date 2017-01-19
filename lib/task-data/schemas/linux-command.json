@@ -1,9 +1,5 @@
 {
-    "$schema": "rackhd-task-schema.json",
     "copyright": "Copyright 2016, EMC, Inc.",
-    "title": "Linux Command in Microkernel",
-    "description": "The schema for linux command job",
-    "describeJob": "Job.Linux.Commands",
     "definitions": {
         "SimpleCommandItem": {
             "description": "The command line including the arguments",
@@ -96,8 +92,12 @@
             "required": ["commands"]
         }
     },
-    "allOf": [
-        { "$ref": "common-task-options.json#/definitions/Options" },
-        { "$ref": "#/definitions/Options" }
-    ]
+    "properties": {
+        "commands": {
+            "$ref": "#/definitions/Commands"
+        },
+        "runOnlyOnce": {
+            "$ref": "#/definitions/RunOnlyOnce"
+        }
+    }
 }
