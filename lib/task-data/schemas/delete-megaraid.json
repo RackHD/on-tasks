@@ -1,9 +1,5 @@
 {
-    "$schema": "rackhd-task-schema.json",
     "copyright": "Copyright 2016, EMC, Inc.",
-    "title": "Delete RAID in MegaRAID controller",
-    "description": "Delete RAID in MegaRAID controller via storcli",
-    "describeJob": "Job.Linux.Commands",
     "definitions": {
         "DeleteAll": {
             "description": "Indicate whether to delete all existing RAIDs",
@@ -28,29 +24,22 @@
             }
         }
     },
-    "allOf": [
-        { "$ref": "linux-command.json" },
-        {
-            "type": "object",
-            "description": "The parameters for RAID deletion",
-            "properties": {
-                "path": {
-                    "$ref": "#/definitions/Path"
-                },
-                "controller": {
-                    "$ref": "#/definitions/Controller"
-                },
-                "deleteAll": {
-                    "$ref": "#/definitions/DeleteAll"
-                },
-                "raidIds": {
-                    "$ref": "#/definitions/RaidIds"
-                }
-            },
-            "anyOf": [
-                { "required": ["controller", "path", "raidIds"] },
-                { "required": ["controller", "path", "deleteAll"] }
-            ]
+    "properties": {
+        "path": {
+            "$ref": "#/definitions/Path"
+        },
+        "controller": {
+            "$ref": "#/definitions/Controller"
+        },
+        "deleteAll": {
+            "$ref": "#/definitions/DeleteAll"
+        },
+        "raidIds": {
+            "$ref": "#/definitions/RaidIds"
         }
+    },
+    "anyOf": [
+        { "required": ["controller", "path", "raidIds"] },
+        { "required": ["controller", "path", "deleteAll"] }
     ]
 }

@@ -1,12 +1,5 @@
 {
     "copyright": "Copyright 2016, EMC, Inc.",
-    "definitions": {
-        "IgnitionScriptUri": {
-            "description": "The URI used to download the CoreOS Ignition configuration file",
-            "type": "string",
-            "minLength": 1
-        }
-    },
     "properties": {
         "osType": {
             "$ref": "types-installos.json#/definitions/OsType",
@@ -35,14 +28,8 @@
         },
         "comport": {
             "$ref": "types-installos.json#/definitions/Comport"
-        },
-        "rootPassword": {
-            "$ref": "types-installos.json#/definitions/UserPassword"
-        },
-        "ignitionScriptUri": {
-            "$ref": "#/definitions/IgnitionScriptUri"
         }
     },
-    "required": ["osType", "version", "repo", "profile", "installScript",
-        "installScriptUri", "comport", "rootPassword", "hostname"]
+    "required": ["osType", "version", "repo", "hostname", "profile",
+        "installScript", "installScriptUri", "comport"]
 }

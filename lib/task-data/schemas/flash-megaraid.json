@@ -1,9 +1,5 @@
 {
-    "$schema": "rackhd-task-schema.json",
     "copyright": "Copyright 2016, EMC, Inc.",
-    "title": "Update MegaRAID Firmware",
-    "description": "Update firmware of MegaRAID controller",
-    "describeJob": "Job.Linux.Commands",
     "definitions": {
         "Adapter": {
             "description": "The MegaRAID adapter(s) identifier",

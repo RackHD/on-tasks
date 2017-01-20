@@ -1,9 +1,5 @@
 {
-    "$schema": "rackhd-task-schema.json",
     "copyright": "Copyright 2016, EMC, Inc.",
-    "title": "Install ESXi",
-    "description": "The parameters for ESXi installation",
-    "describeJob": "Job.Os.Install",
     "definitions": {
         "PostInstallCommands": {
             "type": "array",
@@ -59,44 +55,82 @@
                 "0x3e8",
                 "0x2e8"
             ]
-        },
-        "EsxiSpecificOptions": {
-            "type": "object",
-            "properties": {
-                "users": {
-                    "$ref": "install-os-types.json#/definitions/UsersSimple"
-                },
-                "postInstallCommands": {
-                    "$ref": "#/definitions/PostInstallCommands"
-                },
-                "switchDevices": {
-                    "$ref": "#/definitions/SwitchDevices"
-                },
-                "esxBootConfigTemplate": {
-                    "$ref": "#/definitions/EsxBootConfigTemplate"
-                },
-                "esxBootConfigTemplateUri": {
-                    "$ref": "#/definitions/EsxBootConfigTemplateUri"
-                },
-                "rackhdCallbackScript": {
-                    "$ref": "install-os-types.json#/definitions/RackHDCallbackScript"
-                },
-                "comportaddress": {
-                    "$ref": "#/definitions/ComportAddress"
-                }
-            },
-            "required": [
-                "esxBootConfigTemplate",
-                "esxBootConfigTemplateUri",
-                "rackhdCallbackScript",
-                "comportaddress"
-            ]
         }
     },
-    "allOf": [
-        { "$ref": "common-task-options.json#/definitions/Options" },
-        { "$ref": "install-os-types.json#/definitions/BasicOptions" },
-        { "$ref": "install-os-types.json#/definitions/AdvanceOptionsWithSimpleUser" },
-        { "$ref": "#/definitions/EsxiSpecificOptions" }
-    ]
+    "properties": {
+        "osType": {
+            "$ref": "types-installos.json#/definitions/OsType",
+            "readonly": true
+        },
+        "version": {
+            "$ref": "types-installos.json#/definitions/Version"
+        },
+        "repo": {
+            "$ref": "types-installos.json#/definitions/Repo"
+        },
+        "users": {
+            "$ref": "types-installos.json#/definitions/UserArrayBasic"
+        },
+        "hostname": {
+            "$ref": "types-installos.json#/definitions/Hostname"
+        },
+        "installDisk": {
+            "$ref": "types-installos.json#/definitions/InstallDisk"
+        },
+        "profile": {
+            "$ref": "types-installos.json#/definitions/Profile"
+        },
+        "installScript": {
+            "$ref": "types-installos.json#/definitions/InstallScript"
+        },
+        "installScriptUri": {
+            "$ref": "types-installos.json#/definitions/InstallScriptUri"
+        },
+        "comport": {
+            "$ref": "types-installos.json#/definitions/Comport"
+        },
+        "rootPassword": {
+            "$ref": "types-installos.json#/definitions/UserPassword"
+        },
+        "rootSshKey": {
+            "$ref": "types-installos.json#/definitions/SshKey"
+        },
+        "domain": {
+            "$ref": "types-installos.json#/definitions/Domain"
+        },
+        "dnsServers": {
+            "$ref": "types-installos.json#/definitions/DnsServerArray"
+        },
+        "ntpServers": {
+            "$ref": "types-installos.json#/definitions/NtpServerArray"
+        },
+        "networkDevices": {
+            "$ref": "types-installos.json#/definitions/NetworkDeviceArray"
+        },
+        "rackhdCallbackScript": {
+            "$ref": "types-installos.json#/definitions/RackHDCallbackScript"
+        },
+        "postInstallCommands": {
+            "$ref": "#/definitions/PostInstallCommands"
+        },
+        "switchDevices": {
+            "$ref": "#/definitions/SwitchDevices"
+        },
+        "esxBootConfigTemplate": {
+            "$ref": "#/definitions/EsxBootConfigTemplate"
+        },
+        "esxBootConfigTemplateUri": {
+            "$ref": "#/definitions/EsxBootConfigTemplateUri"
+        },
+        "rackhdCallbackScript": {
+            "$ref": "types-installos.json#/definitions/RackHDCallbackScript"
+        },
+        "comportaddress": {
+            "$ref": "#/definitions/ComportAddress"
+        }
+    },
+    "required": ["osType", "version", "repo", "profile", "installScript",
+        "installScriptUri", "rootPassword", "rackhdCallbackScript",
+        "esxBootConfigTemplate", "esxBootConfigTemplateUri", "comportaddress",
+        "comport"]
 }

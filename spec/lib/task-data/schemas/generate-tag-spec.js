@@ -28,6 +28,6 @@ describe(require('path').basename(__filename), function() {
     var positiveUnsetParam = [];
 
     var SchemaUtHelper = require('./schema-ut-helper');
-    new SchemaUtHelper(schemaFileName, canonical, null, null).batchTest(
+    new SchemaUtHelper(schemaFileName, canonical, null).batchTest(
         positiveSetParam, negativeSetParam, positiveUnsetParam, negativeUnsetParam);
 });

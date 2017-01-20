@@ -5,6 +5,8 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('lodash');
+var uuid = require('node-uuid');
+var Task;
 
 function TaskAnnotation(task) {
     this.task = task;
@@ -18,18 +20,18 @@ function TaskAnnotation(task) {
  * @return {Promise} promise with value docData array
  */
 TaskAnnotation.run = function (tasks, validator) {
-    return validator.addSchemasByDir(
-        path.resolve(__dirname, 'lib/task-data/schemas'),
-        'rackhd-task-schema.json'
-    )
+    return validator.register()
     .return(tasks)
-    .filter(function (task) {
-        // filter all tasks, only those task has schema will be annotated.
-        return task.schemaRef ? true: false;
-    })
     .map(function (task) {
         var tn = new TaskAnnotation(task);
-        var schemaResolved = validator.getSchemaResolved(task.schemaRef);
+        var fullSchema = Task.getFullSchema(task);
+        var tempSchemaId = uuid.v4();
+
+        //add schema then remove it is to resolve reference
+        validator.addSchema(fullSchema, tempSchemaId);
+        var schemaResolved = validator.getSchemaResolved(tempSchemaId);
+        validator.removeSchema(tempSchemaId);
+
         var schemaMerged = tn.mergeSchema(schemaResolved);
         tn.addDefault(schemaMerged);
         return tn.generateDocData(schemaMerged, {
@@ -110,10 +112,10 @@ TaskAnnotation.prototype.generateDocData = function (obj, dataTemplate) {
     var self = this;
     var data = {
         type: getType(obj),
-        description: obj.description,
+        description: '',
         // url: dataTemplate.url,
         name: dataTemplate.name,
-        title: dataTemplate.title, 
+        title: dataTemplate.title,
         // version: '0.0.0',
         group: dataTemplate.group,
         groupTitle: dataTemplate.groupTitle,
@@ -121,7 +123,7 @@ TaskAnnotation.prototype.generateDocData = function (obj, dataTemplate) {
             fields: {
                 properties: []
             }
-        }  
+        }
     };
 
     var subItems =[];
@@ -225,10 +227,15 @@ TaskAnnotation.prototype.generateDocData = function (obj, dataTemplate) {
 if (require.main === module) {
     var di = require('di');
     var core = require('on-core')(di);
+    var onTasks = require('./index.js');
     var tasks = core.helper.requireGlob(path.resolve(__dirname, 'lib/task-data/tasks/*.js'));
-    var injector = new di.Injector(core.injectables);
-    var JsonSchemaValidator = injector.get('JsonSchemaValidator');
-    var validator = new JsonSchemaValidator({});
+    var injector = new di.Injector(_.flattenDeep([
+            core.injectables,
+            onTasks.injectables
+        ])
+    );
+    var Task = injector.get('Task.Task');
+    var validator = injector.get('TaskOption.Validator');
 
     TaskAnnotation.run(tasks, validator)
     .then(function (docData) {
