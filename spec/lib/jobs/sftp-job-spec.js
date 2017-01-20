@@ -57,11 +57,13 @@ describe('sftp-job', function() {
 
         beforeEach(function() {
             sshSettings = {
-                host: 'the remote host',
-                port: 22,
-                username: 'someUsername',
-                password: 'somePassword',
-                privateKey: 'a pretty long, encrypted string',
+                config: {
+                    host: 'the remote host',
+                    port: 22,
+                    username: 'someUsername',
+                    password: 'somePassword',
+                    privateKey: 'a pretty long, encrypted string'
+                }
             };
             waterline.ibms.findByNode = this.sandbox.stub()
                 .resolves(sshSettings);
@@ -78,7 +80,7 @@ describe('sftp-job', function() {
             return sftpJob._run()
             .then(function() {
                 expect(waterline.ibms.findByNode).to.have.been.calledOnce;
-                expect(sftpJob.runSftp).to.have.been.calledWith(sshSettings, {});
+                expect(sftpJob.runSftp).to.have.been.calledWith(sshSettings.config, {});
             });
         });
 

@@ -42,11 +42,13 @@ describe('ssh-job', function() {
             mockParser.parseTasks = this.sandbox.stub().resolves();
             mockParser.parseUnknownTasks = this.sandbox.stub().resolves();
             sshSettings = {
-                host: 'the remote host',
-                port: 22,
-                username: 'someUsername',
-                password: 'somePassword',
-                privateKey: 'a pretty long string',
+                config: {
+                    host: 'the remote host',
+                    port: 22,
+                    username: 'someUsername',
+                    password: 'somePassword',
+                    privateKey: 'a pretty long string'
+                }
             };
 
             expect(sshJob).to.have.property('commandUtil');
@@ -75,8 +77,8 @@ describe('ssh-job', function() {
             return sshJob._run()
             .then(function() {
                 expect(commandUtil.sshExec).to.have.been.calledTwice
-                    .and.calledWith(sshJob.commands[0], sshSettings)
-                    .and.calledWith(sshJob.commands[1], sshSettings);
+                    .and.calledWith(sshJob.commands[0], sshSettings.config)
+                    .and.calledWith(sshJob.commands[1], sshSettings.config);
                 expect(commandUtil.parseResponse).to.have.been.calledOnce
                     .and.calledWith([
                         {stdout: 'data', cmd: 'aCommand'},
