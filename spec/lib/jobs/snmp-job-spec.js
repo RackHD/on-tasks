@@ -13,7 +13,10 @@ describe(require('path').basename(__filename), function () {
     var waterline = {};
     var pollerHelper;
     var loopCount = 10;
-    var taskProtocol;
+    var eventsProtocol;
+    var taskProtocol = {
+        publishPollerAlertLegacy: function(){}
+    };
 
     base.before(function (context) {
         // create a child injector with on-core and the base pieces we need to test this
@@ -39,11 +42,12 @@ describe(require('path').basename(__filename), function () {
             helper.di.simpleWrapper(metricStub, 'JobUtils.Metrics.Snmp.PduPowerMetric'),
             helper.di.simpleWrapper(metricStub, 'JobUtils.Metrics.Snmp.PduSensorMetric'),
             helper.di.simpleWrapper(metricStub, 'JobUtils.Metrics.Snmp.SwitchSensorMetric'),
-            helper.di.simpleWrapper(waterline,'Services.Waterline')
+            helper.di.simpleWrapper(waterline,'Services.Waterline'),
+            helper.di.simpleWrapper(taskProtocol,'Protocol.Task')
         ]);
         context.Jobclass = helper.injector.get('Job.Snmp');
         pollerHelper = helper.injector.get('JobUtils.PollerHelper');
-        taskProtocol = helper.injector.get('Protocol.Task');
+        eventsProtocol = helper.injector.get('Protocol.Events');
     });
 
     describe('Base', function () {
@@ -318,7 +322,7 @@ describe(require('path').basename(__filename), function () {
             it('should collect metric data', function() {
                 var self = this;
                 var workItemId = uuid.v4();
-                
+
                 _.forEach([
                     Constants.WorkItems.Pollers.Metrics.SnmpInterfaceBandwidthUtilization,
                     Constants.WorkItems.Pollers.Metrics.SnmpInterfaceState,
@@ -384,14 +388,14 @@ describe(require('path').basename(__filename), function () {
             };
 
             beforeEach(function() {
-                this.sandbox.stub(taskProtocol, 'publishPollerAlert').resolves();
+                this.sandbox.stub(eventsProtocol, 'publishExternalEvent').resolves();
                 snmpData.config.alerts = [];
             });
 
             it('should not alert if there are no alerts', function() {
                 return this.snmp._determineAlert(snmpData).should.become([])
                 .then(function() {
-                    expect(taskProtocol.publishPollerAlert).to.not.have.been.called;
+                    expect(eventsProtocol.publishExternalEvent).to.not.have.been.called;
                 });
             });
 
@@ -404,7 +408,7 @@ describe(require('path').basename(__filename), function () {
 
                 return this.snmp._determineAlert(snmpData)
                 .then(function(out) {
-                    expect(out).to.be.an('Array').with.length(1)
+                    expect(out).to.be.an('Array').with.length(1);
                     expect(out[0]).to.have.property('oid');
                     expect(out[0]).to.have.property('value');
                     expect(out[0]).to.have.property('matched');
@@ -413,13 +417,18 @@ describe(require('path').basename(__filename), function () {
                         value: 'test value',
                         matched: 'test value'
                     });
-                    expect(taskProtocol.publishPollerAlert).to.have.been.calledWith(graphId, 'snmp', {
-                        host: '1.2.3.4',
-                        oid: '.1.3.6.1.2.1.1.5',
-                        value: 'test value',
-                        nodeRef: '/nodes/aNodeId',
-                        dataRef: '/pollers/aWorkItemId/data/current',
-                        matched: 'test value'
+                    expect(eventsProtocol.publishExternalEvent).to.have.been.calledWith({
+                        type: 'polleralert',
+                        action: 'snmp.updated',
+                        typeId: 'aWorkItemId',
+                        nodeId: 'aNodeId',
+                        severity: 'information',
+                        data: {
+                            host: '1.2.3.4',
+                            oid: '.1.3.6.1.2.1.1.5',
+                            value: 'test value',
+                            matched: 'test value'
+                        }
                     });
                 });
             });
@@ -442,13 +451,18 @@ describe(require('path').basename(__filename), function () {
                         value: 'test value',
                         matched: '/test/'
                     });
-                    expect(taskProtocol.publishPollerAlert).to.have.been.calledWith(graphId, 'snmp', {
-                        host: '1.2.3.4',
-                        oid: '.1.3.6.1.2.1.1.5',
-                        value: 'test value',
-                        nodeRef: '/nodes/aNodeId',
-                        dataRef: '/pollers/aWorkItemId/data/current',
-                        matched: '/test/'
+                    expect(eventsProtocol.publishExternalEvent).to.have.been.calledWith({
+                        type: 'polleralert',
+                        action: 'snmp.updated',
+                        typeId: 'aWorkItemId',
+                        nodeId: 'aNodeId',
+                        severity: 'information',
+                        data: {
+                            host: '1.2.3.4',
+                            oid: '.1.3.6.1.2.1.1.5',
+                            value: 'test value',
+                            matched: '/test/'
+                        }
                     });
                 });
             });
@@ -473,14 +487,119 @@ describe(require('path').basename(__filename), function () {
                         value: '45',
                         matched: snmpData.config.alerts[0]['.1.3.6.1.2.1.1.5']
                     });
-                    expect(taskProtocol.publishPollerAlert).to.have.been.calledWith(graphId, 'snmp', {
-                        host: '1.2.3.4',
+                    expect(eventsProtocol.publishExternalEvent).to.have.been.calledWith({
+                        type: 'polleralert',
+                        action: 'snmp.updated',
+                        typeId: 'aWorkItemId',
+                        nodeId: 'aNodeId',
+                        severity: 'information',
+                        data: {
+                            host: '1.2.3.4',
+                            oid: '.1.3.6.1.2.1.1.5',
+                            value: '45',
+                            matched: snmpData.config.alerts[0]['.1.3.6.1.2.1.1.5']
+                        }
+                    });
+                });
+            });
+
+            it('should alert on matching alert that has severity configuration', function() {
+                snmpData.config.alerts.push({'.1.3.6.1.2.1.1.5': {
+                    "greaterThan": 42,
+                    "integer": true,
+                    "severity": "critical"
+                }});
+
+                return this.snmp._determineAlert(snmpData)
+                .then(function(out) {
+                    expect(out).to.be.an('Array').with.length(1);
+                    expect(out[0]).to.have.property('oid');
+                    expect(out[0]).to.have.property('value');
+                    expect(out[0]).to.have.property('matched');
+                    expect(out[0]).to.deep.equal({
                         oid: '.1.3.6.1.2.1.1.5',
                         value: '45',
-                        nodeRef: '/nodes/aNodeId',
-                        dataRef: '/pollers/aWorkItemId/data/current',
-                        matched: snmpData.config.alerts[0]['.1.3.6.1.2.1.1.5']
+                        severity: 'critical',
+                        matched: _.omit(snmpData.config.alerts[0]['.1.3.6.1.2.1.1.5'],
+                                        'severity')
                     });
+                    expect(eventsProtocol.publishExternalEvent).to.have.been
+                        .calledWith({
+                            type: 'polleralert',
+                            action: 'snmp.updated',
+                            typeId: 'aWorkItemId',
+                            nodeId: 'aNodeId',
+                            severity: 'critical',
+                            data: {
+                                host: '1.2.3.4',
+                                oid: '.1.3.6.1.2.1.1.5',
+                                value: '45',
+                                matched: _.omit(snmpData.config.alerts[0]['.1.3.6.1.2.1.1.5'],
+                                                'severity')
+                            }
+                    });
+                });
+            });
+
+            it('should alert on matching multi alerts', function() {
+                snmpData.config.alerts.push({'.1.3.6.1.2.1.1.6': '/test/' });
+                snmpData.config.alerts.push({'.1.3.6.1.2.1.1.5': {
+                    "greaterThan": 42,
+                    "integer": true
+                }});
+                snmpData.result.push({
+                    source: '.1.3.6.1.2.1.1.6',
+                    values: {'.1.3.6.1.2.1.1.6': 'test value'}
+                });
+
+                return this.snmp._determineAlert(snmpData)
+                .then(function(out) {
+                    expect(out).to.be.an('Array').with.length(2);
+                    expect(out[0]).to.have.property('oid');
+                    expect(out[0]).to.have.property('value');
+                    expect(out[0]).to.have.property('matched');
+                    expect(out[0]).to.deep.equal({
+                        oid: '.1.3.6.1.2.1.1.5',
+                        value: '45',
+                        matched: snmpData.config.alerts[1]['.1.3.6.1.2.1.1.5']
+                    });
+                    expect(eventsProtocol.publishExternalEvent).to.have.been
+                        .calledWith({
+                            type: 'polleralert',
+                            action: 'snmp.updated',
+                            typeId: 'aWorkItemId',
+                            nodeId: 'aNodeId',
+                            severity: 'information',
+                            data: {
+                                host: '1.2.3.4',
+                                oid: '.1.3.6.1.2.1.1.5',
+                                value: '45',
+                                matched: snmpData.config.alerts[1]['.1.3.6.1.2.1.1.5']
+                            }
+                    });
+                    expect(out[1]).to.have.property('oid');
+                    expect(out[1]).to.have.property('value');
+                    expect(out[1]).to.have.property('matched');
+                    expect(out[1]).to.deep.equal({
+                        oid: '.1.3.6.1.2.1.1.6',
+                        value: 'test value',
+                        matched: snmpData.config.alerts[0]['.1.3.6.1.2.1.1.6']
+                    });
+                    expect(eventsProtocol.publishExternalEvent).to.have.been
+                        .calledWith({
+                            type: 'polleralert',
+                            action: 'snmp.updated',
+                            typeId: 'aWorkItemId',
+                            nodeId: 'aNodeId',
+                            severity: 'information',
+                            data: {
+                                host: '1.2.3.4',
+                                oid: '.1.3.6.1.2.1.1.6',
+                                value: 'test value',
+                                matched: snmpData.config.alerts[0]['.1.3.6.1.2.1.1.6']
+                            }
+                    });
+
                 });
             });
 
@@ -496,7 +615,7 @@ describe(require('path').basename(__filename), function () {
 
                 return this.snmp._determineAlert(snmpData, snmpData.result[0].values).should.become([])
                 .then(function() {
-                    expect(taskProtocol.publishPollerAlert).to.not.have.been.called;
+                    expect(eventsProtocol.publishExternalEvent).to.not.have.been.called;
                 });
             });
 
@@ -509,7 +628,7 @@ describe(require('path').basename(__filename), function () {
 
                 return this.snmp._determineAlert(snmpData, snmpData.result[0].values).should.become([])
                 .then(function() {
-                    expect(taskProtocol.publishPollerAlert).to.not.have.been.called;
+                    expect(eventsProtocol.publishExternalEvent).to.not.have.been.called;
                 });
             });
         });

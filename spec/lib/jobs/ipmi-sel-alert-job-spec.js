@@ -76,11 +76,11 @@ describe(require('path').basename(__filename), function () {
 
             waterline.nodes.findOne.resolves({"id" :"123","sku":"sku123"});
             return alertJob._determineAlert(data).then(function(out) {
-                expect(out).with.length(1);
-                expect(out[0]).to.have.property('data');
-                expect(out[0].data).to.have.property('alert');
-                expect(out[0].data.alert).to.have.property('reading');
-                expect(out[0].data.alert.reading).to.deep.equal(
+                expect(out[1]).with.length(1);
+                expect(out[1][0]).to.have.property('data');
+                expect(out[1][0].data).to.have.property('alert');
+                expect(out[1][0].data.alert).to.have.property('reading');
+                expect(out[1][0].data.alert.reading).to.deep.equal(
                     {
                         "SEL Record ID": "0001",
                         "Record Type": "02",
@@ -95,8 +95,8 @@ describe(require('path').basename(__filename), function () {
                         "Description": "Power off/down"
                     }
                 );
-                expect(out[0].data.alert).to.have.property('matches');
-                expect(out[0].data.alert.matches).to.deep.equal(alerts.alerts);
+                expect(out[1][0].data.alert).to.have.property('matches');
+                expect(out[1][0].data.alert.matches).to.deep.equal(alerts.alerts);
             });
         });
 
@@ -117,7 +117,7 @@ describe(require('path').basename(__filename), function () {
             env.get.resolves(alerts);
             waterline.nodes.findOne.resolves({"id" :"123","sku":"sku123"});
             return alertJob._determineAlert(data).then(function(out) {
-                expect(out).with.length(1);
+                expect(out[1]).with.length(1);
             });
         });
 
