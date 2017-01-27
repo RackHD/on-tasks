@@ -24,6 +24,20 @@ describe('Ucs Discovery Job', function () {
               targets: [ '/fake' ]}
         ]
     };
+    var obm = {
+        "config": {
+            "uri": "http://10.240.19.226:6080/sys",
+            "host": "10.240.19.226",
+            "root": "/sys",
+            "port": "6080",
+            "protocol": "http",
+            "username": "ucspe",
+            "password": "ucspe",
+            "ucs": "10.240.19.236",
+            "verifySSL": false
+        },
+        "service": "ucs-obm-service"
+    };
     
     before(function() { 
         helper.setupInjector([
@@ -37,6 +51,9 @@ describe('Ucs Discovery Job', function () {
             create: sandbox.stub().resolves(node),
             needOne: sandbox.stub().resolves(node),
             updateOne: sandbox.stub().resolves(node)
+        };
+        waterline.obms = {
+            upsertByNode: sandbox.stub().resolves(obm)
         };
         Error = helper.injector.get('Errors');
     });
@@ -87,6 +104,7 @@ describe('Ucs Discovery Job', function () {
                 ]
 
         };
+
     });
     
     describe('usc discovery', function() {
