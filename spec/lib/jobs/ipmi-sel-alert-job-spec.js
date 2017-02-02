@@ -21,6 +21,7 @@ describe(require('path').basename(__filename), function () {
                     "Event Direction       : Deassertion Event\n"+
                     "Event Data            : 00ffff\n"+
                     "Description           : Power off/down\n";
+        var parser, alertJob;
 
 
     base.before(function (context) {
@@ -36,10 +37,9 @@ describe(require('path').basename(__filename), function () {
         ]);
 
 
-        context.parser = helper.injector.get('JobUtils.IpmiCommandParser');
+        parser = helper.injector.get('JobUtils.IpmiCommandParser');
         context.Jobclass = helper.injector.get('Job.Poller.Alert.Ipmi.Sel');
-        var alertJob = new context.Jobclass({}, { graphId: uuid.v4() }, uuid.v4());
-        context.determineAlert = alertJob._determineAlert;
+        alertJob = new context.Jobclass({}, { graphId: uuid.v4() }, uuid.v4());
         env = helper.injector.get('Services.Environment');
         waterline.nodes = {
             findOne: sinon.stub().resolves()
@@ -62,11 +62,11 @@ describe(require('path').basename(__filename), function () {
 
     describe("ipmi-sel-alert-job", function() {
         it("should not alert on empty sel data", function() {
-            return this.determineAlert(null).should.become(undefined);
+            return alertJob._determineAlert(null).should.become(undefined);
         });
 
         it("should alert on sel data", function() {
-            var parsed = this.parser.parseSelDataEntries(selData);
+            var parsed = parser.parseSelDataEntries(selData);
             var data = {
                 node : "123",
                 selEntries: parsed
@@ -75,10 +75,12 @@ describe(require('path').basename(__filename), function () {
             env.get.resolves(alerts);
 
             waterline.nodes.findOne.resolves({"id" :"123","sku":"sku123"});
-            return this.determineAlert(data).then(function(out) {
-                expect(out).to.have.property('alerts').with.length(1);
-                expect(out.alerts[0]).to.have.property('data');
-                expect(out.alerts[0].data).to.deep.equal(
+            return alertJob._determineAlert(data).then(function(out) {
+                expect(out[1]).with.length(1);
+                expect(out[1][0]).to.have.property('data');
+                expect(out[1][0].data).to.have.property('alert');
+                expect(out[1][0].data.alert).to.have.property('reading');
+                expect(out[1][0].data.alert.reading).to.deep.equal(
                     {
                         "SEL Record ID": "0001",
                         "Record Type": "02",
@@ -93,15 +95,13 @@ describe(require('path').basename(__filename), function () {
                         "Description": "Power off/down"
                     }
                 );
-                expect(out.alerts[0]).to.have.property('matches');
-                expect(out.alerts[0].matches).to.deep.equal(alerts.alerts);
+                expect(out[1][0].data.alert).to.have.property('matches');
+                expect(out[1][0].data.alert.matches).to.deep.equal(alerts.alerts);
             });
         });
 
-
-
         it("should alert on sel data with regexes", function() {
-            var parsed = this.parser.parseSelDataEntries(selData);
+            var parsed = parser.parseSelDataEntries(selData);
             var data = {
                 selEntries: parsed,
                 node : "123"
@@ -116,8 +116,8 @@ describe(require('path').basename(__filename), function () {
             ]};
             env.get.resolves(alerts);
             waterline.nodes.findOne.resolves({"id" :"123","sku":"sku123"});
-            return this.determineAlert(data).then(function(out) {
-                expect(out).to.have.property('alerts').with.length(1);
+            return alertJob._determineAlert(data).then(function(out) {
+                expect(out[1]).with.length(1);
             });
         });
 
@@ -125,7 +125,7 @@ describe(require('path').basename(__filename), function () {
             var _selData = _.cloneDeep(selData);
             _selData += "7,10/26/2014,20:17:55,Power Supply #0x51,Fully Redundant,Deasserted\n";
             _selData += "8,10/26/2014,20:17:59,Power Supply #0x51,Fully Redundant,Asserted\n";
-            var parsed = this.parser.parseSelData(_selData);
+            var parsed = parser.parseSelData(_selData);
             var data = {
                 sel: parsed,
                 alerts: [
@@ -136,9 +136,16 @@ describe(require('path').basename(__filename), function () {
                     }
                 ]
             };
-            return this.determineAlert(data).then(function(out) {
+            return alertJob._determineAlert(data).then(function(out) {
                 expect(out).to.be.empty;
             });
+        });
+    });
+
+    describe("format event", function() {
+        it("should throw error if input is not an array", function() {
+            expect(function(){ alertJob._formatSelAlert({}); })
+                .to.throw(Error.AssertionError, 'alerts (array) is required');
         });
     });
 });

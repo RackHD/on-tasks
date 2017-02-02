@@ -1,9 +1,5 @@
 {
-    "$schema": "rackhd-task-schema.json",
     "copyright": "Copyright 2016, EMC, Inc.",
-    "title": "Firmware Update",
-    "description": "The schema for firmware update task",
-    "describeJob": "Job.Linux.Commands",
     "definitions": {
         "File": {
             "description": "The filename to download",
@@ -33,28 +29,22 @@
             "minLength": 1
         }
     },
-    "allOf": [
-        { "$ref": "linux-command.json" },
-        {
-            "type": "object",
-            "properties": {
-                "file": {
-                    "$ref": "#/definitions/File"
-                },
-                "downloadDir": {
-                    "$ref": "#/definitions/DownloadDir"
-                },
-                "fileMd5Uri": {
-                    "$ref": "#/definitions/FileMd5Uri"
-                },
-                "fileUri": {
-                    "$ref": "#/definitions/FileUri"
-                },
-                "outputPath": {
-                    "$ref": "#/definitions/OutputPath"
-                }
-            },
-            "required": ["file", "downloadDir", "fileMd5Uri", "fileUri", "outputPath"]
+    "properties": {
+        "file": {
+            "$ref": "#/definitions/File"
+        },
+        "downloadDir": {
+            "$ref": "#/definitions/DownloadDir"
+        },
+        "fileMd5Uri": {
+            "$ref": "#/definitions/FileMd5Uri"
+        },
+        "fileUri": {
+            "$ref": "#/definitions/FileUri"
+        },
+        "outputPath": {
+            "$ref": "#/definitions/OutputPath"
         }
-    ]
+    },
+    "required": ["file", "downloadDir", "fileMd5Uri", "fileUri", "outputPath"]
 }

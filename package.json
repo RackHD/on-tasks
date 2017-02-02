@@ -1,6 +1,6 @@
 {
   "name": "on-tasks",
-  "version": "0.0.1",
+  "version": "1.1.0",
   "description": "Tasks repository (meant as a library of tasks) to be loaded and run by task graphs as needed.",
   "main": "index.js",
   "scripts": {
@@ -25,7 +25,8 @@
     "ssh2": "0.5.0",
     "url-parse": "~1.0.5",
     "xml2js": "^0.4.4",
-    "temp": "~0.8.3"
+    "temp": "~0.8.3",
+    "node-uuid": "^1.4.2"
   },
   "devDependencies": {
     "chai": "^2.0.0",
@@ -47,7 +48,6 @@
     "lodash.unset": "^4.4.0",
     "mocha": "^2.1.0",
     "nock": "^2.17.0",
-    "node-uuid": "^1.4.2",
     "sinon": "^1.12.2",
     "sinon-as-promised": "^2.0.3",
     "sinon-chai": "^2.7.0",

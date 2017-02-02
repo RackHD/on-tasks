@@ -9,10 +9,6 @@
         }
     ],
     "definitions": {
-        "describeJob": {
-            "type": "string",
-            "description": "This property is required to point to a job's di injectable name."
-        },
         "copyright": {
             "type": "string",
             "description": "This attribute shall contain the copyright notice for the schema."
@@ -23,15 +19,11 @@
         }
     },
     "properties": {
-        "describeJob": {
-            "$ref": "#/definitions/describeJob"
-        },
         "copyright": {
             "$ref": "#/definitions/copyright"
         },
         "readonly": {
             "$ref": "#/definitions/readonly"
         }
-    },
-    "required": ["describeJob", "description", "title"]
+    }
 }

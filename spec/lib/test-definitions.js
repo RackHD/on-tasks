@@ -274,7 +274,7 @@ module.exports.get = function() {
                     friendlyName: 'Test Inline Task with schema',
                     injectableName: 'Task.test.inline-task-with-schema',
                     implementsTask: 'Task.Base.test-empty',
-                    schemaRef: 'testschema',
+                    optionsSchema: 'testschema',
                     options: {
                         option1: 'default value of option 1',
                         option5: 'default value of option 5',

@@ -57,6 +57,7 @@ describe(require('path').basename(__filename), function () {
             };
             var graphId = uuid.v4();
             this.ipmi = new this.Jobclass({}, { graphId: graphId }, uuid.v4());
+            this.ipmi._publishPollerAlertLegacy = this.sandbox.stub().resolves();
             this.ipmi._publishPollerAlert = this.sandbox.stub().resolves();
             this.ipmi.selInformation = this.sandbox.stub().resolves();
             expect(this.ipmi.routingKey).to.equal(graphId);

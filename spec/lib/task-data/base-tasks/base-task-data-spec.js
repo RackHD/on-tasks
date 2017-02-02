@@ -34,11 +34,6 @@ module.exports = {
                 expect(this.taskdefinition.runJob).to.be.a('string');
             });
 
-            it('should have requiredOptions', function() {
-                expect(this.taskdefinition).to.have.property('requiredOptions');
-                expect(this.taskdefinition.requiredOptions).to.be.instanceof(Array);
-            });
-
             it('should have required properties', function() {
                 expect(this.taskdefinition).to.have.property('requiredProperties');
                 expect(this.taskdefinition.properties).to.be.an('Object');
@@ -49,6 +44,22 @@ module.exports = {
                 expect(this.taskdefinition.properties).to.be.an('Object');
             });
 
+            it('should have correct optionsSchema', function() {
+                if (this.taskdefinition.optionsSchema &&
+                        !_.isString(this.taskdefinition.optionsSchema) &&
+                        !_.isObject(this.taskdefinition.optionsSchema)) {
+                    throw new Error('optionsSchema must be either string or object if it is not empty'); //jshint ignore: line
+                }
+            });
+
+            it('should not have unknown property', function() {
+                var validKeys = ['friendlyName', 'injectableName', 'runJob',
+                    'properties', 'requiredProperties', 'optionsSchema',
+                    'requiredOptions'];
+                _.forOwn(this.taskdefinition, function(value, key) {
+                    expect(validKeys).to.include(key);
+                });
+            });
         });
     }
 };
