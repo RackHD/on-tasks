@@ -3721,3 +3721,7 @@ module.exports.racadmSoftwareInventory = fs
 module.exports.racadmJobqueueData = fs
     .readFileSync(__dirname+"/samplefiles/racadm-jobqueue-data.txt")
     .toString();
+
+module.exports.megaraidPhysicalDiskData = fs
+    .readFileSync(__dirname+"/samplefiles/megaraid-physical-disk-data.txt")
+    .toString();
