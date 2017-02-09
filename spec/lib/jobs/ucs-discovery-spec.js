@@ -44,7 +44,7 @@ describe('Ucs Discovery Job', function () {
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/ucs-discovery.js'),
             helper.require('/lib/utils/job-utils/ucs-tool.js'),
-            helper.require('/lib/utils/job-utils/http-tool.js'),
+            //helper.require('/lib/utils/job-utils/http-tool.js'),
             helper.di.simpleWrapper(waterline,'Services.Waterline')
         ]);
         waterline.nodes = {

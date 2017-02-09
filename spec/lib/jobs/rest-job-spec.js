@@ -26,8 +26,7 @@ describe("REST-job", function(){
     before(function(){
         helper.setupInjector([
             helper.require('/lib/jobs/rest-job.js'),
-            helper.require('/lib/jobs/base-job.js'),
-            helper.require('/lib/utils/job-utils/http-tool.js')
+            helper.require('/lib/jobs/base-job.js')
         ]);
         RestJob = helper.injector.get('Job.Rest');
     });
