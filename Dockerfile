@@ -1,6 +1,6 @@
 # Copyright 2016, EMC, Inc.
 
-FROM rackhd/on-core
+FROM docker-registry.smi.delllabs.net/dell_smi/on-core
 
 COPY . /RackHD/on-tasks/
 
