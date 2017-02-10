@@ -24,7 +24,8 @@ describe(require('path').basename(__filename), function() {
 
     var negativeUnsetParam = [
         "rackhdCallbackScript",
-        "installType"
+        "installType",
+        "hostname"
     ];
 
     var installOsCommonHelper = require('./install-os-schema-ut-helper');

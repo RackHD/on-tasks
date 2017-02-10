@@ -20,7 +20,7 @@ var uuid = require('node-uuid'),
         clientRequest: sandbox.stub(),
         settings: data
     },
-    listChassisData = { 
+    listChassisData = {
         body: {
             Members: [
                 {'@odata.id':'/redfish/v1/Chassis/abc123'}
@@ -95,7 +95,6 @@ describe('Job.Redfish', function () {
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/redfish-job.js'),
             helper.require('/lib/utils/job-utils/redfish-tool.js'),
-            helper.require('/lib/utils/job-utils/http-tool.js'),
             helper.di.simpleWrapper(waterline,'Services.Waterline')
         ]);
         context.Jobclass = helper.injector.get('Job.Redfish');
@@ -107,7 +106,7 @@ describe('Job.Redfish', function () {
 
     describe("redfish-job", function() {
         var testEmitter = new events.EventEmitter();
-        
+
         beforeEach(function() {
             waterline.workitems = {
                 update: sandbox.stub().resolves(),
@@ -121,20 +120,22 @@ describe('Job.Redfish', function () {
                     config: {}
                 })
             };
-            
+
             var graphId = uuid.v4();
             redfishJob = new this.Jobclass({}, { graphId: graphId }, uuid.v4());
             expect(redfishJob.routingKey).to.equal(graphId);
             redfishJob.initClient = sandbox.stub().returns(redfishTool);
             redfishJob._publishPollerAlert = sinon.stub().resolves();
+            redfishJob._publishPollerAlertLegacy = sinon.stub().resolves();
         });
-        
+
         afterEach(function() {
             redfishJob.initClient.reset();
             redfishTool.clientRequest.reset();
             redfishJob._publishPollerAlert.reset();
+            redfishJob._publishPollerAlertLegacy.reset();
         });
-        
+
         it("should have a _run() method", function() {
             expect(redfishJob).to.have.property('_run').with.length(0);
         });
@@ -171,7 +172,7 @@ describe('Job.Redfish', function () {
                 });
             });
         });
-        
+
         it("should run collectData for each Chassis command", function() {
             _.forEach(['power', 'thermal'], function(command) {
                 redfishTool.clientRequest.reset();
@@ -184,7 +185,7 @@ describe('Job.Redfish', function () {
                 });
             });
         });
-        
+
         it("should run collectData for Systems LogServices", function() {
             redfishTool.clientRequest.onCall(0).resolves(listChassisData);
             redfishTool.clientRequest.onCall(1).resolves(listChassisData);
@@ -196,7 +197,7 @@ describe('Job.Redfish', function () {
                 expect(data[0]).to.deep.equal(entryData.body);
             });
         });
-        
+
         it("should run collectData for Emc Oem FabricService", function() {
             redfishTool.clientRequest.onCall(0).resolves(listChassisData);
             redfishTool.clientRequest.onCall(1).resolves(listChassisData);
@@ -219,7 +220,7 @@ describe('Job.Redfish', function () {
                 expect(data[0]).to.deep.equal(entryDataOemElementThermal.body);
             });
         });
-        
+
         it("should run collectData for Emc Oem Spine Thermal", function() {
             redfishTool.clientRequest.onCall(0).resolves(listOemElementThermalData);
             redfishTool.clientRequest.onCall(1).resolves(listOemElementThermalData);
@@ -230,7 +231,7 @@ describe('Job.Redfish', function () {
                 expect(data[0]).to.deep.equal(entryDataOemElementThermal.body);
             });
         });
-        
+
         it("should run collectData for Emc Oem Aggregator Thermal", function() {
             redfishTool.clientRequest.onCall(0).resolves(listOemElementThermalData);
             redfishTool.clientRequest.onCall(1).resolves(listOemElementThermalData);
@@ -241,7 +242,7 @@ describe('Job.Redfish', function () {
                 expect(data[0]).to.deep.equal(entryDataOemElementThermal.body);
             });
         });
-        
+
         it("should run collectData for Managers LogServices", function() {
             redfishTool.clientRequest.onCall(0).resolves(listChassisData);
             redfishTool.clientRequest.onCall(1).resolves(listChassisData);
@@ -256,21 +257,21 @@ describe('Job.Redfish', function () {
                 expect(data[0]).to.deep.equal(entryData.body);
             });
         });
-        
+
         it("should fail collectData for unknown command", function() {
             redfishTool.clientRequest.onCall(0).resolves(listChassisData);
             redfishTool.clientRequest.onCall(1).resolves(chassisData);
             return expect(redfishJob.collectData(data, 'unknown'))
                 .to.be.rejectedWith('Unsupported Redfish Command: unknown');
         });
-        
+
         it("should fail collectData with no data", function() {
             redfishTool.clientRequest.onCall(0).resolves(listChassisData);
             redfishTool.clientRequest.onCall(1).resolves(undefined);
             return expect(redfishJob.collectData(data, 'power'))
                 .to.be.rejectedWith('No Data Found For Command: power');
         });
-        
+
         it("should fail collectData with error", function() {
             var error = new Error('error text');
             redfishTool.clientRequest.onCall(0).resolves(listChassisData);
@@ -280,7 +281,7 @@ describe('Job.Redfish', function () {
                 expect(data).to.deep.equal({error:error});
             });
         });
-        
+
         it("should add a concurrent request", function() {
             expect(redfishJob.concurrentRequests('test', 'power')).to.equal(false);
             redfishJob.addConcurrentRequest('test', 'power');
@@ -295,21 +296,23 @@ describe('Job.Redfish', function () {
             });
             expect(redfishJob.concurrentRequests('test', 'power')).to.equal(true);
         });
-        
-        it("should generate ResourceUpdated for FabricService data", function() {
+
+        it("should generate ResourceUpdated for FabricService data", function(done) {
             var fabricServData = {
                 EndPoints: [{ EndPointName:'epName', Available: true }]
             };
-            redfishJob.fabricDataCache = { 
+            redfishJob.fabricDataCache = {
                 EndPoints: [{ EndPointName:'epName',  Available: false }]
             };
             return redfishJob.fabricServiceDataAlert(redfishTool, fabricServData)
             .then(function(data) {
                 expect(data).to.deep.equal(fabricServData);
-            });
+                done();
+            })
+            .catch(done);
         });
-        
-        it("should generate ResourceAdded for FabricService data", function() {
+
+        it("should generate ResourceAdded for FabricService data", function(done) {
             var fabricServData = {
                 EndPoints: [
                     { EndPointName:'epName', Available: true },
@@ -322,10 +325,12 @@ describe('Job.Redfish', function () {
             return redfishJob.fabricServiceDataAlert(redfishTool, fabricServData)
             .then(function(data) {
                 expect(data).to.deep.equal(fabricServData);
-            });
+                done();
+            })
+            .catch(done);
         });
-        
-        it("should generate ResourceRemoved for FabricService data", function() {
+
+        it("should generate ResourceRemoved for FabricService data", function(done) {
             var fabricServData = {
                 EndPoints: [
                     { EndPointName:'epName1',  Available: true },
@@ -336,6 +341,35 @@ describe('Job.Redfish', function () {
             return redfishJob.fabricServiceDataAlert(redfishTool, fabricServData)
             .then(function(data) {
                 expect(data).to.deep.equal(fabricServData);
+                done();
+            })
+            .catch(done);
+        });
+
+        it("should format FabricService alert data", function() {
+            var fabricServData = {
+                EndPoints: [
+                    { EndPointName:'epName1',  Available: true },
+                    { EndPointName:'EpName2', Available: true }]
+            };
+            var fabricEventData = {
+                type: 'polleralert',
+                action: 'fabricservice.updated',
+                typeId: undefined,
+                nodeId: undefined,
+                severity: "information",
+                data: {
+                    eventType: "ResourceRemoved",
+                    resource: [fabricServData.EndPoints[0]]
+                }
+            };
+
+            redfishJob.fabricDataCache = Object.assign({}, fabricServData);
+            fabricServData.EndPoints = _.drop(fabricServData.EndPoints);
+            return redfishJob.fabricServiceDataAlert(redfishTool, fabricServData)
+            .then(function() {
+                expect(redfishJob._publishPollerAlert).to.have.been
+                    .calledWith(fabricEventData);
             });
         });
     });

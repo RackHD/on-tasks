@@ -11,26 +11,6 @@ var jsonlint = require('jsonlint');
 var fs = require('fs');
 
 /**
- * load all jobs' injectable names
- * @return {Array<String>} all jobs' injectable names
- */
-function loadJobNames() {
-    var injectables = _.reduce(helper.requireGlob('/lib/jobs/*.js'), function(acc, i) {
-         _.forEach(i.annotations, function(a) {
-             if (typeof a.token === 'string') { //provided token, the job injectableName
-                if (a.token !== 'Job.Base') { //ignore BaseJob as it is not a real job
-                    acc.push(a.token);
-                }
-                return false; //skip earlier as the injectableName has been found
-             }
-         });
-         return acc;
-    }, []);
-
-    return  injectables;
-}
-
-/**
  * load all schemas into the validator to resolve all schema references
  * @param {Object} ajv - The Ajv instance
  * @return {Object} the input Ajv instance
@@ -76,10 +56,8 @@ function getSchema(ajv, name) {
  * @return {Object} all job injectable names and the initialized validator.
  */
 var init = _.once(function() {
-    var jobNames = loadJobNames();
     var validator = loadSchemas(new Ajv());
     return {
-        jobNames: jobNames,
         validator: validator
     };
 });
@@ -112,17 +90,9 @@ function validateData(validator, schemaId, data, expected) {
  * @param {Array<String>} jobNames - All job injectable names, it is used to check whether the
  *  schema's describedJob points to an existing job.
  */
-function validateSchemaDefinition(schema, jobNames) {
+function validateSchemaDefinition(schema) {
     before('Check schema definition', function() {
         expect(schema).to.be.a('object');
-        // expect(schema).to.have.property('id').to.be.a('string');
-        expect(schema).to.have.property('describeJob').to.be.a('string');
-        expect(schema).to.have.property('copyright').to.be.a('string');
-        expect(schema).to.have.property('title').to.be.a('string');
-        expect(schema).to.have.property('description').to.be.a('string');
-        if (jobNames.indexOf(schema.describeJob) < 0) {
-            throw new Error("The describeJob " + schema.describeJob + " doesn't exist!");
-        }
     });
 }
 
@@ -132,11 +102,9 @@ function validateSchemaDefinition(schema, jobNames) {
  * @param {Object} [canonicalData] - The canonical data for target schema
  * @param {Boolean} [skipTaskSchemaDefValidation=false] - True to skip the validation for task
  * schema definition itself.
- * @param {Boolean} [skipCommonOptionsValidation=false] - True to skip the common task options
  * validation, this depends the the canonical data is specified
  */
-function SchemaUnitTestHelper(schemaFileName, canonicalData, skipTaskSchemaDefValidation,
-                              skipCommonOptionsValidation) {
+function SchemaUnitTestHelper(schemaFileName, canonicalData, skipTaskSchemaDefValidation) {
     var result = init();
     var self = this;
     this.validator = result.validator;
@@ -145,17 +113,13 @@ function SchemaUnitTestHelper(schemaFileName, canonicalData, skipTaskSchemaDefVa
     this.canonicalData = canonicalData;
 
     if (!skipTaskSchemaDefValidation) {
-        validateSchemaDefinition(this.schema, result.jobNames);
+        validateSchemaDefinition(this.schema);
     }
 
     if (this.canonicalData) {
         before('Validate canonical data', function(done) {
             self._validate(self.canonicalData, true, done);
         });
-
-        if (!skipCommonOptionsValidation) {
-            self.validateCommonOptions();
-        }
     }
 }
 
@@ -168,45 +132,6 @@ function SchemaUnitTestHelper(schemaFileName, canonicalData, skipTaskSchemaDefVa
  */
 SchemaUnitTestHelper.prototype._validate = function(data, expected, done) {
     return done(validateData(this.validator, this.schemaName, data, expected));
-};
-
-/**
- * validate task common options
- * @memberof SchemaUnitTestHelper
- * @param {Object} [overrideCanonicalData] - A particular canonical data to override the default one
- */
-SchemaUnitTestHelper.prototype.validateCommonOptions = function(overrideCanonicalData) {
-    var self = this;
-    var canonical = overrideCanonicalData || self.canonicalData;
-    describe('validate task common options', function() {
-        [36000, 0, -1].forEach(function(value) {
-            it("should success if '_timeout'=" + JSON.stringify(value), function(done) {
-                var data = _.defaults({ _timeout: value }, canonical);
-                self._validate(data, true, done);
-            });
-
-            it("should success if 'schedulerOverrides.timeout'=" + JSON.stringify(value),
-                function(done) {
-                    var data = _.defaults({ schedulerOverrides: { timeout: value } }, canonical);
-                    self._validate(data, true, done);
-                }
-            );
-        });
-
-        [-2, 1.5, "100"].forEach(function(value) {
-            it("should fail if '_timeout'=" + JSON.stringify(value), function(done) {
-                var data = _.defaults({ _timeout: value }, canonical);
-                self._validate(data, false, done);
-            });
-
-            it("should fail if 'schedulerOverrides.timeout'=" + JSON.stringify(value),
-                function(done) {
-                    var data = _.defaults({ schedulerOverrides: { timeout: value } }, canonical);
-                    self._validate(data, false, done);
-                }
-            );
-        });
-    });
 };
 
 /**

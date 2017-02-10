@@ -1,26 +1,16 @@
 {
-    "$schema": "rackhd-task-schema.json",
     "copyright": "Copyright 2016, EMC, Inc.",
-    "title": "Dell Racadm Get Catalog",
-    "description": "The schema for dell racadm to get catalog",
-    "describeJob": "Job.Dell.RacadmCatalog",
     "definitions": {
        "action": {
             "description": "Action for catalog related tasks, currently only getConfigCatalog is supported",
             "type": "string",
             "enum": ["getConfigCatalog"]
-        }  
-    },
-    "allOf": [
-        { "$ref": "common-task-options.json#/definitions/Options" },
-        {
-            "type": "object",
-            "properties": {
-                "action": {
-                    "$ref": "#/definitions/action"
-                }
-            },
-            "required": ["action"]
         }
-    ]
+    },
+    "properties": {
+        "action": {
+            "$ref": "#/definitions/action"
+        }
+    },
+    "required": ["action"]
 }
