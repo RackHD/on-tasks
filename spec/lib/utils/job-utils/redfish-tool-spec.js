@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 
-// Copyright, 2016, EMC, Inc.
+// Copyright, 2017, EMC, Inc.
 /* jshint node: true */
 
 'use strict';
@@ -15,7 +15,6 @@ describe('RedfishTool', function(){
     before(function(){
         helper.setupInjector([
             helper.require('/lib/utils/job-utils/redfish-tool.js'),
-            helper.require('/lib/utils/job-utils/http-tool.js'),
             helper.di.simpleWrapper(waterline, 'Services.Waterline')
         ]);
 

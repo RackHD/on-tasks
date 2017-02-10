@@ -4,24 +4,32 @@
 'use strict';
 
 describe(require('path').basename(__filename), function() {
-    var schemaFileName = 'wait-completion-uri.json';
+    var schemaFileName = 'common-task-options.json';
 
     var canonical = {
-        'completionUri': 'someUriPattern'
+        _taskTimeout: 1000,
+        schedulerOverrides: {
+            timeout: 2000
+        }
     };
 
     var negativeSetParam = {
-        'completionUri': [null, '', 123]
+        "_taskTimeout": [-2, 1.5, '100', null],
+        "schedulerOverrides.timeout": [-2, 1.5, '100', null]
     };
 
     var positiveSetParam = {
+        "_taskTimeout": [36000, 0, -1],
+        "schedulerOverrides.timeout": [36000, 0, -1],
     };
 
     var negativeUnsetParam = [
-        'completionUri'
     ];
 
     var positiveUnsetParam = [
+        '_taskTimeout',
+        'schedulerOverrides',
+        'schedulerOverrides.timeout'
     ];
 
     var SchemaUtHelper = require('./schema-ut-helper');

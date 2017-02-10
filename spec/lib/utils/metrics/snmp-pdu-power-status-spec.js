@@ -8,8 +8,11 @@ describe("SNMP PDU Power Metric", function () {
     var waterline;
     var SnmpPduPowerMetric;
     var metric;
+    var eventsProtocol = {
+        publishExternalEvent: sandbox.stub().resolves()
+    };
     var taskProtocol = {
-        publishPollerAlert: sandbox.stub().resolves()
+        publishPollerAlertLegacy: sandbox.stub().resolves()
     };
     var env = {
         get: sandbox.stub().resolves([['mib-x'],['mib-y']])
@@ -21,6 +24,7 @@ describe("SNMP PDU Power Metric", function () {
             helper.require('/lib/utils/metrics/snmp-pdu-power-status.js'),
             helper.require('/lib/utils/job-utils/net-snmp-tool.js'),
             helper.require('/lib/utils/job-utils/net-snmp-parser.js'),
+            helper.di.simpleWrapper(eventsProtocol, 'Protocol.Events'),
             helper.di.simpleWrapper(taskProtocol, 'Protocol.Task'),
             helper.di.simpleWrapper(env, 'Services.Environment')
         ]);
@@ -41,7 +45,7 @@ describe("SNMP PDU Power Metric", function () {
         waterline.environment = {
             findOne: sandbox.stub().resolves()
         };
-        taskProtocol.publishPollerAlert.reset();
+        eventsProtocol.publishExternalEvent.reset();
     });
 
     it('should have a collectMetricData function', function() {
@@ -112,7 +116,7 @@ describe("SNMP PDU Power Metric", function () {
         expect(metric._collectSineticaPowerData).to.have.been.calledOnce;
     });
 
-    it('should call correct power calculation function based on node type', function() {
+    it('should call correct power calculation function based on node type', function(done) {
         var currentResult = {
             'PDU_1': {
                 'outlets': {
@@ -139,7 +143,11 @@ describe("SNMP PDU Power Metric", function () {
         .then(function(result) {
             expect(result).to.deep.equal(currentResult);
             expect(metric._calculateSineticaPowerData).to.have.been.calledOnce;
-            expect(taskProtocol.publishPollerAlert).to.have.been.calledOnce;       
-        });
+            expect(eventsProtocol.publishExternalEvent).to.have.been.calledOnce;
+            expect(eventsProtocol.publishExternalEvent).to.have.been
+                .calledWith();
+            done();
+        })
+        .catch(done);
     });
 });

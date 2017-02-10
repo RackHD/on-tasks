@@ -21,6 +21,7 @@ describe(require('path').basename(__filename), function() {
 
     var negativeUnsetParam = [
         "baseUrl",
+        "hostname"
     ];
 
     var installOsCommonHelper = require('./install-os-schema-ut-helper');
