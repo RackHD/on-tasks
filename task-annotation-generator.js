@@ -5,7 +5,6 @@
 var fs = require('fs');
 var path = require('path');
 var _ = require('lodash');
-var uuid = require('node-uuid');
 var Task;
 
 function TaskAnnotation(task) {
@@ -25,21 +24,15 @@ TaskAnnotation.run = function (tasks, validator) {
     .map(function (task) {
         var tn = new TaskAnnotation(task);
         var fullSchema = Task.getFullSchema(task);
-        var tempSchemaId = uuid.v4();
-
-        //add schema then remove it is to resolve reference
-        validator.addSchema(fullSchema, tempSchemaId);
-        var schemaResolved = validator.getSchemaResolved(tempSchemaId);
-        validator.removeSchema(tempSchemaId);
-
-        var schemaMerged = tn.mergeSchema(schemaResolved);
+        var schemaMerged = tn.mergeSchema(fullSchema);
         tn.addDefault(schemaMerged);
         return tn.generateDocData(schemaMerged, {
-            // url: '/' + task.injectableName,
-            name: 'option',
-            title: 'option',
+            url: JSON.stringify(task, null, '  '),
+            name: 'options',
+            title: '',
             group: task.injectableName.replace(/\./g, '_'),
-            groupTitle: task.friendlyName
+            groupTitle: task.injectableName,
+            task: task
         });
     })
     .then(function (docData) {
@@ -111,9 +104,9 @@ TaskAnnotation.prototype.addDefault = function (obj) {
 TaskAnnotation.prototype.generateDocData = function (obj, dataTemplate) {
     var self = this;
     var data = {
-        type: getType(obj),
-        description: '',
-        // url: dataTemplate.url,
+        type: '',
+        description: (dataTemplate.task && dataTemplate.task.friendlyName) || '',
+        url: dataTemplate.url || '',
         name: dataTemplate.name,
         title: dataTemplate.title,
         // version: '0.0.0',
@@ -136,8 +129,9 @@ TaskAnnotation.prototype.generateDocData = function (obj, dataTemplate) {
                 // url: data.url + '/' + name,
                 name: data.name + '_' + name,
                 title: data.title + '.' + name,
-                group: data.group,
-                groupTitle: data.groupTitle
+                group: '~~~', //make sure those parameters are listed at very end, choose ~ since
+                              //it is at the end of the ASCII table
+                groupTitle: 'Complex Option Types'//data.groupTitle
             };
             subItems = subItems.concat(self.generateDocData(option, subTemp));
         }
@@ -170,16 +164,17 @@ TaskAnnotation.prototype.generateDocData = function (obj, dataTemplate) {
     }
 
     function getType(option) {
-        if (option.enum) {
-            return 'enum';
-        }
-
         if (option.oneOf) {
-            return 'oneOf';
+            return 'oneOf&lt;' + option.oneOf.length + '&gt;';
         }
 
         if (option.anyOf) {
-            return 'anyOf';
+            return 'anyOf<&lt;' + option.anyOf.length + '&gt;';
+        }
+
+        if ((option.type === 'array' || option.type === 'enum') &&
+                option.items && option.items.type) {
+            return option.type + '&lt;' + option.items.type + '&gt;';
         }
 
         return option.type;
@@ -236,6 +231,8 @@ if (require.main === module) {
     );
     var Task = injector.get('Task.Task');
     var validator = injector.get('TaskOption.Validator');
+
+    _.sortBy(tasks, function (t) { return t.injectableName; });
 
     TaskAnnotation.run(tasks, validator)
     .then(function (docData) {
