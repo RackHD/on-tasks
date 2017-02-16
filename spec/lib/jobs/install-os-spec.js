@@ -1,4 +1,4 @@
-// Copyright 2015-2017, Dell EMC, Inc.
+// Copyright © 2015-2017 Dell Inc. or its subsidiaries.  All Rights Reserved.
 /* jshint node:true */
 
 'use strict';
@@ -414,7 +414,7 @@ describe('Install OS Job', function () {
             eventsProtocol.publishProgressEvent.reset();
             subscribeRequestProfileStub.resolves();
             subscribeRequestPropertiesStub.resolves();
-            return job.updateProgress(descript, 1)
+            return job.updateGraphProgress(descript, 1)
             .then(function(){
                 expect(eventsProtocol.publishProgressEvent).to.have.been.calledOnce;
                 expect(eventsProtocol.publishProgressEvent).to.have.been
