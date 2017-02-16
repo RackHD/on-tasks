@@ -3,7 +3,7 @@
 'use strict';
 var uuid = require('node-uuid');
 describe('Validate Ssh', function() {
-    var waterline = { lookups: {}, nodes: {} },
+    var waterline = { lookups: {}, ibms: {} },
         encryption,
         ValidateSshJob,
         validateSshJob,
@@ -53,7 +53,7 @@ describe('Validate Ssh', function() {
             ];
             validateSshJob = new ValidateSshJob({users: users}, {target: 'nodeId'}, uuid.v4());
             waterline.lookups.findByTerm = this.sandbox.stub().resolves(lookups);
-            waterline.nodes.updateByIdentifier = this.sandbox.stub().resolves();
+            waterline.ibms.upsertByNode = this.sandbox.stub().resolves();
             this.sandbox.stub(validateSshJob, 'testCredentials').resolves(sshSettings);
         });
 
@@ -71,12 +71,12 @@ describe('Validate Ssh', function() {
                     .and.calledWithExactly(lookups, users, 2, 1000);
                 expect(waterline.lookups.findByTerm).to.be.calledOnce
                     .and.calledWithExactly('nodeId');
-                expect(waterline.nodes.updateByIdentifier).to.be.calledOnce
+                expect(waterline.ibms.upsertByNode).to.be.calledOnce
                     .and.calledWith('nodeId');
 
-                var settings = waterline.nodes.updateByIdentifier.firstCall.args[1];
-                expect(settings).to.have.property('sshSettings');
-                settings = settings.sshSettings;
+                var settings = waterline.ibms.upsertByNode.firstCall.args[1];
+                expect(settings).to.have.property('config');
+                settings = settings.config;
 
                 expect(settings).to.have.property('host').that.equals(sshSettings.host);
                 expect(settings).to.have.property('user').that.equals(sshSettings.username);
