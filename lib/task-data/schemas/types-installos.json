@@ -287,6 +287,27 @@
             "type": "string",
             "description": "The file name of callback script that will be called when the first time the OS boots up",
             "minLength": 1
+        },
+        "ProgressMilestones": {
+            "type": "object",
+            "description": "The progress milestones definition, each attribute is a milestone",
+            "patternProperties": {
+                "^([a-zA-Z_][a-zA-Z0-9_]*)$": {
+                    "type": "object",
+                    "properties": {
+                        "value": {
+                            "type": "number",
+                            "minimum": 0,
+                            "description": "The current progress value while reaching this milestone, this should be less or equal to the total number of milestones"
+                        },
+                        "description": {
+                            "type": "string",
+                            "description": "The description for this milestone"
+                        }
+                    },
+                    "required": [ "value" ]
+                }
+            }
         }
     }
 }

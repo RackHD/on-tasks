@@ -7,6 +7,7 @@ var uuid = require('node-uuid');
 
 describe('Install OS Job', function () {
     var InstallOsJob;
+    var taskProtocol = {};
     var subscribeRequestProfileStub;
     var subscribeRequestPropertiesStub;
     var subscribeNodeNotification;
@@ -30,6 +31,7 @@ describe('Install OS Job', function () {
                     catalogs:  {},
                     graphobjects: {}
                 }, 'Services.Waterline'),
+                helper.di.simpleWrapper(taskProtocol, 'Protocol.Task'),
                 helper.di.simpleWrapper(eventsProtocolMock, 'Protocol.Events')
             ])
         );
@@ -38,6 +40,9 @@ describe('Install OS Job', function () {
         waterline = helper.injector.get('Services.Waterline');
         eventsProtocol = helper.injector.get('Protocol.Events');
         Promise = helper.injector.get('Promise');
+        taskProtocol.subscribeActiveTaskExists = sinon.stub().resolves({
+            dispose: sinon.stub()
+        });
         subscribeRequestProfileStub = sinon.stub(
             InstallOsJob.prototype, '_subscribeRequestProfile');
         subscribeRequestPropertiesStub = sinon.stub(
@@ -45,6 +50,7 @@ describe('Install OS Job', function () {
         subscribeNodeNotification = sinon.stub(
             InstallOsJob.prototype, '_subscribeNodeNotification');
         doneSpy = sinon.spy(InstallOsJob.prototype, '_done');
+        sinon.spy(InstallOsJob.prototype, 'updateGraphProgress');
     });
 
     beforeEach(function() {
@@ -64,6 +70,8 @@ describe('Install OS Job', function () {
             state: 'pending',
             terminalOnStates: ['succeeded']
         };
+        InstallOsJob.prototype.updateGraphProgress.reset();
+
         job = new InstallOsJob(
             {
                 profile: 'testprofile',
@@ -80,8 +88,7 @@ describe('Install OS Job', function () {
                         sshKey: ''
                     }
                 ],
-                dnsServers: null,
-                totalSteps: 4,
+                dnsServers: null
             },
             {
                 target: 'testid',
@@ -109,6 +116,72 @@ describe('Install OS Job', function () {
         expect(job.options.users[0].encryptedPassword).to.match(/^\$6\$*\$*/);
     });
 
+    it("should have a default progressMilestones", function() {
+        expect(job.options).to.have.property('progressMilestones');
+        _.forOwn(job.options.progressMilestones, function(value, key) {
+            if (key.endsWith('Uri')) {
+                expect(value).to.be.a('string').
+                    and.to.match(/^\/api\/current\/notification\/progress\?/);
+            }
+            else {
+                expect(value).to.be.an('object');
+                expect(value).to.have.property('value').and.to.be.a('number');
+                expect(value).to.have.property('maximum').and.to.be.a('number');
+                expect(value).to.have.property('description').and.to.be.a('string');
+            }
+        });
+    });
+
+    it("should use own progressMilestones", function() {
+        var taskId = uuid.v4();
+        var myjob = new InstallOsJob(
+            {
+                profile: 'testprofile',
+                version: '7.0',
+                repo: 'http://127.0.0.1:8080/myrepo/7.0/x86_64',
+                rootPassword: 'rackhd',
+                rootSshKey: 'testkey',
+                kvm: true,
+                users: [
+                    {
+                        name: 'test',
+                        password: 'testPassword',
+                        uid: 600,
+                        sshKey: ''
+                    }
+                ],
+                dnsServers: null,
+                progressMilestones: {
+                    m1: { value: 1, description: 'finish  1' },
+                    m2: { value: 2, description: 'finish 2' },
+                }
+            },
+            {
+                target: 'testid'
+            },
+            taskId
+        );
+        expect(myjob.options).to.have.property('progressMilestones');
+        expect(myjob.options.progressMilestones).to.have.property('m1')
+            .and.to.deep.equal({value: 1, description: 'finish  1', maximum: 2, taskId: taskId});
+        expect(myjob.options.progressMilestones).to.have.property('m2')
+            .and.to.deep.equal({value: 2, description: 'finish 2', maximum: 2, taskId: taskId});
+        expect(myjob.options.progressMilestones).to.have.property('m1Uri')
+            .and.to.be.a('string')
+            .and.to.match(/^\/api\/current\/notification\/progress\?/)
+            .and.to.have.string('value=1')
+            .and.to.have.string('maximum=2')
+            .and.to.have.string('taskId=' + taskId)
+            .and.to.have.string('description=finish%20%201');
+        expect(myjob.options.progressMilestones).to.have.property('m2Uri')
+            .and.to.be.a('string')
+            .and.to.match(/^\/api\/current\/notification\/progress\?/)
+            .and.to.have.string('value=2')
+            .and.to.have.string('maximum=2')
+            .and.to.have.string('taskId=' + taskId)
+            .and.to.have.string('description=finish%202');
+    });
+
     it("should preserve an existing/positive kvm flag", function() {
         var jobWithKVM = new InstallOsJob(
             {
@@ -131,7 +204,8 @@ describe('Install OS Job', function () {
             {
                 target: 'testid'
             },
-            uuid.v4());
+            uuid.v4()
+        );
         expect(jobWithKVM.options).to.have.property('kvm');
         expect(jobWithKVM.options.kvm).to.equal(true);
     });
@@ -156,7 +230,19 @@ describe('Install OS Job', function () {
 
             cb = subscribeRequestProfileStub.firstCall.args[0];
             expect(cb).to.be.a('function');
-            expect(cb.call(job)).to.equal(job.profile);
+            return expect(cb.call(job)).to.become(job.profile);
+        });
+    });
+
+    it('should update progress while requesting profile', function() {
+        subscribeRequestProfileStub.restore();
+        subscribeRequestProfileStub= sinon.stub(
+            InstallOsJob.prototype, '_subscribeRequestProfile', function(callback) {
+                callback();
+            });
+        return job._run().then(function() {
+            expect(InstallOsJob.prototype.updateGraphProgress)
+                .to.be.calledWith(job.options.progressMilestones.requestProfile);
         });
     });
 
@@ -168,11 +254,10 @@ describe('Install OS Job', function () {
                     nodeId: _nodeId
                 });
             });
+
         waterline.graphobjects.findOne = sinon.stub().resolves(graph);
-        eventsProtocol.publishProgressEvent.reset();
-        return job._run().then(function() {
+        return job.run().then(function() {
             expect(subscribeNodeNotification).to.have.callCount(1);
-            expect(eventsProtocol.publishProgressEvent).to.have.been.calledOnce;
             expect(job._done).to.have.callCount(1);
             expect(job._done.firstCall.args[0]).to.equal(undefined);
         });
@@ -386,48 +471,43 @@ describe('Install OS Job', function () {
 
     });
 
-    describe('test updateProgress', function() {
+    describe('test updateGraphProgress', function() {
         it('should publish graph progress when updateGraphProgress is called', function () {
-            var descript = "Reboot suceeded, starting kernel download.";
-            var progressData = {
-                graphId: graphId,
-                graphName: 'test graph name',
-                nodeId: 'nodeId',
-                progress: {
-                    value: 0,
-                    maximum: 1,
-                    percentage: '0%',
-                    description: descript
-                },
-                taskProgress: {
-                    taskId: taskId,
-                    taskName: 'test task name',
-                    progress: {
-                        value: 1,
-                        maximum: 4,
-                        percentage: '25%',
-                        description: descript
-                    },
-                }
+            var milestone = {
+                value: 1,
+                maximum: 4,
+                description: 'foo bar'
             };
+
             waterline.graphobjects.findOne = sinon.stub().resolves(graph);
             eventsProtocol.publishProgressEvent.reset();
-            subscribeRequestProfileStub.resolves();
-            subscribeRequestPropertiesStub.resolves();
-            return job.updateGraphProgress(descript, 1)
+            return job.updateGraphProgress(milestone)
             .then(function(){
                 expect(eventsProtocol.publishProgressEvent).to.have.been.calledOnce;
-                expect(eventsProtocol.publishProgressEvent).to.have.been
-                    .calledWith(graphId, progressData);
+                expect(eventsProtocol.publishProgressEvent.firstCall.args[0]).to.equal(graphId);
+                expect(eventsProtocol.publishProgressEvent.firstCall.args[1]).
+                    to.have.property('graphId').and.equal(graphId);
+                expect(eventsProtocol.publishProgressEvent.firstCall.args[1]).
+                    to.have.deep.property('taskProgress.taskId').and.equal(taskId);
+                expect(eventsProtocol.publishProgressEvent.firstCall.args[1]).
+                    to.have.deep.property('taskProgress.progress.value').and.equal(1);
+                expect(eventsProtocol.publishProgressEvent.firstCall.args[1]).
+                    to.have.deep.property('taskProgress.progress.maximum').and.equal(4);
+                expect(eventsProtocol.publishProgressEvent.firstCall.args[1]).
+                    to.have.deep.property('taskProgress.progress.description').and.equal('foo bar');
             });
         });
 
         it('should updateGraphProgress swallow the Errors', function () {
-            var description = "test description.";
             var error = new Error('test update graph progress error');
+            var milestone = {
+                value: 1,
+                maximum: 4,
+                description: 'foo bar'
+            };
             waterline.graphobjects.findOne = sinon.stub().rejects(error);
             eventsProtocol.publishProgressEvent.reset();
-            return job.updateGraphProgress(description, 1)
+            return job.updateGraphProgress(milestone)
             .then(function(){
                 expect(eventsProtocol.publishProgressEvent).not.to.be.called;
             });
