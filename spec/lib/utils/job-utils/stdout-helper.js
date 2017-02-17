@@ -1657,6 +1657,15 @@ module.exports.lshwOutput = JSON.stringify(
                                                       ]
                                                     },
                                                     {
+                                                      "id" : "pci:1",
+                                                      "children": [
+                                                        {
+                                                          "id": "network:0",
+                                                          "serial": "00:8c:fa:f3:74:d0"
+                                                        }
+                                                      ]
+                                                    },
+                                                    {
                                                       "id" : "generic:0",
                                                       "class" : "generic",
                                                       "handle" : "PCI:0000:7f:08.0",
