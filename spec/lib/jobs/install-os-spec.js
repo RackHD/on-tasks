@@ -387,7 +387,7 @@ describe('Install OS Job', function () {
     });
 
     describe('test updateProgress', function() {
-        it('should call updateGraphProgress', function () {
+        it('should publish graph progress when updateGraphProgress is called', function () {
             var descript = "Reboot suceeded, starting kernel download.";
             var progressData = {
                 graphId: graphId,
@@ -419,6 +419,17 @@ describe('Install OS Job', function () {
                 expect(eventsProtocol.publishProgressEvent).to.have.been.calledOnce;
                 expect(eventsProtocol.publishProgressEvent).to.have.been
                     .calledWith(graphId, progressData);
+            });
+        });
+
+        it('should updateGraphProgress swallow the Errors', function () {
+            var description = "test description.";
+            var error = new Error('test update graph progress error');
+            waterline.graphobjects.findOne = sinon.stub().rejects(error);
+            eventsProtocol.publishProgressEvent.reset();
+            return job.updateGraphProgress(description, 1)
+            .then(function(){
+                expect(eventsProtocol.publishProgressEvent).not.to.be.called;
             });
         });
     });
