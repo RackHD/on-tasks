@@ -49,7 +49,7 @@ describe("Job.Alert.Node.Discovered", function () {
         it("should _run() pass without additional data", function() {
             this.sandbox.stub(waterline.nodes, 'needByIdentifier').resolves({ type: 'compute' });
             this.sandbox.stub(eventsProtocol, 'publishNodeEvent').resolves();
-	    this.sandbox.stub(lookupService, 'findIpMacAddresses').resolves([
+			this.sandbox.stub(lookupService, 'findIpMacAddresses').resolves([
                         { ipAddress: '1.1.1.1', macAddress: "aa:bb:cc:dd" },
                         { ipAddress: undefined, macAddress: "ee:ff:gg:hh" }]);
 
@@ -60,7 +60,7 @@ describe("Job.Alert.Node.Discovered", function () {
                 expect(eventsProtocol.publishNodeEvent).to.have.been.calledWith(
                     { type: 'compute' },
                     'discovered',
-		    {
+					{
                         nodeId: "bc7dab7e8fb7d6abf8e7d6ab",
                         IpMacAddress: [
                         {ipAddress: '1.1.1.1', macAddress: "aa:bb:cc:dd" },
@@ -89,11 +89,11 @@ describe("Job.Alert.Node.Discovered", function () {
                     { type: 'compute' },
                     'discovered',
                     {
-                        contextData: { something: "passed in" },
+                        something: "passed in",
                         nodeId: "bc7dab7e8fb7d6abf8e7d6ab",
                         IpMacAddress: [
-			{ipAddress: '1.1.1.1', macAddress: "aa:bb:cc:dd" },
-			{ ipAddress: undefined, macAddress: "ee:ff:gg:hh" }] 
+						{ipAddress: '1.1.1.1', macAddress: "aa:bb:cc:dd" },
+						{ ipAddress: undefined, macAddress: "ee:ff:gg:hh" }]
                     }
                 );
                 expect(lookupService.findIpMacAddresses).to.have.been.calledOnce;
