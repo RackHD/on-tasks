@@ -1,4 +1,4 @@
-// Copyright 2015, EMC, Inc.
+// Copyright © 2015-2017 Dell Inc. or its subsidiaries.  All Rights Reserved.
 /* jshint node:true */
 
 'use strict';
@@ -14,10 +14,11 @@ describe('Install OS Job', function () {
     var job;
     var waterline;
     var Promise;
-    var taskMessengerMock = { publishProgressEvent: sinon.stub().resolves()};
+    var eventsProtocolMock = { publishProgressEvent: sinon.stub().resolves()};
     var taskId;
     var graphId;
-    var taskMessenger;
+    var graph;
+    var eventsProtocol;
 
     before(function() {
         helper.setupInjector(
@@ -25,14 +26,17 @@ describe('Install OS Job', function () {
                 helper.require('/lib/jobs/base-job'),
                 helper.require('/lib/jobs/install-os'),
                 helper.require('/lib/utils/job-utils/catalog-searcher'),
-                helper.di.simpleWrapper({ catalogs:  {} }, 'Services.Waterline'),
-                helper.di.simpleWrapper(taskMessengerMock, 'Task.Messenger')
+                helper.di.simpleWrapper({
+                    catalogs:  {},
+                    graphobjects: {}
+                }, 'Services.Waterline'),
+                helper.di.simpleWrapper(eventsProtocolMock, 'Protocol.Events')
             ])
         );
 
         InstallOsJob = helper.injector.get('Job.Os.Install');
         waterline = helper.injector.get('Services.Waterline');
-        taskMessenger = helper.injector.get('Task.Messenger');
+        eventsProtocol = helper.injector.get('Protocol.Events');
         Promise = helper.injector.get('Promise');
         subscribeRequestProfileStub = sinon.stub(
             InstallOsJob.prototype, '_subscribeRequestProfile');
@@ -49,6 +53,17 @@ describe('Install OS Job', function () {
         subscribeRequestProfileStub.reset();
         subscribeRequestPropertiesStub.reset();
         doneSpy.reset();
+        graph = {
+            instanceId: graphId,
+            name: 'test graph name',
+            node: 'nodeId',
+            tasks: {}
+        };
+        graph.tasks[taskId] = {
+            friendlyName: 'test task name',
+            state: 'pending',
+            terminalOnStates: ['succeeded']
+        };
         job = new InstallOsJob(
             {
                 profile: 'testprofile',
@@ -124,11 +139,12 @@ describe('Install OS Job', function () {
     it("should set up message subscribers", function() {
         var cb;
         waterline.catalogs.findMostRecent = sinon.stub().resolves({});
+        waterline.graphobjects.findOne = sinon.stub().resolves(graph);
         return job._run().then(function() {
             expect(subscribeRequestProfileStub).to.have.been.called;
             expect(subscribeRequestPropertiesStub).to.have.been.called;
             expect(subscribeNodeNotification).to.have.been.called;
-            
+
             cb = subscribeRequestPropertiesStub.firstCall.args[0];
             expect(cb).to.be.a('function');
             expect(cb.call(job)).to.equal(job.options);
@@ -140,10 +156,7 @@ describe('Install OS Job', function () {
 
             cb = subscribeRequestProfileStub.firstCall.args[0];
             expect(cb).to.be.a('function');
-            return cb.call(job).then(function (data){
-                expect(data).to.deep.equal(job.profile);
-            });
-            //expect(cb.call(job)).to.equal(job.profile);
+            expect(cb.call(job)).to.equal(job.profile);
         });
     });
 
@@ -155,8 +168,11 @@ describe('Install OS Job', function () {
                     nodeId: _nodeId
                 });
             });
+        waterline.graphobjects.findOne = sinon.stub().resolves(graph);
+        eventsProtocol.publishProgressEvent.reset();
         return job._run().then(function() {
             expect(subscribeNodeNotification).to.have.callCount(1);
+            expect(eventsProtocol.publishProgressEvent).to.have.been.calledOnce;
             expect(job._done).to.have.callCount(1);
             expect(job._done.firstCall.args[0]).to.equal(undefined);
         });
@@ -371,23 +387,49 @@ describe('Install OS Job', function () {
     });
 
     describe('test updateProgress', function() {
-        it('should call updateGraphProgress', function () {
+        it('should publish graph progress when updateGraphProgress is called', function () {
             var descript = "Reboot suceeded, starting kernel download.";
             var progressData = {
-                    progress: {value: null, maximum: null, description: descript},
-                    taskProgress: {
-                        taskId: taskId,
-                        progress: {value: 1, maximum: 4, description: descript},
-                    }
+                graphId: graphId,
+                graphName: 'test graph name',
+                nodeId: 'nodeId',
+                progress: {
+                    value: 0,
+                    maximum: 1,
+                    percentage: '0%',
+                    description: descript
+                },
+                taskProgress: {
+                    taskId: taskId,
+                    taskName: 'test task name',
+                    progress: {
+                        value: 1,
+                        maximum: 4,
+                        percentage: '25%',
+                        description: descript
+                    },
+                }
             };
-            taskMessenger.publishProgressEvent.reset();
+            waterline.graphobjects.findOne = sinon.stub().resolves(graph);
+            eventsProtocol.publishProgressEvent.reset();
             subscribeRequestProfileStub.resolves();
             subscribeRequestPropertiesStub.resolves();
-            return job.updateProgress(descript, 1)
+            return job.updateGraphProgress(descript, 1)
             .then(function(){
-                expect(taskMessenger.publishProgressEvent).to.have.been.calledOnce;
-                expect(taskMessenger.publishProgressEvent).to.have.been
+                expect(eventsProtocol.publishProgressEvent).to.have.been.calledOnce;
+                expect(eventsProtocol.publishProgressEvent).to.have.been
                     .calledWith(graphId, progressData);
+            });
+        });
+
+        it('should updateGraphProgress swallow the Errors', function () {
+            var description = "test description.";
+            var error = new Error('test update graph progress error');
+            waterline.graphobjects.findOne = sinon.stub().rejects(error);
+            eventsProtocol.publishProgressEvent.reset();
+            return job.updateGraphProgress(description, 1)
+            .then(function(){
+                expect(eventsProtocol.publishProgressEvent).not.to.be.called;
             });
         });
     });
