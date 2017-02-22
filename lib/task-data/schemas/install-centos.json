@@ -58,6 +58,9 @@
         },
         "rackhdCallbackScript": {
             "$ref": "types-installos.json#/definitions/RackHDCallbackScript"
+        },
+        "progressMilestones": {
+            "$ref": "types-installos.json#/definitions/ProgressMilestones"
         }
     },
     "required": ["osType", "version", "repo", "profile", "installScript",
