@@ -97,7 +97,8 @@ describe("Catalog Searcher", function () {
             driveIdExt1,
             driveIdData,
             virtualDiskData,
-            controllerData;
+            controllerData,
+            physicalDiskData;
 
         before('before', function() {
             stdoutMocks = require('./stdout-helper');
@@ -125,6 +126,7 @@ describe("Catalog Searcher", function () {
                 driveIdData[1]);
             virtualDiskData = JSON.parse(stdoutMocks.storcliVirtualDiskInfo);
             controllerData = JSON.parse(stdoutMocks.storcliAdapterInfo);
+            physicalDiskData = JSON.parse(stdoutMocks.megaraidPhysicalDiskData);
             waterline.catalogs = { findMostRecent: sinon.stub() };
         });
 
@@ -143,11 +145,14 @@ describe("Catalog Searcher", function () {
         });
 
         it('should return correct extended driveId catalogs', function () {
+            waterline.catalogs.findMostRecent
+                .withArgs({ node: '1234', source: 'megaraid-physical-drives'})
+                .resolves(physicalDiskData);
             return catalogSearch.getDriveIdCatalogExt('1234')
                 .then(function (catalogExt) {
                     expect(catalogExt).that.is.an('array').with.length(4);
                     expect(catalogExt[1]).to.deep.equals(driveIdExt1);
-                    expect(waterline.catalogs.findMostRecent).to.have.been.calledThrice;
+                    expect(waterline.catalogs.findMostRecent.callCount).to.equal(4);
                 });
         });
 
@@ -162,13 +167,19 @@ describe("Catalog Searcher", function () {
 
         it('should skip extention when all virtualDisk field empty', function () {
             waterline.catalogs.findMostRecent
+                .withArgs({ node: '5678', source: 'megaraid-physical-drives'})
+                .resolves({data: {}});
+            waterline.catalogs.findMostRecent
+                .withArgs({ node: '5678', source: 'megaraid-controllers'})
+                .resolves({data: {Controllers: []}});
+            waterline.catalogs.findMostRecent
                 .withArgs({ node: '5678', source: 'driveId'})
                 .resolves({ data: [ driveIdData[0] ] });
             return catalogSearch.getDriveIdCatalogExt('5678')
                 .then(function (catalogExt) {
                     expect(catalogExt).that.is.an('array').with.length(1);
                     expect(catalogExt[0]).to.deep.equals(driveIdData[0]);
-                    expect(waterline.catalogs.findMostRecent).to.have.been.calledOnce; 
+                    expect(waterline.catalogs.findMostRecent).to.have.been.calledThrice; 
                 });
         });
 
@@ -189,5 +200,69 @@ describe("Catalog Searcher", function () {
             return expect(catalogSearch.getDriveIdCatalogExt('5678')).to.be
                 .rejectedWith('Could not find megaraid-virtual-disks catalog data.');
         });
+
+        it('should extend catalog for disk without virtual disk info', function () {
+            var driveIds = [{
+                    "devName": "sdb",
+                    "esxiWwid": "naa.5000c5008ed29de3",
+                    "identifier": 2,
+                    "linuxWwid": "/dev/disk/by-id/scsi-35000c5008ed29de3",
+                    "scsiId": "0:0:4:0",
+                    "virtualDisk": ""
+                }],
+                driveIdExt = [_.merge(
+                    {
+                        size: '1.091 TB',
+                        type: 'JBOD',
+                        physicalDisks: [
+                            {
+                                deviceId: 4,
+                                enclosureId: '252',
+                                slotId: '4',
+                                size: '1.091 TB',
+                                protocol: 'SAS',
+                                type: 'HDD',
+                                model: 'ST1200MM0088    '
+                            }
+                        ],
+                        deviceIds: [4],
+                        slotIds: ['/c0/e252/s4'],
+                        controllerId: '0',
+                        controllerVender: undefined
+                    },
+                    driveIds[0]
+                )];
+            waterline.catalogs.findMostRecent
+                .withArgs({ node: '578', source: 'driveId'}).resolves({data: driveIds});
+            waterline.catalogs.findMostRecent
+                .withArgs({ node: '578', source: 'megaraid-physical-drives'})
+                .resolves(physicalDiskData);
+            waterline.catalogs.findMostRecent
+                .withArgs({ node: '578', source: 'megaraid-controllers'})
+                .resolves({data: {Controllers: []}});
+            return catalogSearch.getDriveIdCatalogExt('578')
+                .then(function(_driveIdExt){
+                    expect(_driveIdExt).to.deep.equals(driveIdExt);
+                });
+        });
+        
+        it('should report can find physical drives error', function (done) {
+            waterline.catalogs.findMostRecent
+                .withArgs({ node: '5678', source: 'megaraid-physical-drives'})
+                .resolves({});
+            waterline.catalogs.findMostRecent
+                .withArgs({ node: '5678', source: 'driveId'})
+                .resolves({ data: [ driveIdData[0] ] });
+            return catalogSearch.getDriveIdCatalogExt('5678')
+                .then(function () {
+                    done(new Error("Test should fail"));
+                })
+                .catch(function(err){
+                    expect(err.message)
+                        .to.equal("Could not find megaraid-physical-drives catalog data.");
+                    done();
+                });
+        });
+
     });
 });
