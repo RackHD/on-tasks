@@ -4,7 +4,7 @@
 var uuid = require('node-uuid');
 
 describe('copy-key job', function() {
-    var waterline = { nodes: {}, catalogs: {} },
+    var waterline = { ibms: {}, catalogs: {} },
         CopyKeyJob,
         copyKeyJob,
         commandUtil = {};
@@ -30,15 +30,17 @@ describe('copy-key job', function() {
             copyKeyJob = new CopyKeyJob({}, {target: 'nodeId'}, uuid.v4());
             commandUtil.sshExec = this.sandbox.stub().resolves({ stdout: 'success'});
             sshSettings = {
-                host: 'the remote host',
-                port: 22,
-                username: 'someUsername',
-                password: 'somePassword',
-                publicKey: 'a somewhat long string',
-                privateKey: 'a pretty long string',
+                config: {
+                    host: 'the remote host',
+                    port: 22,
+                    username: 'someUsername',
+                    password: 'somePassword',
+                    publicKey: 'a somewhat long string',
+                    privateKey: 'a pretty long string'
+                }
             };
-            waterline.nodes.needByIdentifier = this.sandbox.stub().resolves(
-                {sshSettings: sshSettings}
+            waterline.ibms.findByNode = this.sandbox.stub().resolves(
+                sshSettings
             );
         });
 
@@ -48,12 +50,12 @@ describe('copy-key job', function() {
                 expect(commandUtil.sshExec).to.be.calledTwice;
                 expect(commandUtil.sshExec).to.be.calledWithExactly(
                         {cmd: 'mkdir -p .ssh'},
-                        sshSettings,
+                        sshSettings.config,
                         {}
                 );
                 expect(commandUtil.sshExec).to.be.calledWithExactly(
-                    {cmd: 'echo '+sshSettings.publicKey+' >> .ssh/authorized_keys'},
-                    sshSettings,
+                    {cmd: 'echo '+sshSettings.config.publicKey+' >> .ssh/authorized_keys'},
+                    sshSettings.config,
                     {}
                 );
             });

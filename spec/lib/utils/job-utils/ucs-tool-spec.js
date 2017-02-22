@@ -15,7 +15,7 @@ describe('UcsTool', function(){
     before(function(){
         helper.setupInjector([
             helper.require('/lib/utils/job-utils/ucs-tool.js'),
-            helper.require('/lib/utils/job-utils/http-tool.js'),
+            //helper.require('/lib/utils/job-utils/http-tool.js'),
             helper.di.simpleWrapper(waterline, 'Services.Waterline')
         ]);
 

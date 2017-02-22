@@ -9,8 +9,25 @@ describe('Ucs Discovery Job', function () {
         ucsTool,
         rackmountData,
         rootData,
+        serverData,
         waterline = {},
         Error;
+
+
+    var obm = {
+        config: {
+            uri: "http://10.240.19.226:6080/sys",
+            host: "10.240.19.226",
+            root: "/sys",
+            port: "6080",
+            protocol: "http",
+            username: "ucspe",
+            password: "ucspe",
+            ucs: "10.240.19.236",
+            verifySSL: false
+        },
+        service: "ucs-obm-service"
+    };
 
     var node = {
         id: 'abc',
@@ -18,25 +35,12 @@ describe('Ucs Discovery Job', function () {
         name: 'Node',
         identifiers: [],
         relations: [
-            { relationType: 'encloses', 
-              targets: [ '/fake' ] },
-            { relationType: 'enclosedBy', 
-              targets: [ '/fake' ]}
-        ]
-    };
-    var obm = {
-        "config": {
-            "uri": "http://10.240.19.226:6080/sys",
-            "host": "10.240.19.226",
-            "root": "/sys",
-            "port": "6080",
-            "protocol": "http",
-            "username": "ucspe",
-            "password": "ucspe",
-            "ucs": "10.240.19.236",
-            "verifySSL": false
-        },
-        "service": "ucs-obm-service"
+            { relationType: 'encloses',
+                targets: [ '/fake' ] },
+            { relationType: 'enclosedBy',
+                targets: [ '/fake' ]}
+        ],
+        obm: [obm]
     };
     
     before(function() { 
@@ -44,13 +48,14 @@ describe('Ucs Discovery Job', function () {
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/ucs-discovery.js'),
             helper.require('/lib/utils/job-utils/ucs-tool.js'),
-            helper.require('/lib/utils/job-utils/http-tool.js'),
+            //helper.require('/lib/utils/job-utils/http-tool.js'),
             helper.di.simpleWrapper(waterline,'Services.Waterline')
         ]);
         waterline.nodes = {
             create: sandbox.stub().resolves(node),
             needOne: sandbox.stub().resolves(node),
-            updateOne: sandbox.stub().resolves(node)
+            updateOne: sandbox.stub().resolves(node),
+            needOneById: sandbox.stub().resolves(node)
         };
         waterline.obms = {
             upsertByNode: sandbox.stub().resolves(obm)
@@ -105,21 +110,49 @@ describe('Ucs Discovery Job', function () {
 
         };
 
+        serverData = {
+            body: [
+                {
+                    members: [
+                        {
+                            macs: [
+                                "00:00:FF:FF:32:02"
+                            ],
+                            name: "blade-1",
+                            path: "sys/chassis-6/blade-1"
+                        }
+                    ],
+                    name: "chassis-6",
+                    path: "sys/chassis-6"
+                }
+            ]
+        };
+        waterline.nodes.updateOne.reset();
     });
     
     describe('usc discovery', function() {
         it('should successfully run the job', function() {
             ucsTool.clientRequest.onCall(0).resolves(rootData);
             ucsTool.clientRequest.onCall(1).resolves(rackmountData);
-            ucsJob._run()
-            .then(function() {
-                 expect(waterline.nodes.updateOne).to.be.called.once;
-            });
+            ucsTool.clientRequest.onCall(2).resolves(serverData);
+            return ucsJob._run()
+                .then(function() {
+                     expect(waterline.nodes.updateOne).to.be.called.once;
+                });
         });
+
+        it('should not update a node', function() {
+            ucsTool.clientRequest.onCall(0).resolves([]);
+            return ucsJob._run()
+                .then(function() {
+                    expect(waterline.nodes.updateOne).to.not.be.called.once;
+                });
+        });
+
 
         it('should successfully log in', function() {
             ucsTool.clientRequest.onCall(0).resolves({"body":"cookie"});
-            ucsJob.logIn()
+            return ucsJob.logIn()
                 .then(function(data) {
                     expect(data).to.deep.equal("cookie");
                 });

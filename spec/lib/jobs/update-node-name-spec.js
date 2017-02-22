@@ -9,9 +9,11 @@ var base = require('./base-spec');
 describe('Name Node Job', function () {
     var job,
         node = {
-            id: '1234abcd1234abcd1234abcd',
-            snmpSettings: {
-                host: '1.2.3.4',
+            id: '1234abcd1234abcd1234abcd'
+        },
+        snmpSettings = {
+            config: {
+                host: '1.2.3.4'
             }
         },
         mockWaterline = {
@@ -21,6 +23,9 @@ describe('Name Node Job', function () {
             },
             catalogs: {
                 findOne: sinon.stub()
+            },
+            ibms: {
+                findByNode: sinon.stub()
             }
         },
         catalog = {
@@ -58,6 +63,7 @@ describe('Name Node Job', function () {
         mockWaterline.catalogs.findOne.resolves(catalog);
         mockWaterline.nodes.findByIdentifier.resolves(node);
         mockWaterline.nodes.updateByIdentifier.resolves({});
+        mockWaterline.ibms.findByNode.resolves(snmpSettings);
 
         job._run();
         return job._deferred

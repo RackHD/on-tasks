@@ -9,7 +9,7 @@ describe('Emc Ucs Catalog Job', function () {
         waterline = {},
         sandbox = sinon.sandbox.create(),
         rackmountInfo = {
-            body: {
+            body: [{
                 "admin_power": "policy",
                 "admin_state": "in-service",
                 "assigned_to_dn": "",
@@ -80,7 +80,7 @@ describe('Emc Ucs Catalog Job', function () {
                 "vendor": "Cisco Systems Inc",
                 "version_holder": "no",
                 "vid": "0"
-            }
+            }]
         };
         var setup = sandbox.stub().resolves();
         var clientRequest = sandbox.stub();
