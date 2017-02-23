@@ -293,7 +293,8 @@ describe("Task Parser", function () {
                     [
                         { mac: '00:1e:67:ab:5e:dc' },
                         { mac: '00:1e:67:ab:5e:dd' },
-                        { mac: '00:1e:67:69:4c:b8' }
+                        { mac: '00:1e:67:69:4c:b8' },
+                        { mac: '00:8c:fa:f3:74:d0' }
                     ]
                 );
                 expect(JSON.parse(stdoutMocks.lshwOutput)).to.deep.equal(result.data);
