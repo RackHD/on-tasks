@@ -67,6 +67,9 @@
         },
         "firewallDisable": {
             "$ref": "#/definitions/FirewallDisable"
+        },
+        "progressMilestones": {
+            "$ref": "types-installos.json#/definitions/ProgressMilestones"
         }
     },
     "required": ["osType", "profile", "repo", "productkey", "smbUser",

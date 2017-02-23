@@ -65,6 +65,9 @@
         },
         "installPartitions": {
             "$ref": "types-installos.json#/definitions/InstallPartitionArray"
+        },
+        "progressMilestones": {
+            "$ref": "types-installos.json#/definitions/ProgressMilestones"
         }
     },
     "required": ["osType", "version", "repo", "profile", "installScript",
