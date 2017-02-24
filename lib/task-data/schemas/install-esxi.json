@@ -127,6 +127,9 @@
         },
         "comportaddress": {
             "$ref": "#/definitions/ComportAddress"
+        },
+        "progressMilestones": {
+            "$ref": "types-installos.json#/definitions/ProgressMilestones"
         }
     },
     "required": ["osType", "version", "repo", "profile", "installScript",

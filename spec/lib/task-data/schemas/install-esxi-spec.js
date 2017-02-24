@@ -94,7 +94,12 @@ describe(require('path').basename(__filename), function() {
         "esxBootConfigTemplate": "esx-boot-cfg",
         "esxBootConfigTemplateUri": "http://172.31.128.1:9080/api/current/templates/esx-boot-cfg",
         "comport": "com1",
-        "comportaddress": "0x3f8"
+        "comportaddress": "0x3f8",
+        "progressMilestones": {
+            "m1": { "value": 1, "description": "do task 1" },
+            "m__2": { "value": 2, "description": "do task 2" },
+            "completed": { "value": 3, "description": "task finished" }
+        }
     };
 
     var positiveSetParam = {
