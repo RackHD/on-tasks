@@ -464,6 +464,7 @@ describe(require('path').basename(__filename), function () {
 
             sandbox.stub(job, '_subscribeRequestCommands');
             sandbox.stub(job, '_subscribeRespondCommands');
+            sandbox.stub(job, '_subscribeRequestProperties');
             sandbox.spy(job, '_marshalParams');
             sandbox.spy(job, '_formatCommands');
 
@@ -476,12 +477,14 @@ describe(require('path').basename(__filename), function () {
                 expect(job._formatCommands).to.have.been.calledWith(marshalOutput);
                 expect(job._subscribeRequestCommands).to.have.been.calledOnce;
                 expect(job._subscribeRespondCommands).to.have.been.calledOnce;
+                expect(job._subscribeRequestProperties).to.have.been.calledOnce;
             });
         });
 
         it('_run should delegate requests to handleRequest', function() {
             sandbox.spy(job, 'handleRequest');
             sandbox.stub(job, '_subscribeRespondCommands');
+            sandbox.stub(job, '_subscribeRequestProperties');
             sandbox.stub(job, '_subscribeRequestCommands', function(cb) { cb(); });
 
             return job._run()
@@ -492,6 +495,7 @@ describe(require('path').basename(__filename), function () {
 
         it('_run should delegate response to handleRemoteFailure', function() {
             cmdUtlMock.handleRemoteFailure = sandbox.stub().resolves([]);
+            sandbox.stub(job, '_subscribeRequestProperties');
             sandbox.stub(job, '_subscribeRequestCommands');
             sandbox.stub(job, '_subscribeRespondCommands', function(cb) { cb({tasks:'a'}); });
 
@@ -503,6 +507,7 @@ describe(require('path').basename(__filename), function () {
 
         it('_run should catch error on remote error', function(done) {
             cmdUtlMock.handleRemoteFailure = sandbox.stub().rejects(['error']);
+            sandbox.stub(job, '_subscribeRequestProperties');
             sandbox.stub(job, '_subscribeRequestCommands');
             sandbox.stub(job, '_subscribeRespondCommands', function(cb) { cb({tasks:'a'}); });
 
