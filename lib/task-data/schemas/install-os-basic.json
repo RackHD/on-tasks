@@ -28,6 +28,9 @@
         },
         "comport": {
             "$ref": "types-installos.json#/definitions/Comport"
+        },
+        "progressMilestones": {
+            "$ref": "types-installos.json#/definitions/ProgressMilestones"
         }
     },
     "required": ["osType", "version", "repo", "hostname", "profile",

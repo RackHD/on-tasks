@@ -442,9 +442,10 @@ describe(require('path').basename(__filename), function () {
                 "virtualDisk": ""
             }];
 
-            job = new SEJob({eraseSettings:[{disks: ['sda']}]}, { target: nodeId }, uuid.v4());
+            job = new SEJob({eraseSettings:[{disks: ["sda"]}]},
+                            {target: nodeId, data: {driveId: cataDiskInfo}},
+                            uuid.v4());
             cataSearchMock.getDriveIdCatalogExt = sandbox.stub().resolves(cataDiskInfo);
-
             sandbox.stub(job, '_subscribeActiveTaskExists').resolves();
         });
 
@@ -464,6 +465,7 @@ describe(require('path').basename(__filename), function () {
 
             sandbox.stub(job, '_subscribeRequestCommands');
             sandbox.stub(job, '_subscribeRespondCommands');
+            sandbox.stub(job, '_subscribeRequestProperties');
             sandbox.spy(job, '_marshalParams');
             sandbox.spy(job, '_formatCommands');
 
@@ -476,12 +478,14 @@ describe(require('path').basename(__filename), function () {
                 expect(job._formatCommands).to.have.been.calledWith(marshalOutput);
                 expect(job._subscribeRequestCommands).to.have.been.calledOnce;
                 expect(job._subscribeRespondCommands).to.have.been.calledOnce;
+                expect(job._subscribeRequestProperties).to.have.been.calledOnce;
             });
         });
 
         it('_run should delegate requests to handleRequest', function() {
             sandbox.spy(job, 'handleRequest');
             sandbox.stub(job, '_subscribeRespondCommands');
+            sandbox.stub(job, '_subscribeRequestProperties');
             sandbox.stub(job, '_subscribeRequestCommands', function(cb) { cb(); });
 
             return job._run()
@@ -492,6 +496,7 @@ describe(require('path').basename(__filename), function () {
 
         it('_run should delegate response to handleRemoteFailure', function() {
             cmdUtlMock.handleRemoteFailure = sandbox.stub().resolves([]);
+            sandbox.stub(job, '_subscribeRequestProperties');
             sandbox.stub(job, '_subscribeRequestCommands');
             sandbox.stub(job, '_subscribeRespondCommands', function(cb) { cb({tasks:'a'}); });
 
@@ -503,6 +508,7 @@ describe(require('path').basename(__filename), function () {
 
         it('_run should catch error on remote error', function(done) {
             cmdUtlMock.handleRemoteFailure = sandbox.stub().rejects(['error']);
+            sandbox.stub(job, '_subscribeRequestProperties');
             sandbox.stub(job, '_subscribeRequestCommands');
             sandbox.stub(job, '_subscribeRespondCommands', function(cb) { cb({tasks:'a'}); });
 
@@ -519,4 +525,52 @@ describe(require('path').basename(__filename), function () {
         });
 
     });
+
+    describe('validate disk wwids', function() {
+        var diskInfo, eraseSettings;
+        beforeEach('validate disk wwids', function() {
+            diskInfo = [{
+                "devName": "sda",
+                "deviceIds": [ 23 ],
+                "physicalDisks": [{ "protocol": "SAS"}],
+                "esxiWwid": "naa.6001636001940a481ddebecb45264d4a",
+                "identifier": 1,
+                "scsiId": "0:2:0:0",
+                "slotIds": [ "/c0/e36/s0" ],
+                "virtualDisk": "/c0/v0",
+                "controllerVendor": "lsi"
+            }];
+            eraseSettings = [
+                {
+                    disks: ['sda'],
+                    tool: 'hdparm',
+                    arg: 'security-erase'
+                }
+            ];
+        });
+
+        it('should report drive id catalog does not match', function() {
+            var diskInfoCache = [{
+                "devName": "sda",
+                "esxiWwid": "naa.6001636001940a381ddebecb45264d4a",
+                "identifier": 1,
+                "scsiId": "0:2:0:0",
+                "virtualDisk": "/c0/v0",
+            }];
+            var job = new SEJob({eraseSettings: eraseSettings},
+                                {target: nodeId , data: {driveId: diskInfoCache}},
+                                uuid.v4());
+            expect(function() { job._validateDiskEsxiWwid(diskInfo);}).to.throw(
+                "Drive id catalog does not match user input data, drive re-cataloging is required");
+        });
+
+        it('should report drive id catalog does not match', function() {
+            var job = new SEJob({eraseSettings: eraseSettings},
+                                {target: nodeId , data: {driveId: []}},
+                                uuid.v4());
+            expect(function() { job._validateDiskEsxiWwid(diskInfo);}).to.throw(
+                "No driveId catalog cached in context");
+        });
+    });
+
 });
