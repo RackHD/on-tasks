@@ -50,7 +50,7 @@ describe('Install OS Job', function () {
         subscribeNodeNotification = sinon.stub(
             InstallOsJob.prototype, '_subscribeNodeNotification');
         doneSpy = sinon.spy(InstallOsJob.prototype, '_done');
-        sinon.spy(graphProgressService, 'updateGraphProgress');
+        sinon.spy(graphProgressService, 'publishTaskProgress');
     });
 
     beforeEach(function() {
@@ -70,7 +70,7 @@ describe('Install OS Job', function () {
             state: 'pending',
             terminalOnStates: ['succeeded']
         };
-        graphProgressService.updateGraphProgress.reset();
+        graphProgressService.publishTaskProgress.reset();
 
         job = new InstallOsJob(
             {
@@ -230,7 +230,7 @@ describe('Install OS Job', function () {
 
             cb = subscribeRequestProfileStub.firstCall.args[0];
             expect(cb).to.be.a('function');
-            return expect(cb.call(job)).to.become(job.profile);
+            return expect(cb.call(job)).to.be.equal(job.profile);
         });
     });
 
@@ -241,7 +241,7 @@ describe('Install OS Job', function () {
                 callback();
             });
         return job._run().then(function() {
-            expect(graphProgressService.updateGraphProgress)
+            expect(graphProgressService.publishTaskProgress)
                 .to.be.calledWith(graphId, taskId, job.options.progressMilestones.requestProfile);
         });
     });
