@@ -230,7 +230,7 @@ describe('Install OS Job', function () {
 
             cb = subscribeRequestProfileStub.firstCall.args[0];
             expect(cb).to.be.a('function');
-            return expect(cb.call(job)).to.be.equal(job.profile);
+            return expect(cb.call(job)).to.become(job.profile);
         });
     });
 

@@ -387,7 +387,7 @@ describe(require('path').basename(__filename), function () {
             var result = [
                 {
                     "cmd": "sudo python secure_erase.py -i " + taskId +
-                            " -s http://172.31.128.1:9080/api/current/notification" +
+                            " -s http://172.31.128.1:9080/api/current/notification/progress" +
                             " -d \'{\"diskName\":\"/dev/sda\"," +
                             "\"virtualDisk\":\"/c0/v0\",\"scsiId\":\"0:2:0:0\"," +
                             "\"deviceIds\":[23],\"slotIds\":[\"/c0/e36/s0\"]}\'" +
@@ -399,7 +399,7 @@ describe(require('path').basename(__filename), function () {
                 },
                 {
                     "cmd": "sudo python secure_erase.py -i " + taskId +
-                            " -s http://172.31.128.1:9080/api/current/notification" +
+                            " -s http://172.31.128.1:9080/api/current/notification/progress" +
                             " -d \'{\"diskName\":\"/dev/sdb\"," +
                             "\"virtualDisk\":\"\",\"scsiId\":\"0:2:0:1\"}\' -t scrub"
                 }
