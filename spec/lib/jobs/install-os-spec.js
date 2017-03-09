@@ -116,22 +116,6 @@ describe('Install OS Job', function () {
         expect(job.options.users[0].encryptedPassword).to.match(/^\$6\$*\$*/);
     });
 
-    it("should have a default progressMilestones", function() {
-        expect(job.options).to.have.property('progressMilestones');
-        _.forOwn(job.options.progressMilestones, function(value, key) {
-            if (key.endsWith('Uri')) {
-                expect(value).to.be.a('string').
-                    and.to.match(/^\/api\/current\/notification\/progress\?/);
-            }
-            else {
-                expect(value).to.be.an('object');
-                expect(value).to.have.property('value').and.to.be.a('number');
-                expect(value).to.have.property('maximum').and.to.be.a('number');
-                expect(value).to.have.property('description').and.to.be.a('string');
-            }
-        });
-    });
-
     it("should use own progressMilestones", function() {
         var taskId = uuid.v4();
         var myjob = new InstallOsJob(
@@ -235,14 +219,61 @@ describe('Install OS Job', function () {
     });
 
     it('should update progress while requesting profile', function() {
+        var taskId = uuid.v4();
+        var myjob = new InstallOsJob(
+            {
+                profile: 'testprofile',
+                version: '7.0',
+                repo: 'http://127.0.0.1:8080/myrepo/7.0/x86_64',
+                rootPassword: 'rackhd',
+                rootSshKey: 'testkey',
+                kvm: true,
+                users: [
+                    {
+                        name: 'test',
+                        password: 'testPassword',
+                        uid: 600,
+                        sshKey: ''
+                    }
+                ],
+                dnsServers: null,
+                progressMilestones: {
+                    requestProfile: { value: 1, description: 'finish  1' },
+                    completed: { value: 2, description: 'finish 2' },
+                }
+            },
+            {
+                target: 'testid',
+                graphId: graphId
+            },
+            taskId
+        );
         subscribeRequestProfileStub.restore();
-        subscribeRequestProfileStub= sinon.stub(
+        subscribeRequestProfileStub = sinon.stub(
             InstallOsJob.prototype, '_subscribeRequestProfile', function(callback) {
                 callback();
             });
-        return job._run().then(function() {
+        subscribeNodeNotification.restore();
+        subscribeNodeNotification = sinon.stub(
+            InstallOsJob.prototype, '_subscribeNodeNotification', function(nodeId, callback) {
+                callback({nodeId: nodeId});
+            });
+
+        return myjob._run().then(function() {
+            expect(graphProgressService.publishTaskProgress).to.be.calledTwice;
             expect(graphProgressService.publishTaskProgress)
-                .to.be.calledWith(graphId, taskId, job.options.progressMilestones.requestProfile);
+                .to.be.calledWith(
+                    graphId,
+                    taskId,
+                    myjob.options.progressMilestones.requestProfile,
+                    true
+                )
+                .to.be.calledWith(
+                    graphId,
+                    taskId,
+                    myjob.options.progressMilestones.completed,
+                    true
+                );
         });
     });
 
