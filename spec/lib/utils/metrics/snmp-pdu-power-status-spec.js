@@ -11,9 +11,6 @@ describe("SNMP PDU Power Metric", function () {
     var eventsProtocol = {
         publishExternalEvent: sandbox.stub().resolves()
     };
-    var taskProtocol = {
-        publishPollerAlertLegacy: sandbox.stub().resolves()
-    };
     var env = {
         get: sandbox.stub().resolves([['mib-x'],['mib-y']])
     };
@@ -25,7 +22,6 @@ describe("SNMP PDU Power Metric", function () {
             helper.require('/lib/utils/job-utils/net-snmp-tool.js'),
             helper.require('/lib/utils/job-utils/net-snmp-parser.js'),
             helper.di.simpleWrapper(eventsProtocol, 'Protocol.Events'),
-            helper.di.simpleWrapper(taskProtocol, 'Protocol.Task'),
             helper.di.simpleWrapper(env, 'Services.Environment')
         ]);
 

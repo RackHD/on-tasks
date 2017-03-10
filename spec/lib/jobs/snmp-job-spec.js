@@ -14,9 +14,6 @@ describe(require('path').basename(__filename), function () {
     var pollerHelper;
     var loopCount = 10;
     var eventsProtocol;
-    var taskProtocol = {
-        publishPollerAlertLegacy: function(){}
-    };
 
     base.before(function (context) {
         // create a child injector with on-core and the base pieces we need to test this
@@ -42,8 +39,7 @@ describe(require('path').basename(__filename), function () {
             helper.di.simpleWrapper(metricStub, 'JobUtils.Metrics.Snmp.PduPowerMetric'),
             helper.di.simpleWrapper(metricStub, 'JobUtils.Metrics.Snmp.PduSensorMetric'),
             helper.di.simpleWrapper(metricStub, 'JobUtils.Metrics.Snmp.SwitchSensorMetric'),
-            helper.di.simpleWrapper(waterline,'Services.Waterline'),
-            helper.di.simpleWrapper(taskProtocol,'Protocol.Task')
+            helper.di.simpleWrapper(waterline,'Services.Waterline')
         ]);
         context.Jobclass = helper.injector.get('Job.Snmp');
         pollerHelper = helper.injector.get('JobUtils.PollerHelper');

@@ -126,14 +126,12 @@ describe('Job.Redfish', function () {
             expect(redfishJob.routingKey).to.equal(graphId);
             redfishJob.initClient = sandbox.stub().returns(redfishTool);
             redfishJob._publishPollerAlert = sinon.stub().resolves();
-            redfishJob._publishPollerAlertLegacy = sinon.stub().resolves();
         });
 
         afterEach(function() {
             redfishJob.initClient.reset();
             redfishTool.clientRequest.reset();
             redfishJob._publishPollerAlert.reset();
-            redfishJob._publishPollerAlertLegacy.reset();
         });
 
         it("should have a _run() method", function() {
