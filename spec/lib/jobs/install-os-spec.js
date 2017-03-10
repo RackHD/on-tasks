@@ -266,13 +266,13 @@ describe('Install OS Job', function () {
                     graphId,
                     taskId,
                     myjob.options.progressMilestones.requestProfile,
-                    true
+                    {swallowError: true}
                 )
                 .to.be.calledWith(
                     graphId,
                     taskId,
                     myjob.options.progressMilestones.completed,
-                    true
+                    {swallowError: true}
                 );
         });
     });
