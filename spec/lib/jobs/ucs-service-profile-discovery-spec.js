@@ -153,7 +153,7 @@ describe('Ucs Discovery Job', function () {
                 "associatedServer": "test",
                 "name": "ls-test",
                 "path": "org-root/ls-test"
-            }
+            };
             var error = new Error.NotFoundError();
             waterline.nodes.needOne.rejects(error);
             return ucsJob.createUpdateNode(data,'compute')
@@ -169,7 +169,7 @@ describe('Ucs Discovery Job', function () {
                 "associatedServer": "test",
                 "name": "ls-test",
                 "path": "org-root/ls-test"
-            }
+            };
             node = {
                 "autoDiscover": "false",
                 "id": "1234",
@@ -188,7 +188,7 @@ describe('Ucs Discovery Job', function () {
                     }
                 ],
                 "type": "compute"
-            }
+            };
             waterline.nodes.needOne.resolves(node);
             return ucsJob.createUpdateNode(data,'compute')
                 .then(function() {
