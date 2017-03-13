@@ -101,102 +101,97 @@ describe('Ucs Discovery Job', function () {
         };
         waterline.nodes.updateOne.reset();
     });
-    
-    describe('usc service profile discovery', function() {
-        it('should successfully run the job', function() {
-            ucsTool.clientRequest.onCall(0).resolves(rootData);
-            ucsTool.clientRequest.onCall(1).resolves(rootData);
-            return ucsJob._run()
-                .then(function() {
-                     expect(waterline.nodes.updateOne).to.be.called.twice;
-                });
-        });
-        it('should fail to run job', function() {
-            ucsTool.clientRequest.rejects('some error');
-            ucsJob._run();
-            return ucsJob._deferred.should.be.rejectedWith('some error');
-        });
 
-        describe('ucs Service Profile discovery Relations', function() {
-
-            it('should create update relations', function() {
-                var error = new Error.NotFoundError();
-                waterline.nodes.needOne.rejects(error);
-                return ucsJob.updateRelations(node.id,node.relations)
-                    .then(function() {
-                        expect(waterline.nodes.needOneById).to.be.called.once;
-                        expect(waterline.nodes.updateOne).to.be.called.once;
-                    });
+    it('should create relations', function() {
+        return ucsJob.updateRelations(node.id,node.relations)
+            .then(function() {
+                expect(waterline.nodes.needOneById).to.be.calledOnce;
+                expect(waterline.nodes.updateOne).to.be.called.once;
             });
-
-            it('should create create relations', function() {
-                return ucsJob.updateRelations(node.id,node.relations)
-                    .then(function() {
-                        expect(waterline.nodes.needOneById).to.be.called.once;
-                        expect(waterline.nodes.updateOne).to.be.called.once;
-                    });
-            });
-
-        });
-
-        it('should not update a node', function() {
-            ucsTool.clientRequest.onCall(0).resolves([]);
-            return ucsJob._run()
-                .then(function() {
-                    expect(waterline.nodes.updateOne).to.not.be.called.twice;
-                });
-        });
-
-        it('should create new node', function() {
-            var data = {
-                "assoc_state": "associated",
-                "associatedServer": "test",
-                "name": "ls-test",
-                "path": "org-root/ls-test"
-            };
-            var error = new Error.NotFoundError();
-            waterline.nodes.needOne.rejects(error);
-            return ucsJob.createUpdateNode(data,'compute')
-                .then(function() {
-                    expect(waterline.nodes.create).to.be.called.once;
-                    expect(waterline.obms.upsertByNode).to.be.called.once;
-                });
-        });
-
-        it('should update existing node', function() {
-            var data = {
-                "assoc_state": "associated",
-                "associatedServer": "test",
-                "name": "ls-test",
-                "path": "org-root/ls-test"
-            };
-            node = {
-                "autoDiscover": "false",
-                "id": "1234",
-                "identifiers": [
-                    "10.xxx.xx.xxx",
-                    "org-root/ls-abc"
-                ],
-                "name": "ls-abc",
-                "relations": [
-                    {
-                        "relationType": "associatedTo",
-                        "info": null,
-                        "targets": [
-                            "sys/abc-3/123-3"
-                        ]
-                    }
-                ],
-                "type": "compute"
-            };
-            waterline.nodes.needOne.resolves(node);
-            return ucsJob.createUpdateNode(data,'compute')
-                .then(function() {
-                    expect(waterline.nodes.needOne).to.be.called.once;
-                    expect(waterline.nodes.updateOne).to.be.called.once;
-                    expect(waterline.obms.upsertByNode).to.be.called.once;
-                });
-        });
-
     });
+
+    it('should create update relations', function() {
+        var error = new Error.NotFoundError();
+        waterline.nodes.needOne.rejects(error);
+        return ucsJob.updateRelations(node.id,node.relations)
+            .then(function() {
+                expect(waterline.nodes.needOneById).to.be.calledTwice;
+                expect(waterline.nodes.updateOne).to.be.calledOnce;
+            });
+    });
+
+    it('should update existing node', function() {
+        var data = {
+            "assoc_state": "associated",
+            "associatedServer": "test",
+            "name": "ls-test",
+            "path": "org-root/ls-test"
+        };
+        node = {
+            "autoDiscover": "false",
+            "id": "1234",
+            "identifiers": [
+                "10.xxx.xx.xxx",
+                "org-root/ls-abc"
+            ],
+            "name": "ls-abc",
+            "relations": [
+                {
+                    "relationType": "associatedTo",
+                    "info": null,
+                    "targets": [
+                        "sys/abc-3/123-3"
+                    ]
+                }
+            ],
+            "type": "compute"
+        };
+        waterline.nodes.needOne.resolves(node);
+        return ucsJob.createUpdateNode(data,'compute')
+            .then(function() {
+                expect(waterline.nodes.needOne).to.be.calledOnce;
+                expect(waterline.nodes.updateOne).to.be.calledOnce;
+                expect(waterline.obms.upsertByNode).to.be.calledOnce;
+            });
+    });
+
+    it('should create new node', function() {
+        var data = {
+            "assoc_state": "associated",
+            "associatedServer": "test",
+            "name": "ls-test",
+            "path": "org-root/ls-test"
+        };
+        var error = new Error.NotFoundError();
+        waterline.nodes.needOne.rejects(error);
+        return ucsJob.createUpdateNode(data,'compute')
+            .then(function() {
+                expect(waterline.nodes.create).to.be.calledOnce;
+                expect(waterline.obms.upsertByNode).to.be.calledTwice;
+            });
+    });
+
+    it('should successfully run the job', function() {
+        ucsTool.clientRequest.onCall(0).resolves(rootData);
+        ucsTool.clientRequest.onCall(1).resolves(rootData);
+        return ucsJob._run()
+            .then(function() {
+                 expect(waterline.nodes.updateOne).to.be.calledTwice;
+            });
+    });
+
+    it('should fail to run job', function() {
+        ucsTool.clientRequest.rejects('some error');
+        ucsJob._run();
+        return ucsJob._deferred.should.be.rejectedWith('some error');
+    });
+
+    it('should not update a node', function() {
+        ucsTool.clientRequest.onCall(0).resolves([]);
+        return ucsJob._run()
+            .then(function() {
+                expect(waterline.nodes.updateOne).to.not.be.calledTwice;
+            });
+    });
+
 });
