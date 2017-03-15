@@ -169,6 +169,7 @@ describe('Command Util', function() {
         beforeEach(function() {
             commandUtil = new CmdUtil('fakeNodeId');
             waterline.catalogs.create = this.sandbox.stub().resolves();
+            waterline.catalogs.update = this.sandbox.stub().resolves();
         });
 
         afterEach(function() {
@@ -219,7 +220,23 @@ describe('Command Util', function() {
                 expect(waterline.catalogs.create).to.have.been
                 .calledWithExactly({source: 'test', data:'goodData', node: commandUtil.nodeId});
             });
+        });
 
+        it('should optionally update an existing catalog', function() {
+            var tasks = [
+                {source: 'test', data:'goodData', store: true},
+                {source: 'test', data:'otherData'}
+            ];
+            var query = {node: commandUtil.nodeId, source: 'test'};
+            commandUtil.updateExisting = true;
+
+            return Promise.resolve(tasks)
+                .spread(commandUtil.catalogParsedTasks.bind(commandUtil))
+                .then(function() {
+                    expect(waterline.catalogs.update).to.have.been.calledOnce;
+                    expect(waterline.catalogs.update).to.have.been
+                        .calledWithExactly(query, {source: 'test', data:'goodData', node: commandUtil.nodeId});
+                });
         });
     });
 
