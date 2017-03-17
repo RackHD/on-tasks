@@ -170,6 +170,7 @@ describe('Command Util', function() {
             commandUtil = new CmdUtil('fakeNodeId');
             waterline.catalogs.create = this.sandbox.stub().resolves();
             waterline.catalogs.update = this.sandbox.stub().resolves();
+            waterline.catalogs.count = this.sandbox.stub().resolves();
         });
 
         afterEach(function() {
@@ -228,14 +229,35 @@ describe('Command Util', function() {
                 {source: 'test', data:'otherData'}
             ];
             var query = {node: commandUtil.nodeId, source: 'test'};
-            commandUtil.updateExisting = true;
+            commandUtil.updateExistingCatalog = true;
+            waterline.catalogs.count.resolves(1);
 
             return Promise.resolve(tasks)
                 .spread(commandUtil.catalogParsedTasks.bind(commandUtil))
                 .then(function() {
                     expect(waterline.catalogs.update).to.have.been.calledOnce;
                     expect(waterline.catalogs.update).to.have.been
-                        .calledWithExactly(query, {source: 'test', data:'goodData', node: commandUtil.nodeId});
+                        .calledWithExactly(query, {
+                            source: 'test',
+                            data:'goodData',
+                            node: commandUtil.nodeId
+                        });
+                });
+        });
+
+        it('should create a new catalog if it does not already exist', function() {
+            var tasks = [
+                {source: 'test', data:'goodData', store: true},
+                {source: 'test', data:'otherData'}
+            ];
+            commandUtil.updateExistingCatalog = true;
+            waterline.catalogs.count.resolves(0);
+
+            return Promise.resolve(tasks)
+                .spread(commandUtil.catalogParsedTasks.bind(commandUtil))
+                .then(function() {
+                    expect(waterline.catalogs.update).not.to.have.been.called;
+                    expect(waterline.catalogs.create).to.have.been.calledOnce;
                 });
         });
     });
