@@ -19,7 +19,7 @@ describe('Install OS Job', function () {
     var taskId;
     var graphId;
     var graph;
-    var eventsProtocol;
+    var graphProgressService;
 
     before(function() {
         helper.setupInjector(
@@ -38,7 +38,7 @@ describe('Install OS Job', function () {
 
         InstallOsJob = helper.injector.get('Job.Os.Install');
         waterline = helper.injector.get('Services.Waterline');
-        eventsProtocol = helper.injector.get('Protocol.Events');
+        graphProgressService = helper.injector.get('Services.GraphProgress');
         Promise = helper.injector.get('Promise');
         taskProtocol.subscribeActiveTaskExists = sinon.stub().resolves({
             dispose: sinon.stub()
@@ -50,7 +50,7 @@ describe('Install OS Job', function () {
         subscribeNodeNotification = sinon.stub(
             InstallOsJob.prototype, '_subscribeNodeNotification');
         doneSpy = sinon.spy(InstallOsJob.prototype, '_done');
-        sinon.spy(InstallOsJob.prototype, 'updateGraphProgress');
+        sinon.spy(graphProgressService, 'publishTaskProgress');
     });
 
     beforeEach(function() {
@@ -70,7 +70,7 @@ describe('Install OS Job', function () {
             state: 'pending',
             terminalOnStates: ['succeeded']
         };
-        InstallOsJob.prototype.updateGraphProgress.reset();
+        graphProgressService.publishTaskProgress.reset();
 
         job = new InstallOsJob(
             {
@@ -114,22 +114,6 @@ describe('Install OS Job', function () {
     it("should generate correct password", function() {
         expect(job.options.rootEncryptedPassword).to.match(/^\$6\$*\$*/);
         expect(job.options.users[0].encryptedPassword).to.match(/^\$6\$*\$*/);
-    });
-
-    it("should have a default progressMilestones", function() {
-        expect(job.options).to.have.property('progressMilestones');
-        _.forOwn(job.options.progressMilestones, function(value, key) {
-            if (key.endsWith('Uri')) {
-                expect(value).to.be.a('string').
-                    and.to.match(/^\/api\/current\/notification\/progress\?/);
-            }
-            else {
-                expect(value).to.be.an('object');
-                expect(value).to.have.property('value').and.to.be.a('number');
-                expect(value).to.have.property('maximum').and.to.be.a('number');
-                expect(value).to.have.property('description').and.to.be.a('string');
-            }
-        });
     });
 
     it("should use own progressMilestones", function() {
@@ -235,14 +219,61 @@ describe('Install OS Job', function () {
     });
 
     it('should update progress while requesting profile', function() {
+        var taskId = uuid.v4();
+        var myjob = new InstallOsJob(
+            {
+                profile: 'testprofile',
+                version: '7.0',
+                repo: 'http://127.0.0.1:8080/myrepo/7.0/x86_64',
+                rootPassword: 'rackhd',
+                rootSshKey: 'testkey',
+                kvm: true,
+                users: [
+                    {
+                        name: 'test',
+                        password: 'testPassword',
+                        uid: 600,
+                        sshKey: ''
+                    }
+                ],
+                dnsServers: null,
+                progressMilestones: {
+                    requestProfile: { value: 1, description: 'finish  1' },
+                    completed: { value: 2, description: 'finish 2' },
+                }
+            },
+            {
+                target: 'testid',
+                graphId: graphId
+            },
+            taskId
+        );
         subscribeRequestProfileStub.restore();
-        subscribeRequestProfileStub= sinon.stub(
+        subscribeRequestProfileStub = sinon.stub(
             InstallOsJob.prototype, '_subscribeRequestProfile', function(callback) {
                 callback();
             });
-        return job._run().then(function() {
-            expect(InstallOsJob.prototype.updateGraphProgress)
-                .to.be.calledWith(job.options.progressMilestones.requestProfile);
+        subscribeNodeNotification.restore();
+        subscribeNodeNotification = sinon.stub(
+            InstallOsJob.prototype, '_subscribeNodeNotification', function(nodeId, callback) {
+                callback({nodeId: nodeId});
+            });
+
+        return myjob._run().then(function() {
+            expect(graphProgressService.publishTaskProgress).to.be.calledTwice;
+            expect(graphProgressService.publishTaskProgress)
+                .to.be.calledWith(
+                    graphId,
+                    taskId,
+                    myjob.options.progressMilestones.requestProfile,
+                    {swallowError: true}
+                )
+                .to.be.calledWith(
+                    graphId,
+                    taskId,
+                    myjob.options.progressMilestones.completed,
+                    {swallowError: true}
+                );
         });
     });
 
@@ -471,46 +502,4 @@ describe('Install OS Job', function () {
 
     });
 
-    describe('test updateGraphProgress', function() {
-        it('should publish graph progress when updateGraphProgress is called', function () {
-            var milestone = {
-                value: 1,
-                maximum: 4,
-                description: 'foo bar'
-            };
-
-            waterline.graphobjects.findOne = sinon.stub().resolves(graph);
-            eventsProtocol.publishProgressEvent.reset();
-            return job.updateGraphProgress(milestone)
-            .then(function(){
-                expect(eventsProtocol.publishProgressEvent).to.have.been.calledOnce;
-                expect(eventsProtocol.publishProgressEvent.firstCall.args[0]).to.equal(graphId);
-                expect(eventsProtocol.publishProgressEvent.firstCall.args[1]).
-                    to.have.property('graphId').and.equal(graphId);
-                expect(eventsProtocol.publishProgressEvent.firstCall.args[1]).
-                    to.have.deep.property('taskProgress.taskId').and.equal(taskId);
-                expect(eventsProtocol.publishProgressEvent.firstCall.args[1]).
-                    to.have.deep.property('taskProgress.progress.value').and.equal(1);
-                expect(eventsProtocol.publishProgressEvent.firstCall.args[1]).
-                    to.have.deep.property('taskProgress.progress.maximum').and.equal(4);
-                expect(eventsProtocol.publishProgressEvent.firstCall.args[1]).
-                    to.have.deep.property('taskProgress.progress.description').and.equal('foo bar');
-            });
-        });
-
-        it('should updateGraphProgress swallow the Errors', function () {
-            var error = new Error('test update graph progress error');
-            var milestone = {
-                value: 1,
-                maximum: 4,
-                description: 'foo bar'
-            };
-            waterline.graphobjects.findOne = sinon.stub().rejects(error);
-            eventsProtocol.publishProgressEvent.reset();
-            return job.updateGraphProgress(milestone)
-            .then(function(){
-                expect(eventsProtocol.publishProgressEvent).not.to.be.called;
-            });
-        });
-    });
 });
