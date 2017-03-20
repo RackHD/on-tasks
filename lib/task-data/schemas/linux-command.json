@@ -78,6 +78,10 @@
         "RunOnlyOnce": {
             "description": "Indicate whether all commands should only be run once by node, if true, any additional request from node will be ignored. Default is true",
             "type": "boolean"
+        },
+        "UpdateExistingCatalog": {
+            "description": "Indicate whether to update the specified catalog rather than create a new catalog",
+            "type": "boolean"
         }
     },
     "properties": {
@@ -89,6 +93,9 @@
         },
         "runOnlyOnce": {
             "$ref": "#/definitions/RunOnlyOnce"
+        },
+        "updateExistingCatalog": {
+            "$ref": "#/definitions/UpdateExistingCatalog"
         }
     },
     "required": ["commands"]
