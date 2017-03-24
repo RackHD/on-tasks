@@ -210,6 +210,16 @@ describe('Task Graph', function () {
                 /The task label \'test-duplicate\' is used more than once in the graph definition/
             );
         });
+        
+        it('should fail on illegal task labels', function() {
+            definitions.graphDefinition.tasks.push({
+                'label': 'anyOf'
+            });
+            var promise = TaskGraph.create('domain', {definition: definitions.graphDefinition});
+            return expect(promise).to.be.rejectedWith(
+                /Label anyOf is reserved, please use another label./  
+            );
+        });
 
         it('should fail on non-existant waitOn task labels', function() {
             definitions.graphDefinition.tasks[1].waitOn.NA = 'succeeded';
@@ -514,6 +524,14 @@ describe('Task Graph', function () {
                 expect(depsTask).to.be.ok;
                 expect(depsTask.dependencies).to.have.property(noDepsTask.taskId)
                     .that.equals('finished');
+            });
+        });
+
+        it('should create task with waitOn.anyOf', function(){
+            return TaskGraph.create('domain', {definition: definitions.graphWaitOnAnyTasks})
+            .then(function(graph){
+                var taskList = graph.definition.tasks;
+                expect(Object.keys(taskList[3].taskDefinition.waitOn.anyOf).length).to.equal(2);
             });
         });
     });
