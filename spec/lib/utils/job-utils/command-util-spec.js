@@ -349,7 +349,7 @@ describe('Command Util', function() {
                 .be.rejected;
         });
 
-        it('should pass sshExex options to the underlying method', function() {
+        it('should pass sshExec options to the underlying method', function() {
             var events = [
                 { data: 'test ' },
                 { data: 'string' },
