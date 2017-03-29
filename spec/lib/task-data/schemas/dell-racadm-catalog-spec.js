@@ -10,8 +10,16 @@ describe(require('path').basename(__filename), function() {
         action: 'getConfigCatalog'
     };
 
+    var partialCanonical1 = {
+        action: 'getSoftwareList'
+    }
+
     var positiveSetParam = {
         action: ["getConfigCatalog"]
+    };
+
+    var positiveSetParam1 = {
+        action: ["getSoftwareList"]
     };
 
     var negativeSetParam = {
@@ -28,4 +36,6 @@ describe(require('path').basename(__filename), function() {
     var SchemaUtHelper = require('./schema-ut-helper');
     new SchemaUtHelper(schemaFileName, partialCanonical).batchTest(
         positiveSetParam, negativeSetParam, positiveUnsetParam, negativeUnsetParam);
+    new SchemaUtHelper(schemaFileName, partialCanonical1).batchTest(
+        positiveSetParam1, negativeSetParam, positiveUnsetParam, negativeUnsetParam);
 });
