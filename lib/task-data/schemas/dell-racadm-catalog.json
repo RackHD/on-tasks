@@ -2,7 +2,7 @@
   "copyright": "Copyright 2016, EMC, Inc.",
   "definitions": {
     "action": {
-      "description": "Action for catalog related tasks, currently only getConfigCatalog is supported",
+      "description": "Action for catalog related tasks, currently getSoftwareList, getConfigCatalog are supported",
       "type": "string",
       "enum": ["getConfigCatalog", "getSoftwareList"]
     }

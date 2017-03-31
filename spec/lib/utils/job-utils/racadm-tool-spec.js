@@ -512,13 +512,6 @@ describe("racadm-tool", function() {
                             source: 'racadm-firmware-list-catalog', store: true});
                     });
             });
-            it("should throw error", function(){
-                runCommandStub.resolves();
-                getSoftwareListStub.returns('undefined');
-                return instance.getSoftwareList('0.0.0.0', 'user', 'password')
-                    .should.be.rejectedWith(Error, 'Can not get Software Inventory');
-            });
-
         });
 
         describe('getBiosConfig', function(){
