@@ -501,16 +501,17 @@ describe("racadm-tool", function() {
 
             it('should get software list correctly', function(){
                 runCommandStub.resolves();
-                getSoftwareListStub.returns();
+                getSoftwareListStub.returns('anything');
                 return instance.getSoftwareList('0.0.0.0', 'user', 'password')
-                    .then(function(){
+                    .then(function(ret){
                         expect(parser.getSoftwareList).to.be.calledOnce;
                         expect(instance.runCommand).to.be.calledOnce;
                         expect(instance.runCommand).to.be.calledWith('0.0.0.0', 'user',
                             'password', 'swinventory');
+                        expect(ret).to.deep.equal({data: 'anything',
+                            source: 'racadm-firmware-list-catalog', store: true});
                     });
             });
-
         });
 
         describe('getBiosConfig', function(){
