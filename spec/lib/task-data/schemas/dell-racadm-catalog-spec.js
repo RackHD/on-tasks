@@ -7,11 +7,11 @@ describe(require('path').basename(__filename), function() {
     var schemaFileName = 'dell-racadm-catalog.json';
 
     var partialCanonical = {
-        action: 'getConfigCatalog'
+        action: 'getConfigCatalog',
     };
 
     var positiveSetParam = {
-        action: ["getConfigCatalog"]
+        action: ["getConfigCatalog", "getSoftwareList"]
     };
 
     var negativeSetParam = {
