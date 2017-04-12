@@ -1164,7 +1164,7 @@ describe("Task Parser", function () {
     });
 
     describe("PERCcli Parsers", function () {
-       it("should parse percCLI outout", function(done){
+       it("should parse percCLI output", function(done){
            var perccliVersionInfoCmd = 'sudo /opt/MegaRAID/perccli/perccli64 -v';
            var tasks = [
                {
@@ -1182,7 +1182,7 @@ describe("Task Parser", function () {
                expect(result.source).to.equal('perccli-version');
                expect(result.data.version).to.equal('1.11.03');
                expect(result.data.description).to.equal
-                     ('PercCLI SAS Customization Utility Ver 1.11.03 Mar 26, 2014');
+                     ('PercCli SAS Customization Utility Ver 1.11.03 Mar 26, 2014');
                expect(result.data.copyright).to.equal
                      ('(c)Copyright 2014, LSI Corporation, All Rights Reserved.');
                done();
