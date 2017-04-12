@@ -1163,6 +1163,37 @@ describe("Task Parser", function () {
         });
     });
 
+    describe("PERCcli Parsers", function () {
+       it("should parse percCLI output", function(done){
+           var perccliVersionInfoCmd = 'sudo /opt/MegaRAID/perccli/perccli64 -v';
+           var tasks = [
+               {
+                   cmd: perccliVersionInfoCmd,
+                   stdout: stdoutMocks.perccliVersionInfooutput,
+                   stderr: '',
+                   error: null
+               }
+           ];
+
+           taskParser.parseTasks(tasks)
+           .spread(function (result) {
+               expect(result.error).to.be.undefined;
+               expect(result.store).to.be.true;
+               expect(result.source).to.equal('perccli-version');
+               expect(result.data.version).to.equal('1.11.03');
+               expect(result.data.description).to.equal
+                     ('PercCli SAS Customization Utility Ver 1.11.03 Mar 26, 2014');
+               expect(result.data.copyright).to.equal
+                     ('(c)Copyright 2014, LSI Corporation, All Rights Reserved.');
+               done();
+           })
+           .catch(function (err) {
+               done(err);
+           });
+
+       });
+    });
+
     describe("LLDP Parsers", function () {
         it("should parse lldpcli output", function (done) {
             var lldpCmd = 'sudo /usr/sbin/lldpcli show neighbor -f keyvalue';
