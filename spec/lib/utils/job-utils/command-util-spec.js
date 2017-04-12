@@ -19,8 +19,8 @@ describe('Command Util', function() {
         mockSsh.stderr = mockSsh.events.stderr;
         mockSsh.eventList = eventList;
         mockSsh.error = error;
-        mockSsh.exec = function(cmd, callback) {
-            callback(this.error, this.events);
+        mockSsh.exec = function() {
+            arguments[arguments.length-1](this.error, this.events);
         };
         mockSsh.end = function() {
             this.emit('close');
@@ -347,6 +347,40 @@ describe('Command Util', function() {
 
             return expect(commandUtil.sshExec(testCmd, sshSettings, mockClient)).to
                 .be.rejected;
+        });
+
+        it('should pass sshExec options to the underlying method', function() {
+            var events = [
+                { data: 'test ' },
+                { data: 'string' },
+                { event: 'close', data: 0 }
+            ];
+            var mockClient = sshMockGet(events);
+            var sshExecOptions = {
+                pty: true
+            };
+
+            this.sandbox.spy(mockClient, 'exec');
+            return commandUtil.sshExec(testCmd, sshSettings, mockClient, sshExecOptions)
+            .then(function() {
+                expect(mockClient.exec).to.be.calledWith(testCmd.cmd, sshExecOptions);
+            });
+        });
+
+        it('should pass an empty object if no sshExecOptions', function() {
+            var events = [
+                { data: 'test ' },
+                { data: 'string' },
+                { event: 'close', data: 0 }
+            ];
+            var mockClient = sshMockGet(events);
+
+            this.sandbox.spy(mockClient, 'exec');
+            return commandUtil.sshExec(testCmd, sshSettings, mockClient)
+            .then(function() {
+                expect(mockClient.exec).to.be.calledWith(testCmd.cmd, {});
+            });
+
         });
     });
 
