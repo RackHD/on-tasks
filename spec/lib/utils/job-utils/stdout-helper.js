@@ -3436,6 +3436,13 @@ module.exports.lshwOutput = JSON.stringify(
                                             }
     );
 
+module.exports.perccliVersionInfooutput = '\n' +
+                                          '      PercCli SAS Customization Utility Ver 1.11.03 Mar 26, 2014\n' +
+                                          '\n' +
+                                          '     (c)Copyright 2014, LSI Corporation, All Rights Reserved.\n' +
+                                          '\n' +
+                                          'Exit Code: 0x00';
+
 module.exports.ipmiSelOutput = '1,05/27/2014,21:20:43,Event Logging Disabled #0x07,Log area reset/cleared,Asserted\n' +
                                    '2,05/27/2014,21:22:20,System Event #0x83,Timestamp Clock Sync,Asserted\n' +
                                    '3,05/27/2014,21:22:21,System Event #0x83,Timestamp Clock Sync,Asserted\n' +
