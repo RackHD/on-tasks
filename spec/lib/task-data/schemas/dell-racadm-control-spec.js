@@ -37,11 +37,11 @@ describe(require('path').basename(__filename), function() {
 
     var positiveUnsetParam = [
         "serverUsername",
-        ["serverPassword", "serverUsername", "forceReboot"],
+        "forceReboot",
+        ["serverPassword", "serverUsername"],
     ];
 
-    var negativeUnsetParam = [ 
-        "serverFilePath",
+    var negativeUnsetParam = [
         "action"
     ];
 
