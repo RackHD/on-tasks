@@ -45,5 +45,5 @@
             "$ref": "#/definitions/action"
         }
     },
-    "required": ["serverFilePath", "action"]
+    "required": ["action"]
 }
