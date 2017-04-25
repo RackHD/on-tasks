@@ -121,7 +121,7 @@ describe("Catalog Searcher", function () {
                     deviceIds: [23],
                     slotIds: ['/c0/e36/s0'],
                     controllerId: '0',
-                    controllerVender: 'lsi'
+                    controllerVendor: 'lsi'
                 },
                 driveIdData[1]);
             virtualDiskData = JSON.parse(stdoutMocks.storcliVirtualDiskInfo);
@@ -228,7 +228,7 @@ describe("Catalog Searcher", function () {
                         deviceIds: [4],
                         slotIds: ['/c0/e252/s4'],
                         controllerId: '0',
-                        controllerVender: undefined
+                        controllerVendor: undefined
                     },
                     driveIds[0]
                 )];
