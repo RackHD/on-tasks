@@ -63,7 +63,7 @@ describe("ipmi-parser", function() {
                 //Make sure sdrType is either Discrete or Threshold
                 expect(sensor).to.have.property('sdrType')
                     .and.to.satisfy(function(val) {
-                        return val === 'Discrete' || val === 'Threshold';
+                        return val === 'Discrete' || val === 'Threshold' || val === "Analog";
                     });
 
                 if (sensor.sdrType === 'Discrete') {

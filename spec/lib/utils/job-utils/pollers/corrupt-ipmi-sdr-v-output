@@ -57,7 +57,6 @@ Sensor ID              : PCH Thermal Trip (0xbf)
  OEM                   : 0
 
 Sensor ID              : MB Thermal Trip (0xb9)
- Entity ID             : 7.1 (System Board)
  Sensor Type (Discrete): Temperature (0x01)
  Event Message Control : Per-threshold
  Assertions Enabled    : Digital State
