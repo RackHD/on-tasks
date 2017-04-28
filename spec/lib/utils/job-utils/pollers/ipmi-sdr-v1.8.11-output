@@ -1,0 +1,1126 @@
+Sensor ID              : Pwr Unit Status (0x1)
+ Entity ID             : 21.1 (Power Management)
+ Sensor Type (Discrete): Power Unit
+ Assertions Enabled    : Power Unit
+                         [Power off/down]
+                         [240VA power down]
+                         [AC lost]
+                         [Soft-power control failure]
+                         [Failure detected]
+ Deassertions Enabled  : Power Unit
+                         [Power off/down]
+                         [240VA power down]
+                         [AC lost]
+                         [Soft-power control failure]
+                         [Failure detected]
+
+Sensor ID              : Pwr Unit Redund (0x2)
+ Entity ID             : 21.1 (Power Management)
+ Sensor Type (Discrete): Power Unit
+ Assertions Enabled    : Redundancy State
+                         [Fully Redundant]
+                         [Redundancy Lost]
+                         [Redundancy Degraded]
+                         [Non-Redundant: Sufficient from Redundant]
+                         [Non-Redundant: Sufficient from Insufficient]
+                         [Non-Redundant: Insufficient Resources]
+                         [Redundancy Degraded from Fully Redundant]
+                         [Redundancy Degraded from Non-Redundant]
+ Deassertions Enabled  : Redundancy State
+                         [Fully Redundant]
+                         [Redundancy Lost]
+                         [Redundancy Degraded]
+                         [Non-Redundant: Sufficient from Redundant]
+                         [Non-Redundant: Sufficient from Insufficient]
+                         [Non-Redundant: Insufficient Resources]
+                         [Redundancy Degraded from Fully Redundant]
+                         [Redundancy Degraded from Non-Redundant]
+
+Sensor ID              : IPMI Watchdog (0x3)
+ Entity ID             : 7.1 (System Board)
+ Sensor Type (Discrete): Watchdog
+ Assertions Enabled    : Watchdog 2
+                         [Timer expired]
+                         [Hard reset]
+                         [Power down]
+                         [Power cycle]
+                         [Timer interrupt]
+
+Sensor ID              : Physical Scrty (0x4)
+ Entity ID             : 23.1 (System Chassis)
+ Sensor Type (Discrete): Physical Security
+ Assertions Enabled    : Physical Security
+                         [System unplugged from LAN]
+ Deassertions Enabled  : Physical Security
+                         [System unplugged from LAN]
+
+Sensor ID              : SMI Timeout (0x6)
+ Entity ID             : 7.1 (System Board)
+ Sensor Type (Discrete): Unknown (0xF3)
+ Assertions Enabled    : Digital State
+                         [State Asserted]
+ Deassertions Enabled  : Digital State
+                         [State Asserted]
+
+Sensor ID              : System Event Log (0x7)
+ Entity ID             : 7.1 (System Board)
+ Sensor Type (Discrete): Event Logging Disabled
+ Assertions Enabled    : Event Logging Disabled
+                         [Log area reset/cleared]
+
+Sensor ID              : System Event (0x8)
+ Entity ID             : 7.1 (System Board)
+ Sensor Type (Discrete): System Event
+ Assertions Enabled    : System Event
+                         [PEF Action]
+
+Sensor ID              : Button (0x9)
+ Entity ID             : 12.1 (Front Panel Board)
+ Sensor Type (Discrete): Button
+ Assertions Enabled    : Button
+                         [Power Button pressed]
+                         [Reset Button pressed]
+
+Sensor ID              : BMC Watchdog (0xa)
+ Entity ID             : 46.1 (Management Controller Firmware)
+ Sensor Type (Discrete): Management Subsystem Health
+ Assertions Enabled    : Digital State
+                         [State Asserted]
+
+Sensor ID              : VR Watchdog (0xb)
+ Entity ID             : 7.1 (System Board)
+ Sensor Type (Discrete): Voltage
+ Assertions Enabled    : Digital State
+                         [State Asserted]
+ Deassertions Enabled  : Digital State
+                         [State Asserted]
+
+Sensor ID              : SSB Therm Trip (0xd)
+ Entity ID             : 7.1 (System Board)
+ Sensor Type (Discrete): Temperature
+ Assertions Enabled    : Digital State
+                         [State Asserted]
+ Deassertions Enabled  : Digital State
+                         [State Asserted]
+
+Sensor ID              : IO Mod Presence (0xe)
+ Entity ID             : 44.1 (I/O Module)
+ Sensor Type (Discrete): Module / Board
+ Assertions Enabled    : Availability State
+                         [Device Present]
+ Deassertions Enabled  : Availability State
+                         [Device Present]
+
+Sensor ID              : BMC FW Health (0x10)
+ Entity ID             : 46.1 (Management Controller Firmware)
+ Sensor Type (Discrete): Management Subsystem Health
+ Assertions Enabled    : Management Subsystem Health
+                         [Sensor failure]
+
+Sensor ID              : System Airflow (0x11)
+ Entity ID             : 23.1 (System Chassis)
+ Sensor Type (Analog)  : Other
+ Sensor Reading        : 6 (+/- 0) CFM
+ Status                : ok
+ Nominal Reading       : 40.000
+ Normal Minimum        : 0.000
+ Normal Maximum        : 80.000
+ Positive Hysteresis   : Unspecified
+ Negative Hysteresis   : Unspecified
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : No Events From Sensor
+ Readable Thresholds   : No Thresholds
+ Settable Thresholds   : No Thresholds
+ Assertions Enabled    : 
+
+Sensor ID              : BB CPU2 VR Temp (0x14)
+ Entity ID             : 7.1 (System Board)
+ Sensor Type (Analog)  : Temperature
+ Sensor Reading        : 30 (+/- 0) degrees C
+ Status                : ok
+ Nominal Reading       : 80.000
+ Normal Minimum        : 5.000
+ Normal Maximum        : 105.000
+ Upper critical        : 115.000
+ Upper non-critical    : 110.000
+ Lower critical        : 5.000
+ Lower non-critical    : 10.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lcr lnc unc ucr 
+ Settable Thresholds   : lcr lnc unc ucr 
+ Threshold Read Mask   : lcr lnc unc ucr 
+ Assertions Enabled    : lnc- lcr- unc+ ucr+ 
+ Deassertions Enabled  : lnc- lcr- unc+ ucr+ 
+
+Sensor ID              : BB Inlet Temp (0x20)
+ Entity ID             : 7.1 (System Board)
+ Sensor Type (Analog)  : Temperature
+ Sensor Reading        : 29 (+/- 0) degrees C
+ Status                : ok
+ Nominal Reading       : 45.000
+ Normal Minimum        : 5.000
+ Normal Maximum        : 105.000
+ Upper critical        : 65.000
+ Upper non-critical    : 60.000
+ Lower critical        : 5.000
+ Lower non-critical    : 10.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lcr lnc unc ucr 
+ Settable Thresholds   : lcr lnc unc ucr 
+ Threshold Read Mask   : lcr lnc unc ucr 
+ Assertions Enabled    : lnc- lcr- unc+ ucr+ 
+ Deassertions Enabled  : lnc- lcr- unc+ ucr+ 
+
+Sensor ID              : HSBP Temp (0x21)
+ Entity ID             : 15.1 (Drive Backplane)
+ Sensor Type (Analog)  : Temperature
+ Sensor Reading        : 22 (+/- 0) degrees C
+ Status                : ok
+ Nominal Reading       : 25.000
+ Normal Minimum        : 5.000
+ Normal Maximum        : 45.000
+ Upper critical        : 55.000
+ Upper non-critical    : 50.000
+ Lower critical        : 0.000
+ Lower non-critical    : 5.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lcr lnc unc ucr 
+ Settable Thresholds   : lcr lnc unc ucr 
+ Threshold Read Mask   : lcr lnc unc ucr 
+ Assertions Enabled    : lnc- lcr- unc+ ucr+ 
+ Deassertions Enabled  : lnc- lcr- unc+ ucr+ 
+
+Sensor ID              : SSB Temp (0x22)
+ Entity ID             : 7.1 (System Board)
+ Sensor Type (Analog)  : Temperature
+ Sensor Reading        : 51 (+/- 0) degrees C
+ Status                : ok
+ Nominal Reading       : 80.000
+ Normal Minimum        : 5.000
+ Normal Maximum        : 93.000
+ Upper critical        : 103.000
+ Upper non-critical    : 98.000
+ Lower critical        : 2.000
+ Lower non-critical    : 5.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lcr lnc unc ucr 
+ Settable Thresholds   : lcr lnc unc ucr 
+ Threshold Read Mask   : lcr lnc unc ucr 
+ Assertions Enabled    : lnc- lcr- unc+ ucr+ 
+ Deassertions Enabled  : lnc- lcr- unc+ ucr+ 
+
+Sensor ID              : BB BMC Temp (0x23)
+ Entity ID             : 7.1 (System Board)
+ Sensor Type (Analog)  : Temperature
+ Sensor Reading        : 45 (+/- 0) degrees C
+ Status                : ok
+ Nominal Reading       : 80.000
+ Normal Minimum        : 5.000
+ Normal Maximum        : 105.000
+ Upper critical        : 90.000
+ Upper non-critical    : 85.000
+ Lower critical        : 5.000
+ Lower non-critical    : 10.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lcr lnc unc ucr 
+ Settable Thresholds   : lcr lnc unc ucr 
+ Threshold Read Mask   : lcr lnc unc ucr 
+ Assertions Enabled    : lnc- lcr- unc+ ucr+ 
+ Deassertions Enabled  : lnc- lcr- unc+ ucr+ 
+
+Sensor ID              : BB CPU1 VR Temp (0x24)
+ Entity ID             : 7.1 (System Board)
+ Sensor Type (Analog)  : Temperature
+ Sensor Reading        : 38 (+/- 0) degrees C
+ Status                : ok
+ Nominal Reading       : 80.000
+ Normal Minimum        : 5.000
+ Normal Maximum        : 105.000
+ Upper critical        : 115.000
+ Upper non-critical    : 110.000
+ Lower critical        : 5.000
+ Lower non-critical    : 10.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lcr lnc unc ucr 
+ Settable Thresholds   : lcr lnc unc ucr 
+ Threshold Read Mask   : lcr lnc unc ucr 
+ Assertions Enabled    : lnc- lcr- unc+ ucr+ 
+ Deassertions Enabled  : lnc- lcr- unc+ ucr+ 
+
+Sensor ID              : BB REAR Temp (0x25)
+ Entity ID             : 7.1 (System Board)
+ Sensor Type (Analog)  : Temperature
+ Sensor Reading        : 38 (+/- 0) degrees C
+ Status                : ok
+ Nominal Reading       : 80.000
+ Normal Minimum        : 5.000
+ Normal Maximum        : 105.000
+ Upper critical        : 115.000
+ Upper non-critical    : 110.000
+ Lower critical        : 5.000
+ Lower non-critical    : 10.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lcr lnc unc ucr 
+ Settable Thresholds   : lcr lnc unc ucr 
+ Threshold Read Mask   : lcr lnc unc ucr 
+ Assertions Enabled    : lnc- lcr- unc+ ucr+ 
+ Deassertions Enabled  : lnc- lcr- unc+ ucr+ 
+
+Sensor ID              : I/O Mod Temp (0x26)
+ Entity ID             : 44.1 (I/O Module)
+ Sensor Type (Analog)  : Temperature
+ Sensor Reading        : 35 (+/- 0) degrees C
+ Status                : ok
+ Nominal Reading       : 40.000
+ Normal Minimum        : 5.000
+ Normal Maximum        : 70.000
+ Upper critical        : 80.000
+ Upper non-critical    : 75.000
+ Lower critical        : 2.000
+ Lower non-critical    : 5.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lcr lnc unc ucr 
+ Settable Thresholds   : lcr lnc unc ucr 
+ Threshold Read Mask   : lcr lnc unc ucr 
+ Assertions Enabled    : lnc- lcr- unc+ ucr+ 
+ Deassertions Enabled  : lnc- lcr- unc+ ucr+ 
+
+Sensor ID              : HSBP PSOC Temp (0x29)
+ Entity ID             : 15.1 (Drive Backplane)
+ Sensor Type (Analog)  : Temperature
+ Sensor Reading        : 25 (+/- 0) degrees C
+ Status                : ok
+ Nominal Reading       : 25.000
+ Normal Minimum        : 5.000
+ Normal Maximum        : 45.000
+ Upper critical        : 115.000
+ Upper non-critical    : 110.000
+ Lower critical        : 0.000
+ Lower non-critical    : 5.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lcr lnc unc ucr 
+ Settable Thresholds   : lcr lnc unc ucr 
+ Threshold Read Mask   : lcr lnc unc ucr 
+ Assertions Enabled    : lnc- lcr- unc+ ucr+ 
+ Deassertions Enabled  : lnc- lcr- unc+ ucr+ 
+
+Sensor ID              : Exit Air Temp (0x2e)
+ Entity ID             : 7.1 (System Board)
+ Sensor Type (Analog)  : Temperature
+ Sensor Reading        : 65 (+/- 0) degrees C
+ Status                : ok
+ Nominal Reading       : 55.000
+ Normal Minimum        : 5.000
+ Normal Maximum        : 75.000
+ Positive Hysteresis   : 4.000
+ Negative Hysteresis   : 4.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : 
+ Settable Thresholds   : 
+ Assertions Enabled    : 
+
+Sensor ID              : LAN NIC Temp (0x2f)
+ Entity ID             : 7.1 (System Board)
+ Sensor Type (Analog)  : Temperature
+ Sensor Reading        : 61 (+/- 0) degrees C
+ Status                : ok
+ Nominal Reading       : 80.000
+ Normal Minimum        : 5.000
+ Normal Maximum        : 110.000
+ Upper critical        : 120.000
+ Upper non-critical    : 115.000
+ Lower critical        : 5.000
+ Lower non-critical    : 10.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lcr lnc unc ucr 
+ Settable Thresholds   : lcr lnc unc ucr 
+ Threshold Read Mask   : lcr lnc unc ucr 
+ Assertions Enabled    : lnc- lcr- unc+ ucr+ 
+ Deassertions Enabled  : lnc- lcr- unc+ ucr+ 
+
+Sensor ID              : Sys Fan 1A (0x30)
+ Entity ID             : 29.1 (Fan Device)
+ Sensor Type (Analog)  : Fan
+ Sensor Reading        : 5192 (+/- 0) RPM
+ Status                : ok
+ Nominal Reading       : 11704.000
+ Normal Minimum        : 968.000
+ Normal Maximum        : 22440.000
+ Lower critical        : 616.000
+ Lower non-critical    : 792.000
+ Positive Hysteresis   : 176.000
+ Negative Hysteresis   : 176.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lcr lnc 
+ Settable Thresholds   : lcr lnc 
+ Threshold Read Mask   : lcr lnc 
+ Assertions Enabled    : lnc- lcr- 
+ Deassertions Enabled  : lnc- lcr- 
+
+Sensor ID              : Sys Fan 1B (0x31)
+ Entity ID             : 29.2 (Fan Device)
+ Sensor Type (Analog)  : Fan
+ Sensor Reading        : 4560 (+/- 0) RPM
+ Status                : ok
+ Nominal Reading       : 10640.000
+ Normal Minimum        : 960.000
+ Normal Maximum        : 20400.000
+ Lower critical        : 640.000
+ Lower non-critical    : 720.000
+ Positive Hysteresis   : 160.000
+ Negative Hysteresis   : 160.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lcr lnc 
+ Settable Thresholds   : lcr lnc 
+ Threshold Read Mask   : lcr lnc 
+ Assertions Enabled    : lnc- lcr- 
+ Deassertions Enabled  : lnc- lcr- 
+
+Sensor ID              : Sys Fan 2A (0x32)
+ Entity ID             : 29.3 (Fan Device)
+ Sensor Type (Analog)  : Fan
+ Sensor Reading        : 5192 (+/- 0) RPM
+ Status                : ok
+ Nominal Reading       : 11704.000
+ Normal Minimum        : 968.000
+ Normal Maximum        : 22440.000
+ Lower critical        : 616.000
+ Lower non-critical    : 792.000
+ Positive Hysteresis   : 176.000
+ Negative Hysteresis   : 176.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lcr lnc 
+ Settable Thresholds   : lcr lnc 
+ Threshold Read Mask   : lcr lnc 
+ Assertions Enabled    : lnc- lcr- 
+ Deassertions Enabled  : lnc- lcr- 
+
+Sensor ID              : Sys Fan 2B (0x33)
+ Entity ID             : 29.4 (Fan Device)
+ Sensor Type (Analog)  : Fan
+ Sensor Reading        : 4560 (+/- 0) RPM
+ Status                : ok
+ Nominal Reading       : 10640.000
+ Normal Minimum        : 960.000
+ Normal Maximum        : 20400.000
+ Lower critical        : 640.000
+ Lower non-critical    : 720.000
+ Positive Hysteresis   : 160.000
+ Negative Hysteresis   : 160.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lcr lnc 
+ Settable Thresholds   : lcr lnc 
+ Threshold Read Mask   : lcr lnc 
+ Assertions Enabled    : lnc- lcr- 
+ Deassertions Enabled  : lnc- lcr- 
+
+Sensor ID              : Sys Fan 3A (0x34)
+ Entity ID             : 29.5 (Fan Device)
+ Sensor Type (Analog)  : Fan
+ Sensor Reading        : 5280 (+/- 0) RPM
+ Status                : ok
+ Nominal Reading       : 11704.000
+ Normal Minimum        : 968.000
+ Normal Maximum        : 22440.000
+ Lower critical        : 616.000
+ Lower non-critical    : 792.000
+ Positive Hysteresis   : 176.000
+ Negative Hysteresis   : 176.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lcr lnc 
+ Settable Thresholds   : lcr lnc 
+ Threshold Read Mask   : lcr lnc 
+ Assertions Enabled    : lnc- lcr- 
+ Deassertions Enabled  : lnc- lcr- 
+
+Sensor ID              : Sys Fan 3B (0x35)
+ Entity ID             : 29.6 (Fan Device)
+ Sensor Type (Analog)  : Fan
+ Sensor Reading        : 4640 (+/- 0) RPM
+ Status                : ok
+ Nominal Reading       : 10640.000
+ Normal Minimum        : 960.000
+ Normal Maximum        : 20400.000
+ Lower critical        : 640.000
+ Lower non-critical    : 720.000
+ Positive Hysteresis   : 160.000
+ Negative Hysteresis   : 160.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lcr lnc 
+ Settable Thresholds   : lcr lnc 
+ Threshold Read Mask   : lcr lnc 
+ Assertions Enabled    : lnc- lcr- 
+ Deassertions Enabled  : lnc- lcr- 
+
+Sensor ID              : PS1 Status (0x50)
+ Entity ID             : 10.1 (Power Supply)
+ Sensor Type (Discrete): Power Supply
+ Assertions Enabled    : Power Supply
+                         [Presence detected]
+                         [Failure detected]
+                         [Predictive failure]
+                         [Power Supply AC lost]
+                         [Config Error: Vendor Mismatch]
+                         [Config Error: Revision Mismatch]
+                         [Config Error: Processor Missing]
+                         [Config Error]
+ Deassertions Enabled  : Power Supply
+                         [Presence detected]
+                         [Failure detected]
+                         [Predictive failure]
+                         [Power Supply AC lost]
+                         [Config Error: Vendor Mismatch]
+                         [Config Error: Revision Mismatch]
+                         [Config Error: Processor Missing]
+                         [Config Error]
+
+Sensor ID              : PS2 Status (0x51)
+ Entity ID             : 10.2 (Power Supply)
+ Sensor Type (Discrete): Power Supply
+ Assertions Enabled    : Power Supply
+                         [Presence detected]
+                         [Failure detected]
+                         [Predictive failure]
+                         [Power Supply AC lost]
+                         [Config Error: Vendor Mismatch]
+                         [Config Error: Revision Mismatch]
+                         [Config Error: Processor Missing]
+                         [Config Error]
+ Deassertions Enabled  : Power Supply
+                         [Presence detected]
+                         [Failure detected]
+                         [Predictive failure]
+                         [Power Supply AC lost]
+                         [Config Error: Vendor Mismatch]
+                         [Config Error: Revision Mismatch]
+                         [Config Error: Processor Missing]
+                         [Config Error]
+
+Sensor ID              : PS1 Power In (0x54)
+ Entity ID             : 10.1 (Power Supply)
+ Sensor Type (Analog)  : Other
+ Sensor Reading        : 420 (+/- 0) Watts
+ Status                : ok
+ Nominal Reading       : 870.000
+ Normal Minimum        : 0.000
+ Normal Maximum        : 1750.000
+ Upper critical        : 2300.000
+ Upper non-critical    : 2030.000
+ Positive Hysteresis   : Unspecified
+ Negative Hysteresis   : Unspecified
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : unc ucr 
+ Settable Thresholds   : unc ucr 
+ Threshold Read Mask   : unc ucr 
+ Assertions Enabled    : unc+ ucr+ 
+ Deassertions Enabled  : unc+ ucr+ 
+
+Sensor ID              : PS2 Power In (0x55)
+ Entity ID             : 10.2 (Power Supply)
+ Sensor Type (Analog)  : Other
+ Sensor Reading        : 10 (+/- 0) Watts
+ Status                : ok
+ Nominal Reading       : 870.000
+ Normal Minimum        : 0.000
+ Normal Maximum        : 1750.000
+ Upper critical        : 2300.000
+ Upper non-critical    : 2030.000
+ Positive Hysteresis   : Unspecified
+ Negative Hysteresis   : Unspecified
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : unc ucr 
+ Settable Thresholds   : unc ucr 
+ Threshold Read Mask   : unc ucr 
+ Assertions Enabled    : unc+ ucr+ 
+ Deassertions Enabled  : unc+ ucr+ 
+
+Sensor ID              : PS1 Curr Out % (0x58)
+ Entity ID             : 10.1 (Power Supply)
+ Sensor Type (Analog)  : Current
+ Sensor Reading        : 24 (+/- 0) unspecified
+ Status                : ok
+ Nominal Reading       : 50.000
+ Normal Minimum        : 0.000
+ Normal Maximum        : 100.000
+ Upper critical        : 131.000
+ Upper non-critical    : 100.000
+ Positive Hysteresis   : Unspecified
+ Negative Hysteresis   : Unspecified
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : unc ucr 
+ Settable Thresholds   : unc ucr 
+ Threshold Read Mask   : unc ucr 
+ Assertions Enabled    : unc+ ucr+ 
+ Deassertions Enabled  : unc+ ucr+ 
+
+Sensor ID              : PS2 Curr Out % (0x59)
+ Entity ID             : 10.2 (Power Supply)
+ Sensor Type (Analog)  : Current
+ Sensor Reading        : 0 (+/- 0) unspecified
+ Status                : ok
+ Nominal Reading       : 50.000
+ Normal Minimum        : 0.000
+ Normal Maximum        : 100.000
+ Upper critical        : 131.000
+ Upper non-critical    : 100.000
+ Positive Hysteresis   : Unspecified
+ Negative Hysteresis   : Unspecified
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : unc ucr 
+ Settable Thresholds   : unc ucr 
+ Threshold Read Mask   : unc ucr 
+ Assertions Enabled    : unc+ ucr+ 
+ Deassertions Enabled  : unc+ ucr+ 
+
+Sensor ID              : PS1 Temperature (0x5c)
+ Entity ID             : 10.1 (Power Supply)
+ Sensor Type (Analog)  : Temperature
+ Sensor Reading        : 27 (+/- 0) degrees C
+ Status                : ok
+ Nominal Reading       : 25.000
+ Normal Minimum        : 5.000
+ Normal Maximum        : 50.000
+ Upper critical        : 60.000
+ Upper non-critical    : 55.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : unc ucr 
+ Settable Thresholds   : unc ucr 
+ Threshold Read Mask   : unc ucr 
+ Assertions Enabled    : unc+ ucr+ 
+ Deassertions Enabled  : unc+ ucr+ 
+
+Sensor ID              : PS2 Temperature (0x5d)
+ Entity ID             : 10.2 (Power Supply)
+ Sensor Type (Analog)  : Temperature
+ Sensor Reading        : 27 (+/- 0) degrees C
+ Status                : ok
+ Nominal Reading       : 25.000
+ Normal Minimum        : 5.000
+ Normal Maximum        : 50.000
+ Upper critical        : 60.000
+ Upper non-critical    : 55.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : unc ucr 
+ Settable Thresholds   : unc ucr 
+ Threshold Read Mask   : unc ucr 
+ Assertions Enabled    : unc+ ucr+ 
+ Deassertions Enabled  : unc+ ucr+ 
+
+Sensor ID              : P1 Status (0x70)
+ Entity ID             : 3.1 (Processor)
+ Sensor Type (Discrete): Processor
+ Assertions Enabled    : Processor
+                         [Thermal Trip]
+                         [Presence detected]
+ Deassertions Enabled  : Processor
+                         [Thermal Trip]
+                         [Presence detected]
+
+Sensor ID              : P2 Status (0x71)
+ Entity ID             : 3.2 (Processor)
+ Sensor Type (Discrete): Processor
+ Assertions Enabled    : Processor
+                         [Thermal Trip]
+                         [Presence detected]
+ Deassertions Enabled  : Processor
+                         [Thermal Trip]
+                         [Presence detected]
+
+Sensor ID              : P1 Therm Margin (0x74)
+ Entity ID             : 3.1 (Processor)
+ Sensor Type (Analog)  : Temperature
+ Sensor Reading        : -31 (+/- 0) degrees C
+ Status                : ok
+ Nominal Reading       : -15.000
+ Normal Minimum        : -70.000
+ Normal Maximum        : 0.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : 
+ Settable Thresholds   : 
+ Assertions Enabled    : 
+
+Sensor ID              : P2 Therm Margin (0x75)
+ Entity ID             : 3.2 (Processor)
+ Sensor Type (Analog)  : Temperature
+ Sensor Reading        : -40 (+/- 0) degrees C
+ Status                : ok
+ Nominal Reading       : -15.000
+ Normal Minimum        : -70.000
+ Normal Maximum        : 0.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : 
+ Settable Thresholds   : 
+ Assertions Enabled    : 
+
+Sensor ID              : P1 Therm Ctrl % (0x78)
+ Entity ID             : 3.1 (Processor)
+ Sensor Type (Analog)  : Temperature
+ Sensor Reading        : 0 (+/- 0) unspecified
+ Status                : ok
+ Nominal Reading       : 0.000
+ Normal Minimum        : 0.000
+ Normal Maximum        : 20.000
+ Upper critical        : 50.000
+ Upper non-critical    : 30.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : 100.000
+ Event Message Control : Per-threshold
+ Readable Thresholds   : unc ucr 
+ Settable Thresholds   : unc ucr 
+ Threshold Read Mask   : unc ucr 
+ Assertions Enabled    : unc+ ucr+ 
+ Deassertions Enabled  : unc+ ucr+ 
+
+Sensor ID              : P2 Therm Ctrl % (0x79)
+ Entity ID             : 3.2 (Processor)
+ Sensor Type (Analog)  : Temperature
+ Sensor Reading        : 0 (+/- 0) unspecified
+ Status                : ok
+ Nominal Reading       : 0.000
+ Normal Minimum        : 0.000
+ Normal Maximum        : 20.000
+ Upper critical        : 50.000
+ Upper non-critical    : 30.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : 100.000
+ Event Message Control : Per-threshold
+ Readable Thresholds   : unc ucr 
+ Settable Thresholds   : unc ucr 
+ Threshold Read Mask   : unc ucr 
+ Assertions Enabled    : unc+ ucr+ 
+ Deassertions Enabled  : unc+ ucr+ 
+
+Sensor ID              : CPU ERR2 (0x7c)
+ Entity ID             : 3.1 (Processor)
+ Sensor Type (Discrete): Processor
+ Assertions Enabled    : Digital State
+                         [State Asserted]
+ Deassertions Enabled  : Digital State
+                         [State Asserted]
+
+Sensor ID              : CATERR (0x80)
+ Entity ID             : 3.1 (Processor)
+ Sensor Type (Discrete): Processor
+ Assertions Enabled    : Digital State
+                         [State Asserted]
+ Deassertions Enabled  : Digital State
+                         [State Asserted]
+
+Sensor ID              : CPU Missing (0x82)
+ Entity ID             : 3.1 (Processor)
+ Sensor Type (Discrete): Processor
+ Assertions Enabled    : Digital State
+                         [State Asserted]
+ Deassertions Enabled  : Digital State
+                         [State Asserted]
+
+Sensor ID              : P1 DTS Therm Mgn (0x83)
+ Entity ID             : 3.1 (Processor)
+ Sensor Type (Analog)  : Temperature
+ Sensor Reading        : -21 (+/- 0) degrees C
+ Status                : ok
+ Nominal Reading       : -15.000
+ Normal Minimum        : -70.000
+ Normal Maximum        : 0.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : 
+ Settable Thresholds   : 
+ Assertions Enabled    : 
+
+Sensor ID              : P2 DTS Therm Mgn (0x84)
+ Entity ID             : 3.2 (Processor)
+ Sensor Type (Analog)  : Temperature
+ Sensor Reading        : -30 (+/- 0) degrees C
+ Status                : ok
+ Nominal Reading       : -15.000
+ Normal Minimum        : -70.000
+ Normal Maximum        : 0.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : 
+ Settable Thresholds   : 
+ Assertions Enabled    : 
+
+Sensor ID              : VRD Hot (0x90)
+ Entity ID             : 7.1 (System Board)
+ Sensor Type (Discrete): Temperature
+ Assertions Enabled    : Digital State
+                         [Limit Exceeded]
+ Deassertions Enabled  : Digital State
+                         [Limit Exceeded]
+
+Sensor ID              : PS1 Fan1 Fail (0xa0)
+ Entity ID             : 10.1 (Power Supply)
+ Sensor Type (Discrete): Fan
+ Assertions Enabled    : Digital State
+                         [State Asserted]
+ Deassertions Enabled  : Digital State
+                         [State Asserted]
+
+Sensor ID              : PS1 Fan2 Fail (0xa1)
+ Entity ID             : 10.2 (Power Supply)
+ Sensor Type (Discrete): Fan
+ Assertions Enabled    : Digital State
+                         [State Asserted]
+ Deassertions Enabled  : Digital State
+                         [State Asserted]
+
+Sensor ID              : PS2 Fan1 Fail (0xa4)
+ Entity ID             : 10.1 (Power Supply)
+ Sensor Type (Discrete): Fan
+ Assertions Enabled    : Digital State
+                         [State Asserted]
+ Deassertions Enabled  : Digital State
+                         [State Asserted]
+
+Sensor ID              : PS2 Fan2 Fail (0xa5)
+ Entity ID             : 10.2 (Power Supply)
+ Sensor Type (Discrete): Fan
+ Assertions Enabled    : Digital State
+                         [State Asserted]
+ Deassertions Enabled  : Digital State
+                         [State Asserted]
+
+Sensor ID              : DIMM Thrm Mrgn 1 (0xb0)
+ Entity ID             : 8.1 (Memory Module)
+ Sensor Type (Analog)  : Temperature
+ Sensor Reading        : -56 (+/- 0) degrees C
+ Status                : ok
+ Nominal Reading       : -20.000
+ Normal Minimum        : -70.000
+ Normal Maximum        : 0.000
+ Upper critical        : 10.000
+ Upper non-critical    : 5.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : unc ucr 
+ Settable Thresholds   : unc ucr 
+ Threshold Read Mask   : unc ucr 
+ Assertions Enabled    : unc+ ucr+ 
+ Deassertions Enabled  : unc+ ucr+ 
+
+Sensor ID              : DIMM Thrm Mrgn 2 (0xb1)
+ Entity ID             : 8.2 (Memory Module)
+ Sensor Type (Analog)  : Temperature
+ Sensor Reading        : -57 (+/- 0) degrees C
+ Status                : ok
+ Nominal Reading       : -20.000
+ Normal Minimum        : -70.000
+ Normal Maximum        : 0.000
+ Upper critical        : 10.000
+ Upper non-critical    : 5.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : unc ucr 
+ Settable Thresholds   : unc ucr 
+ Threshold Read Mask   : unc ucr 
+ Assertions Enabled    : unc+ ucr+ 
+ Deassertions Enabled  : unc+ ucr+ 
+
+Sensor ID              : DIMM Thrm Mrgn 3 (0xb2)
+ Entity ID             : 8.3 (Memory Module)
+ Sensor Type (Analog)  : Temperature
+ Sensor Reading        : -59 (+/- 0) degrees C
+ Status                : ok
+ Nominal Reading       : -20.000
+ Normal Minimum        : -70.000
+ Normal Maximum        : 0.000
+ Upper critical        : 10.000
+ Upper non-critical    : 5.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : unc ucr 
+ Settable Thresholds   : unc ucr 
+ Threshold Read Mask   : unc ucr 
+ Assertions Enabled    : unc+ ucr+ 
+ Deassertions Enabled  : unc+ ucr+ 
+
+Sensor ID              : DIMM Thrm Mrgn 4 (0xb3)
+ Entity ID             : 8.4 (Memory Module)
+ Sensor Type (Analog)  : Temperature
+ Sensor Reading        : -60 (+/- 0) degrees C
+ Status                : ok
+ Nominal Reading       : -20.000
+ Normal Minimum        : -70.000
+ Normal Maximum        : 0.000
+ Upper critical        : 10.000
+ Upper non-critical    : 5.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : unc ucr 
+ Settable Thresholds   : unc ucr 
+ Threshold Read Mask   : unc ucr 
+ Assertions Enabled    : unc+ ucr+ 
+ Deassertions Enabled  : unc+ ucr+ 
+
+Sensor ID              : Auto Shutdown (0xb8)
+ Entity ID             : 21.3 (Power Management)
+ Sensor Type (Discrete): Power Unit
+ Assertions Enabled    : Digital State
+                         [State Asserted]
+ Deassertions Enabled  : Digital State
+                         [State Asserted]
+
+Sensor ID              : P1 Mem Thrm Trip (0xc0)
+ Entity ID             : 32.1 (Memory Device)
+ Sensor Type (Discrete): Memory
+ Assertions Enabled    : Memory
+ Deassertions Enabled  : Memory
+
+Sensor ID              : P2 Mem Thrm Trip (0xc1)
+ Entity ID             : 32.2 (Memory Device)
+ Sensor Type (Discrete): Memory
+ Assertions Enabled    : Memory
+ Deassertions Enabled  : Memory
+
+Sensor ID              : Agg Therm Mgn 1 (0xc8)
+ Entity ID             : 7.1 (System Board)
+ Sensor Type (Analog)  : Temperature
+ Sensor Reading        : -27 (+/- 0) degrees C
+ Status                : ok
+ Nominal Reading       : -20.000
+ Normal Minimum        : -70.000
+ Normal Maximum        : 0.000
+ Positive Hysteresis   : 2.000
+ Negative Hysteresis   : 2.000
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : 
+ Settable Thresholds   : 
+ Assertions Enabled    : 
+
+Sensor ID              : BB +12.0V (0xd0)
+ Entity ID             : 7.1 (System Board)
+ Sensor Type (Analog)  : Voltage
+ Sensor Reading        : 11.991 (+/- 0) Volts
+ Status                : ok
+ Nominal Reading       : 12.101
+ Normal Minimum        : 11.496
+ Normal Maximum        : 12.706
+ Upper critical        : 13.696
+ Upper non-critical    : 13.311
+ Lower critical        : 10.616
+ Lower non-critical    : 11.001
+ Positive Hysteresis   : 0.055
+ Negative Hysteresis   : 0.055
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lcr lnc unc ucr 
+ Settable Thresholds   : lcr lnc unc ucr 
+ Threshold Read Mask   : lcr lnc unc ucr 
+ Assertions Enabled    : lnc- lcr- unc+ ucr+ 
+ Deassertions Enabled  : lnc- lcr- unc+ ucr+ 
+
+Sensor ID              : Voltage Fault (0xd1)
+ Entity ID             : 7.1 (System Board)
+ Sensor Type (Discrete): Voltage
+ Assertions Enabled    : Digital State
+                         [State Asserted]
+ Deassertions Enabled  : Digital State
+                         [State Asserted]
+
+Sensor ID              : BB +3.3V Vbat (0xde)
+ Entity ID             : 7.1 (System Board)
+ Sensor Type (Analog)  : Voltage
+ Sensor Reading        : 3.062 (+/- 0) Volts
+ Status                : ok
+ Nominal Reading       : 2.996
+ Normal Minimum        : 2.544
+ Normal Maximum        : 3.142
+ Lower critical        : 2.118
+ Lower non-critical    : 2.437
+ Positive Hysteresis   : 0.013
+ Negative Hysteresis   : 0.013
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lcr lnc 
+ Settable Thresholds   : lcr lnc 
+ Threshold Read Mask   : lcr lnc 
+ Assertions Enabled    : lnc- lcr- 
+ Deassertions Enabled  : lnc- lcr- 
+
+Sensor ID              : HDD 0 Status (0xf0)
+ Entity ID             : 4.1 (Disk or Disk Bay)
+ Sensor Type (Discrete): Drive Slot / Bay
+ Assertions Enabled    : Drive Slot
+                         [Drive Present]
+                         [Drive Fault]
+                         [Rebuild In Progress]
+ Deassertions Enabled  : Drive Slot
+                         [Drive Present]
+                         [Drive Fault]
+                         [Rebuild In Progress]
+
+Sensor ID              : HDD 1 Status (0xf1)
+ Entity ID             : 4.2 (Disk or Disk Bay)
+ Sensor Type (Discrete): Drive Slot / Bay
+ Assertions Enabled    : Drive Slot
+                         [Drive Present]
+                         [Drive Fault]
+                         [Rebuild In Progress]
+ Deassertions Enabled  : Drive Slot
+                         [Drive Present]
+                         [Drive Fault]
+                         [Rebuild In Progress]
+
+Sensor ID              : HDD 2 Status (0xf2)
+ Entity ID             : 4.3 (Disk or Disk Bay)
+ Sensor Type (Discrete): Drive Slot / Bay
+ Assertions Enabled    : Drive Slot
+                         [Drive Present]
+                         [Drive Fault]
+                         [Rebuild In Progress]
+ Deassertions Enabled  : Drive Slot
+                         [Drive Present]
+                         [Drive Fault]
+                         [Rebuild In Progress]
+
+Sensor ID              : HDD 3 Status (0xf3)
+ Entity ID             : 4.4 (Disk or Disk Bay)
+ Sensor Type (Discrete): Drive Slot / Bay
+ Assertions Enabled    : Drive Slot
+                         [Drive Present]
+                         [Drive Fault]
+                         [Rebuild In Progress]
+ Deassertions Enabled  : Drive Slot
+                         [Drive Present]
+                         [Drive Fault]
+                         [Rebuild In Progress]
+
+Sensor ID              : NM Capabilities (0xf4)
+ Entity ID             : 46.1 (Management Controller Firmware)
+ Sensor Type (Discrete): Unknown (0xDC)
+
+Sensor ID              : MTT CPU1 (0xf5)
+ Entity ID             : 3.1 (Processor)
+ Sensor Type (Analog)  : Memory
+ Sensor Reading        : 0 (+/- 0) unspecified
+ Status                : ok
+ Positive Hysteresis   : Unspecified
+ Negative Hysteresis   : Unspecified
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lnr lcr lnc unc ucr unr 
+ Settable Thresholds   : lnr lcr lnc unc ucr unr 
+ Assertions Enabled    : 
+
+Sensor ID              : MTT CPU2 (0xf6)
+ Entity ID             : 3.2 (Processor)
+ Sensor Type (Analog)  : Memory
+ Sensor Reading        : 0 (+/- 0) unspecified
+ Status                : ok
+ Positive Hysteresis   : Unspecified
+ Negative Hysteresis   : Unspecified
+ Minimum sensor range  : Unspecified
+ Maximum sensor range  : Unspecified
+ Event Message Control : Per-threshold
+ Readable Thresholds   : lnr lcr lnc unc ucr unr 
+ Settable Thresholds   : lnr lcr lnc unc ucr unr 
+ Assertions Enabled    : 
+
