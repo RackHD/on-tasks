@@ -128,7 +128,7 @@ describe('Ucs Discovery Job', function () {
             "path": "org-root/ls-test"
         };
         node = {
-            "autoDiscover": "false",
+            "autoDiscover": false,
             "id": "1234",
             "identifiers": [
                 "10.xxx.xx.xxx",
