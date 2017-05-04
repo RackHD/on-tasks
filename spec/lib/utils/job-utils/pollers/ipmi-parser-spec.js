@@ -8,6 +8,7 @@ var fs = require('fs');
 describe("ipmi-parser", function() {
     var parser;
     var ipmiOutMock;
+    var ipmiOutMockV11;
     var corruptIpmiOutMock;
     var ipmiDriveHealthOutMock;
 
@@ -22,6 +23,10 @@ describe("ipmi-parser", function() {
             .readFileSync(__dirname+'/ipmi-sdr-v-output')
             .toString();
 
+        ipmiOutMockV11 = fs
+            .readFileSync(__dirname+'/ipmi-sdr-v1.8.11-output')
+            .toString();
+
         corruptIpmiOutMock = fs
             .readFileSync(__dirname+'/corrupt-ipmi-sdr-v-output')
             .toString();
@@ -32,9 +37,9 @@ describe("ipmi-parser", function() {
     });
 
     describe("IPMI extraction", function() {
-        it("should parse ipmitool -v sdr output", function() {
-            var sensors = parser.parseSdrData(ipmiOutMock);
-            sensors.should.have.length(ipmiOutMock.match(/Sensor\ ID/g).length);
+        function testSdrParser(sdr){
+            var sensors = parser.parseSdrData(sdr);
+            sensors.should.have.length(sdr.match(/Sensor\ ID/g).length);
 
             var expectedAssertions = {
                 'PSU1 Status (0xe0)': ['Power Supply AC lost'],
@@ -69,7 +74,7 @@ describe("ipmi-parser", function() {
                 if (sensor.sdrType === 'Discrete') {
                     if (_.has(expectedAssertions, sensor.sensorId)) {
                         expect(sensor).to.have.property('statesAsserted');
-                        _.forEach(expectedAssertions[sensor.sensorId], 
+                        _.forEach(expectedAssertions[sensor.sensorId],
                         function(assertion) {
                             expect(sensor.statesAsserted).to.include(assertion);
                             expect(sensor.statesAsserted)
@@ -82,6 +87,14 @@ describe("ipmi-parser", function() {
                     expect(sensor.status).to.equal(expectedValue);
                 }
             });
+        }
+
+        it("should parse ipmitool -v sdr output", function() {
+            testSdrParser(ipmiOutMock);
+        });
+
+        it("should parse ipmitool -v sdr output for v1.8.11", function() {
+            testSdrParser(ipmiOutMockV11);
         });
 
         it("should omit corrupt sdr entries", function() {
