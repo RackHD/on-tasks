@@ -1164,7 +1164,7 @@ describe("Task Parser", function () {
     });
 
     describe("ESXcli Network Driver Version Parsers", function() {
-        it("ESXcli parsers should exist", function(){
+        it("should parse ESXcli parsers", function(done){
             var esxcliCmd = 'esxcli software vib get --vibname=net-ixgbe';
             var tasks = [
                 {
@@ -1182,10 +1182,32 @@ describe("Task Parser", function () {
                 expect(result.data.version).to.equal('3.7.13.7.14iov-11vmw.550.0.0.1331820');
                 expect(result.data.description).to.equal('ixgbe');
                 expect(result.data.vendor).to.equal('VMware');
+                done();
             })
             .catch(function (err) {
                 done(err);
             });
+        });
+
+        it("should throw error true", function (done) {
+            var esxcliCmd = 'esxcli software vib get --vibname=net-ixgbe';
+            var tasks = [
+                {
+                    cmd: esxcliCmd,
+                    stdout: stdoutMocks.esxcliNetworkDriverVersionInfoOutput,
+                    stderr: '',
+                    error: true
+                }
+            ];
+            taskParser.parseTasks(tasks)
+                .spread(function (result) {
+                    expect(result.error).to.be.true;
+                    expect(result.source).to.equal('esxcli-network-driver-version');
+                    done();
+                })
+                .catch(function (err) {
+                    done(err);
+                });
         });
     });
 
