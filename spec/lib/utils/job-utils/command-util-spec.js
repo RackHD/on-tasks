@@ -76,7 +76,7 @@ describe('Command Util', function() {
             parser.parseTasks.resolves(new Array(3).map(getParsedTask));
             return commandUtil.parseResponse(tasks)
             .then(function() {
-                expect(parser.parseTasks).to.have.been.calledOnce;
+                expect(parser.parseTasks).to.have.been.calledTwice;
                 expect(parser.parseUnknownTasks).to.have.been.calledOnce;
             });
         });
@@ -116,6 +116,18 @@ describe('Command Util', function() {
                 expect(parser.parseTasks).to.have.been.calledWithExactly([tasks[1]]);
                 expect(parser.parseUnknownTasks).to.have.been.calledWithExactly([tasks[0]]);
             });
+        });
+
+        it('should call parseTasks for new Tasks with no catalog object'+
+            ' and need to build a catalog', function() {
+            var tasks = [
+                {stdout: 'data', cmd: 'getSomeData'}
+            ];
+
+            return commandUtil.parseResponse(tasks)
+                .then(function() {
+                    expect(parser.parseTasks).to.have.been.calledWithExactly([tasks[0]]);
+                });
         });
     });
 
