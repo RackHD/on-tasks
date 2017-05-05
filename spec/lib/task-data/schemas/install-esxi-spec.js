@@ -95,6 +95,9 @@ describe(require('path').basename(__filename), function() {
         "esxBootConfigTemplateUri": "http://172.31.128.1:9080/api/current/templates/esx-boot-cfg",
         "comport": "com1",
         "comportaddress": "0x3f8",
+        "gdbPort":"none",
+        "logPort":"none",
+        "debugLogToSerial":"0",
         "progressMilestones": {
             "m1": { "value": 1, "description": "do task 1" },
             "m__2": { "value": 2, "description": "do task 2" },
@@ -105,11 +108,15 @@ describe(require('path').basename(__filename), function() {
     var positiveSetParam = {
         "comportaddress": ["0x3f8", "0x2f8", "0x3e8", "0x2e8"],
         "networkDevices[0].device": "90:e2:ba:91:1b:e4",
+        "gdbPort":["com1","com2","default"],
+        "logPort":["com1","com2","default"],
         "switchDevices[0].uplinks[0]": "90:e2:ba:91:1b:e4"
     };
 
     var negativeSetParam = {
         "comportaddress": ["com1", "com2", 1, 0x3f8],
+        "gdbPort":"ttys0",
+        "debugLogToSerial":"3",
         "switchDevices[0].uplinks[1]": "vmnic0", //cannot set duplicated uplinks
         "switchDevices[0]": { "switchName": "vSwitch1" }, //cannot set duplicated switchDevice
         "ntpServers[0]": "1.vmware.pool.ntp.org" //cannot set duplicated ntpServers
@@ -118,6 +125,7 @@ describe(require('path').basename(__filename), function() {
     var positiveUnsetParam = [
         "postInstallCommands",
         "switchDevices",
+        "debugLogToSerial",
         "networkDevices[0].esxSwitchName"
     ];
 
