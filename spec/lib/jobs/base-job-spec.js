@@ -212,7 +212,8 @@ describe("Base Job", function () {
             _.forEach(BaseJob.prototype, function(func, funcName) {
                 // _subscribeActiveTaskExists should be added internally
                 if (funcName.indexOf('_subscribe') === 0 &&
-                    funcName !== '_subscribeActiveTaskExists') {
+                    funcName !== '_subscribeActiveTaskExists' &&
+                    funcName !== '_subscribeHttpResponseUuid') {
 
                     var stub = sinon.stub();
                     stub.call = sinon.stub();
