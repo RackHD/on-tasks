@@ -57,7 +57,7 @@
             ]
         },
         "gdbPort":{
-            "description":"GDB debug serial port mode",
+            "description":"Serial port used for GDB debug",
             "enum":[
                  "com1",
                  "com2",
