@@ -763,5 +763,97 @@ describe("racadm-tool", function() {
             });
         });
 
+        describe('enableAlert', function(){
+            var runCommandStub;
+            beforeEach('enableAlert before', function() {
+                runCommandStub = this.sandbox.stub(instance, 'runCommand');
+            });
+            afterEach('enable alert after', function() {
+                this.sandbox.restore();
+            });
+
+            it('enableAlert exists', function() {
+                should.exist(instance.enableAlert);
+            });
+
+            it('enableVTx is a function', function() {
+                expect(instance.enableAlert).is.a('function');
+            });
+
+            it('should enable alert', function(){
+                runCommandStub.resolves();
+                return instance.runCommand('0.0.0.0', 'user',
+                    'password', "set iDRAC.IPMILan.AlertEnable 1")
+                    .then(function(){
+                        expect(instance.runCommand).to.be.calledOnce;
+                        expect(instance.runCommand).to.be.calledWith('0.0.0.0', 'user',
+                            'password', "set iDRAC.IPMILan.AlertEnable 1");
+                    });
+            });
+        });
+
+        describe('enableRedfish', function(){
+            var runCommandStub;
+            beforeEach('enableRedfish before', function() {
+                runCommandStub = this.sandbox.stub(instance, 'runCommand');
+            });
+            afterEach('enableRedfish after', function() {
+                this.sandbox.restore();
+            });
+
+            it('enableRedfish exists', function() {
+                should.exist(instance.enableRedfish);
+            });
+
+            it('enableRedfish is a function', function() {
+                expect(instance.enableAlert).is.a('function');
+            });
+
+            it('should enable Redfish alert', function(){
+                runCommandStub.resolves();
+                return instance.runCommand('0.0.0.0', 'user',
+                    'password',
+                    'eventfilters set -c idrac.alert.all -a none -n redfish-events')
+                    .then(function(){
+                        expect(instance.runCommand).to.be.calledOnce;
+                        expect(instance.runCommand).to.be.calledWith('0.0.0.0', 'user',
+                            'password',
+                            'eventfilters set -c idrac.alert.all -a none -n redfish-events');
+                    });
+            });
+        });
+
+
+        describe('disableRedfish', function(){
+            var runCommandStub;
+            beforeEach('disableRedfish before', function() {
+                runCommandStub = this.sandbox.stub(instance, 'runCommand');
+            });
+            afterEach('disableRedfish after', function() {
+                this.sandbox.restore();
+            });
+
+            it('disableRedfish exists', function() {
+                should.exist(instance.disableRedfish);
+            });
+
+            it('disableRedfish is a function', function() {
+                expect(instance.disableRedfish).is.a('function');
+            });
+
+            it('should enable alert', function(){
+                runCommandStub.resolves();
+                return instance.runCommand('0.0.0.0', 'user',
+                    'password',
+                    'eventfilters set -c idrac.alert.audit.info -a none -n none')
+                    .then(function(){
+                        expect(instance.runCommand).to.be.calledOnce;
+                        expect(instance.runCommand).to.be.calledWith('0.0.0.0', 'user',
+                            'password',
+                            'eventfilters set -c idrac.alert.audit.info -a none -n none');
+                    });
+            });
+        });
+
     });
 });
