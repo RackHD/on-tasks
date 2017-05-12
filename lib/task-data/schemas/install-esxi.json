@@ -55,6 +55,32 @@
                 "0x3e8",
                 "0x2e8"
             ]
+        },
+        "gdbPort":{
+            "description":"Serial port used for GDB debug",
+            "enum":[
+                 "com1",
+                 "com2",
+                 "none",
+                 "default"        
+            ]
+        },  
+        "logPort":{
+             "description":"Serial port for log output in ESXi",
+             "enum": [ 
+                   "com1",
+                   "com2",
+                   "none",
+                   "default"
+             ]  
+         },
+         "debugLogToSerial":{
+             "description":"0 = Serial debug off; 1 = Serial debug on;2 = defer to config option file",
+             "enum": [
+                     "0",
+                     "1",
+                     "2"
+             ]  
         }
     },
     "properties": {
@@ -127,6 +153,15 @@
         },
         "comportaddress": {
             "$ref": "#/definitions/ComportAddress"
+        },
+        "gdbPort":{
+            "$ref": "#/definitions/gdbPort"
+        },
+        "logPort":{
+            "$ref": "#/definitions/logPort"
+        },
+        "debugLogToSerial":{
+            "$ref": "#/definitions/debugLogToSerial"
         },
         "progressMilestones": {
             "$ref": "types-installos.json#/definitions/ProgressMilestones"
