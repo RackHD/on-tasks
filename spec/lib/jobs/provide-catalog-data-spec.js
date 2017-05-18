@@ -49,7 +49,7 @@ describe('Provide Catalog Data Job', function () {
             });
 
             var job = new this.Jobclass(
-                { source: 'test', path: 'foo.bar.baz' },
+                { source: 'test', path: 'data.foo.bar.baz' },
                 { target: 'testtarget' },
                 uuid.v4()
             );
@@ -64,7 +64,7 @@ describe('Provide Catalog Data Job', function () {
                     });
                 expect(job.context)
                     .to.have.property('test')
-                    .with.property('foo.bar.baz')
+                    .with.property('data.foo.bar.baz')
                     .that.equals('foobarbazvalue');
             });
         });
@@ -73,7 +73,7 @@ describe('Provide Catalog Data Job', function () {
             this.sandbox.stub(waterline.catalogs, 'findMostRecent').resolves();
 
             var job = new this.Jobclass(
-                { source: 'notExist', path: 'a.b.c' },
+                { source: 'notExist', path: 'data.a.b.c' },
                 { target: 'testtarget' },
                 uuid.v4()
             );
@@ -92,7 +92,7 @@ describe('Provide Catalog Data Job', function () {
             });
 
             var job = new this.Jobclass(
-                { source: 'test', path: 'a.b.c' },
+                { source: 'test', path: 'data.a.b.c' },
                 { target: 'testtarget' },
                 uuid.v4()
             );
@@ -100,7 +100,7 @@ describe('Provide Catalog Data Job', function () {
             job._run();
 
             return expect(job._deferred).to.be.rejectedWith(
-                /Could not find value at path 'a.b.c' in catalog 'test'/);
+                /Could not find value at path 'data.a.b.c' in catalog 'test'/);
         });
     });
 });
