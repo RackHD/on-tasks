@@ -855,5 +855,84 @@ describe("racadm-tool", function() {
             });
         });
 
+
+        describe('setIdracIP', function(){
+            var runCommandStub;
+            beforeEach('setIdracIP before', function() {
+                runCommandStub = this.sandbox.stub(instance, 'runCommand');
+            });
+            afterEach('setIdracIP after', function() {
+                this.sandbox.restore();
+            });
+
+            it('setIdracIP exists', function() {
+                should.exist(instance.setIdracIP);
+            });
+
+            it('setIdracIP is a function', function() {
+                expect(instance.setIdracIP).is.a('function');
+            });
+
+            it('should set the iDrac IP', function(){
+                runCommandStub.resolves();
+                return instance.runCommand('0.0.0.0', 'user',
+                    'password',
+                    'setniccfg -s 0.0.0.0  0.0.0.0  0.0.0.0')
+                    .then(function(){
+                        expect(instance.runCommand).to.be.calledOnce;
+                        expect(instance.runCommand).to.be.calledWith('0.0.0.0', 'user',
+                            'password',
+                            'setniccfg -s 0.0.0.0  0.0.0.0  0.0.0.0');
+                    });
+            });
+        });
+
+
+        describe('setIdracIP invalid IP', function(){
+            afterEach('setIdracIP after', function() {
+                this.sandbox.restore();
+            });
+
+            it('should fail the iDrac IP with the wrong IP format', function(done){
+                return instance.setIdracIP('0.0.0.0', 'user',
+                    'password', {ip : "0.0.0", netMask: "0.0.0.0", gateway: "0.0.0.0"})
+                    .then(function(){
+                        done(new Error('should NOT have send the command with and invalid IP'));
+                    })
+                    .catch(function (e) {
+                        expect(e).to.have.property('message').that.equals('Invalid format of the input');// jshint ignore:line
+                        done();
+                    });
+
+            });
+
+            it('should fail the iDrac IP with the wrong netMask format', function(done){
+                return instance.setIdracIP('0.0.0.0', 'user',
+                    'password', {ip : "0.0.0", netMask: "0.0.0", gateway: "0.0.0.0"})
+                    .then(function(){
+                        done(new Error('should NOT have send the command with and invalid IP'));
+                    })
+                    .catch(function (e) {
+                        expect(e).to.have.property('message').that.equals('Invalid format of the input');// jshint ignore:line
+                        done();
+                    });
+
+            });
+
+
+            it('should fail the iDrac IP with the wrong gateway format', function(done){
+                return instance.setIdracIP('0.0.0.0', 'user',
+                    'password', {ip : "0.0.0.0", netMask: "0.0.0.0", gateway: "0.0.0"})
+                    .then(function(){
+                        done(new Error('should NOT have send the command with and invalid IP'));
+                    })
+                    .catch(function (e) {
+                        expect(e).to.have.property('message').that.equals('Invalid format of the input');// jshint ignore:line
+                        done();
+                    });
+
+            });
+        });
+
     });
 });

@@ -24,7 +24,7 @@
             "enum": [
                 "setBiosConfig", "updateFirmware", "getBiosConfig",
                 "getConfigCatalog", "enableIpmi", "disableIpmi",
-                "disableVTx", "enableVTx", "enableAlert", "enableRedfish","disableRedfish"
+                "disableVTx", "enableVTx", "enableAlert", "enableRedfish","disableRedfish", "setIdracIP"
             ]
         }
     },
