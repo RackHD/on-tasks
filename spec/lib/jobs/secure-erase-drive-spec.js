@@ -13,7 +13,8 @@ describe(require('path').basename(__filename), function () {
         taskId = uuid.v4(),
         sandbox = sinon.sandbox.create(),
         cataSearchMock = {},
-        cmdUtlMock = {};
+        cmdUtlMock = {},
+        _;
     function cmdUtlFacMock() { return cmdUtlMock; }
 
     before(function() {
@@ -25,6 +26,7 @@ describe(require('path').basename(__filename), function () {
         ]);
 
         SEJob = helper.injector.get('Job.Drive.SecureErase');
+        _ = helper.injector.get("_");
     });
 
     describe('User option validation', function() {
@@ -198,7 +200,7 @@ describe(require('path').basename(__filename), function () {
                 }
             ];
 
-            var input = {'sda':1, '2':1, 'sdb':1};
+            var input = ['sda', 2, 'sdb'];
             expect(job._collectDisks()).to.deep.equal(input);
         });
     });
@@ -221,6 +223,8 @@ describe(require('path').basename(__filename), function () {
         });
 
         it('should verify the tool cannot support the disk (disk is string)', function() {
+            var diskCatalog = [_.omit(diskInfo[0], 'physicalDisks')];
+            diskCatalog[0].linuxWwid = "/dev/disk/by-id/scsi-6001636001940a481ddebecb45264d4a";
             job.eraseSettings = [
                 {
                     disks: ['sda'],
@@ -228,7 +232,7 @@ describe(require('path').basename(__filename), function () {
                 }
             ];
 
-            expect(function(){ job._marshalParams(diskInfo); })
+            expect(function(){ job._marshalParams(diskCatalog); })
                 .to.throw('hdparm doesn\'t support disk sda (SAS)');
         });
 
@@ -244,8 +248,9 @@ describe(require('path').basename(__filename), function () {
                 .to.throw('hdparm doesn\'t support disk 1 (SAS)');
         });
 
-        it('should verify the tool cannot support the disk (disk is SATADOM)', function() {
-            diskInfo[0].esxiWwid = "/dev/disk/by-id/ata-SATADOM-SV_3SE_20150522AA9992050074";
+        it('should verify the tool cannot support the disk (NVME)', function() {
+            var disk = [_.omit(diskInfo[0], 'physicalDisks')];
+            disk[0].linuxWwid = "/dev/disk/by-id/nvme-SATADOM-SV_3SE_20150522AA9992050074";
             job.eraseSettings = [
                 {
                     disks: [1],
@@ -253,8 +258,22 @@ describe(require('path').basename(__filename), function () {
                 }
             ];
 
-            expect(function(){ job._marshalParams(diskInfo); })
-                .to.throw('sg_sanitize doesn\'t support disk 1 (SATADOM)');
+            expect(function(){ job._marshalParams(disk); })
+                .to.throw('sg_sanitize doesn\'t support disk 1 (NVME)');
+        });
+
+        it('should verify the tool cannot support the disk', function() {
+            var disk = [_.omit(diskInfo[0], 'physicalDisks')];
+            disk[0].linuxWwid = "/dev/disk/by-id/ata-SATADOM-SV_3SE_20150522AA9992050074";
+            job.eraseSettings = [
+                {
+                    disks: [1],
+                    tool: 'sg_sanitize'
+                }
+            ];
+
+            expect(function(){ job._marshalParams(disk); })
+                .to.throw('sg_sanitize doesn\'t support disk 1 (SATA)');
         });
 
         it('should throw error if no catalog info matches eraseSetting', function() {
@@ -272,6 +291,7 @@ describe(require('path').basename(__filename), function () {
         it('should verify the tool cannot support the disk (disk is eUSB)', function() {
             diskInfo = [{
                 "devName": "sdb", "virtualDisk": "",
+                "linuxWwid": "/dev/disk/by-id/usb-SV_3SE_20150522AA9992050",
                 "esxiWwid": "naa.6001", "identifier": 3, "scsiId": "0:2:0:1"
             }],
 
@@ -283,10 +303,10 @@ describe(require('path').basename(__filename), function () {
             ];
 
             expect(function(){ job._marshalParams(diskInfo); })
-                .to.throw('sg_sanitize doesn\'t support disk sdb (undefined)');
+                .to.throw('sg_sanitize doesn\'t support disk sdb (USB)');
         });
 
-        it('should verify scrub can support the disk (disk is eUSB)', function() {
+        it('should verify scrub can support the disk', function() {
             diskInfo = [{
                 "devName": "sdb", "virtualDisk": "",
                 "esxiWwid": "naa.6001", "identifier": 3, "scsiId": "0:2:0:1"
@@ -337,7 +357,8 @@ describe(require('path').basename(__filename), function () {
                 {
                     "devName": "sdg", "virtualDisk": "",
                     "esxiWwid": "t10.ATA_____SATADOM2DSV_3SE_20150522AA9992050074",
-                    "identifier": 0, "linuxWwid": "i", "scsiId": "10:0:0:0",
+                    "linuxWwid": "/dev/disk/by-id/ata-SATADOM-SV_3SE_20150522AA9992050074",
+                    "identifier": 0, "scsiId": "10:0:0:0",
                 },
             ];
 
@@ -388,23 +409,24 @@ describe(require('path').basename(__filename), function () {
                 {
                     "cmd": "sudo python secure_erase.py -i " + taskId +
                             " -s http://172.31.128.1:9080/api/current/notification/progress" +
+                            " -t hdparm" +
                             " -d \'{\"diskName\":\"/dev/sda\"," +
                             "\"virtualDisk\":\"/c0/v0\",\"scsiId\":\"0:2:0:0\"," +
                             "\"deviceIds\":[23],\"slotIds\":[\"/c0/e36/s0\"]}\'" +
                             " -d \'{\"diskName\":\"/dev/sdg\",\"virtualDisk\":\"\"," +
                             "\"scsiId\":\"10:0:0:0\"}\'" +
-                            " -t hdparm -o secure-erase -v lsi",
-                    "downloadUrl": 
+                            " -o secure-erase -v lsi",
+                    "downloadUrl":
                         baseUri + "/api/current/templates/secure_erase.py?nodeId=" + nodeId
                 },
                 {
                     "cmd": "sudo python secure_erase.py -i " + taskId +
                             " -s http://172.31.128.1:9080/api/current/notification/progress" +
+                            " -t scrub" +
                             " -d \'{\"diskName\":\"/dev/sdb\"," +
-                            "\"virtualDisk\":\"\",\"scsiId\":\"0:2:0:1\"}\' -t scrub"
+                            "\"virtualDisk\":\"\",\"scsiId\":\"0:2:0:1\"}\'"
                 }
             ];
-
             job._formatCommands(paramArray);
             expect(job.commands).to.deep.equal(result);
         });
@@ -472,7 +494,7 @@ describe(require('path').basename(__filename), function () {
             return job._run()
             .then(function() {
                 expect(cataSearchMock.getDriveIdCatalogExt)
-                    .to.have.been.calledWith(nodeId, {'sda':1});
+                    .to.have.been.calledWith(nodeId, ['sda']);
                 expect(job._marshalParams).to.have.been.calledOnce;
                 expect(job._marshalParams).to.have.been.calledWith(cataDiskInfo);
                 expect(job._formatCommands).to.have.been.calledWith(marshalOutput);
