@@ -33,7 +33,7 @@ describe('subscribe SEL events job', function(){
             sensorNumber: '#0x4a',
             value: 'Asserted',
             sensorType: 'OEM',
-            action: 'critical',
+            action: 'information',
             count: 1
         }]
     };
@@ -67,10 +67,7 @@ describe('subscribe SEL events job', function(){
         eventsProtocol = helper.injector.get('Protocol.Events');
         waterline.workitems = {
             findPollers: function() {},
-            updateMongo: function(){},
-            mongo: {
-                objectId: function(data){ return data;}
-            }
+            updatePollerAlertConfig: function(){}
         };
         waterline.nodes = {
             needByIdentifier: function(){}
@@ -81,7 +78,7 @@ describe('subscribe SEL events job', function(){
     beforeEach('subscribe SEL events job after each', function(){
         job = new SelEventJob(options, context, taskId);
         alerts = [_.omit(options.alertFilters[0], 'count')];
-        this.sandbox.stub(waterline.workitems, 'updateMongo').resolves();
+        this.sandbox.stub(waterline.workitems, 'updatePollerAlertConfig').resolves();
         this.sandbox.stub(waterline.nodes, 'needByIdentifier').resolves({id: nodeId});
     });
 
@@ -99,11 +96,10 @@ describe('subscribe SEL events job', function(){
             return job.setSelAlertConfig();
         })
         .then(function(){
-            expect(waterline.workitems.updateMongo).to.be.calledOnce;
-            expect(waterline.workitems.updateMongo).to.be.calledWith(
-                {_id: "59158d14cfed9e8d1538ccb9"},
-                {$addToSet: {'config.alerts': {$each: alerts}}, $set: {pollInterval: 5000}},
-                {}
+            expect(waterline.workitems.updatePollerAlertConfig).to.be.calledOnce;
+            expect(waterline.workitems.updatePollerAlertConfig).to.be.calledWith(
+                "59158d14cfed9e8d1538ccb9",
+                {alerts: alerts, isRemove: false, pollInterval: 5000}
             );
         });
     });
@@ -112,11 +108,10 @@ describe('subscribe SEL events job', function(){
         job._retrievePollerInfo(pollers);
         return job.unsetSelAlertConfig()
         .then(function(){
-            expect(waterline.workitems.updateMongo).to.be.calledOnce;
-            expect(waterline.workitems.updateMongo).to.be.calledWith(
-                {_id: "59158d14cfed9e8d1538ccb9"},
-                {$pullAll: {'config.alerts': alerts}, $set: {}},
-                {}
+            expect(waterline.workitems.updatePollerAlertConfig).to.be.calledOnce;
+            expect(waterline.workitems.updatePollerAlertConfig).to.be.calledWith(
+                "59158d14cfed9e8d1538ccb9",
+                {alerts: alerts, isRemove: true}
             );
         });
 
@@ -130,7 +125,7 @@ describe('subscribe SEL events job', function(){
         return job._run()
         .then(function(){
             expect(waterline.workitems.findPollers).to.be.calledOnce;
-            expect(waterline.workitems.updateMongo).to.be.calledTwice;
+            expect(waterline.workitems.updatePollerAlertConfig).to.be.calledTwice;
             expect(job._subscribeSelEvent).to.be.calledOnce;
             expect(job._done).to.be.calledOnce;
         });
@@ -141,7 +136,7 @@ describe('subscribe SEL events job', function(){
         expect(job._retrievePollerInfo([])).to.be.rejected;
     });
 
-    it('should set sel alert action to critical', function() {
+    it('should set sel alert action to information', function() {
         var _options = _.cloneDeep(options);
         _options.alertFilters[0].action = undefined;
         job = new SelEventJob(_options, context, taskId);
@@ -151,7 +146,7 @@ describe('subscribe SEL events job', function(){
                 sensorNumber: '#0x4a',
                 value: 'Asserted',
                 sensorType: 'OEM',
-                action: 'critical'
+                action: 'information'
             }]);
         });
     });
@@ -166,9 +161,9 @@ describe('subscribe SEL events job', function(){
         .then(function(){
             expect(job.updateSelPollerConfig).to.be.calledOnce;
             expect(job.updateSelPollerConfig).to.be.calledWith(
-                {$addToSet: {'config.alerts': {$each: []}}, $set: {pollInterval: 60000}}
+                {alerts: [], pollInterval: 60000, isRemove: false}
             );
-            expect(waterline.workitems.updateMongo).not.to.be.called;
+            expect(waterline.workitems.updatePollerAlertConfig).not.to.be.called;
         });
     });
 
@@ -186,16 +181,16 @@ describe('subscribe SEL events job', function(){
                 "alertFilters": [
                     {
                         sensorNumber: '#0x4a',
-                        action: 'critical',
+                        action: 'information',
                         count: 2
                     },
                     {
                         sensorNumber: '#0x4b',
-                        action: 'critical',
+                        action: 'information',
                     },
                     {
                         sensorNumber: '#0x4a',
-                        action: 'critical',
+                        action: 'information',
                         count: 1
                     }
                 ]
