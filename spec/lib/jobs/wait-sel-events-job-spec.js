@@ -121,7 +121,7 @@ describe('subscribe SEL events job', function(){
         this.sandbox.spy(job, '_done');
         var eventStub = this.sandbox.stub(job, '_subscribeSelEvent');
         this.sandbox.stub(waterline.workitems, 'findPollers').resolves(pollers);
-        eventStub.onCall(0).resolves(amqpMessage).callsArgWith(2, amqpMessage);
+        eventStub.onCall(0).resolves(amqpMessage).callsArgWith(1, amqpMessage);
         return job._run()
         .then(function(){
             expect(waterline.workitems.findPollers).to.be.calledOnce;
