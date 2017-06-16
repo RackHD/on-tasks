@@ -1,5 +1,4 @@
-// Copyright 2016, EMC, Inc.
-
+//Copyright 2017, Dell EMC, Inc.
 'use strict';
 
 describe('General Redfish Catalog Job', function () {
