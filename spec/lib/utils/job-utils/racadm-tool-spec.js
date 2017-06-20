@@ -538,7 +538,7 @@ describe("racadm-tool", function() {
             it("should get bios configure to remote path", function(){
                 var command = 'get -f bios.xml -t xml -u onrack -p onrack -l ' +
                     '//192.168.188.113/share -c BIOS.Setup.1-1';
-                getSoftwareListStub.returns({BIOS:{FQDD: 'BIOS.Setup.1-1'}});
+                getSoftwareListStub.returns({data: {BIOS:{FQDD: 'BIOS.Setup.1-1'}}});
                 getPathFilenameStub.returns(this.fileInfo);
                 runAsyncCommandsStub.resolves();
                 return instance.getBiosConfig('192.168.188.103', 'admin', 'admin', this.cifsConfig)
@@ -555,19 +555,19 @@ describe("racadm-tool", function() {
                 var command = "get -f /tmp/configure.xml -t xml -c BIOS.Setup.1-1";
                 this.fileInfo.path = '/tmp';
                 this.fileInfo.style = 'local';
-                getSoftwareListStub.returns({BIOS:{FQDD: 'BIOS.Setup.1-1'}});
+                getSoftwareListStub.returns({data: {BIOS:{FQDD: 'BIOS.Setup.1-1'}}});
                 getPathFilenameStub.returns(this.fileInfo);
                 runAsyncCommandsStub.resolves();
                 return instance.getBiosConfig('192.168.188.103', 'admin', 'admin')
                     .then(function(){
-                        expect(instance.runAsyncCommands).to.be.calledWith('192.168.188.103',
-                            'admin', 'admin', command, 0, 1000);
+-                   expect(instance.runAsyncCommands).to.be.calledWith('192.168.188.103', 
+                        'admin', 'admin', command, 0, 1000);
                     });
             });
 
             it("should throw error", function(){
                 var self = this;
-                getSoftwareListStub.returns({BIOS:{status: 'BIOS.Setup.1-1'}});
+                getSoftwareListStub.returns({data: {BIOS:{FQD: 'BIOS.Setup.1-1'}}});
                 return instance.getBiosConfig('192.168.188.103', 'admin', 'admin', self.cifsConfig)
                     .should.be.rejectedWith(Error, 'Can not get BIOS FQDD');
             });
@@ -663,7 +663,7 @@ describe("racadm-tool", function() {
             });
 
             it('should throw an error if BIOS fqdd does not exist', function(done) {
-                this.sandbox.stub(instance, 'getSoftwareList').resolves("Anything");
+                this.sandbox.stub(instance, 'getSoftwareList').resolves({data: "Anything"});
                 this.sandbox.stub(instance, 'runCommand').resolves("Anything");
                 return instance._configBiosAttr('any', 'any', 'any', 'any', 'any')
                     .then(function(){
@@ -679,7 +679,8 @@ describe("racadm-tool", function() {
 
             it('should be called with reboot', function() {
                 var command = 'jobqueue create Any -r pwrcycle -s TIME_NOW -e TIME_NA';
-                this.sandbox.stub(instance, 'getSoftwareList').resolves({"BIOS": {"FQDD": "Any"}});
+                this.sandbox.stub(instance, 'getSoftwareList').resolves(
+                    {data: {"BIOS": {"FQDD": "Any"}}});
                 this.sandbox.stub(instance, 'runCommand').resolves("Anything");
                 this.sandbox.stub(parser, 'getJobId').returns("Anything");
                 this.sandbox.stub(instance, 'waitJobDone').returns("Completed");
@@ -696,7 +697,8 @@ describe("racadm-tool", function() {
             });
 
             it('should be called without reboot', function() {
-                this.sandbox.stub(instance, 'getSoftwareList').resolves({"BIOS": {"FQDD": "Any"}});
+                this.sandbox.stub(instance, 'getSoftwareList').resolves(
+                    {data: {"BIOS": {"FQDD": "Any"}}});
                 this.sandbox.stub(instance, 'runCommand').resolves("Anything");
                 this.sandbox.stub(parser, 'getJobId').returns("Anything");
                 this.sandbox.stub(instance, 'waitJobDone').returns("Completed");

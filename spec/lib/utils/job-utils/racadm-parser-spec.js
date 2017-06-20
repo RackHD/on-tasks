@@ -80,7 +80,7 @@ describe("racadm-parser", function() {
     });
 
     describe("Parse file path", function() {
-        it("should parse  remote filename and path", function() {
+        it("should parse cifs filename and path", function() {
             var data = "//192.168.191.207/share/bios.xml";
             var result = parser.getPathFilename(data);
             expect(result.path).to.equal('//192.168.191.207/share');
@@ -88,12 +88,20 @@ describe("racadm-parser", function() {
             expect(result.style).to.equal('remote');
         });
 
-        it("should parse  remote filename and path", function() {
+        it("should parse local filename and path", function() {
             var data = "/home/share/bios.xml";
             var result = parser.getPathFilename(data);
             expect(result.path).to.equal('/home/share');
             expect(result.name).to.equal('bios.xml');
             expect(result.style).to.equal('local');
+        });
+
+        it("should parse nfs filename and path", function() {
+            var data = "10.1.1.1:/home/share/bios.xml";
+            var result = parser.getPathFilename(data);
+            expect(result.path).to.equal('10.1.1.1:/home/share');
+            expect(result.name).to.equal('bios.xml');
+            expect(result.style).to.equal('remote');
         });
 
         it("should report path format incorrect", function() {

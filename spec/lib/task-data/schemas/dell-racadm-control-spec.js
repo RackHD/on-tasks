@@ -19,7 +19,8 @@ describe(require('path').basename(__filename), function() {
         serverPassword: ["ab", "+++_"],
         forceReboot: [false, true],
         serverFilePath: 
-            ["/home/onrack/bios.exe", "/home/onrack/bmc.d7", "\\\\share\\image\\bios.exe"],
+            ["/home/onrack/bios.exe", "/home/onrack/bmc.d7", 
+                "\\\\share\\image\\bios.exe", "10.1.1.1:/ifs/rackhd/r730.xml"],
         action: [
             "setBiosConfig", "updateFirmware", "getBiosConfig",
             "getConfigCatalog", "enableIpmi", "disableIpmi",

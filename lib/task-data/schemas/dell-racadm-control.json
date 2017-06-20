@@ -12,7 +12,7 @@
         "serverFilePath": {
             "description": "Full file path for image or configure file on cifs/nfs or local folder",
             "type": "string",
-            "pattern": "^(\\\\|\/).*(exe|d7|EXE|xml)$"
+            "pattern": "^(\\\\|\/|(\\d{1,3}\\.){3}\\d{1,3}:).*(exe|d7|EXE|xml)$"
         },
         "forceReboot": {
             "description": "Specify if reboot after racadm control tasks are done",
