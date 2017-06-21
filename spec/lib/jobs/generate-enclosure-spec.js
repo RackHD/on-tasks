@@ -77,8 +77,8 @@ describe(require('path').basename(__filename), function () {
             var catalog = {
                     "data": {
                         "Basbrd Mgmt Ctlr": {
-                            "Product Serial": "ABC123",
-                            "Product Version": "FFF"
+                            "Chassis Serial": "ABC123",
+                            "Chassis Version": "FFF"
                         }
                     },
                     "id": uuid.v4(),
@@ -118,7 +118,7 @@ describe(require('path').basename(__filename), function () {
         it('Should fail if no serial number item', function(done) {
             var catalog = {
                     "data": {
-                        "System Information": {
+                        "Chassis Information": {
                             "Part Number": "FFF"
                         }
                     },
@@ -160,8 +160,8 @@ describe(require('path').basename(__filename), function () {
             var catalog = {
                     "data": {
                         "Builtin FRU Device (ID 0)": {
-                            "Product Serial": "... aa",
-                            "Product Version": "FFF"
+                            "Chassis Serial": "... aa",
+                            "Chassis Version": "FFF"
                         }
                     },
                     "id": uuid.v4(),
@@ -202,8 +202,8 @@ describe(require('path').basename(__filename), function () {
             var catalog = {
                     "data": {
                         "Builtin FRU Device (ID 0)": {
-                            "Product Serial": "...-aa",
-                            "Product Version": "FFF"
+                            "Chassis Serial": "...-aa",
+                            "Chassis Version": "FFF"
                         }
                     },
                     "id": uuid.v4(),
@@ -213,7 +213,7 @@ describe(require('path').basename(__filename), function () {
 
             var snPath = {
                 src: 'ipmi-fru',
-                entry: 'Builtin FRU Device (ID 0).Product Serial'
+                entry: 'Builtin FRU Device (ID 0).Chassis Serial'
             };
 
             var findMostRecent = this.sandbox.stub(mockWaterline.catalogs,'findMostRecent');
@@ -235,7 +235,7 @@ describe(require('path').basename(__filename), function () {
             var catalog = {
                 "data": {
                     "Builtin FRU Device (ID 0)": {
-                        "Product Serial": "ABC123"
+                        "Chassis Serial": "ABC123"
                     }
                 },
                 "id": uuid.v4(),
