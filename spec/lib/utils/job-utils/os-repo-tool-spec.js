@@ -44,6 +44,11 @@ describe("os-repo-tool", function () {
                     .to.be.rejectedWith(Error)
             ]);
         });
+
+        it("should handle invalid address", function () {
+            return expect(repoTool.downloadViaHttp('http://testrepo.com/BOOT.CFG'))
+                .to.be.rejectedWith(Error);
+        });
     });
 
     describe('test parseEsxBootCfgFile', function() {
