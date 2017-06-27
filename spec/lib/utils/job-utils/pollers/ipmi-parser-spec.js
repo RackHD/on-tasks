@@ -45,7 +45,7 @@ describe("ipmi-parser", function() {
             Last Add Time : 01/01/1970 01:56:22
             Last Del Time : Not Available
             Overflow : false
-            Supported Cmds : 'Delete' 'Reserve'`
+            Supported Cmds : 'Delete' 'Reserve'`;
 
         ipmiMockSelEntry = `
             SEL Record ID          : 0001
@@ -76,7 +76,7 @@ describe("ipmi-parser", function() {
              Assertions Enabled    : lnc- lcr- unc+ ucr+
              Deassertions Enabled  : lnc- lcr- unc+ ucr+
 
-            FRU Device Description : OEM fru (ID 17) `
+            FRU Device Description : OEM fru (ID 17) `;
 
     });
 
