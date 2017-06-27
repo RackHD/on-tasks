@@ -260,8 +260,12 @@ describe("ipmi-parser", function() {
             testParseSelData('SEL Entry \n b,06/20/2017,13:35:00,Power Supply #0xe1,Power Supply AC lost,Asserted');
         });
 
-        it('ParseSelDataEntry should parse ipmi sel entries correctly', function() {
+        it('ParseSelDataEntry should parse single ipmi sel entries correctly', function() {
             testParseSelDataEntries(ipmiMockSelEntry);
+        });
+
+        it('ParseSelDataEntry should parse multiple ipmi sel entries correctly', function() {
+            testParseSelDataEntries(`${ipmiMockSelEntry}\n${ipmiMockSelEntry}`);
         });
 
         it('ParseSelDataEntry should remove unwanted lines from ipmi sel entries correctly', function() {
