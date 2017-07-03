@@ -19,8 +19,8 @@ describe('Command Util', function() {
         mockSsh.stderr = mockSsh.events.stderr;
         mockSsh.eventList = eventList;
         mockSsh.error = error;
-        mockSsh.exec = function(cmd, callback) {
-            callback(this.error, this.events);
+        mockSsh.exec = function() {
+            arguments[arguments.length-1](this.error, this.events);
         };
         mockSsh.end = function() {
             this.emit('close');
@@ -76,7 +76,7 @@ describe('Command Util', function() {
             parser.parseTasks.resolves(new Array(3).map(getParsedTask));
             return commandUtil.parseResponse(tasks)
             .then(function() {
-                expect(parser.parseTasks).to.have.been.calledOnce;
+                expect(parser.parseTasks).to.have.been.calledTwice;
                 expect(parser.parseUnknownTasks).to.have.been.calledOnce;
             });
         });
@@ -116,6 +116,18 @@ describe('Command Util', function() {
                 expect(parser.parseTasks).to.have.been.calledWithExactly([tasks[1]]);
                 expect(parser.parseUnknownTasks).to.have.been.calledWithExactly([tasks[0]]);
             });
+        });
+
+        it('should call parseTasks for new Tasks with no catalog object'+
+            ' and need to build a catalog', function() {
+            var tasks = [
+                {stdout: 'data', cmd: 'getSomeData'}
+            ];
+
+            return commandUtil.parseResponse(tasks)
+                .then(function() {
+                    expect(parser.parseTasks).to.have.been.calledWithExactly([tasks[0]]);
+                });
         });
     });
 
@@ -169,6 +181,8 @@ describe('Command Util', function() {
         beforeEach(function() {
             commandUtil = new CmdUtil('fakeNodeId');
             waterline.catalogs.create = this.sandbox.stub().resolves();
+            waterline.catalogs.update = this.sandbox.stub().resolves();
+            waterline.catalogs.count = this.sandbox.stub().resolves();
         });
 
         afterEach(function() {
@@ -219,7 +233,44 @@ describe('Command Util', function() {
                 expect(waterline.catalogs.create).to.have.been
                 .calledWithExactly({source: 'test', data:'goodData', node: commandUtil.nodeId});
             });
+        });
 
+        it('should optionally update an existing catalog', function() {
+            var tasks = [
+                {source: 'test', data:'goodData', store: true},
+                {source: 'test', data:'otherData'}
+            ];
+            var query = {node: commandUtil.nodeId, source: 'test'};
+            commandUtil.updateExistingCatalog = true;
+            waterline.catalogs.count.resolves(1);
+
+            return Promise.resolve(tasks)
+                .spread(commandUtil.catalogParsedTasks.bind(commandUtil))
+                .then(function() {
+                    expect(waterline.catalogs.update).to.have.been.calledOnce;
+                    expect(waterline.catalogs.update).to.have.been
+                        .calledWithExactly(query, {
+                            source: 'test',
+                            data:'goodData',
+                            node: commandUtil.nodeId
+                        });
+                });
+        });
+
+        it('should create a new catalog if it does not already exist', function() {
+            var tasks = [
+                {source: 'test', data:'goodData', store: true},
+                {source: 'test', data:'otherData'}
+            ];
+            commandUtil.updateExistingCatalog = true;
+            waterline.catalogs.count.resolves(0);
+
+            return Promise.resolve(tasks)
+                .spread(commandUtil.catalogParsedTasks.bind(commandUtil))
+                .then(function() {
+                    expect(waterline.catalogs.update).not.to.have.been.called;
+                    expect(waterline.catalogs.create).to.have.been.calledOnce;
+                });
         });
     });
 
@@ -309,6 +360,40 @@ describe('Command Util', function() {
             return expect(commandUtil.sshExec(testCmd, sshSettings, mockClient)).to
                 .be.rejected;
         });
+
+        it('should pass sshExec options to the underlying method', function() {
+            var events = [
+                { data: 'test ' },
+                { data: 'string' },
+                { event: 'close', data: 0 }
+            ];
+            var mockClient = sshMockGet(events);
+            var sshExecOptions = {
+                pty: true
+            };
+
+            this.sandbox.spy(mockClient, 'exec');
+            return commandUtil.sshExec(testCmd, sshSettings, mockClient, sshExecOptions)
+            .then(function() {
+                expect(mockClient.exec).to.be.calledWith(testCmd.cmd, sshExecOptions);
+            });
+        });
+
+        it('should pass an empty object if no sshExecOptions', function() {
+            var events = [
+                { data: 'test ' },
+                { data: 'string' },
+                { event: 'close', data: 0 }
+            ];
+            var mockClient = sshMockGet(events);
+
+            this.sandbox.spy(mockClient, 'exec');
+            return commandUtil.sshExec(testCmd, sshSettings, mockClient)
+            .then(function() {
+                expect(mockClient.exec).to.be.calledWith(testCmd.cmd, {});
+            });
+
+        });
     });
 
     describe('updateLookups', function() {
@@ -358,7 +443,7 @@ describe('Command Util', function() {
                     command: 'doSomething', retries: 3, acceptedResponseCodes: [0, 127]
                 },
                 {
-                    command: 'runSomething', downloadUrl: 'api/downloadScript'
+                    command: 'runSomething', downloadUrl: 'http://10.0.0.1:8080/api/downloadScript?nodeId=123'
                 },
                 {
                     command: 'doStuff', timeout: 20 //milliseconds
@@ -373,7 +458,7 @@ describe('Command Util', function() {
                 retries: 3, acceptedResponseCodes: [0, 127]
             });
             expect(builtCommands[2]).to.deep.equal({
-                cmd: 'runSomething', downloadUrl: 'api/downloadScript'
+                cmd: 'runSomething', downloadUrl: 'http://10.0.0.1:8080/api/downloadScript?nodeId=123'
             });
             expect(builtCommands[3]).to.deep.equal({ cmd: 'doStuff', timeout: 20 });
         });

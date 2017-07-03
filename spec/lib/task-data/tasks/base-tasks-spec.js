@@ -3,6 +3,8 @@
 
 'use strict';
 
+var uuid = require('node-uuid');
+
 module.exports = {
 
     before: function (callback) {
@@ -12,7 +14,7 @@ module.exports = {
     },
 
     examples: function () {
-        var validator, sandbox;
+        var validator, sandbox, Task;
         var mockWaterline = {
             nodes: {
                 needByIdentifier: sinon.stub().resolves({})
@@ -35,6 +37,7 @@ module.exports = {
                 ]));
             })
             .then(function() {
+                Task = helper.injector.get('Task.Task');
                 validator = helper.injector.get('TaskOption.Validator');
                 return validator.register();
             });
@@ -58,6 +61,8 @@ module.exports = {
             it('should have an implementsTask', function() {
                 expect(this.taskdefinition).to.have.property('implementsTask');
                 expect(this.taskdefinition.implementsTask).to.be.a('string');
+                var baseTask = Task.getBaseTask(this.taskdefinition);
+                expect(baseTask).to.be.an('object');
             });
 
             it('should have options', function() {
@@ -70,28 +75,45 @@ module.exports = {
                 expect(this.taskdefinition.properties).to.be.an('Object');
             });
 
-            it('should have a valid schemaRef', function() {
-                //since now not all task definition has corresponding schema, so I cannot
-                //enable this test case for all tasks
-                //TODO: enable this test case for all tasks after all tasks have schema defined.
-                if (this.taskdefinition.hasOwnProperty('schemaRef')) {
-                    var schema = validator.getSchema(this.taskdefinition.schemaRef);
+            it('should have a valid optionsSchema', function() {
+                if (this.taskdefinition.optionsSchema &&
+                        !_.isString(this.taskdefinition.optionsSchema) &&
+                        !_.isObject(this.taskdefinition.optionsSchema)) {
+                    throw new Error('optionsSchema must be either string or object if it is not empty'); //jshint ignore: line
+                }
+
+                if (_.isString(this.taskdefinition.optionsSchema)) {
+                    var schema = validator.getSchema(this.taskdefinition.optionsSchema);
                     expect(schema).to.be.an('object');
                 }
             });
 
+            it('should not have unknown property', function() {
+                var validKeys = ['friendlyName', 'injectableName', 'implementsTask',
+                    'options', 'optionsSchema', 'properties', 'requiredProperties'];
+                _.forOwn(this.taskdefinition, function(value, key) {
+                    expect(validKeys).to.include(key);
+                });
+            });
+
             it('should have valid default option values', function() {
                 var self = this;
+                var Task = helper.injector.get('Task.Task');
+                var jobSchema = Task.getJobSchema(this.taskdefinition);
 
-                //since now not all task definition has corresponding schema, so I cannot
-                //enable this test case for all tasks
-                //TODO: enable this test case for all tasks after all tasks have schema defined.
-                if (!this.taskdefinition.hasOwnProperty('schemaRef')) {
+                //TODO: enable this after all jobs have schema
+                if (!jobSchema) {
                     return;
                 }
 
+                var fullSchema = Task.getFullSchema(this.taskdefinition);
+                var schemaId = uuid.v4(); //genearte random schema identifier
+
+                validator.addSchema(fullSchema, schemaId);
                 var schema = _.cloneDeep(
-                    validator.getSchemaResolved(this.taskdefinition.schemaRef));
+                    validator.getSchemaResolved(schemaId));
+                validator.removeSchema(schemaId);
+
                 schema.$schema = "http://json-schema.org/draft-04/schema#"; //To make faker happy
 
                 var faker = require('json-schema-faker');
@@ -101,14 +123,13 @@ module.exports = {
                 //While running workflow, the runJob will be extracted from BaseTask in
                 //task-graph.js, but here doesn't run workflow, so the runJob need be manually
                 //set.
-                this.taskdefinition.runJob = schema.describeJob;
+                this.taskdefinition.runJob = Task.getBaseTask(this.taskdefinition).runJob;
 
                 var env = helper.injector.get('Services.Environment');
                 sandbox.stub(env, 'get').resolves();
 
                 //If the task instance can be successfully created from task definition that
                 //proves the default values are correct.
-                var Task = helper.injector.get('Task.Task');
                 return Task.create(this.taskdefinition, {compileOnly: true}, {target: 'testId'})
                 .catch(function(err) {
                     console.error(JSON.stringify({

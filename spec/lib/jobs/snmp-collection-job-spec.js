@@ -10,8 +10,8 @@ describe('Snmp Collection Job', function() {
         job,
         Snmptool,
         mockWaterline,
-        node = {
-            snmpSettings: {
+        snmpSettings = {
+            config: {
                 host: '1.2.3.4',
                 community: 'community'
             }
@@ -23,7 +23,7 @@ describe('Snmp Collection Job', function() {
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/snmp-collection-job.js'),
             helper.di.simpleWrapper(function() {}, 'JobUtils.Snmptool'),
-            helper.di.simpleWrapper({ nodes: {} }, 'Services.Waterline')
+            helper.di.simpleWrapper({ ibms: {} }, 'Services.Waterline')
         ]);
         mockWaterline = helper.injector.get('Services.Waterline');
         Snmptool = helper.injector.get('JobUtils.Snmptool');
@@ -52,24 +52,24 @@ describe('Snmp Collection Job', function() {
 
     it('should get snmpSettings for the target node from waterline', function() {
         Snmptool.prototype.collectHostSnmp = function() {};
-        mockWaterline.nodes.findByIdentifier = function() {};
+        mockWaterline.ibms.findByNode = function() {};
         this.sandbox.stub(Snmptool.prototype, 'collectHostSnmp').resolves();
-        this.sandbox.stub(mockWaterline.nodes, 'findByIdentifier').resolves(node);
+        this.sandbox.stub(mockWaterline.ibms, 'findByNode').resolves(snmpSettings);
         this.sandbox.stub(job, '_publishSnmpCommandResult').resolves();
 
         job._run();
         return job._deferred
         .then(function() {
-            expect(mockWaterline.nodes.findByIdentifier)
-            .to.have.been.calledWith(aNodeId);
+            expect(mockWaterline.ibms.findByNode)
+            .to.have.been.calledWith(aNodeId, 'snmp-ibm-service');
         });
     });
 
-    it('should publish the collected snmp resulsts', function() {
+    it('should publish the collected snmp results', function() {
         Snmptool.prototype.collectHostSnmp = function() {};
-        mockWaterline.nodes.findByIdentifier = function() {};
+        mockWaterline.ibms.findByNode = function() {};
         this.sandbox.stub(Snmptool.prototype, 'collectHostSnmp').resolves(snmpData);
-        this.sandbox.stub(mockWaterline.nodes, 'findByIdentifier').resolves(node);
+        this.sandbox.stub(mockWaterline.ibms, 'findByNode').resolves(snmpSettings);
         this.sandbox.stub(job, '_publishSnmpCommandResult').resolves();
 
         job._run();
@@ -78,8 +78,8 @@ describe('Snmp Collection Job', function() {
             expect(job._publishSnmpCommandResult).to.have.been.calledWith(
                 aGraphId,
                 {
-                    host: node.snmpSettings.host,
-                    community: node.snmpSettings.community,
+                    host: snmpSettings.config.host,
+                    community: snmpSettings.config.community,
                     result: snmpData
                 }
             );

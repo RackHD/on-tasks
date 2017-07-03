@@ -274,13 +274,66 @@ module.exports.get = function() {
                     friendlyName: 'Test Inline Task with schema',
                     injectableName: 'Task.test.inline-task-with-schema',
                     implementsTask: 'Task.Base.test-empty',
-                    schemaRef: 'testschema',
+                    optionsSchema: 'testschema',
                     options: {
                         option1: 'default value of option 1',
                         option5: 'default value of option 5',
                         testName: 'fifthTask'
                     },
                     properties: {}
+                }
+            }
+        ]
+    };
+    var graphWaitOnAnyTasks = {
+        injectableName: 'Graph.waitOnAnyTasks',
+        friendlyName: 'Graph has tasks under waitOn.anyOf',
+        tasks: [
+            {
+                label: 'task-1',
+                taskDefinition: {
+                    friendlyName: 'test 1',
+                    injectableName: 'Task.test.1',
+                    implementsTask: 'Task.Base.test',
+                    options: { option1: 1, option2: 2, option3: 3 },
+                    properties: {}
+                }
+            },
+            {
+                label: 'task-2',
+                taskDefinition: {
+                    friendlyName: 'test 2',
+                    injectableName: 'Task.test.2',
+                    implementsTask: 'Task.Base.test',
+                    options: { option1: 1, option2: 2, option3: 3 },
+                    properties: {}
+                }
+            },
+            {
+                label: 'task-3',
+                taskDefinition: {
+                    friendlyName: 'test 3',
+                    injectableName: 'Task.test.3',
+                    implementsTask: 'Task.Base.test',
+                    options: { option1: 1, option2: 2, option3: 3 },
+                    properties: {}
+                }
+            },
+            {
+                label: 'task-final',
+                taskDefinition: {
+                    friendlyName: 'test final',
+                    injectableName: 'Task.test.final',
+                    implementsTask: 'Task.Base.test',
+                    options: { option1: 1, option2: 2, option3: 3 },
+                    properties: {},
+                    waitOn:{
+                        'task-1': 'finished',
+                        'anyOf': {
+                            'task-2': 'finished',
+                            'task-3': 'failed'
+                        }
+                    }
                 }
             }
         ]
@@ -300,6 +353,7 @@ module.exports.get = function() {
         testTask3: testTask3,
         graphDefinitionValid: graphDefinitionValid,
         graphDefinitionInvalid: graphDefinitionInvalid,
-        graphDefinitionOptions: graphDefinitionOptions
+        graphDefinitionOptions: graphDefinitionOptions,
+        graphWaitOnAnyTasks: graphWaitOnAnyTasks
     };
 };

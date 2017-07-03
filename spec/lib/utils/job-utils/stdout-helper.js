@@ -1657,6 +1657,15 @@ module.exports.lshwOutput = JSON.stringify(
                                                       ]
                                                     },
                                                     {
+                                                      "id" : "pci:1",
+                                                      "children": [
+                                                        {
+                                                          "id": "network:0",
+                                                          "serial": "00:8c:fa:f3:74:d0"
+                                                        }
+                                                      ]
+                                                    },
+                                                    {
                                                       "id" : "generic:0",
                                                       "class" : "generic",
                                                       "handle" : "PCI:0000:7f:08.0",
@@ -3427,6 +3436,37 @@ module.exports.lshwOutput = JSON.stringify(
                                             }
     );
 
+
+module.exports.esxcliNetworkDriverVersionInfoOutput = 'VMware_bootbank_net-ixgbe_3.7.13.7.14iov-11vmw.550.0.0.1331820\n' +
+                                                      '   Name: net-ixgbe\n' +
+                                                      '   Version: 3.7.13.7.14iov-11vmw.550.0.0.1331820\n' +
+                                                      '   Type: bootbank\n' +
+                                                      '   Vendor: VMware\n' +
+                                                      '   Acceptance Level: VMwareCertified\n' +
+                                                      '   Summary: ixgbe: net driver for VMware ESX\n' +
+                                                      '   Description: Intel(R) 10 Gigabit Ethernet Network Driver\n' +
+                                                      '   ReferenceURLs:\n' +
+                                                      '   Creation Date: 2013-09-19\n' +
+                                                      '   Depends: vmkapi_2_2_0_0, com.vmware.driverAPI-9.2.2.0\n' +
+                                                      '   Conflicts:\n' +
+                                                      '   Replaces:\n' +
+                                                      '   Provides:\n' +
+                                                      '   Maintenance Mode Required: True\n' +
+                                                      '   Hardware Platforms Required:\n' +
+                                                      '   Live Install Allowed: False\n' +
+                                                      '   Live Remove Allowed: False\n' +
+                                                      '   Stateless Ready: True\n' +
+                                                      '   Overlay: False\n' +
+                                                      '   Tags: driver, module\n' +
+                                                      '   Payloads: net-ixgb';
+
+module.exports.perccliVersionInfooutput = '\n' +
+                                          '      PercCli SAS Customization Utility Ver 1.11.03 Mar 26, 2014\n' +
+                                          '\n' +
+                                          '     (c)Copyright 2014, LSI Corporation, All Rights Reserved.\n' +
+                                          '\n' +
+                                          'Exit Code: 0x00';
+
 module.exports.ipmiSelOutput = '1,05/27/2014,21:20:43,Event Logging Disabled #0x07,Log area reset/cleared,Asserted\n' +
                                    '2,05/27/2014,21:22:20,System Event #0x83,Timestamp Clock Sync,Asserted\n' +
                                    '3,05/27/2014,21:22:21,System Event #0x83,Timestamp Clock Sync,Asserted\n' +
@@ -3720,4 +3760,8 @@ module.exports.racadmSoftwareInventory = fs
 
 module.exports.racadmJobqueueData = fs
     .readFileSync(__dirname+"/samplefiles/racadm-jobqueue-data.txt")
+    .toString();
+
+module.exports.megaraidPhysicalDiskData = fs
+    .readFileSync(__dirname+"/samplefiles/megaraid-physical-disk-data.txt")
     .toString();

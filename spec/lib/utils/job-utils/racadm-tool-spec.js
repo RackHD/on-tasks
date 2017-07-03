@@ -501,16 +501,17 @@ describe("racadm-tool", function() {
 
             it('should get software list correctly', function(){
                 runCommandStub.resolves();
-                getSoftwareListStub.returns();
+                getSoftwareListStub.returns('anything');
                 return instance.getSoftwareList('0.0.0.0', 'user', 'password')
-                    .then(function(){
+                    .then(function(ret){
                         expect(parser.getSoftwareList).to.be.calledOnce;
                         expect(instance.runCommand).to.be.calledOnce;
                         expect(instance.runCommand).to.be.calledWith('0.0.0.0', 'user',
                             'password', 'swinventory');
+                        expect(ret).to.deep.equal({data: 'anything',
+                            source: 'racadm-firmware-list-catalog', store: true});
                     });
             });
-
         });
 
         describe('getBiosConfig', function(){
@@ -537,7 +538,7 @@ describe("racadm-tool", function() {
             it("should get bios configure to remote path", function(){
                 var command = 'get -f bios.xml -t xml -u onrack -p onrack -l ' +
                     '//192.168.188.113/share -c BIOS.Setup.1-1';
-                getSoftwareListStub.returns({BIOS:{FQDD: 'BIOS.Setup.1-1'}});
+                getSoftwareListStub.returns({data: {BIOS:{FQDD: 'BIOS.Setup.1-1'}}});
                 getPathFilenameStub.returns(this.fileInfo);
                 runAsyncCommandsStub.resolves();
                 return instance.getBiosConfig('192.168.188.103', 'admin', 'admin', this.cifsConfig)
@@ -554,19 +555,19 @@ describe("racadm-tool", function() {
                 var command = "get -f /tmp/configure.xml -t xml -c BIOS.Setup.1-1";
                 this.fileInfo.path = '/tmp';
                 this.fileInfo.style = 'local';
-                getSoftwareListStub.returns({BIOS:{FQDD: 'BIOS.Setup.1-1'}});
+                getSoftwareListStub.returns({data: {BIOS:{FQDD: 'BIOS.Setup.1-1'}}});
                 getPathFilenameStub.returns(this.fileInfo);
                 runAsyncCommandsStub.resolves();
                 return instance.getBiosConfig('192.168.188.103', 'admin', 'admin')
                     .then(function(){
-                        expect(instance.runAsyncCommands).to.be.calledWith('192.168.188.103',
-                            'admin', 'admin', command, 0, 1000);
+-                   expect(instance.runAsyncCommands).to.be.calledWith('192.168.188.103', 
+                        'admin', 'admin', command, 0, 1000);
                     });
             });
 
             it("should throw error", function(){
                 var self = this;
-                getSoftwareListStub.returns({BIOS:{status: 'BIOS.Setup.1-1'}});
+                getSoftwareListStub.returns({data: {BIOS:{FQD: 'BIOS.Setup.1-1'}}});
                 return instance.getBiosConfig('192.168.188.103', 'admin', 'admin', self.cifsConfig)
                     .should.be.rejectedWith(Error, 'Can not get BIOS FQDD');
             });
@@ -662,7 +663,7 @@ describe("racadm-tool", function() {
             });
 
             it('should throw an error if BIOS fqdd does not exist', function(done) {
-                this.sandbox.stub(instance, 'getSoftwareList').resolves("Anything");
+                this.sandbox.stub(instance, 'getSoftwareList').resolves({data: "Anything"});
                 this.sandbox.stub(instance, 'runCommand').resolves("Anything");
                 return instance._configBiosAttr('any', 'any', 'any', 'any', 'any')
                     .then(function(){
@@ -678,7 +679,8 @@ describe("racadm-tool", function() {
 
             it('should be called with reboot', function() {
                 var command = 'jobqueue create Any -r pwrcycle -s TIME_NOW -e TIME_NA';
-                this.sandbox.stub(instance, 'getSoftwareList').resolves({"BIOS": {"FQDD": "Any"}});
+                this.sandbox.stub(instance, 'getSoftwareList').resolves(
+                    {data: {"BIOS": {"FQDD": "Any"}}});
                 this.sandbox.stub(instance, 'runCommand').resolves("Anything");
                 this.sandbox.stub(parser, 'getJobId').returns("Anything");
                 this.sandbox.stub(instance, 'waitJobDone').returns("Completed");
@@ -695,7 +697,8 @@ describe("racadm-tool", function() {
             });
 
             it('should be called without reboot', function() {
-                this.sandbox.stub(instance, 'getSoftwareList').resolves({"BIOS": {"FQDD": "Any"}});
+                this.sandbox.stub(instance, 'getSoftwareList').resolves(
+                    {data: {"BIOS": {"FQDD": "Any"}}});
                 this.sandbox.stub(instance, 'runCommand').resolves("Anything");
                 this.sandbox.stub(parser, 'getJobId').returns("Anything");
                 this.sandbox.stub(instance, 'waitJobDone').returns("Completed");
@@ -759,6 +762,177 @@ describe("racadm-tool", function() {
                             .calledWith('any', 'any', 'any', true, 
                                         "set BIOS.ProcSettings.ProcVirtualization Enabled");
                     });
+            });
+        });
+
+        describe('enableAlert', function(){
+            var runCommandStub;
+            beforeEach('enableAlert before', function() {
+                runCommandStub = this.sandbox.stub(instance, 'runCommand');
+            });
+            afterEach('enable alert after', function() {
+                this.sandbox.restore();
+            });
+
+            it('enableAlert exists', function() {
+                should.exist(instance.enableAlert);
+            });
+
+            it('enableVTx is a function', function() {
+                expect(instance.enableAlert).is.a('function');
+            });
+
+            it('should enable alert', function(){
+                runCommandStub.resolves();
+                return instance.runCommand('0.0.0.0', 'user',
+                    'password', "set iDRAC.IPMILan.AlertEnable 1")
+                    .then(function(){
+                        expect(instance.runCommand).to.be.calledOnce;
+                        expect(instance.runCommand).to.be.calledWith('0.0.0.0', 'user',
+                            'password', "set iDRAC.IPMILan.AlertEnable 1");
+                    });
+            });
+        });
+
+        describe('enableRedfish', function(){
+            var runCommandStub;
+            beforeEach('enableRedfish before', function() {
+                runCommandStub = this.sandbox.stub(instance, 'runCommand');
+            });
+            afterEach('enableRedfish after', function() {
+                this.sandbox.restore();
+            });
+
+            it('enableRedfish exists', function() {
+                should.exist(instance.enableRedfish);
+            });
+
+            it('enableRedfish is a function', function() {
+                expect(instance.enableAlert).is.a('function');
+            });
+
+            it('should enable Redfish alert', function(){
+                runCommandStub.resolves();
+                return instance.runCommand('0.0.0.0', 'user',
+                    'password',
+                    'eventfilters set -c idrac.alert.all -a none -n redfish-events')
+                    .then(function(){
+                        expect(instance.runCommand).to.be.calledOnce;
+                        expect(instance.runCommand).to.be.calledWith('0.0.0.0', 'user',
+                            'password',
+                            'eventfilters set -c idrac.alert.all -a none -n redfish-events');
+                    });
+            });
+        });
+
+
+        describe('disableRedfish', function(){
+            var runCommandStub;
+            beforeEach('disableRedfish before', function() {
+                runCommandStub = this.sandbox.stub(instance, 'runCommand');
+            });
+            afterEach('disableRedfish after', function() {
+                this.sandbox.restore();
+            });
+
+            it('disableRedfish exists', function() {
+                should.exist(instance.disableRedfish);
+            });
+
+            it('disableRedfish is a function', function() {
+                expect(instance.disableRedfish).is.a('function');
+            });
+
+            it('should enable alert', function(){
+                runCommandStub.resolves();
+                return instance.runCommand('0.0.0.0', 'user',
+                    'password',
+                    'eventfilters set -c idrac.alert.audit.info -a none -n none')
+                    .then(function(){
+                        expect(instance.runCommand).to.be.calledOnce;
+                        expect(instance.runCommand).to.be.calledWith('0.0.0.0', 'user',
+                            'password',
+                            'eventfilters set -c idrac.alert.audit.info -a none -n none');
+                    });
+            });
+        });
+
+
+        describe('setIdracIP', function(){
+            var runCommandStub;
+            beforeEach('setIdracIP before', function() {
+                runCommandStub = this.sandbox.stub(instance, 'runCommand');
+            });
+            afterEach('setIdracIP after', function() {
+                this.sandbox.restore();
+            });
+
+            it('setIdracIP exists', function() {
+                should.exist(instance.setIdracIP);
+            });
+
+            it('setIdracIP is a function', function() {
+                expect(instance.setIdracIP).is.a('function');
+            });
+
+            it('should set the iDrac IP', function(){
+                runCommandStub.resolves();
+                return instance.runCommand('0.0.0.0', 'user',
+                    'password',
+                    'setniccfg -s 0.0.0.0  0.0.0.0  0.0.0.0')
+                    .then(function(){
+                        expect(instance.runCommand).to.be.calledOnce;
+                        expect(instance.runCommand).to.be.calledWith('0.0.0.0', 'user',
+                            'password',
+                            'setniccfg -s 0.0.0.0  0.0.0.0  0.0.0.0');
+                    });
+            });
+        });
+
+
+        describe('setIdracIP invalid IP', function(){
+            afterEach('setIdracIP after', function() {
+                this.sandbox.restore();
+            });
+
+            it('should fail the iDrac IP with the wrong IP format', function(done){
+                return instance.setIdracIP('0.0.0.0', 'user',
+                    'password', {ip : "0.0.0", netMask: "0.0.0.0", gateway: "0.0.0.0"})
+                    .then(function(){
+                        done(new Error('should NOT have send the command with and invalid IP'));
+                    })
+                    .catch(function (e) {
+                        expect(e).to.have.property('message').that.equals('Invalid format of the input');// jshint ignore:line
+                        done();
+                    });
+
+            });
+
+            it('should fail the iDrac IP with the wrong netMask format', function(done){
+                return instance.setIdracIP('0.0.0.0', 'user',
+                    'password', {ip : "0.0.0", netMask: "0.0.0", gateway: "0.0.0.0"})
+                    .then(function(){
+                        done(new Error('should NOT have send the command with and invalid IP'));
+                    })
+                    .catch(function (e) {
+                        expect(e).to.have.property('message').that.equals('Invalid format of the input');// jshint ignore:line
+                        done();
+                    });
+
+            });
+
+
+            it('should fail the iDrac IP with the wrong gateway format', function(done){
+                return instance.setIdracIP('0.0.0.0', 'user',
+                    'password', {ip : "0.0.0.0", netMask: "0.0.0.0", gateway: "0.0.0"})
+                    .then(function(){
+                        done(new Error('should NOT have send the command with and invalid IP'));
+                    })
+                    .catch(function (e) {
+                        expect(e).to.have.property('message').that.equals('Invalid format of the input');// jshint ignore:line
+                        done();
+                    });
+
             });
         });
 

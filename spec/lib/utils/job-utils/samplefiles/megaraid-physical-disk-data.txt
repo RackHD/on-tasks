@@ -1,0 +1,461 @@
+{
+    "createdAt": "2016-09-30T07:40:20.906Z",
+    "data": {
+        "Controllers": [
+            {
+                "Command Status": {
+                    "Controller": 0,
+                    "Description": "Show Drive Information Succeeded.",
+                    "Status": "Success"
+                },
+                "Response Data": {
+                    "Drive /c0/e252/s0": [
+                        {
+                            "DG": 0,
+                            "DID": 0,
+                            "EID:Slt": "252:0",
+                            "Intf": "SAS",
+                            "Med": "HDD",
+                            "Model": "ST1200MM0088    ",
+                            "PI": "N",
+                            "SED": "N",
+                            "SeSz": "512B",
+                            "Size": "1.091 TB",
+                            "Sp": "U",
+                            "State": "Onln"
+                        }
+                    ],
+                    "Drive /c0/e252/s0 - Detailed Information": {
+                        "Drive /c0/e252/s0 Device attributes": {
+                            "Coerced size": "1.091 TB [0x8ba80000 Sectors]",
+                            "Device Speed": "6.0Gb/s",
+                            "Firmware Revision": "TS04",
+                            "Link Speed": "6.0Gb/s",
+                            "Logical Sector Size": "512B",
+                            "Manufacturer Id": "SEAGATE ",
+                            "Model Number": "ST1200MM0088    ",
+                            "NAND Vendor": "NA",
+                            "Non Coerced size": "1.091 TB [0x8baa0cb0 Sectors]",
+                            "Physical Sector Size": "512B",
+                            "Raw size": "1.091 TB [0x8bba0cb0 Sectors]",
+                            "SN": "S400M4R0            ",
+                            "WWN": "5000C5008EC959C4"
+                        },
+                        "Drive /c0/e252/s0 Policies/Settings": {
+                            "Certified": "Yes",
+                            "Commissioned Spare": "No",
+                            "Connected Port Number": "3(path0) ",
+                            "Drive position": "DriveGroup:0, Span:0, Row:0",
+                            "Emergency Spare": "No",
+                            "Enclosure position": 0,
+                            "Last Predictive Failure Event Sequence Number": 0,
+                            "Locked": "No",
+                            "Needs EKM Attention": "No",
+                            "PI Eligible": "No",
+                            "Port Information": [
+                                {
+                                    "Linkspeed": "6.0Gb/s",
+                                    "Port": 0,
+                                    "SAS address": "0x5000c5008ec959c5",
+                                    "Status": "Active"
+                                },
+                                {
+                                    "Linkspeed": "6.0Gb/s",
+                                    "Port": 1,
+                                    "SAS address": "0x0",
+                                    "Status": "Active"
+                                }
+                            ],
+                            "SED Capable": "No",
+                            "SED Enabled": "No",
+                            "Secured": "No",
+                            "Sequence Number": 2,
+                            "Successful diagnostics completion on": "N/A",
+                            "Wide Port Capable": "No"
+                        },
+                        "Drive /c0/e252/s0 State": {
+                            "Drive Temperature": " 31C (87.80 F)",
+                            "Media Error Count": 0,
+                            "Other Error Count": 0,
+                            "Predictive Failure Count": 0,
+                            "S_M_A_R_T alert flagged by drive": "No",
+                            "Shield Counter": 0
+                        },
+                        "Inquiry Data": "00 00 06 12 8b 00 10 02 53 45 41 47 41 54 45 20 53 54 31 32 30 30 4d 4d 30 30 38 38 20 20 20 20 54 53 30 34 53 34 30 30 4d 34 52 30 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 a2 0c 60 20 e0 04 60 04 c0 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 43 6f 70 79 72 69 67 68 74 20 28 63 29 20 32 30 31 35 20 53 65 61 67 61 74 65 20 41 6c 6c 20 "
+                    },
+                    "Drive /c0/e252/s1": [
+                        {
+                            "DG": 1,
+                            "DID": 1,
+                            "EID:Slt": "252:1",
+                            "Intf": "SAS",
+                            "Med": "HDD",
+                            "Model": "ST1200MM0088    ",
+                            "PI": "N",
+                            "SED": "N",
+                            "SeSz": "512B",
+                            "Size": "1.091 TB",
+                            "Sp": "U",
+                            "State": "Onln"
+                        }
+                    ],
+                    "Drive /c0/e252/s1 - Detailed Information": {
+                        "Drive /c0/e252/s1 Device attributes": {
+                            "Coerced size": "1.091 TB [0x8ba80000 Sectors]",
+                            "Device Speed": "6.0Gb/s",
+                            "Firmware Revision": "TS04",
+                            "Link Speed": "6.0Gb/s",
+                            "Logical Sector Size": "512B",
+                            "Manufacturer Id": "SEAGATE ",
+                            "Model Number": "ST1200MM0088    ",
+                            "NAND Vendor": "NA",
+                            "Non Coerced size": "1.091 TB [0x8baa0cb0 Sectors]",
+                            "Physical Sector Size": "512B",
+                            "Raw size": "1.091 TB [0x8bba0cb0 Sectors]",
+                            "SN": "S400K225            ",
+                            "WWN": "5000C5008ED1B658"
+                        },
+                        "Drive /c0/e252/s1 Policies/Settings": {
+                            "Certified": "Yes",
+                            "Commissioned Spare": "No",
+                            "Connected Port Number": "4(path0) ",
+                            "Drive position": "DriveGroup:1, Span:0, Row:0",
+                            "Emergency Spare": "No",
+                            "Enclosure position": 0,
+                            "Last Predictive Failure Event Sequence Number": 0,
+                            "Locked": "No",
+                            "Needs EKM Attention": "No",
+                            "PI Eligible": "No",
+                            "Port Information": [
+                                {
+                                    "Linkspeed": "6.0Gb/s",
+                                    "Port": 0,
+                                    "SAS address": "0x5000c5008ed1b659",
+                                    "Status": "Active"
+                                },
+                                {
+                                    "Linkspeed": "6.0Gb/s",
+                                    "Port": 1,
+                                    "SAS address": "0x0",
+                                    "Status": "Active"
+                                }
+                            ],
+                            "SED Capable": "No",
+                            "SED Enabled": "No",
+                            "Secured": "No",
+                            "Sequence Number": 2,
+                            "Successful diagnostics completion on": "N/A",
+                            "Wide Port Capable": "No"
+                        },
+                        "Drive /c0/e252/s1 State": {
+                            "Drive Temperature": " 31C (87.80 F)",
+                            "Media Error Count": 0,
+                            "Other Error Count": 0,
+                            "Predictive Failure Count": 0,
+                            "S_M_A_R_T alert flagged by drive": "No",
+                            "Shield Counter": 0
+                        },
+                        "Inquiry Data": "00 00 06 12 8b 00 10 02 53 45 41 47 41 54 45 20 53 54 31 32 30 30 4d 4d 30 30 38 38 20 20 20 20 54 53 30 34 53 34 30 30 4b 32 32 35 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 a2 0c 60 20 e0 04 60 04 c0 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 43 6f 70 79 72 69 67 68 74 20 28 63 29 20 32 30 31 35 20 53 65 61 67 61 74 65 20 41 6c 6c 20 "
+                    },
+                    "Drive /c0/e252/s2": [
+                        {
+                            "DG": "-",
+                            "DID": 2,
+                            "EID:Slt": "252:2",
+                            "Intf": "SAS",
+                            "Med": "HDD",
+                            "Model": "ST1200MM0088    ",
+                            "PI": "N",
+                            "SED": "N",
+                            "SeSz": "512B",
+                            "Size": "1.091 TB",
+                            "Sp": "U",
+                            "State": "JBOD"
+                        }
+                    ],
+                    "Drive /c0/e252/s2 - Detailed Information": {
+                        "Drive /c0/e252/s2 Device attributes": {
+                            "Coerced size": "1.091 TB [0x8ba80000 Sectors]",
+                            "Device Speed": "6.0Gb/s",
+                            "Firmware Revision": "TS04",
+                            "Link Speed": "6.0Gb/s",
+                            "Logical Sector Size": "512B",
+                            "Manufacturer Id": "SEAGATE ",
+                            "Model Number": "ST1200MM0088    ",
+                            "NAND Vendor": "NA",
+                            "Non Coerced size": "1.091 TB [0x8baa0cb0 Sectors]",
+                            "Physical Sector Size": "512B",
+                            "Raw size": "1.091 TB [0x8bba0cb0 Sectors]",
+                            "SN": "S400MTGV            ",
+                            "WWN": "5000C5008ECDEFA8"
+                        },
+                        "Drive /c0/e252/s2 Policies/Settings": {
+                            "Certified": "Yes",
+                            "Commissioned Spare": "No",
+                            "Connected Port Number": "2(path0) ",
+                            "Emergency Spare": "No",
+                            "Enclosure position": 0,
+                            "Last Predictive Failure Event Sequence Number": 0,
+                            "Locked": "No",
+                            "Needs EKM Attention": "No",
+                            "PI Eligible": "No",
+                            "Port Information": [
+                                {
+                                    "Linkspeed": "6.0Gb/s",
+                                    "Port": 0,
+                                    "SAS address": "0x5000c5008ecdefa9",
+                                    "Status": "Active"
+                                },
+                                {
+                                    "Linkspeed": "6.0Gb/s",
+                                    "Port": 1,
+                                    "SAS address": "0x0",
+                                    "Status": "Active"
+                                }
+                            ],
+                            "SED Capable": "No",
+                            "SED Enabled": "No",
+                            "Secured": "No",
+                            "Sequence Number": 2,
+                            "Successful diagnostics completion on": "N/A",
+                            "Wide Port Capable": "No"
+                        },
+                        "Drive /c0/e252/s2 State": {
+                            "Drive Temperature": " 30C (86.00 F)",
+                            "Media Error Count": 0,
+                            "Other Error Count": 0,
+                            "Predictive Failure Count": 0,
+                            "S_M_A_R_T alert flagged by drive": "No",
+                            "Shield Counter": 0
+                        },
+                        "Inquiry Data": "00 00 06 12 8b 00 10 02 53 45 41 47 41 54 45 20 53 54 31 32 30 30 4d 4d 30 30 38 38 20 20 20 20 54 53 30 34 53 34 30 30 4d 54 47 56 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 a2 0c 60 20 e0 04 60 04 c0 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 43 6f 70 79 72 69 67 68 74 20 28 63 29 20 32 30 31 35 20 53 65 61 67 61 74 65 20 41 6c 6c 20 "
+                    },
+                    "Drive /c0/e252/s3": [
+                        {
+                            "DG": 2,
+                            "DID": 3,
+                            "EID:Slt": "252:3",
+                            "Intf": "SAS",
+                            "Med": "HDD",
+                            "Model": "ST1200MM0088    ",
+                            "PI": "N",
+                            "SED": "N",
+                            "SeSz": "512B",
+                            "Size": "1.091 TB",
+                            "Sp": "U",
+                            "State": "Onln"
+                        }
+                    ],
+                    "Drive /c0/e252/s3 - Detailed Information": {
+                        "Drive /c0/e252/s3 Device attributes": {
+                            "Coerced size": "1.091 TB [0x8ba80000 Sectors]",
+                            "Device Speed": "6.0Gb/s",
+                            "Firmware Revision": "TS04",
+                            "Link Speed": "6.0Gb/s",
+                            "Logical Sector Size": "512B",
+                            "Manufacturer Id": "SEAGATE ",
+                            "Model Number": "ST1200MM0088    ",
+                            "NAND Vendor": "NA",
+                            "Non Coerced size": "1.091 TB [0x8baa0cb0 Sectors]",
+                            "Physical Sector Size": "512B",
+                            "Raw size": "1.091 TB [0x8bba0cb0 Sectors]",
+                            "SN": "S400MSVT            ",
+                            "WWN": "5000C5008ECE388C"
+                        },
+                        "Drive /c0/e252/s3 Policies/Settings": {
+                            "Certified": "Yes",
+                            "Commissioned Spare": "No",
+                            "Connected Port Number": "1(path0) ",
+                            "Drive position": "DriveGroup:2, Span:0, Row:0",
+                            "Emergency Spare": "No",
+                            "Enclosure position": 0,
+                            "Last Predictive Failure Event Sequence Number": 0,
+                            "Locked": "No",
+                            "Needs EKM Attention": "No",
+                            "PI Eligible": "No",
+                            "Port Information": [
+                                {
+                                    "Linkspeed": "6.0Gb/s",
+                                    "Port": 0,
+                                    "SAS address": "0x5000c5008ece388d",
+                                    "Status": "Active"
+                                },
+                                {
+                                    "Linkspeed": "6.0Gb/s",
+                                    "Port": 1,
+                                    "SAS address": "0x0",
+                                    "Status": "Active"
+                                }
+                            ],
+                            "SED Capable": "No",
+                            "SED Enabled": "No",
+                            "Secured": "No",
+                            "Sequence Number": 2,
+                            "Successful diagnostics completion on": "N/A",
+                            "Wide Port Capable": "No"
+                        },
+                        "Drive /c0/e252/s3 State": {
+                            "Drive Temperature": " 30C (86.00 F)",
+                            "Media Error Count": 0,
+                            "Other Error Count": 0,
+                            "Predictive Failure Count": 0,
+                            "S_M_A_R_T alert flagged by drive": "No",
+                            "Shield Counter": 0
+                        },
+                        "Inquiry Data": "00 00 06 12 8b 00 10 02 53 45 41 47 41 54 45 20 53 54 31 32 30 30 4d 4d 30 30 38 38 20 20 20 20 54 53 30 34 53 34 30 30 4d 53 56 54 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 a2 0c 60 20 e0 04 60 04 c0 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 43 6f 70 79 72 69 67 68 74 20 28 63 29 20 32 30 31 35 20 53 65 61 67 61 74 65 20 41 6c 6c 20 "
+                    },
+                    "Drive /c0/e252/s4": [
+                        {
+                            "DG": "-",
+                            "DID": 4,
+                            "EID:Slt": "252:4",
+                            "Intf": "SAS",
+                            "Med": "HDD",
+                            "Model": "ST1200MM0088    ",
+                            "PI": "N",
+                            "SED": "N",
+                            "SeSz": "512B",
+                            "Size": "1.091 TB",
+                            "Sp": "U",
+                            "State": "JBOD"
+                        }
+                    ],
+                    "Drive /c0/e252/s4 - Detailed Information": {
+                        "Drive /c0/e252/s4 Device attributes": {
+                            "Coerced size": "1.091 TB [0x8ba80000 Sectors]",
+                            "Device Speed": "6.0Gb/s",
+                            "Firmware Revision": "TS04",
+                            "Link Speed": "6.0Gb/s",
+                            "Logical Sector Size": "512B",
+                            "Manufacturer Id": "SEAGATE ",
+                            "Model Number": "ST1200MM0088    ",
+                            "NAND Vendor": "NA",
+                            "Non Coerced size": "1.091 TB [0x8baa0cb0 Sectors]",
+                            "Physical Sector Size": "512B",
+                            "Raw size": "1.091 TB [0x8bba0cb0 Sectors]",
+                            "SN": "S400KBJX            ",
+                            "WWN": "5000C5008ED29DE0"
+                        },
+                        "Drive /c0/e252/s4 Policies/Settings": {
+                            "Certified": "Yes",
+                            "Commissioned Spare": "No",
+                            "Connected Port Number": "0(path0) ",
+                            "Emergency Spare": "No",
+                            "Enclosure position": 0,
+                            "Last Predictive Failure Event Sequence Number": 0,
+                            "Locked": "No",
+                            "Needs EKM Attention": "No",
+                            "PI Eligible": "No",
+                            "Port Information": [
+                                {
+                                    "Linkspeed": "6.0Gb/s",
+                                    "Port": 0,
+                                    "SAS address": "0x5000c5008ed29de1",
+                                    "Status": "Active"
+                                },
+                                {
+                                    "Linkspeed": "6.0Gb/s",
+                                    "Port": 1,
+                                    "SAS address": "0x0",
+                                    "Status": "Active"
+                                }
+                            ],
+                            "SED Capable": "No",
+                            "SED Enabled": "No",
+                            "Secured": "No",
+                            "Sequence Number": 2,
+                            "Successful diagnostics completion on": "N/A",
+                            "Wide Port Capable": "No"
+                        },
+                        "Drive /c0/e252/s4 State": {
+                            "Drive Temperature": " 31C (87.80 F)",
+                            "Media Error Count": 0,
+                            "Other Error Count": 0,
+                            "Predictive Failure Count": 0,
+                            "S_M_A_R_T alert flagged by drive": "No",
+                            "Shield Counter": 0
+                        },
+                        "Inquiry Data": "00 00 06 12 8b 00 10 02 53 45 41 47 41 54 45 20 53 54 31 32 30 30 4d 4d 30 30 38 38 20 20 20 20 54 53 30 34 53 34 30 30 4b 42 4a 58 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 a2 0c 60 20 e0 04 60 04 c0 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 43 6f 70 79 72 69 67 68 74 20 28 63 29 20 32 30 31 35 20 53 65 61 67 61 74 65 20 41 6c 6c 20 "
+                    },
+                    "Drive /c0/e252/s5": [
+                        {
+                            "DG": "-",
+                            "DID": 5,
+                            "EID:Slt": "252:5",
+                            "Intf": "SAS",
+                            "Med": "SSD",
+                            "Model": "LT0800MO        ",
+                            "PI": "N",
+                            "SED": "N",
+                            "SeSz": "512B",
+                            "Size": "744.625 GB",
+                            "Sp": "U",
+                            "State": "JBOD"
+                        }
+                    ],
+                    "Drive /c0/e252/s5 - Detailed Information": {
+                        "Drive /c0/e252/s5 Device attributes": {
+                            "Coerced size": "744.625 GB [0x5d140000 Sectors]",
+                            "Device Speed": "12.0Gb/s",
+                            "Firmware Revision": "D40Z",
+                            "Link Speed": "6.0Gb/s",
+                            "Logical Sector Size": "512B",
+                            "Manufacturer Id": "SanDisk ",
+                            "Model Number": "LT0800MO        ",
+                            "NAND Vendor": "NA",
+                            "Non Coerced size": "744.712 GB [0x5d16ceb0 Sectors]",
+                            "Physical Sector Size": "512B",
+                            "Raw size": "745.212 GB [0x5d26ceb0 Sectors]",
+                            "SN": "42253252    ags/T43I",
+                            "WWN": "5001E8200284BBC5"
+                        },
+                        "Drive /c0/e252/s5 Policies/Settings": {
+                            "Certified": "Yes",
+                            "Commissioned Spare": "No",
+                            "Connected Port Number": "5(path0) ",
+                            "Emergency Spare": "No",
+                            "Enclosure position": 0,
+                            "Last Predictive Failure Event Sequence Number": 0,
+                            "Locked": "No",
+                            "Needs EKM Attention": "No",
+                            "PI Eligible": "No",
+                            "Port Information": [
+                                {
+                                    "Linkspeed": "6.0Gb/s",
+                                    "Port": 0,
+                                    "SAS address": "0x5001e8200284bbc6",
+                                    "Status": "Active"
+                                },
+                                {
+                                    "Linkspeed": "6.0Gb/s",
+                                    "Port": 1,
+                                    "SAS address": "0x0",
+                                    "Status": "Active"
+                                }
+                            ],
+                            "SED Capable": "No",
+                            "SED Enabled": "No",
+                            "Secured": "No",
+                            "Sequence Number": 2,
+                            "Successful diagnostics completion on": "N/A",
+                            "Wide Port Capable": "No"
+                        },
+                        "Drive /c0/e252/s5 State": {
+                            "Drive Temperature": " 35C (95.00 F)",
+                            "Media Error Count": 0,
+                            "Other Error Count": 0,
+                            "Predictive Failure Count": 0,
+                            "S_M_A_R_T alert flagged by drive": "No",
+                            "Shield Counter": 0
+                        },
+                        "Inquiry Data": "00 00 06 12 47 00 10 02 53 61 6e 44 69 73 6b 20 4c 54 30 38 30 30 4d 4f 20 20 20 20 20 20 20 20 44 34 30 5a 34 32 32 35 33 32 35 32 00 00 00 00 61 67 73 2f 54 34 33 49 00 00 00 80 0c 60 20 c0 04 60 04 c0 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 "
+                    }
+                }
+            }
+        ]
+    },
+    "id": "62fb192b-a839-45e0-8053-074958bbf4b8",
+    "node": "57ee15ff09011929051819e1",
+    "source": "megaraid-physical-drives",
+    "updatedAt": "2016-09-30T07:40:20.906Z"
+}

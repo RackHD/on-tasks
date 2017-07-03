@@ -1,14 +1,9 @@
 {
-    "$schema": "rackhd-task-schema.json",
     "copyright": "Copyright 2016, EMC, Inc.",
-    "title": "Linux Command in Microkernel",
-    "description": "The schema for linux command job",
-    "describeJob": "Job.Linux.Commands",
     "definitions": {
         "SimpleCommandItem": {
             "description": "The command line including the arguments",
             "type": "string",
-            "minLength": 1,
             "readonly": true
         },
         "AdvanceCommandItem": {
@@ -41,9 +36,9 @@
                     "minimum": 0
                 },
                 "downloadUrl": {
-                    "description": "Specify the download URL (relative to RackHD southbound API server) if the command needs to download some data or script from RackHD before execution",
+                    "description": "Specify the download URL if the command needs to download some data or script before execution",
                     "type": "string",
-                    "pattern": "^/[a-zA-Z0-9+-.#?=\\\/]+"
+                    "minLength": 1
                 },
                 "acceptedResponseCodes": {
                     "description": "The acceptable exit codes to mark the command success. Defaultly, exit code 0 means the command success, otherwise failure. If you want to specify other exit codes as success, write them here",
@@ -60,7 +55,10 @@
                     "minimum": 0
                 }
             },
-            "required": ["command"],
+            "anyOf": [
+                { "required": [ "command" ] },
+                { "required": [ "downloadUrl" ] }
+            ],
             "additionalProperties": false
         },
         "CommandItem": {
@@ -69,35 +67,36 @@
                 { "$ref": "#/definitions/AdvanceCommandItem" }
             ]
         },
-        "Commands": {
+        "CommandArray": {
             "description": "The list of commands that will be exuected in microkernel, all commands are exuected one by one in order",
             "type": "array",
             "items": {
                 "$ref": "#/definitions/CommandItem"
             },
-            "minItems": 1,
             "readonly": true
         },
         "RunOnlyOnce": {
             "description": "Indicate whether all commands should only be run once by node, if true, any additional request from node will be ignored. Default is true",
             "type": "boolean"
         },
-        "Options": {
-            "description": "The options of linux-command job",
-            "type": "object",
-            "properties": {
-                "commands": {
-                    "$ref": "#/definitions/Commands"
-                },
-                "runOnlyOnce": {
-                    "$ref": "#/definitions/RunOnlyOnce"
-                }
-            },
-            "required": ["commands"]
+        "UpdateExistingCatalog": {
+            "description": "Indicate whether to update the specified catalog rather than create a new catalog",
+            "type": "boolean"
         }
     },
-    "allOf": [
-        { "$ref": "common-task-options.json#/definitions/Options" },
-        { "$ref": "#/definitions/Options" }
-    ]
+    "properties": {
+        "commands": {
+            "oneOf": [
+                { "$ref": "#/definitions/CommandArray" },
+                { "$ref": "#/definitions/CommandItem" }
+            ]
+        },
+        "runOnlyOnce": {
+            "$ref": "#/definitions/RunOnlyOnce"
+        },
+        "updateExistingCatalog": {
+            "$ref": "#/definitions/UpdateExistingCatalog"
+        }
+    },
+    "required": ["commands"]
 }

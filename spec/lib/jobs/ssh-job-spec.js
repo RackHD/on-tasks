@@ -4,7 +4,7 @@
 var uuid = require('node-uuid');
 
 describe('ssh-job', function() {
-    var waterline = { nodes: {}, catalogs: {} },
+    var waterline = { ibms: {}, catalogs: {} },
         mockParser = {},
         SshJob,
         sshJob;
@@ -37,16 +37,18 @@ describe('ssh-job', function() {
             ];
             commandUtil.buildCommands = this.sandbox.stub().returns(testCommands);
             sshJob = new SshJob({}, { target: 'someNodeId' }, uuid.v4());
-            waterline.nodes.needByIdentifier = this.sandbox.stub();
+            waterline.ibms.findByNode = this.sandbox.stub();
             commandUtil.sshExec = this.sandbox.stub().resolves();
             mockParser.parseTasks = this.sandbox.stub().resolves();
             mockParser.parseUnknownTasks = this.sandbox.stub().resolves();
             sshSettings = {
-                host: 'the remote host',
-                port: 22,
-                username: 'someUsername',
-                password: 'somePassword',
-                privateKey: 'a pretty long string',
+                config: {
+                    host: 'the remote host',
+                    port: 22,
+                    username: 'someUsername',
+                    password: 'somePassword',
+                    privateKey: 'a pretty long string'
+                }
             };
 
             expect(sshJob).to.have.property('commandUtil');
@@ -67,8 +69,7 @@ describe('ssh-job', function() {
             );
             commandUtil.updateLookups = this.sandbox.stub().resolves();
 
-            var node = { sshSettings: sshSettings };
-            waterline.nodes.needByIdentifier.resolves(node);
+            waterline.ibms.findByNode.resolves(sshSettings);
             commandUtil.sshExec.onCall(0).resolves({stdout: 'data', cmd: 'aCommand'});
             commandUtil.sshExec.onCall(1).resolves({stdout: 'more data', cmd: 'testCommand'});
             sshJob.commands = testCommands;
@@ -76,8 +77,8 @@ describe('ssh-job', function() {
             return sshJob._run()
             .then(function() {
                 expect(commandUtil.sshExec).to.have.been.calledTwice
-                    .and.calledWith(sshJob.commands[0], sshSettings)
-                    .and.calledWith(sshJob.commands[1], sshSettings);
+                    .and.calledWith(sshJob.commands[0], sshSettings.config)
+                    .and.calledWith(sshJob.commands[1], sshSettings.config);
                 expect(commandUtil.parseResponse).to.have.been.calledOnce
                     .and.calledWith([
                         {stdout: 'data', cmd: 'aCommand'},

@@ -53,6 +53,8 @@ describe(require('path').basename(__filename), function () {
     var samples;
     var waterline = {};
     var base = require('./base-spec');
+    var alertJob;
+    var parser;
 
     base.before(function (context) {
         // create a child injector with on-core and the base pieces we need to test this
@@ -67,10 +69,9 @@ describe(require('path').basename(__filename), function () {
         ]);
 
         _ = helper.injector.get('_');
-        context.parser = helper.injector.get('JobUtils.IpmiCommandParser');
+        parser = helper.injector.get('JobUtils.IpmiCommandParser');
         context.Jobclass = helper.injector.get('Job.Poller.Alert.Ipmi.Sdr');
-        var alertJob = new context.Jobclass({}, { graphId: uuid.v4() }, uuid.v4());
-        context.determineAlert = alertJob._determineAlert;
+        alertJob = new context.Jobclass({}, { graphId: uuid.v4() }, uuid.v4());
         samples = _.cloneDeep(_samples);
     });
 
@@ -214,14 +215,15 @@ describe(require('path').basename(__filename), function () {
 
             data.sdr = samples.concat(badThresholdTestSensor);
 
-            return this.determineAlert(data)
+            return alertJob._determineAlert(data)
             .then(function(out) {
                 expect(out).to.have.length(1);
-                expect(out[0]).to.have.property('reading')
-                    .that.equals(badThresholdTestSensor);
-                expect(out[0]).to.have.property('host').that.equals(data.host);
-                expect(out[0]).to.have.property('node').that.equals(data.node);
-                expect(out[0]).to.have.property('inCondition').that.equals(true);
+                expect(out[0]).to.have.property('data');
+                expect(out[0]).to.have.property('nodeId').that.equals(data.node);
+                expect(out[0].data).to.have.property('reading')
+                    .that.deep.equals(badThresholdTestSensor);
+                expect(out[0].data).to.have.property('host').that.equals(data.host);
+                expect(out[0].data).to.have.property('inCondition').that.equals(true);
                 expect(waterline.workitems.update).to.have.been
                     .calledWith({ id: data.workItemId }, { config: conf });
             });
@@ -270,14 +272,15 @@ describe(require('path').basename(__filename), function () {
 
             data.sdr = samples.concat(badDiscreteTestSensor);
 
-            return this.determineAlert(data)
+            return alertJob._determineAlert(data)
             .then(function(out) {
                 expect(out).to.have.length(1);
-                expect(out[0]).to.have.property('reading')
+                expect(out[0]).to.have.property('data');
+                expect(out[0].data).to.have.property('reading')
                     .that.deep.equals(expectedReading);
-                expect(out[0]).to.have.property('host').that.equals(data.host);
-                expect(out[0]).to.have.property('node').that.equals(data.node);
-                expect(out[0]).to.have.property('inCondition').that.equals(true);
+                expect(out[0].data).to.have.property('host').that.equals(data.host);
+                expect(out[0]).to.have.property('nodeId').that.equals(data.node);
+                expect(out[0].data).to.have.property('inCondition').that.equals(true);
                 expect(waterline.workitems.update).to.have.been
                     .calledWith({ id: data.workItemId }, { config: conf });
             });
@@ -329,16 +332,16 @@ describe(require('path').basename(__filename), function () {
             badDiscreteTestSensor.statesAsserted.push('Failure detected');
             data.sdr = samples.concat(badDiscreteTestSensor);
 
-            return this.determineAlert(data)
+            return alertJob._determineAlert(data)
             .then(function(out) {
                 expect(out).to.have.length(2);
                 for (var i = 0; i < out.length; i+=1) {
                     expectedReading.stateAsserted = expectedStateAsserted[i];
-                    expect(out[i]).to.have.property('reading')
+                    expect(out[i].data).to.have.property('reading')
                         .that.deep.equals(expectedReading);
-                    expect(out[i]).to.have.property('host').that.equals(data.host);
-                    expect(out[i]).to.have.property('node').that.equals(data.node);
-                    expect(out[i]).to.have.property('inCondition').that.equals(true);
+                    expect(out[i].data).to.have.property('host').that.equals(data.host);
+                    expect(out[i]).to.have.property('nodeId').that.equals(data.node);
+                    expect(out[i].data).to.have.property('inCondition').that.equals(true);
                 }
                 expect(waterline.workitems.update).to.have.been
                     .calledWith({ id: data.workItemId }, { config: conf });
@@ -421,14 +424,14 @@ describe(require('path').basename(__filename), function () {
             var expectedInCondition = [true, false];
             data.sdr = samples.concat(badDiscreteTestSensor);
 
-            return this.determineAlert(data).then(function(out) {
+            return alertJob._determineAlert(data).then(function(out) {
                 expect(out).to.have.length(2);
                 for (var i = 0; i < out.length; i+=1) {
-                    expect(out[i]).to.have.property('reading')
+                    expect(out[i].data).to.have.property('reading')
                         .that.deep.equals(expectedReading[i]);
-                    expect(out[i]).to.have.property('host').that.equals(data.host);
-                    expect(out[i]).to.have.property('node').that.equals(data.node);
-                    expect(out[i]).to.have.property('inCondition')
+                    expect(out[i].data).to.have.property('host').that.equals(data.host);
+                    expect(out[i]).to.have.property('nodeId').that.equals(data.node);
+                    expect(out[i].data).to.have.property('inCondition')
                         .that.equals(expectedInCondition[i]);
                 }
                 expect(waterline.workitems.update).to.have.been
@@ -512,14 +515,14 @@ describe(require('path').basename(__filename), function () {
             delete badDiscreteTestSensor.statesAsserted;
             data.sdr = samples.concat(badDiscreteTestSensor);
 
-            return this.determineAlert(data).then(function(out) {
+            return alertJob._determineAlert(data).then(function(out) {
                 expect(out).to.have.length(2);
                 for (var i = 0; i < out.length; i+=1) {
-                    expect(out[i]).to.have.property('reading')
+                    expect(out[i].data).to.have.property('reading')
                         .that.deep.equals(expectedReading[i]);
-                    expect(out[i]).to.have.property('host').that.equals(data.host);
-                    expect(out[i]).to.have.property('node').that.equals(data.node);
-                    expect(out[i]).to.have.property('inCondition').that.equals(false);
+                    expect(out[i].data).to.have.property('host').that.equals(data.host);
+                    expect(out[i]).to.have.property('nodeId').that.equals(data.node);
+                    expect(out[i].data).to.have.property('inCondition').that.equals(false);
                 }
                 expect(waterline.workitems.update).to.have.been
                     .calledWith({ id: data.workItemId }, { config: conf });
@@ -623,14 +626,14 @@ describe(require('path').basename(__filename), function () {
             badDiscreteTestSensor.statesAsserted.push('Predictive failure');
             data.sdr = samples.concat(badDiscreteTestSensor);
 
-            return this.determineAlert(data).then(function(out) {
+            return alertJob._determineAlert(data).then(function(out) {
                 expect(out).to.have.length(3);
                 for (var i = 0; i < out.length; i+=1) {
-                    expect(out[i]).to.have.property('reading')
+                    expect(out[i].data).to.have.property('reading')
                         .that.deep.equals(expectedReading[i]);
-                    expect(out[i]).to.have.property('host').that.equals(data.host);
-                    expect(out[i]).to.have.property('node').that.equals(data.node);
-                    expect(out[i]).to.have.property('inCondition')
+                    expect(out[i].data).to.have.property('host').that.equals(data.host);
+                    expect(out[i]).to.have.property('nodeId').that.equals(data.node);
+                    expect(out[i].data).to.have.property('inCondition')
                         .that.equals(expectedInCondition[i]);
                 }
                 expect(waterline.workitems.update).to.have.been
@@ -664,14 +667,14 @@ describe(require('path').basename(__filename), function () {
 
             data.sdr = samples.concat(goodThresholdTestSensor);
 
-            return this.determineAlert(data)
+            return alertJob._determineAlert(data)
             .then(function(out) {
                 expect(out).to.have.length(1);
-                expect(out[0]).to.have.property('reading')
-                    .that.equals(goodThresholdTestSensor);
-                expect(out[0]).to.have.property('host').that.equals(data.host);
-                expect(out[0]).to.have.property('node').that.equals(data.node);
-                expect(out[0]).to.have.property('inCondition').that.equals(false);
+                expect(out[0].data).to.have.property('reading')
+                    .that.deep.equals(goodThresholdTestSensor);
+                expect(out[0].data).to.have.property('host').that.equals(data.host);
+                expect(out[0]).to.have.property('nodeId').that.equals(data.node);
+                expect(out[0].data).to.have.property('inCondition').that.equals(false);
                 expect(waterline.workitems.update).to.have.been
                     .calledWith({ id: data.workItemId }, { config: conf });
             });
@@ -727,14 +730,14 @@ describe(require('path').basename(__filename), function () {
             };
             data.sdr = samples.concat(goodDiscreteTestSensor);
 
-            return this.determineAlert(data)
+            return alertJob._determineAlert(data)
             .then(function(out) {
                 expect(out).to.have.length(1);
-                expect(out[0]).to.have.property('reading')
+                expect(out[0].data).to.have.property('reading')
                     .that.deep.equals(expectedReading);
-                expect(out[0]).to.have.property('host').that.equals(data.host);
-                expect(out[0]).to.have.property('node').that.equals(data.node);
-                expect(out[0]).to.have.property('inCondition').that.equals(false);
+                expect(out[0].data).to.have.property('host').that.equals(data.host);
+                expect(out[0]).to.have.property('nodeId').that.equals(data.node);
+                expect(out[0].data).to.have.property('inCondition').that.equals(false);
                 expect(waterline.workitems.update).to.have.been
                     .calledWith({ id: data.workItemId }, { config: conf });
             });
@@ -769,13 +772,14 @@ describe(require('path').basename(__filename), function () {
 
             data.sdr = samples.concat(goodThresholdTestSensor).concat(badThresholdTestSensor);
 
-            return this.determineAlert(data)
+            return alertJob._determineAlert(data)
             .then(function(out) {
                 expect(out).to.have.length(1);
-                expect(out[0]).to.have.property('reading').that.equals(badThresholdTestSensor);
-                expect(out[0]).to.have.property('host').that.equals(data.host);
-                expect(out[0]).to.have.property('node').that.equals(data.node);
-                expect(out[0]).to.have.property('inCondition').that.equals(true);
+                expect(out[0].data).to.have.property('reading')
+                    .that.deep.equals(badThresholdTestSensor);
+                expect(out[0].data).to.have.property('host').that.equals(data.host);
+                expect(out[0]).to.have.property('nodeId').that.equals(data.node);
+                expect(out[0].data).to.have.property('inCondition').that.equals(true);
                 expect(waterline.workitems.update).to.have.been
                     .calledWith({ id: data.workItemId }, { config: conf });
             });
@@ -785,7 +789,7 @@ describe(require('path').basename(__filename), function () {
         it("should not alert if no workitem is found", function() {
             waterline.workitems.needByIdentifier.rejects(new Errors.NotFoundError(
                         "test not found rejection"));
-            return this.determineAlert({}).should.become(undefined);
+            return alertJob._determineAlert({}).should.become(undefined);
         });
 
         it('should sanitize data before updating the database', function() {
@@ -813,8 +817,8 @@ describe(require('path').basename(__filename), function () {
                 'upperCritical': '1.659'
             }];
 
-            return this.determineAlert(data)
-            .then(function(out) {
+            return alertJob._determineAlert(data)
+            .then(function() {
                 expect(waterline.workitems.update.getCall(0).args[1]).to.deep.equal({
                     config: {
                         command: 'sdr',
@@ -885,13 +889,14 @@ describe(require('path').basename(__filename), function () {
             };
             data.sdr = samples.concat(goodDiscreteTestSensor).concat(badDiscreteTestSensor);
 
-            return this.determineAlert(data)
+            return alertJob._determineAlert(data)
             .then(function(out) {
                 expect(out).to.have.length(1);
-                expect(out[0]).to.have.property('reading').that.deep.equals(expectedReading);
-                expect(out[0]).to.have.property('host').that.equals(data.host);
-                expect(out[0]).to.have.property('node').that.equals(data.node);
-                expect(out[0]).to.have.property('inCondition').that.equals(true);
+                expect(out[0].data).to.have.property('reading')
+                    .that.deep.equals(expectedReading);
+                expect(out[0].data).to.have.property('host').that.equals(data.host);
+                expect(out[0]).to.have.property('nodeId').that.equals(data.node);
+                expect(out[0].data).to.have.property('inCondition').that.equals(true);
                 expect(waterline.workitems.update).to.have.been
                     .calledWith({ id: data.workItemId }, { config: conf });
             });
@@ -929,7 +934,7 @@ describe(require('path').basename(__filename), function () {
 
             data.sdr = samples.concat(goodDiscreteTestSensor);
 
-            return this.determineAlert(data)
+            return alertJob._determineAlert(data)
                 .then(function() {
                     expect(waterline.workitems.update).to.have.been
                         .calledWith({ id: data.workItemId }, { config: conf });
@@ -937,5 +942,12 @@ describe(require('path').basename(__filename), function () {
 
         });
 
+    });
+
+    describe("format event", function() {
+        it("should throw error if input is not an array", function() {
+            expect(function(){ alertJob._formatSdrAlert(); })
+                .to.throw(Error.AssertionError, 'data (array) is required');
+        });
     });
 });

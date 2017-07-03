@@ -19,6 +19,9 @@ describe(require('path').basename(__filename), function () {
         },
         obms: {
             find: function () { }
+        },
+        ibms: {
+            findByNode: function () { }
         }
     };
 
@@ -42,6 +45,7 @@ describe(require('path').basename(__filename), function () {
             this.sandbox.stub(job, '_subscribeActiveTaskExists').resolves();
             this.sandbox.stub(mockWaterline.nodes, 'updateByIdentifier');
             this.sandbox.stub(mockWaterline.obms, 'find').resolves();
+            this.sandbox.stub(mockWaterline.ibms, 'findByNode').resolves();
         });
 
         afterEach('PDU node relations job node data validation', function () {
@@ -54,7 +58,7 @@ describe(require('path').basename(__filename), function () {
                 type: 'compute',
                 relations: [],
                 id: nodeId
-            }
+            };
             this.sandbox.stub(mockWaterline.nodes, 'needByIdentifier').resolves(computeNode);
             job.run()
             .then(function () {
@@ -80,6 +84,7 @@ describe(require('path').basename(__filename), function () {
         var node;
         var obms;
         var pduNode;
+        var snmpSettings;
         beforeEach('PDU node relations job update node', function () {
 
             job = new PduRelationsJob({}, { target: nodeId }, uuid.v4());
@@ -92,14 +97,16 @@ describe(require('path').basename(__filename), function () {
                         user: 'admin'
                     },
                     id: '578f6989f8570ac768d22486'
-                },
+                }
             ];
             pduNode = {
                 autoDiscover: true,
                 type: 'pdu',
                 relations: [],
-                id: nodeId,
-                snmpSettings: {
+                id: nodeId
+            };
+            snmpSettings = {
+                config: {
                     host: '11.12.123.1',
                     community: 'public'
                 }
@@ -115,6 +122,7 @@ describe(require('path').basename(__filename), function () {
             this.sandbox.stub(job, '_subscribeActiveTaskExists').resolves();
             this.sandbox.stub(mockWaterline.nodes, 'updateByIdentifier').resolves();
             this.sandbox.stub(mockWaterline.obms, 'find').resolves(obms);
+            this.sandbox.stub(mockWaterline.ibms, 'findByNode').resolves(snmpSettings);
             this.sandbox.stub(mockWaterline.nodes, 'findByIdentifier').resolves(node);
             needByIdentifier = this.sandbox.stub(mockWaterline.nodes, 'needByIdentifier');
 
@@ -177,11 +185,7 @@ describe(require('path').basename(__filename), function () {
                 autoDiscover: true,
                 type: 'pdu',
                 relations: pduRelation.relations,
-                id: nodeId,
-                snmpSettings: {
-                    host: '11.12.123.1',
-                    community: 'public'
-                }
+                id: nodeId
             };
             needByIdentifier.resolves(pduNode);
 

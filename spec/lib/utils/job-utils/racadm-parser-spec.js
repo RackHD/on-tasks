@@ -22,6 +22,7 @@ describe("racadm-parser", function() {
             var tasks = racadmOutMock.racadmSoftwareInventory;
             var result = parser.getSoftwareList(tasks);
             expect(result.iDRAC).to.deep.equal({
+                componentType: 'FIRMWARE',
                 FQDD: 'iDRAC.Embedded.1-1',
                 installationDate: '2016-01-11T21:55:32Z',
                 currentVersion: '2.23.23.21',
@@ -30,6 +31,7 @@ describe("racadm-parser", function() {
                 availableVersion: ''
             });
             expect(result.NIC1).to.deep.equal({
+                componentType: 'FIRMWARE',
                 FQDD: 'NIC.Embedded.1-1-1',
                 installationDate: '2015-11-26T06:54:17Z',
                 currentVersion: '16.5.0',
@@ -38,6 +40,7 @@ describe("racadm-parser", function() {
                 rollbackVersion: ''
             });
             expect(result.NIC2).to.deep.equal({
+                componentType: 'FIRMWARE',
                 FQDD: 'NIC.Embedded.2-1-1',
                 installationDate: '2015-11-26T06:54:20Z',
                 currentVersion: '16.5.0',
@@ -46,6 +49,7 @@ describe("racadm-parser", function() {
                 rollbackVersion: ''
             });
             expect(result.BIOS).to.deep.equal({
+                componentType: 'BIOS',
                 FQDD: 'BIOS.Setup.1-1',
                 installationDate: '2015-11-26T06:54:10Z',
                 currentVersion: '1.0.3',
@@ -54,6 +58,7 @@ describe("racadm-parser", function() {
                 elementName: 'BIOS'
             });
             expect(result.Disk1).to.deep.equal({
+                componentType: 'FIRMWARE',
                 FQDD: 'Disk.Bay.1:Enclosure.Internal.0-0:RAID.Slot.1-1',
                 installationDate: '2015-11-26T07:28:09Z',
                 currentVersion: 'TS04',
@@ -62,6 +67,7 @@ describe("racadm-parser", function() {
                 rollbackVersion: ''
             });
             expect(result.Disk2).to.deep.equal({
+                componentType: 'FIRMWARE',
                 FQDD: 'Disk.Bay.2:Enclosure.Internal.0-0:RAID.Slot.1-1',
                 installationDate: '2015-11-26T07:28:09Z',
                 currentVersion: 'TS04',
@@ -80,7 +86,7 @@ describe("racadm-parser", function() {
     });
 
     describe("Parse file path", function() {
-        it("should parse  remote filename and path", function() {
+        it("should parse cifs filename and path", function() {
             var data = "//192.168.191.207/share/bios.xml";
             var result = parser.getPathFilename(data);
             expect(result.path).to.equal('//192.168.191.207/share');
@@ -88,12 +94,20 @@ describe("racadm-parser", function() {
             expect(result.style).to.equal('remote');
         });
 
-        it("should parse  remote filename and path", function() {
+        it("should parse local filename and path", function() {
             var data = "/home/share/bios.xml";
             var result = parser.getPathFilename(data);
             expect(result.path).to.equal('/home/share');
             expect(result.name).to.equal('bios.xml');
             expect(result.style).to.equal('local');
+        });
+
+        it("should parse nfs filename and path", function() {
+            var data = "10.1.1.1:/home/share/bios.xml";
+            var result = parser.getPathFilename(data);
+            expect(result.path).to.equal('10.1.1.1:/home/share');
+            expect(result.name).to.equal('bios.xml');
+            expect(result.style).to.equal('remote');
         });
 
         it("should report path format incorrect", function() {

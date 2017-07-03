@@ -18,11 +18,12 @@ describe('Task Graph', function () {
             helper.require('/lib/task.js'),
             helper.require('/lib/utils/task-option-validator.js'),
             helper.di.simpleWrapper([], 'Task.taskLibrary'),
+            helper.di.simpleWrapper({graphobjects: {findOne: sinon.stub()}}, 'Services.Waterline'),
             helper.di.simpleWrapper({
                 getTaskDefinition: sinon.stub().resolves(),
                 persistTaskDependencies: sinon.stub().resolves(),
                 persistGraphObject: sinon.stub().resolves(),
-                publishGraphRecord: sinon.stub().resolves(),
+                publishGraphRecord: sinon.stub().resolves()
             }, 'TaskGraph.Store')
         ]);
         Constants = helper.injector.get('Constants');
@@ -207,6 +208,16 @@ describe('Task Graph', function () {
             var promise = TaskGraph.create('domain', { definition: definitions.graphDefinition });
             return expect(promise).to.be.rejectedWith(
                 /The task label \'test-duplicate\' is used more than once in the graph definition/
+            );
+        });
+        
+        it('should fail on illegal task labels', function() {
+            definitions.graphDefinition.tasks.push({
+                'label': 'anyOf'
+            });
+            var promise = TaskGraph.create('domain', {definition: definitions.graphDefinition});
+            return expect(promise).to.be.rejectedWith(
+                /Label anyOf is reserved, please use another label./  
             );
         });
 
@@ -515,6 +526,14 @@ describe('Task Graph', function () {
                     .that.equals('finished');
             });
         });
+
+        it('should create task with waitOn.anyOf', function(){
+            return TaskGraph.create('domain', {definition: definitions.graphWaitOnAnyTasks})
+            .then(function(graph){
+                var taskList = graph.definition.tasks;
+                expect(Object.keys(taskList[3].taskDefinition.waitOn.anyOf).length).to.equal(2);
+            });
+        });
     });
 
     describe('Persistence', function() {
@@ -543,4 +562,5 @@ describe('Task Graph', function () {
             });
         });
     });
+
 });

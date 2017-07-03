@@ -37,6 +37,9 @@ describe("Job.Catalog.RunWorkItem", function () {
         waterline.obms = {
             findByNode: sinon.stub()
         };
+        waterline.ibms = {
+            findByNode: sinon.stub()
+        };
     });
 
     beforeEach(function () {
@@ -45,6 +48,7 @@ describe("Job.Catalog.RunWorkItem", function () {
         waterline.workitems.setFailed.reset();
         waterline.nodes.findOne.reset();
         waterline.obms.findByNode.reset();
+        waterline.ibms.findByNode.reset();
         taskProtocol.publishRunIpmiCommand.reset();
         taskProtocol.publishRunSnmpCommand.reset();
     });

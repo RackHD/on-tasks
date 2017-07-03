@@ -7,7 +7,7 @@ describe(require('path').basename(__filename), function() {
     var schemaFileName = 'install-centos.json';
 
     var partialCanonical = {
-        "rackhdCallbackScript": "centos.rackhdcallback",
+        "rackhdCallbackScript": "centos.rackhdcallback"
     };
 
     var positiveSetParam = {
@@ -20,7 +20,8 @@ describe(require('path').basename(__filename), function() {
     ];
 
     var negativeUnsetParam = [
-        "rackhdCallbackScript"
+        "rackhdCallbackScript",
+        "hostname"
     ];
 
     var installOsCommonHelper = require('./install-os-schema-ut-helper');

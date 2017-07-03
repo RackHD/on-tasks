@@ -58,7 +58,12 @@ var canonical = {
             }
         },
     ],
-    "installDisk": "/dev/sda"
+    "installDisk": "/dev/sda",
+    "progressMilestones": {
+        "m1":        { "value": 1, "description": "do task 1" },
+        "m__2":      { "value": 2, "description": "do task 2" },
+        "completed": { "value": 3, "description": "task finished" }
+    }
 };
 
 var positiveSetParam = {
@@ -76,7 +81,19 @@ var negativeSetParam = {
     repo: ["foo", 12, '', 'https://abc.com/os', 'tftp://abc.com/abc'],
     installDisk: [-1],
     "networkDevices[0].ipv4.ipAddr": ["foo/bar", "300.100.9.0"],
-    "networkDevices[0].ipv4.vlanIds[0]": [-1, 4096, 10000]
+    "networkDevices[0].ipv4.vlanIds[0]": [-1, 4096, 10000],
+    "progressMilestones.m1.value": ["1", -1],
+    "progressMilestones": [
+        {
+            "0abc":{ "value": 1, "description": "test" }
+        },
+        {
+            "$abc":{ "value": 1, "description": "test" }
+        },
+        {
+            "ab-":{ "value": 1, "description": "test" }
+        }
+    ]
 };
 
 var positiveUnsetParam = [
@@ -85,6 +102,8 @@ var positiveUnsetParam = [
     "dnsServers",
     "rootSshKey",
     "domain",
+    "progressMilestones",
+    "progressMilestones.m1.description"
 ];
 
 var negativeUnsetParam = [
@@ -95,10 +114,10 @@ var negativeUnsetParam = [
     "version",
     "repo",
     "rootPassword",
-    "hostname",
     "networkDevices[0].device",
     "networkDevices[1].ipv4.ipAddr",
-    "networkDevices[2].ipv6.netmask"
+    "networkDevices[2].ipv6.netmask",
+    "progressMilestones.m1.value"
 ];
 
 module.exports = {
