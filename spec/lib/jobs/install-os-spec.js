@@ -282,13 +282,15 @@ describe('Install OS Job', function () {
         subscribeNodeNotification = sinon.stub(
             InstallOsJob.prototype, '_subscribeNodeNotification', function(_nodeId, callback) {
                 callback({
-                    nodeId: _nodeId
+                    nodeId: _nodeId,
+                    nodeIp: '1.1.1.1'
                 });
             });
 
         waterline.graphobjects.findOne = sinon.stub().resolves(graph);
         return job.run().then(function() {
             expect(subscribeNodeNotification).to.have.callCount(1);
+            expect(job.context.nodeIp).to.equal('1.1.1.1');
             expect(job._done).to.have.callCount(1);
             expect(job._done.firstCall.args[0]).to.equal(undefined);
         });
