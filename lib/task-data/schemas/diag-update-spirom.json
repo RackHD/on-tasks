@@ -1,0 +1,33 @@
+{
+    "copyright": "Copyright 2017, Dell EMC, Inc.",
+    "definitions": {
+        "imagePath": {
+            "description": "Image zip file path",
+            "type": "string",
+            "pattern": "^/.*\\.zip$"
+        },
+        "imageMode": {
+            "description": "Update mode",
+            "type": "string",
+            "enum": ["fullbios", "bios", "uefi", "serdes", "post", "me", "0", "1", "2", "3",
+                "4", "5"]
+        },
+        "imageName": {
+            "description": "Image bin file name",
+            "type": "string",
+            "pattern": ".*.bin$"
+        }
+    },
+    "properties": {
+        "imageName": {
+            "$ref": "#/definitions/imageName"
+        },
+        "localImagePath": {
+            "$ref": "#/definitions/imagePath"
+        },
+        "imageMode": {
+            "$ref": "#/definitions/imageMode"
+        }
+    },
+    "required": ["imageName", "imageMode"]
+}

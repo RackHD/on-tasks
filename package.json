@@ -48,6 +48,8 @@
     "lodash.unset": "^4.4.0",
     "mocha": "^2.1.0",
     "nock": "^2.17.0",
+    "request": "^2.81.0",
+    "request-promise": "^4.2.1",
     "sinon": "^1.12.2",
     "sinon-as-promised": "^2.0.3",
     "sinon-chai": "^2.7.0",

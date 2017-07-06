@@ -1,0 +1,81 @@
+{
+    "runSyncDiscovery": {
+        "result": [
+            {
+                "atomic_test_start":
+                {
+                    "timestamp": "2017-06-19 11:29:58.017582"
+                }
+            }
+        ]
+    },
+    "getDevices": {
+        "devices": [
+            {
+                "href": "/api/devices/O/0_A",
+                "name": "Oberon",
+                "slot": "0_A"
+            },
+            {
+                "href": "/api/devices/Python%20Plugin%20Collection/0_A",
+                "name": "Python Plugin Collection",
+                "slot": "0_A"
+            },
+            {
+                "href": "/api/devices/root/0_0",
+                "name": "root",
+                "slot": "0_0"
+            }
+        ]
+    },
+    "updateSpiRom": {
+        "result": [
+            {
+                "atomic_test_start": {
+                    "timestamp": "2017-06-19 11:42:26.900028"
+                }
+            },
+            {
+                "atomic_test_data": {
+                    "timestamp": "2017-06-19 11:42:26.941042"
+                }
+            },
+            {
+                "atomic_test_data": {
+                    "secure_firmware_update": "Issue warm reset NOW!",
+                    "timestamp": "2017-06-19 11:42:27.035284"
+                }
+            },
+            {
+                "atomic_test_end": {
+                    "timestamp": "2017-06-19 11:42:27.035543"
+                }
+            }
+        ]
+    },
+    "childrenData": {
+        "devices": [
+            {
+                "href": "/api/devices/O_SP/0_A",
+                "name": "O_SP",
+                "slot": "0_A"
+            }
+        ]    
+    },
+    "testList":{
+        "tests": [
+            {
+                "href": "/api/devices/O_SP/0_A/tests/run_children_test",
+                "name": "run_children_test"
+            },
+            {
+                "href": "/api/devices/O_SP/0_A/tests/set_next_test_result",
+                "name": "set_next_test_result"
+            },
+            {
+                "href": "/api/devices/O_SP/0_A/tests/warm_reset",
+                "name": "warm_reset"
+            }
+        ]
+    }
+}
