@@ -17,15 +17,19 @@ describe('update spirom by diag', function(){
         nodeIdToIpAddresses: function(){}
     };
     var UpdateSpiRomJob;
+    var sandbox = sinon.sandbox.create();
+    var deviceInfo = {
+        slot: '0_A',
+        href: '/api/device1'
+    };
     var diagTool = {
-        uploadImageFile: sinon.stub(),
-        retrySyncDiscovery: sinon.stub(),
-        getSlotId: sinon.stub().returns('0_A'),
-        updateSpiRom: sinon.stub().resolves(),
-        getDeviceApi: sinon.stub().returns("/api/device1"),
-        getDevices: sinon.stub().resolves([{device1: '/api/device1'},{device2: '/api/device2'}]),
-        getTestList: sinon.stub().resolves({test1: '/api/test1'}),
-        warmReset: sinon.stub().resolves()
+        uploadImageFile: sandbox.stub(),
+        retrySyncDiscovery: sandbox.stub(),
+        updateSpiRom: sandbox.stub().resolves(),
+        getDeviceInfo: sandbox.stub().resolves(deviceInfo),
+        getSpTestList: sandbox.stub().resolves([{test1: '/api/test1'}]),
+        getTestApiByName: sandbox.stub().returns('/api/test2'),
+        exeSpTest: sandbox.stub().resolves()
     };
     function DiagTool() {return diagTool;}
 
@@ -38,11 +42,7 @@ describe('update spirom by diag', function(){
             helper.di.simpleWrapper(lookupServices, 'Services.Lookup')
         ]);
         UpdateSpiRomJob = helper.injector.get('Job.Diag.Update.Spirom');
-        this.sandbox = sinon.sandbox.create();
-    });
-
-    beforeEach('subscribe SEL events job after each', function(){
-        this.sandbox.stub(lookupServices, 'nodeIdToIpAddresses').resolves(['1.1.1.1']);
+        this.sandbox = sandbox;
     });
 
     afterEach('subscribe SEL events job after each', function(){
@@ -56,30 +56,25 @@ describe('update spirom by diag', function(){
         .then(function(){
             expect(diagTool.retrySyncDiscovery).to.be.calledOnce;
             expect(diagTool.uploadImageFile).to.be.calledOnce;
-            expect(diagTool.getDevices).to.be.calledOnce;
-            expect(diagTool.getSlotId).to.be.calledOnce;
+            expect(diagTool.getDeviceInfo).to.be.calledOnce;
             expect(diagTool.updateSpiRom).to.be.calledOnce;
-            expect(diagTool.getDeviceApi).to.be.calledOnce;
-            expect(diagTool.getTestList).to.be.calledOnce;
-            expect(diagTool.warmReset).to.be.calledOnce;
+            expect(diagTool.getSpTestList).to.be.calledOnce;
+            expect(diagTool.getTestApiByName).to.be.calledOnce;
+            expect(diagTool.exeSpTest).to.be.calledOnce;
             expect(job._done).to.be.calledOnce;
             expect(diagTool.retrySyncDiscovery).to.be.calledWith(5000, 6);
             expect(diagTool.uploadImageFile).to.be.calledWith(options.localImagePath);
-            expect(diagTool.getSlotId).to.be.calledWith([
-                {device1: '/api/device1'},
-                {device2: '/api/device2'}
-            ]);
             expect(diagTool.updateSpiRom).to.be.calledWith(
                 '0_A',
                 options.imageName,
                 options.imageMode
             );
-            expect(diagTool.getDeviceApi).to.be.calledWith([
-                {device1: '/api/device1'},
-                {device2: '/api/device2'}
-            ]);
-            expect(diagTool.getTestList).to.be.calledWith("/api/device1");
-            expect(diagTool.warmReset).to.be.calledWith({test1: '/api/test1'});
+            expect(diagTool.getSpTestList).to.be.calledWith("/api/device1");
+            expect(diagTool.getTestApiByName).to.be.calledWith(
+                'warm_reset',
+                [{test1: '/api/test1'}]
+            );
+            expect(diagTool.exeSpTest).to.be.calledWith('/api/test2');
         });
     });
 
@@ -101,15 +96,29 @@ describe('update spirom by diag', function(){
         });
     });
 
-    it('should throw error', function() {
-        var error = new Error('Test');
-        diagTool.retrySyncDiscovery.reset();
-        diagTool.retrySyncDiscovery.rejects(error);
-        job = new UpdateSpiRomJob(options, context, taskId);
-        sinon.stub(job, '_done').resolves();
+    it('should throw invalid IP error', function() {
+        var _context = _.cloneDeep(context);
+        _context.nodeIp = '10.1.1.';
+        job = new UpdateSpiRomJob(options, _context, taskId);
+        this.sandbox.stub(job, '_done').resolves();
         return job._run()
         .then(function(){
-            expect(job._done).to.be.calledWith(error);
+            expect(job._done).to.be.calledOnce;
+            expect(job._done.args[0][0].message).to.equal(
+                'Violated isIP constraint (10.1.1.,4).'
+            );
+        });
+    });
+
+    it('should throw error', function() {
+        var error = new Error('Test');
+        diagTool.retrySyncDiscovery.rejects(error);
+        job = new UpdateSpiRomJob(options, context, taskId);
+        this.sandbox.stub(job, '_done').resolves();
+        return job._run()
+        .then(function(){
+            expect(job._done).to.be.calledOnce;
+            expect(job._done.args[0][0]).to.deep.equal(error);
         });
     });
 

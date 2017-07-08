@@ -12,8 +12,8 @@
     "getDevices": {
         "devices": [
             {
-                "href": "/api/devices/O/0_A",
-                "name": "Oberon",
+                "href": "/api/devices/Platform_O/0_A",
+                "name": "O",
                 "slot": "0_A"
             },
             {
@@ -56,24 +56,24 @@
     "childrenData": {
         "devices": [
             {
-                "href": "/api/devices/O_SP/0_A",
-                "name": "O_SP",
+                "href": "/api/devices/Platform_O_SP/0_A",
+                "name": "Platform_O_SP",
                 "slot": "0_A"
             }
-        ]    
+        ]
     },
     "testList":{
         "tests": [
             {
-                "href": "/api/devices/O_SP/0_A/tests/run_children_test",
+                "href": "/api/devices/Platform_O_SP/0_A/tests/run_children_test",
                 "name": "run_children_test"
             },
             {
-                "href": "/api/devices/O_SP/0_A/tests/set_next_test_result",
+                "href": "/api/devices/Platform_O_SP/0_A/tests/set_next_test_result",
                 "name": "set_next_test_result"
             },
             {
-                "href": "/api/devices/O_SP/0_A/tests/warm_reset",
+                "href": "/api/devices/Platform_O_SP/0_A/tests/warm_reset",
                 "name": "warm_reset"
             }
         ]

@@ -40,51 +40,35 @@ describe('update spirom by diag', function(){
         nock(server)
             .get('/api/devices')
             .reply(200, dataSamples.getDevices);
-        return diagTool.getDevices()
-        .then(function(devices){
-            expect(devices).to.deep.equal(dataSamples.getDevices.devices);
+        return diagTool.getDeviceInfo()
+        .then(function(device){
+            expect(device).to.deep.equal(dataSamples.getDevices.devices[0]);
         });
     });
 
     it('should run get test list api', function() {
-        var deviceApi = diagTool.getDeviceApi(dataSamples.getDevices.devices);
+        var deviceApi = dataSamples.getDevices.devices[0].href;
         nock(server)
-            .get('/api/devices/O/0_A/children')
+            .get('/api/devices/Platform_O/0_A/children')
             .reply(200, dataSamples.childrenData)
-            .get('/api/devices/O_SP/0_A/tests')
+            .get('/api/devices/Platform_O_SP/0_A/tests')
             .reply(200, dataSamples.testList);
-        return diagTool.getTestList(deviceApi)
+        return diagTool.getSpTestList(deviceApi)
         .then(function(tests){
             expect(tests).to.deep.equal(dataSamples.testList.tests);
         });
     });
 
-    describe('update warm reset tests', function(){
-        it('should run warm reset api', function() {
-            var testList = dataSamples.testList.tests;
-            nock(server)
-                .get(testList[2].href + '/run')
-                .reply(200, {'test': 'test'});
-            return diagTool.warmReset(testList)
-            .then(function(body){
-                expect(body).to.deep.equal({'test': 'test'});
-            });
-        });
-
-        it('should report can not get warm reset api', function(done) {
-            var testList = _.cloneDeep(dataSamples.testList.tests);
-            testList[2].name = 'test';
-            nock(server)
-                .get(testList[2].href + '/run')
-                .reply(200, {'test': 'test'});
-            return diagTool.warmReset(testList)
-            .then(function(){
-                done(new Error('Test should fail'));
-            })
-            .catch(function(err){
-                expect(err.message).to.equal('Can not get warm reset test API');
-                done();
-            });
+    it('should run warm reset api', function() {
+        var testList = dataSamples.testList.tests;
+        var warmResetApi = diagTool.getTestApiByName('warm_reset', testList);
+        nock(server)
+            .get(testList[2].href + '/run')
+            .reply(200, {'test': 'test'});
+        
+        return diagTool.exeSpTest(warmResetApi)
+        .then(function(body){
+            expect(body).to.deep.equal({'test': 'test'});
         });
     });
 
@@ -117,10 +101,7 @@ describe('update spirom by diag', function(){
                     }
                 ]
             };
-        });
-
-        beforeEach(function(){
-            slot = diagTool.getSlotId(dataSamples.getDevices.devices);
+            slot = dataSamples.getDevices.devices[0].slot;
         });
 
         it('should run update SPIROM api with defautl api', function(done) {
@@ -201,8 +182,7 @@ describe('update spirom by diag', function(){
             })
             .catch(function(err){
                 expect(err.message).to.equal(
-                    "ENOENT: no such file or directory, open " +
-                    "'/home/onrack/src/on-tasks/spec/lib/utils/job-utils/samplefiles/diag-tool.tx'"
+                    "ENOENT: no such file or directory, open '%s'".format(file)
                 );
                 done();
             });
