@@ -482,7 +482,7 @@ describe("racadm-tool", function() {
                 getPathFilenameStub.returns(self.fileInfo);
                 return instance.updateFirmware('192.168.188.103', 'admin', 'admin',self.cifsConfig)
                 .then(function(){
-                    runCommandStub.should.be.callOnce;
+                    runCommandStub.should.be.calledOnce;
                 });
             });
 
