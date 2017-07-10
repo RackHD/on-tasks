@@ -18,7 +18,7 @@ describe(require('path').basename(__filename), function () {
         target: uuid.v4()
     };
     var options = {
-        selForceClear: true,
+        selClear: true,
         maxSelUsage: 80
     };
     var taskId = uuid.v4();
@@ -108,7 +108,7 @@ describe(require('path').basename(__filename), function () {
         this.sandbox.stub(_job, '_done');
         return _job._run()
         .then(function(){
-            expect(_job._done).to.callOnce;
+            expect(_job._done).to.be.calledOnce;
             expect(_job._done.args[0][0].message).to.equal("Can not get node SEL usage status");
         });
     });
@@ -120,7 +120,7 @@ describe(require('path').basename(__filename), function () {
         return _job._run()
         .then(function(){
             var err = new Error("Sel usage is 57\%, exceeds max sel usage 50\%");
-            expect(_job._done).to.callOnce;
+            expect(_job._done).to.be.calledOnce;
             expect(_job._done.args[0][0]).to.deep.equal(err);
         });
     });

@@ -7,7 +7,7 @@ describe(require('path').basename(__filename), function() {
     var schemaFileName = 'clear-sel-by-usage.json';
 
     var canonical = {
-        selForceClear: true,
+        selClear: true,
         maxSelUsage: 80
     };
 
@@ -15,12 +15,12 @@ describe(require('path').basename(__filename), function() {
     };
 
     var negativeSetParam = {
-        selForceClear: ['', null, 123],
+        selClear: ['', null, 123],
         maxSelUsage:  ['', null, 123, true]
     };
 
     var positiveUnsetParam = [
-        'selForceClear',
+        'selClear',
         'maxSelUsage'
     ];
 

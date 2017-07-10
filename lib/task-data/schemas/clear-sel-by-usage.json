@@ -1,7 +1,7 @@
 {
     "copyright": "Copyright 2017 Dell Inc. or its subsidiaries. All Rights Reserved.",
     "definitions": {
-        "selForceClearFlag": {
+        "selClearFlag": {
             "type": "boolean",
             "description": "User specifies whether force to clear sel when sel entry is almost full"
         },
@@ -13,8 +13,8 @@
         }
     },
     "properties": {
-        "selForceClear": {
-            "$ref": "#/definitions/selForceClearFlag"
+        "selClear": {
+            "$ref": "#/definitions/selClearFlag"
         },
         "maxSelUsage": {
             "$ref": "#/definitions/maxSelUsagePercent"
