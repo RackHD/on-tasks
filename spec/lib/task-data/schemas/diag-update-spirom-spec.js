@@ -1,4 +1,4 @@
-// Copyright 2016, EMC, Inc.
+// Copyright 2017, EMC, Inc.
 /* jshint node: true */
 
 'use strict';
@@ -14,12 +14,12 @@ describe(require('path').basename(__filename), function() {
 
     var positiveSetParam = {
         imageMode: ['bios', 'fullbios', 'me', 'post', 'uefi',
-            'serdes', '0', '1', '2', '3', '4', '5']
+            'serdes', '0', '1', '2', '3', '4', '5', 0, 1, 2, 3, 4, 5]
     };
 
     var negativeSetParam = {
         imageName: 'somefirmware',
-        imageMode: 'bmc',
+        imageMode: ['bmc', 6, '6', true],
         localImagePath: ['bios/bios.zip', '/bios/bios']
     };
 
@@ -34,5 +34,6 @@ describe(require('path').basename(__filename), function() {
 
     var SchemaUtHelper = require('./schema-ut-helper');
     new SchemaUtHelper(schemaFileName, canonical).batchTest(
-        positiveSetParam, negativeSetParam, positiveUnsetParam, negativeUnsetParam);
+        positiveSetParam, negativeSetParam, positiveUnsetParam, negativeUnsetParam
+    );
 });

@@ -5,6 +5,7 @@
 var uuid = require('node-uuid');
 describe('update spirom by diag', function(){
     var job;
+    var UpdateSpiRomJob;
     var taskId = uuid.v4();
     var nodeId = uuid.v4();
     var context = {target: nodeId, nodeIp: "172.31.128.6"};
@@ -13,10 +14,6 @@ describe('update spirom by diag', function(){
         imageName: "emc_c_bios_oberon_5042.bin",
         imageMode: "1"
     };
-    var lookupServices = {
-        nodeIdToIpAddresses: function(){}
-    };
-    var UpdateSpiRomJob;
     var sandbox = sinon.sandbox.create();
     var deviceInfo = {
         slot: '0_A',
@@ -29,7 +26,7 @@ describe('update spirom by diag', function(){
         getDeviceInfo: sandbox.stub().resolves(deviceInfo),
         getSpTestList: sandbox.stub().resolves([{test1: '/api/test1'}]),
         getTestApiByName: sandbox.stub().returns('/api/test2'),
-        exeSpTest: sandbox.stub().resolves()
+        executeSpTest: sandbox.stub().resolves()
     };
     function DiagTool() {return diagTool;}
 
@@ -38,15 +35,13 @@ describe('update spirom by diag', function(){
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/diag-update-spirom.js'),
             helper.require('/lib/utils/job-utils/diag-tool.js'),
-            helper.di.simpleWrapper(DiagTool, 'JobUtils.DiagTool'),
-            helper.di.simpleWrapper(lookupServices, 'Services.Lookup')
+            helper.di.simpleWrapper(DiagTool, 'JobUtils.DiagTool')
         ]);
         UpdateSpiRomJob = helper.injector.get('Job.Diag.Update.Spirom');
-        this.sandbox = sandbox;
     });
 
     afterEach('subscribe SEL events job after each', function(){
-        this.sandbox.restore();
+        sandbox.restore();
     });
 
     it('should run update spirom firmware job', function() {
@@ -60,7 +55,7 @@ describe('update spirom by diag', function(){
             expect(diagTool.updateSpiRom).to.be.calledOnce;
             expect(diagTool.getSpTestList).to.be.calledOnce;
             expect(diagTool.getTestApiByName).to.be.calledOnce;
-            expect(diagTool.exeSpTest).to.be.calledOnce;
+            expect(diagTool.executeSpTest).to.be.calledOnce;
             expect(job._done).to.be.calledOnce;
             expect(diagTool.retrySyncDiscovery).to.be.calledWith(5000, 6);
             expect(diagTool.uploadImageFile).to.be.calledWith(options.localImagePath);
@@ -74,23 +69,20 @@ describe('update spirom by diag', function(){
                 'warm_reset',
                 [{test1: '/api/test1'}]
             );
-            expect(diagTool.exeSpTest).to.be.calledWith('/api/test2');
+            expect(diagTool.executeSpTest).to.be.calledWith('/api/test2');
         });
     });
 
     it('should run update spirom firmware job with mode name', function() {
         var _options = _.omit(options, 'imageMode');
         _options.imageMode = 'bios';
-        _.forEach(diagTool, function(method){
-            method.reset();
-        });
         job = new UpdateSpiRomJob(_options, context, taskId);
         sinon.spy(job, '_done');
         return job._run()
         .then(function(){
             expect(diagTool.updateSpiRom).to.be.calledWith(
                 '0_A',
-                options.imageName,
+                _options.imageName,
                 '1'
             );
         });
@@ -100,7 +92,7 @@ describe('update spirom by diag', function(){
         var _context = _.cloneDeep(context);
         _context.nodeIp = '10.1.1.';
         job = new UpdateSpiRomJob(options, _context, taskId);
-        this.sandbox.stub(job, '_done').resolves();
+        sandbox.stub(job, '_done').resolves();
         return job._run()
         .then(function(){
             expect(job._done).to.be.calledOnce;
@@ -114,7 +106,7 @@ describe('update spirom by diag', function(){
         var error = new Error('Test');
         diagTool.retrySyncDiscovery.rejects(error);
         job = new UpdateSpiRomJob(options, context, taskId);
-        this.sandbox.stub(job, '_done').resolves();
+        sandbox.stub(job, '_done').resolves();
         return job._run()
         .then(function(){
             expect(job._done).to.be.calledOnce;

@@ -8,9 +8,8 @@
         },
         "imageMode": {
             "description": "Update mode",
-            "type": "string",
             "enum": ["fullbios", "bios", "uefi", "serdes", "post", "me", "0", "1", "2", "3",
-                "4", "5"]
+                "4", "5", 0, 1, 2, 3, 4, 5]
         },
         "imageName": {
             "description": "Image bin file name",
