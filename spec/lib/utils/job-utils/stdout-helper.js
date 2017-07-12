@@ -3765,3 +3765,7 @@ module.exports.racadmJobqueueData = fs
 module.exports.megaraidPhysicalDiskData = fs
     .readFileSync(__dirname+"/samplefiles/megaraid-physical-disk-data.txt")
     .toString();
+
+module.exports.diagApiData = fs
+    .readFileSync(__dirname+"/samplefiles/diag-tool.txt")
+    .toString();
