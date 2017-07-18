@@ -240,23 +240,33 @@ describe("ipmi-parser", function() {
             testParseSelInformationData(ipmiMockSelInfo);
         });
 
-        it('ParseSelData should parse individual sel entries corectly', function() {
+        it('ParseSelData should parse individual sel entries correctly', function() {
             testParseSelData('b,06/20/2017,13:35:00,Power Supply #0xe1,Power Supply AC lost,Asserted');
         });
 
-        it('ParseSelData should parse individual sel entries corectly with missing fields', function() {
+        it('ParseSelData should parse individual sel entries correctly with missing fields', function() {
             testParseSelData(',,,,,');
         });
 
-        it('ParseSelData should parse multiple sel entries corectly', function() {
+        it('ParseSelData should parse multiple sel entries correctly', function() {
             testParseSelData('b,06/20/2017,13:35:00,Power Supply #0xe1,Power Supply AC lost,Asserted\n ,,,,,');
         });
 
-        it('ParseSelData should parse invalid sel entries corectly', function() {
+        it('ParseSelData should parse sel entries correctly with Pre-Init date and time', function() {
+            var parsed = testParseSelData('b,Pre-Init,,Power Supply #0xe1,Power Supply AC lost,Asserted');
+
+            _.forEach(parsed, function(entry) {
+                // IF Pre-Init is found as a date, the date and time fields shoud be empty strings
+                expect(entry['date']).to.be.empty;
+                expect(entry['time']).to.be.empty;
+            });
+        });
+
+        it('ParseSelData should parse invalid sel entries correctly', function() {
             expect(parser.parseSelData('06/20/2017,13:35:00,Power Supply #0xe1,Power Supply AC lost,Asserted')).to.be.empty;
         });
 
-        it('ParseSelData should handle SEL Entry corectly', function() {
+        it('ParseSelData should handle SEL Entry correctly', function() {
             testParseSelData('SEL Entry \n b,06/20/2017,13:35:00,Power Supply #0xe1,Power Supply AC lost,Asserted');
         });
 
