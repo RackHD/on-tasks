@@ -10,4 +10,5 @@ RUN cd /RackHD/on-tasks \
   && ln -s /RackHD/on-core/node_modules/di /RackHD/on-tasks/node_modules/di \
   && npm install --ignore-scripts --production \
   && apt-get update \
-  && apt-get install -y apt-utils ipmitool openipmi
+  && apt-get install -y apt-utils ipmitool openipmi \
+  && bash build_debug/build_image_info.sh
