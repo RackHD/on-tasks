@@ -1,6 +1,6 @@
 {
   "name": "on-tasks",
-  "version": "2.14.0",
+  "version": "2.15.0",
   "description": "Tasks repository (meant as a library of tasks) to be loaded and run by task graphs as needed.",
   "main": "index.js",
   "scripts": {
