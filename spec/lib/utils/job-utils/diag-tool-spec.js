@@ -6,7 +6,7 @@ var uuid = require('node-uuid');
 var nock = require('nock');
 var _ = require('lodash');
 
-describe('update spirom by diag', function(){
+describe('diag tools', function(){
     var diagTool;
     var DiagTool;
     var nodeId =  uuid.v4();
@@ -19,44 +19,15 @@ describe('update spirom by diag', function(){
         ]);
         DiagTool = helper.injector.get('JobUtils.DiagTool');
         diagTool = new DiagTool({host: '10.1.1.1'}, nodeId);
+        this.sandbox = sinon.sandbox.create();
     });
 
     afterEach('subscribe SEL events job after each', function(){
         nock.cleanAll();
-    });
-
-    it('should run sync discovery api', function() {
-        var discoveryApi = '/api/system/tests/discovery/sync/run';
-        nock(server)
-            .get(discoveryApi)
-            .reply(200, dataSamples.runSyncDiscovery);
-        return diagTool.runSyncDiscovery()
-        .then(function(body){
-            expect(body).to.deep.equal(dataSamples.runSyncDiscovery);
-        });
-    });
-
-    it('should run get devices api', function() {
-        nock(server)
-            .get('/api/devices')
-            .reply(200, dataSamples.getDevices);
-        return diagTool.getDeviceInfo()
-        .then(function(device){
-            expect(device).to.deep.equal(dataSamples.getDevices.devices[0]);
-        });
-    });
-
-    it('should run get test list api', function() {
-        var deviceApi = dataSamples.getDevices.devices[0].href;
-        nock(server)
-            .get('/api/devices/Platform_O/0_A/children')
-            .reply(200, dataSamples.childrenData)
-            .get('/api/devices/Platform_O_SP/0_A/tests')
-            .reply(200, dataSamples.testList);
-        return diagTool.getSpTestList(deviceApi)
-        .then(function(tests){
-            expect(tests).to.deep.equal(dataSamples.testList.tests);
-        });
+        diagTool.platformDevice = {};
+        diagTool.spDevice = {};
+        diagTool.spChildren = {};
+        this.sandbox.restore();
     });
 
     describe('upload image api tests', function(){
@@ -84,6 +55,17 @@ describe('update spirom by diag', function(){
                 );
                 done();
             });
+        });
+    });
+
+    it('should run sync discovery api', function() {
+        var discoveryApi = '/api/system/tests/discovery/sync/run';
+        nock(server)
+            .get(discoveryApi)
+            .reply(200, dataSamples.runSyncDiscovery);
+        return diagTool.runSyncDiscovery()
+        .then(function(body){
+            expect(body).to.deep.equal(dataSamples.runSyncDiscovery);
         });
     });
 
@@ -146,12 +128,11 @@ describe('update spirom by diag', function(){
         });
     });
 
-    describe('update SPIROM tests', function(){
+    describe('update firmware tests', function(){
         var payload;
         var imageName;
         var imagePath;
         var mode;
-        var slot;
         before(function(){
             imageName = 'test0';
             imagePath = '/uploads';
@@ -167,113 +148,98 @@ describe('update spirom by diag', function(){
                       "value": imagePath,
                       "base": "string",
                       "name": "image_path"
-                    },
-                    {
-                      "value": mode,
-                      "base": "dec",
-                      "name": "mode"
                     }
                 ]
             };
-            slot = dataSamples.getDevices.devices[0].slot;
         });
 
-        it('should run update SPIROM api with default image path', function(done) {
+        it('should run update bios api with default image path', function() {
+            var _payload = _.cloneDeep(payload);
+            _payload.test_args[2] = {"value": '1', "base": "dec", "name": "mode"};
             nock(server)
-                .filteringRequestBody(function(body){
-                    var _body = JSON.parse(body);
-                    if (!_.isEqual(payload, _body)) {
-                        done(new Error('body is not matched'));
-                    }
-                })
-                .post('/api/devices/SPIROM/0_A_0/tests/update_firmware/sync/run')
+                .post('/api/devices/SPIROM/0_A_0/tests/update_firmware/sync/run', _payload)
                 .reply(200, dataSamples.updateSpiRom);
-            return diagTool.updateSpiRom(slot, imageName, '1')
+
+            this.sandbox.stub(diagTool, 'getItemByName').resolves({slot: '0_A_0'});
+            return diagTool.updateFirmware('bios', imageName, '1')
             .then(function(body){
                 expect(body).to.deep.equal(dataSamples.updateSpiRom);
-                done();
             });
         });
 
-        it('should run update SPIROM api', function(done) {
-            var _imagePath = '/pp';
+        it('should run update bmc api', function(done) {
+            var _imagePath = '/tests';
             var _payload = _.cloneDeep(payload);
             _payload.test_args[1].value = _imagePath;
+            _payload.test_args[2] = {"value": '0x140', "base": "hex", "name": "image_id"};
             nock(server)
-                .filteringRequestBody(function(body){
-                    var _body = JSON.parse(body);
-                    if (!_.isEqual(_payload, _body)) {
-                        done(new Error('body is not matched'));
-                    }
-                })
-                .post('/api/devices/SPIROM/0_A_0/tests/update_firmware/sync/run')
-                .reply(200, dataSamples.updateSpiRom);
-            return diagTool.updateSpiRom(slot, imageName, mode, _imagePath)
+                .post('/api/devices/BMC_EMC_OEM/0_A/tests/update_firmware/sync/run', _payload)
+                .reply(200, dataSamples.updateBmc);
+            this.sandbox.stub(diagTool, 'getItemByName').resolves({slot: '0_A'});
+            return diagTool.updateFirmware('bmc', imageName, '0x140', _imagePath)
             .then(function(body){
-                expect(body).to.deep.equal(dataSamples.updateSpiRom);
+                expect(body).to.deep.equal(dataSamples.updateBmc);
                 done();
             });
         });
 
-        it('should report reset flag is not expected', function(done) {
-            var resetTestData = _.cloneDeep(dataSamples.updateSpiRom);
-            resetTestData.result[2].atomic_test_data.secure_firmware_update = 'Issue warm reset';
-            nock(server)
-                .filteringRequestBody(function(body){
-                    var _body = JSON.parse(body);
-                    if (!_.isEqual(payload, _body)) {
-                        done(new Error('body is not matched'));
-                    }
-                })
-                .post('/api/devices/SPIROM/0_A_0/tests/update_firmware/sync/run')
-                .reply(200, resetTestData);
-            return diagTool.updateSpiRom(slot, imageName, mode, imagePath)
+        it('should throw firmware is not supported error', function(done) {
+            diagTool.updateFirmware('test', imageName, mode, imagePath)
             .then(function(){
                 done(new Error('Test should fail'));
             })
             .catch(function(err){
-                expect(err.message).to.equal('Failed to get reset flags from diag');
+                expect(err.message).to.equal('Firmware test update is not supported');
                 done();
             });
         });
 
     });
 
-    describe('execute API tests', function(){
-        var testList;
-        var warmResetApi;
-        before(function(){
-            testList = dataSamples.testList.tests;
-            warmResetApi = diagTool.getTestApiByName('warm_reset', testList);
+    it('should run warm reset api', function() {
+        diagTool.spDevice = dataSamples.spDevices.devices[0];
+        nock(server)
+            .get('/api/devices/%s/%s/tests/warm_reset/run'.format(
+                diagTool.spDevice.name, diagTool.spDevice.slot
+            ))
+            .reply(200, 'tests');
+        return diagTool.warmReset(false)
+        .then(function(body){
+            expect(body).to.equal('tests');
         });
-        it('should run async warm reset api', function() {
-            nock(server)
-                .get(testList[2].href + '/run')
-                .reply(200, {'test': 'test'});
-            return diagTool.executeSpTest(warmResetApi)
-            .then(function(body){
-                expect(body).to.deep.equal({'test': 'test'});
-            });
+    });
+
+    it('should run get all devices api', function() {
+        nock(server)
+            .get('/api/devices')
+            .reply(200, dataSamples.platformDevices)
+            .get('/api/devices/Platform_O/0_A/children')
+            .reply(200, dataSamples.spDevices)
+            .get('/api/devices/Platform_O_SP/0_A/children')
+            .reply(200, dataSamples.spChildren);
+        return diagTool.getAllDevices()
+        .then(function(){
+            expect(diagTool.platformDevice).to.deep.equal(dataSamples.platformDevices.devices[0]);
+            expect(diagTool.spDevice).to.deep.equal(dataSamples.spDevices.devices[0]);
+            expect(diagTool.spChildren).to.deep.equal(dataSamples.spChildren.devices);
         });
-        
-        it('should run sync warm reset api', function() {
-            nock(server)
-                .get(testList[2].href + '/sync/run')
-                .reply(200, {'test': 'test'});
-            return diagTool.executeSpTest(warmResetApi, true)
-            .then(function(body){
-                expect(body).to.deep.equal({'test': 'test'});
-            });
-        });
-        
-        it('should run given warm reset api', function() {
-            nock(server)
-                .get(testList[2].href + '/anything/run')
-                .reply(200, {'test': 'test'});
-            return diagTool.executeSpTest(warmResetApi + '/anything/run', true)
-            .then(function(body){
-                expect(body).to.deep.equal({'test': 'test'});
-            });
+    });
+
+    it('should get item by name', function() {
+        expect(diagTool.getItemByName('BMC_Plugin', dataSamples.spChildren.devices))
+            .to.deep.equal(dataSamples.spChildren.devices[1]);
+        expect(function(){
+            diagTool.getItemByName('BMC_EMC_OEM', dataSamples.spChildren.devices);
+        }).to.throw(Error, "No name %s found in given list".format('BMC_EMC_OEM'));
+    });
+
+    it('should run get device info API', function() {
+        nock(server)
+            .get('/api/devices/Platform_O/0_A/tests')
+            .reply(200, dataSamples.testList);
+        return diagTool.getDeviceInfo('/api/devices/Platform_O/0_A', 'tests')
+        .then(function(body){
+            expect(body).to.deep.equal(dataSamples.testList.tests);
         });
     });
 
