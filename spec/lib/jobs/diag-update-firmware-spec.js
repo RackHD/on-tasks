@@ -48,17 +48,18 @@ describe('update firmware by diag', function(){
         UpdatefirmwareJob = helper.injector.get('Job.Diag.Update.Firmware');
     });
 
-    beforeEach('diag firmware update after each', function(){
+    beforeEach('diag firmware update before each', function(){
         diagTool = {
             uploadImageFile: sandbox.stub().resolves(),
             retrySyncDiscovery: sandbox.stub().resolves(),
-            updateFirmware: sandbox.stub(),
+            updateFirmware: sandbox.stub().resolves(),
             getAllDevices: sandbox.stub().resolves(),
-            warmReset: sandbox.stub().resolves()
+            warmReset: sandbox.stub().resolves(),
+            bmcReset: sandbox.stub().resolves()
         };
     });
-    
-    after(function(){
+
+    after('diag firmware update after', function(){
         sandbox.restore();
     });
 
@@ -78,10 +79,11 @@ describe('update firmware by diag', function(){
     });
 
     describe('bios update', function(){
-        beforeEach('diag firmware update after each', function(){
+        beforeEach('diag bios update before each', function(){
             diagTool.updateFirmware.resolves(updateBiosResult);
         });
-        it('should run update job with integer mode and reset', function() {
+
+        it('should run update bios job with integer mode and reset', function() {
             var _options = _.defaults({firmwareName: 'bios', imageMode: 1}, options);
             job = new UpdatefirmwareJob(_options, context, taskId);
             sandbox.spy(job, '_done');
@@ -98,12 +100,14 @@ describe('update firmware by diag', function(){
                 expect(diagTool.updateFirmware).to.be.calledWith(
                     'bios',
                     options.imageName,
-                    '1'
+                    '1',
+                    '/uploads'
                 );
+                expect(diagTool.warmReset).to.be.calledWith(false);
             });
         });
 
-        it('should run update job with mode name and without reset', function() {
+        it('should run update bios job with mode name and without reset', function() {
             var _options = _.defaults({imageMode: 'bios', skipReset: true}, options);
             job = new UpdatefirmwareJob(_options, context, taskId);
             sandbox.spy(job, '_done');
@@ -112,14 +116,15 @@ describe('update firmware by diag', function(){
                 expect(diagTool.updateFirmware).to.be.calledWith(
                     'bios',
                     options.imageName,
-                    '1'
+                    '1',
+                    '/uploads'
                 );
                 expect(job._done).to.be.calledOnce;
                 expect(diagTool.warmReset).to.not.be.called;
             });
         });
 
-        it('should throw reset flag is not correct error', function() {
+        it('should throw reset flag is incorrect error', function() {
             var _options = _.defaults({imageMode: '1'}, options);
             job = new UpdatefirmwareJob(_options, context, taskId);
             sandbox.stub(job, '_done').resolves();
@@ -147,19 +152,25 @@ describe('update firmware by diag', function(){
                 expect(diagTool.getAllDevices).to.be.calledOnce;
                 expect(diagTool.uploadImageFile).to.be.calledOnce;
                 expect(diagTool.updateFirmware).to.be.calledOnce;
+                expect(diagTool.bmcReset).to.be.calledOnce;
                 expect(job._done).to.be.calledOnce;
                 expect(diagTool.retrySyncDiscovery).to.be.calledWith(5000, 6);
                 expect(diagTool.uploadImageFile).to.be.calledWith(options.localImagePath);
                 expect(diagTool.updateFirmware).to.be.calledWith(
                     'bmc',
                     options.imageName,
-                    '0x5f'
+                    '0x5f',
+                    '/uploads'
                 );
+                expect(diagTool.bmcReset).to.be.calledWith(false);
             });
         });
 
-        it('should run update bmc firmware job with mode name', function() {
-            var _options = _.defaults({firmwareName: 'bmc', imageMode: 'fullbmc'}, options);
+        it('should run update bmc firmware job with mode name and without reset', function() {
+            var _options = _.defaults(
+                {firmwareName: 'bmc', imageMode: 'fullbmc', skipReset: true},
+                options
+            );
             job = new UpdatefirmwareJob(_options, context, taskId);
             sandbox.spy(job, '_done');
             return job._run()
@@ -168,8 +179,10 @@ describe('update firmware by diag', function(){
                 expect(diagTool.updateFirmware).to.be.calledWith(
                     'bmc',
                     options.imageName,
-                    '0x5f'
+                    '0x5f',
+                    '/uploads'
                 );
+                expect(diagTool.bmcReset).to.not.be.called;
             });
         });
     });

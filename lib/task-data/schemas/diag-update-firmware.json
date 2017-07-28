@@ -1,7 +1,7 @@
 {
     "copyright": "Copyright 2017, Dell EMC, Inc.",
     "definitions": {
-        "imagePath": {
+        "localImagePath": {
             "description": "Image zip file path",
             "type": "string",
             "pattern": "^/.*\\.zip$"
@@ -32,7 +32,7 @@
             "$ref": "#/definitions/imageName"
         },
         "localImagePath": {
-            "$ref": "#/definitions/imagePath"
+            "$ref": "#/definitions/localImagePath"
         },
         "imageMode": {
             "$ref": "#/definitions/imageMode"

@@ -9,6 +9,7 @@ var _ = require('lodash');
 describe('diag tools', function(){
     var diagTool;
     var DiagTool;
+    var getDeviceInfoStub;
     var nodeId =  uuid.v4();
     var server = 'http://10.1.1.1:8080';
     var stdoutMocks = require('./stdout-helper');
@@ -22,11 +23,24 @@ describe('diag tools', function(){
         this.sandbox = sinon.sandbox.create();
     });
 
-    afterEach('subscribe SEL events job after each', function(){
+    beforeEach('update firmware tests before each', function() {
+        getDeviceInfoStub = this.sandbox.stub(diagTool, 'getDeviceInfo');
+        getDeviceInfoStub.onCall(0).resolves(dataSamples.platformDevices.devices);
+        getDeviceInfoStub.onCall(1).resolves(dataSamples.spDevices.devices);
+        getDeviceInfoStub.onCall(2).resolves(dataSamples.spChildren.devices);
+    });
+
+    afterEach('diag tool after each', function(){
         nock.cleanAll();
         diagTool.platformDevice = {};
         diagTool.spDevice = {};
         diagTool.spChildren = {};
+        diagTool.deviceMap = {
+            bmcUpdate: "BMC_EMC_OEM",
+            biosUpdate: "SPIROM",
+            sp: "",
+            platform: ""
+        };
         this.sandbox.restore();
     });
 
@@ -100,7 +114,7 @@ describe('diag tools', function(){
             runDiscoveryStub.onCall(0).rejects('Test');
             runDiscoveryStub.onCall(1).rejects({statusCode: 500});
             runDiscoveryStub.onCall(2).rejects({statusCode: 500});
-            return diagTool.retrySyncDiscovery(1, 2)
+            diagTool.retrySyncDiscovery(1, 2)
             .then(function(){
                 done(new Error('Test should fail'));
             })
@@ -113,9 +127,9 @@ describe('diag tools', function(){
             });
         });
 
-        it('should report retry sync discovery api timeout', function(done){
+        it('should throw error with error status code', function(done){
             runDiscoveryStub.onCall(0).rejects({statusCode: 400});
-            return diagTool.retrySyncDiscovery(1, 2)
+            diagTool.retrySyncDiscovery(1, 2)
             .then(function(){
                 done(new Error('Test should fail'));
             })
@@ -159,9 +173,10 @@ describe('diag tools', function(){
             nock(server)
                 .post('/api/devices/SPIROM/0_A_0/tests/update_firmware/sync/run', _payload)
                 .reply(200, dataSamples.updateSpiRom);
-
-            this.sandbox.stub(diagTool, 'getItemByName').resolves({slot: '0_A_0'});
-            return diagTool.updateFirmware('bios', imageName, '1')
+            return diagTool.getAllDevices()
+            .then(function(){
+                return diagTool.updateFirmware('bios', imageName, '1');
+            })
             .then(function(body){
                 expect(body).to.deep.equal(dataSamples.updateSpiRom);
             });
@@ -175,8 +190,10 @@ describe('diag tools', function(){
             nock(server)
                 .post('/api/devices/BMC_EMC_OEM/0_A/tests/update_firmware/sync/run', _payload)
                 .reply(200, dataSamples.updateBmc);
-            this.sandbox.stub(diagTool, 'getItemByName').resolves({slot: '0_A'});
-            return diagTool.updateFirmware('bmc', imageName, '0x140', _imagePath)
+            return diagTool.getAllDevices()
+            .then(function(){
+                return diagTool.updateFirmware('bmc', imageName, '0x140', _imagePath);
+            })
             .then(function(body){
                 expect(body).to.deep.equal(dataSamples.updateBmc);
                 done();
@@ -197,17 +214,31 @@ describe('diag tools', function(){
     });
 
     it('should run warm reset api', function() {
-        diagTool.spDevice = dataSamples.spDevices.devices[0];
         nock(server)
-            .get('/api/devices/%s/%s/tests/warm_reset/run'.format(
-                diagTool.spDevice.name, diagTool.spDevice.slot
-            ))
+            .get('/api/devices/Platform_O_SP/0_A/tests/warm_reset/run')
             .reply(200, 'tests');
-        return diagTool.warmReset(false)
+        return diagTool.getAllDevices()
+        .then(function(){
+            return diagTool.warmReset(false);
+        })
         .then(function(body){
             expect(body).to.equal('tests');
         });
     });
+
+    it('should run bmc reset api', function() {
+        nock(server)
+            .get('/api/devices/BMC_EMC_OEM/0_A/tests/reset/run')
+            .reply(200, 'tests');
+        return diagTool.getAllDevices()
+        .then(function(){
+            return diagTool.bmcReset(false);
+        })
+        .then(function(body){
+            expect(body).to.equal('tests');
+        });
+    });
+
 
     it('should run get all devices api', function() {
         nock(server)
@@ -222,6 +253,9 @@ describe('diag tools', function(){
             expect(diagTool.platformDevice).to.deep.equal(dataSamples.platformDevices.devices[0]);
             expect(diagTool.spDevice).to.deep.equal(dataSamples.spDevices.devices[0]);
             expect(diagTool.spChildren).to.deep.equal(dataSamples.spChildren.devices);
+            expect(diagTool.deviceMap.sp).to.deep.equal(dataSamples.spDevices.devices[0].name);
+            expect(diagTool.deviceMap.platform)
+                .to.deep.equal(dataSamples.platformDevices.devices[0].name);
         });
     });
 
@@ -233,13 +267,25 @@ describe('diag tools', function(){
         }).to.throw(Error, "No name %s found in given list".format('BMC_EMC_OEM'));
     });
 
-    it('should run get device info API', function() {
+    it('should run get tests info API', function() {
+        getDeviceInfoStub.restore();
         nock(server)
             .get('/api/devices/Platform_O/0_A/tests')
             .reply(200, dataSamples.testList);
         return diagTool.getDeviceInfo('/api/devices/Platform_O/0_A', 'tests')
         .then(function(body){
             expect(body).to.deep.equal(dataSamples.testList.tests);
+        });
+    });
+
+    it('should run get platform devices info API', function() {
+        getDeviceInfoStub.restore();
+        nock(server)
+            .get('/api/devices')
+            .reply(200, dataSamples.platformDevices);
+        return diagTool.getDeviceInfo('/api/devices')
+        .then(function(body){
+            expect(body).to.deep.equal(dataSamples.platformDevices.devices);
         });
     });
 
