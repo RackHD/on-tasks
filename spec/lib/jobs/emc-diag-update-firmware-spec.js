@@ -42,10 +42,10 @@ describe('update firmware by diag', function(){
     before(function(){
         helper.setupInjector([
             helper.require('/lib/jobs/base-job.js'),
-            helper.require('/lib/jobs/diag-update-firmware.js'),
+            helper.require('/lib/jobs/emc-diag-update-firmware.js'),
             helper.di.simpleWrapper(DiagTool, 'JobUtils.DiagTool')
         ]);
-        UpdatefirmwareJob = helper.injector.get('Job.Diag.Update.Firmware');
+        UpdatefirmwareJob = helper.injector.get('Job.Emc.Diag.Update.Firmware');
     });
 
     beforeEach('diag firmware update before each', function(){

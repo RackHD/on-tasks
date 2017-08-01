@@ -4,7 +4,7 @@
 'use strict';
 
 describe(require('path').basename(__filename), function() {
-    var schemaFileName = 'diag-update-firmware.json';
+    var schemaFileName = 'emc-diag-update-firmware.json';
 
     var canonical = {
         imageName: 'somefirmware.bin',

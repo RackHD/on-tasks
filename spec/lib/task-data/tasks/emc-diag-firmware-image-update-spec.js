@@ -8,7 +8,7 @@ describe(require('path').basename(__filename), function () {
 
     base.before(function (context) {
         context.taskdefinition = helper.require(
-            '/lib/task-data/tasks/diag-firmware-image-update.js'
+            '/lib/task-data/tasks/emc-diag-firmware-image-update.js'
         );
     });
 
