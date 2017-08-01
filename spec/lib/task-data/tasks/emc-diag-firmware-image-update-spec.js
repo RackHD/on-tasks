@@ -7,7 +7,9 @@ describe(require('path').basename(__filename), function () {
     var base = require('./base-tasks-spec');
 
     base.before(function (context) {
-        context.taskdefinition = helper.require('/lib/task-data/tasks/diag-update-spirom.js');
+        context.taskdefinition = helper.require(
+            '/lib/task-data/tasks/emc-diag-firmware-image-update.js'
+        );
     });
 
     describe('task-data', function () {
