@@ -288,6 +288,11 @@
             "description": "The file name of callback script that will be called when the first time the OS boots up",
             "minLength": 1
         },
+        "IgnitionScriptUri": {
+            "description": "The URI used to download the CoreOS Ignition configuration file",
+            "type": "string",
+            "pattern": "^https?://"
+        },
         "ProgressMilestones": {
             "type": "object",
             "description": "The progress milestones definition, each attribute is a milestone",
@@ -309,6 +314,11 @@
                 }
             },
             "additionalProperties": false
+        },
+        "VaultToken": {
+            "type": "string",
+            "description": "The token used for unwrapping a wrapped Vault response",
+            "pattern": "^[[:alnum:]]{8}-[[:alnum:]]{4}-[[:alnum:]]{4}-[[:alnum:]]{4}-[[:alnum:]]{12}$"
         }
     }
 }
