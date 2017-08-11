@@ -40,6 +40,9 @@
         },
         "vaultToken": {
             "$ref": "types-installos.json#/definitions/VaultToken"
+        },
+        "grubLinuxAppend": {
+            "$ref": "types-installos.json#/definitions/GrubLinuxAppend"
         }
     },
     "required": ["osType", "version", "repo", "profile", "installScript",

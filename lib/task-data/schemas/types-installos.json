@@ -319,6 +319,11 @@
             "type": "string",
             "description": "The token used for unwrapping a wrapped Vault response",
             "pattern": "^[[:alnum:]]{8}-[[:alnum:]]{4}-[[:alnum:]]{4}-[[:alnum:]]{4}-[[:alnum:]]{12}$"
+        },
+        "GrubLinuxAppend": {
+            "type": "string",
+            "description": "Extra (persistent) kernel boot parameters",
+            "minLength": 1
         }
     }
 }
