@@ -124,17 +124,44 @@ describe(require('path').basename(__filename), function () {
             expect(this.ipmi.concurrentRequests('test', 'chassis')).to.equal(true);
         });
 
-        it("should send power state alert", function() {
+        it.skip("should send power state alert", function() {
             var self = this;
             var testState = {power:'ON'};
             var testData = {workItemId: 'abc'};
             self.ipmi.cachedPowerState[testData.workItemId] = 'OFF';
+            console.log('ffffffff ' + self.ipmi.cachedPowerState[testData.workItemId]);
             return self.ipmi.powerStateAlerter(testState, testData)
                 .then(function(status) {
+                    console.log('aaaaaaaa ' + JSON.stringify(status.power));
                     expect(status).to.deep.equal(testState);
                     expect(self.ipmi.cachedPowerState[testData.workItemId]).to.equal(status.power);
                 });
         });
+        
+        it("should send power data", function() {
+            var self = this;
+            var powerStatus = 'ON';
+            var workObj = {
+                "type":"ipmi",
+                "pollInterval":5000,
+                "node":"598a508afe1ca6b74f420d24",
+                "config": {
+                    "command":
+                    "powerStatus"
+                }
+            };
+
+            waterline.workitems.findOne.resolves(workObj);
+            self.ipmi.collectIpmiChassisPowerStatus = this.sandbox.stub().resolves(powerStatus);
+            waterline.workitems.findOne.resolves(workObj);
+            self.ipmi.genericCommand = this.sandbox.stub().resolves('chassis power status');
+            self.ipmi.collectIpmiChassisPowerStatus()
+                .then(function(powerData){
+                    expect(powerData).to.equal(powerStatus);
+            });
+
+        });
+
         it("should send sel data", function() {
             var self = this;
             var data = {
