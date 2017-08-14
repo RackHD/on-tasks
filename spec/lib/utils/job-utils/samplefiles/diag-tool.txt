@@ -9,7 +9,7 @@
             }
         ]
     },
-    "getDevices": {
+    "platformDevices": {
         "devices": [
             {
                 "href": "/api/devices/Platform_O/0_A",
@@ -25,6 +25,45 @@
                 "href": "/api/devices/root/0_0",
                 "name": "root",
                 "slot": "0_0"
+            }
+        ]
+    },
+    "spDevices": {
+        "devices": [
+            {
+                "href": "/api/devices/Platform_O_SP/0_A",
+                "name": "Platform_O_SP",
+                "slot": "0_A"
+            }
+        ]
+    },
+    "spChildren": {
+        "devices": [
+            {
+                "href": "/api/devices/SPIROM/0_A_0",
+                "name": "SPIROM",
+                "slot": "0_A_0"
+            },
+            {
+                "href": "/api/devices/BMC_Plugin/0_A",
+                "name": "BMC_Plugin",
+                "slot": "0_A"
+            }
+        ]
+    },
+    "testList":{
+        "tests": [
+            {
+                "href": "/api/devices/Platform_O_SP/0_A/tests/run_children_test",
+                "name": "run_children_test"
+            },
+            {
+                "href": "/api/devices/Platform_O_SP/0_A/tests/set_next_test_result",
+                "name": "set_next_test_result"
+            },
+            {
+                "href": "/api/devices/Platform_O_SP/0_A/tests/warm_reset",
+                "name": "warm_reset"
             }
         ]
     },
@@ -53,28 +92,26 @@
             }
         ]
     },
-    "childrenData": {
-        "devices": [
+    "updateBmc": {
+        "result": [
             {
-                "href": "/api/devices/Platform_O_SP/0_A",
-                "name": "Platform_O_SP",
-                "slot": "0_A"
-            }
-        ]
-    },
-    "testList":{
-        "tests": [
-            {
-                "href": "/api/devices/Platform_O_SP/0_A/tests/run_children_test",
-                "name": "run_children_test"
+                "atomic_test_start": {
+                    "timestamp": "2017-07-26 14:21:44.919019"
+                }
             },
             {
-                "href": "/api/devices/Platform_O_SP/0_A/tests/set_next_test_result",
-                "name": "set_next_test_result"
+                "atomic_test_log": {
+                    "file": null,
+                    "function": null,
+                    "line": "0",
+                    "log": "Reserved Image Size = 11 MB",
+                    "timestamp": "2017-07-26 14:21:44.987956"
+                }
             },
             {
-                "href": "/api/devices/Platform_O_SP/0_A/tests/warm_reset",
-                "name": "warm_reset"
+                "atomic_test_end": {
+                    "timestamp": "2017-07-26 14:24:24.107440"
+                }
             }
         ]
     }

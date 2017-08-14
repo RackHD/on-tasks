@@ -7,7 +7,7 @@ describe('General Redfish Catalog Job', function () {
         redfishJob,
         waterline = {},
         sandbox = sinon.sandbox.create(),
-        chassisData = {
+        systemData = {
             body: {
                 Links: {
                     CooledBy: [
@@ -177,15 +177,16 @@ describe('General Redfish Catalog Job', function () {
             uri:'fake',
             username:'user',
             password:'pass'
-        }, {target:'abc'}, graphId);
+        }, {}, graphId);
         clientRequest.resetBehavior();
         clientRequest.reset();
         waterline.catalogs.create.reset();
     });
        
     describe('redfish fan / power endpoints', function() {
+
         it('should successfully catalog elements', function() {
-            clientRequest.onCall(0).resolves(chassisData);
+            clientRequest.onCall(0).resolves(systemData);
             clientRequest.onCall(1).resolves(powerData);
             clientRequest.onCall(2).resolves(fanData);
 
@@ -201,17 +202,11 @@ describe('General Redfish Catalog Job', function () {
             return redfishJob._deferred.should.be.rejectedWith('some error');
         });
 
-        it('should fail with no elements ', function() {
-            clientRequest.onCall(0).rejects('Missing catalogEndpoints Resource');
-            redfishJob._run();
-            return redfishJob._deferred
-                .should.be.rejectedWith('Missing catalogEndpoints Resource');
-        });
     });
 
     describe('redfish disk endpoints', function() {
         it('should successfully catalog elements', function() {
-            clientRequest.onCall(0).resolves(chassisData);
+            clientRequest.onCall(0).resolves(systemData);
             clientRequest.onCall(1).resolves(simpleStorageMembers);
             clientRequest.onCall(2).resolves(drivesData);
 
@@ -234,4 +229,5 @@ describe('General Redfish Catalog Job', function () {
                 .should.be.rejectedWith('Missing storage Resource');
         });
     });
+
 });

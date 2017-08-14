@@ -1,0 +1,45 @@
+{
+    "copyright": "Copyright 2017, Dell EMC, Inc.",
+    "definitions": {
+        "localImagePath": {
+            "description": "Image zip file path",
+            "type": "string",
+            "pattern": "^/.*\\.zip$"
+        },
+        "imageMode": {
+            "description": "Update mode",
+            "enum": [
+                "fullbios", "bios", "uefi", "serdes", "post", "me",
+                "0", "1", "2", "3", "4", "5",
+                0, 1, 2, 3, 4, 5,
+                "fullbmc", "bmcapp", "ssp", "bootblock", "adaptivecooling",
+                "0x5f", "0x140", "0x142", "0x144", "0x145"
+            ]
+        },
+        "imageName": {
+            "description": "Image bin file name",
+            "type": "string",
+            "pattern": ".*.bin$"
+        },
+        "firmwareName": {
+            "description": "Name of firmware to be updated",
+            "type": "string",
+            "enum": ["bios", "bmc"]
+        }
+    },
+    "properties": {
+        "imageName": {
+            "$ref": "#/definitions/imageName"
+        },
+        "localImagePath": {
+            "$ref": "#/definitions/localImagePath"
+        },
+        "imageMode": {
+            "$ref": "#/definitions/imageMode"
+        },
+        "firmwareName": {
+            "$ref": "#/definitions/firmwareName"
+        }
+    },
+    "required": ["imageName", "imageMode", "firmwareName"]
+}

@@ -79,7 +79,7 @@ describe("Job.Pollers.CreateDefault", function () {
                 .to.be.deep.equals(queryString);
             expect(waterline.workitems.findOrCreate).to.have.been.calledOnce;
             expect(waterline.workitems.findOrCreate).to.have.been.calledWith(
-                { node: nodeId, config: { command: pollers[0].config.command } }, pollers[0]);
+                { node: nodeId, 'config.command': pollers[0].config.command }, pollers[0]);
         });
     });
 
@@ -100,7 +100,7 @@ describe("Job.Pollers.CreateDefault", function () {
                 .to.be.deep.equals(queryString);
             expect(waterline.workitems.findOrCreate).to.have.been.calledOnce;
             expect(waterline.workitems.findOrCreate).to.have.been.calledWith(
-                { node: nodeId, config: { command: pollers[0].config.command } }, pollers[0]);
+                { node: nodeId, 'config.command': pollers[0].config.command }, pollers[0]);
         });
     });
 
@@ -169,9 +169,9 @@ describe("Job.Pollers.CreateDefault", function () {
                 .to.be.deep.equals(snmpQueryString);
             expect(waterline.workitems.findOrCreate).to.have.been.callCount(4);
             expect(waterline.workitems.findOrCreate).to.have.been.calledWith(
-                { node: nodeId, config: { command: pollers[0].config.command } }, pollers[0]);
+                { node: nodeId, 'config.command': pollers[0].config.command }, pollers[0]);
             expect(waterline.workitems.findOrCreate).to.have.been.calledWith(
-                { node: nodeId, config: { command: pollers[1].config.command } }, pollers[1]);
+                { node: nodeId, 'config.command': pollers[1].config.command }, pollers[1]);
         });
     });
     

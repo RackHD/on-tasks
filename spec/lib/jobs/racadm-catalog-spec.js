@@ -104,26 +104,81 @@ describe(require('path').basename(__filename), function () {
         });
 
         beforeEach('Dell Racadm Catalog Job handle response beforeEach', function() {
-            job = new RacadmCatalogJob({action: 'getConfigCatalog'}, {}, uuid.v4());
+            job = new RacadmCatalogJob({action: 'getConfigCatalog', updateExistingCatalog: true}, {}, uuid.v4());
 
             mockWaterline.catalogs.create = function(){};
-
             this.sandbox = sinon.sandbox.create();
             this.sandbox.stub(mockWaterline.catalogs,'create');
+
+            mockWaterline.catalogs.update = function(){};
+            this.sandbox = sinon.sandbox.create();
+            this.sandbox.stub(mockWaterline.catalogs,'update');
+
+            mockWaterline.catalogs.count = function(){};
+            this.sandbox = sinon.sandbox.create();
+            this.sandbox.stub(mockWaterline.catalogs,'count');
         });
 
         afterEach('Dell Racadm Catalog Job input validation', function(){
             this.sandbox = sinon.sandbox.restore();
         });
 
-        it('should create catalog entries for response data if store is set to true', function() {
+        it('should create catalog entries if store, updateExistingCatalog are ' +
+            'true and no copy of catalog exists', function() {
             var catalog;
             catalog = {
                 store: true,
                 source: 'idrac-racadm-configure',
                 data: 'test data 1'
             };
+            var count = 0;
+            mockWaterline.catalogs.count.resolves(count);
+            return job.handleResponse(catalog)
+                .then(function() {
+                    // Make sure we only catalog objects with store: true and no error
+                    expect(waterline.catalogs.create).to.have.been.calledOnce;
+                    expect(waterline.catalogs.create).to.have.been.calledWith({
+                        node: job.nodeId,
+                        source: 'idrac-racadm-configure',
+                        data: 'test data 1'
+                    });
+                });
+        });
 
+        it('should update catalog entries if store, updateExistingCatalog are ' +
+            'true and a copy of catalog exists', function() {
+            var catalog;
+            catalog = {
+                store: true,
+                source: 'idrac-racadm-configure',
+                data: 'test data 1'
+            };
+            var query = {
+                node: job.nodeId,
+                source: 'idrac-racadm-configure'
+            };
+            var count = 1;
+            mockWaterline.catalogs.count.resolves(count);
+            return job.handleResponse(catalog)
+                .then(function() {
+                    // Make sure we only catalog objects with store: true and no error
+                    expect(waterline.catalogs.update).to.have.been.calledOnce;
+                    expect(waterline.catalogs.update).to.have.been.calledWith(query, {
+                        node: job.nodeId,
+                        source: 'idrac-racadm-configure',
+                        data: 'test data 1'
+                    });
+                });
+        });
+
+        it('should create catalog entries if store is true, updateExistingCatalog is false ', function() {
+            var catalog;
+            catalog = {
+                store: true,
+                source: 'idrac-racadm-configure',
+                data: 'test data 1'
+            };
+            job.updateExistingCatalog = "false";
             return job.handleResponse(catalog)
                 .then(function() {
                     // Make sure we only catalog objects with store: true and no error
