@@ -76,7 +76,7 @@ describe(require('path').basename(__filename), function () {
                 host: '10.1.1.',
                 user: 'admin',
                 password: 'admin',
-            workItemId: 'testworkitemid'
+		workItemId: 'testworkitemid'
             };
             self.ipmi.collectIpmiSdr = sinon.stub().resolves();
             pollerHelper.getNodeAlertMsg = sinon.stub().resolves({});
