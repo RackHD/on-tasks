@@ -4,7 +4,7 @@
         "IgnitionScriptUri": {
             "description": "The URI used to download the CoreOS Ignition configuration file",
             "type": "string",
-            "minLength": 1
+            "pattern": "^https?://"
         }
     },
     "properties": {
@@ -44,6 +44,12 @@
         },
         "progressMilestones": {
             "$ref": "types-installos.json#/definitions/ProgressMilestones"
+        },
+        "vaultToken": {
+            "$ref": "types-installos.json#/definitions/VaultToken"
+        },
+        "grubLinuxAppend": {
+            "$ref": "types-installos.json#/definitions/GrubLinuxAppend"
         }
     },
     "required": ["osType", "version", "repo", "profile", "installScript",
