@@ -1,0 +1,8 @@
+---
+platform: linux
+
+inputs:
+- name:  on-tasks
+run:
+  path: "alpha/unittest.sh"
+  dir: "on-tasks"
