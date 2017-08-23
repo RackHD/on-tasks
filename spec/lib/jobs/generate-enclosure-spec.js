@@ -62,9 +62,11 @@ describe(require('path').basename(__filename), function () {
             .catch(function(e) {
                 try {
                     expect(e).to.have.property('name').that.equals('AggregateError');
-                    expect(e).to.have.property('length').that.equals(2);
+                    expect(e).to.have.property('length').that.equals(4);
                     expect(e[0]).to.have.property('message').that.equals('empty catalog');
                     expect(e[1]).to.have.property('message').that.equals('empty catalog');
+                    expect(e[2]).to.have.property('message').that.equals('empty catalog');
+                    expect(e[3]).to.have.property('message').that.equals('empty catalog');
                     expect(mockWaterline.nodes.findOrCreate).to.not.have.been.called;
                     done();
                 } catch (e) {
@@ -103,10 +105,13 @@ describe(require('path').basename(__filename), function () {
             .catch(function(e) {
                 try {
                     expect(e).to.have.property('name').that.equals('AggregateError');
-                    expect(e).to.have.property('length').that.equals(2);
+                    expect(e).to.have.property('length').that.equals(4);
                     expect(e[0]).to.have.property('message').that
                         .equals('Could not find serial number in source: ipmi-fru');
                     expect(e[1]).to.have.property('message').that.equals('empty catalog');
+                    expect(e[2]).to.have.property('message').that
+                        .equals('Could not find serial number in source: ipmi-fru');
+                    expect(e[3]).to.have.property('message').that.equals('empty catalog');
                     expect(mockWaterline.nodes.findOrCreate).to.not.have.been.called;
                     done();
                 } catch (e) {
@@ -144,9 +149,12 @@ describe(require('path').basename(__filename), function () {
             .catch(function(e) {
                 try {
                     expect(e).to.have.property('name').that.equals('AggregateError');
-                    expect(e).to.have.property('length').that.equals(2);
+                    expect(e).to.have.property('length').that.equals(4);
                     expect(e[0]).to.have.property('message').that.equals('empty catalog');
                     expect(e[1]).to.have.property('message').that
+                        .equals('Could not find serial number in source: dmi');
+                    expect(e[2]).to.have.property('message').that.equals('empty catalog');
+                    expect(e[3]).to.have.property('message').that
                         .equals('Could not find serial number in source: dmi');
                     expect(mockWaterline.nodes.findOrCreate).to.not.have.been.called;
                     done();
@@ -186,7 +194,7 @@ describe(require('path').basename(__filename), function () {
             .catch(function(e) {
                 try {
                     expect(e).to.have.property('name').that.equals('AggregateError');
-                    expect(e).to.have.property('length').that.equals(2);
+                    expect(e).to.have.property('length').that.equals(4);
                     expect(e[0]).to.have.property('message').that
                         .equal('No valid serial number in SN: ... aa');
                     expect(e[1]).to.have.property('message').that.equals('empty catalog');
