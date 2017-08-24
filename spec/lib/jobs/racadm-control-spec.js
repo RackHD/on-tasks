@@ -305,5 +305,59 @@ describe(require('path').basename(__filename), function () {
                 });
         });
     });
+
+    describe('DellRacadm Tool Reset Components', function() {
+        var options;
+
+        beforeEach('Dell Racadm Tool Reset Components', function() {
+            options = {
+                components: ["bios","idrac"],
+                action: "resetComponents"
+            };
+            job = new RacadmToolJob(options, {}, uuid.v4());
+
+            this.sandbox = sinon.sandbox.create();
+            this.sandbox.stub(job, '_subscribeActiveTaskExists').resolves();
+            this.sandbox.stub(mockWaterline.obms, 'findByNode');
+        });
+
+        afterEach('Dell Racadm Tool Reset Components Validation', function() {
+            this.sandbox.restore();
+        });
+
+        it("should call racadmTool.resetComponents", function(){
+            var node = {
+                id: 'bc7dab7e8fb7d6abf8e7d6ac',
+                obmSettings: [
+                    {
+                        service: 'dell-wsman-obm-service',
+                        config: {
+                            host: '1.2.3.4',
+                            user: 'admin',
+                            password: 'password'
+                        }
+                    }
+                ]
+            };
+
+            var resetComponentStub = this.sandbox.stub(racadmTool,'resetComponents');
+            var cifsInfo = options.components;
+            resetComponentStub.resolves(
+                {
+                    status:"Completed"
+                }
+            );
+            var lookupHostStub = this.sandbox.stub(job,'lookupHost');
+            mockWaterline.obms.findByNode.resolves(node);
+            lookupHostStub.resolves(node.obmSettings[0].config);
+            return job.run()
+                .then(function() {
+                    expect(resetComponentStub).to.have.been.calledWith(
+                        node.obmSettings[0].config.host, node.obmSettings[0].config.user,
+                        node.obmSettings[0].config.password,cifsInfo);
+                });
+        });
+    });
+
 });
 
