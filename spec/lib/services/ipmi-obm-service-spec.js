@@ -32,7 +32,8 @@ describe('IpmiObmService', function() {
             'identifyOff',
             'mcResetCold',
             'mcInfo',
-            'forceBootPxe'
+            'forceBootPxe',
+            'clearWatchDog'
         ]);
     });
 });
