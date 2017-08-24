@@ -18,6 +18,18 @@
             "description": "Specify if reboot after racadm control tasks are done",
             "type": "boolean"
         },
+        "ip": {
+            "description": "The ip address of the new iDrac  network setting",
+            "type": "string"
+        },
+        "netMask": {
+            "description": "The subnet mask of the new iDrac  network setting",
+            "type": "string"
+        },
+        "gateway": {
+            "description": "The gateway of the new iDrac  network setting",
+            "type": "string"
+        },
         "action": {
             "description": "Specify racadm actions to implement specified control",
             "type": "string",
