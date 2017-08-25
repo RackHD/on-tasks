@@ -32,7 +32,7 @@
             "description": "Specify racadm actions to implement specified control",
             "type": "string",
             "enum": [
-                "setBiosConfig", "updateFirmware", "getBiosConfig",
+                "setBiosConfig", "updateFirmware", "getBiosConfig", "resetComponents",
                 "getConfigCatalog", "enableIpmi", "disableIpmi",
                 "disableVTx", "enableVTx", "enableAlert", "enableRedfish","disableRedfish", "setIdracIP"
             ]
