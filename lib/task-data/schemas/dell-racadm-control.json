@@ -18,6 +18,16 @@
             "description": "Specify if reboot after racadm control tasks are done",
             "type": "boolean"
         },
+        "component": {
+            "type": "array",
+            "items": {
+                "$ref": "#/definitions/componentEnum"
+            }
+        },
+        "componentEnum": {
+            "description": "Specify component to be erased",
+            "enum": ["bios", "diag", "drvpack", "idrac", "lcdata"]
+        },
         "action": {
             "description": "Specify racadm actions to implement specified control",
             "type": "string",
@@ -43,6 +53,9 @@
         },
         "action": {
             "$ref": "#/definitions/action"
+        },
+        "components": {
+            "$ref": "#/definitions/component"
         }
     },
     "required": ["action"]

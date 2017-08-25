@@ -11,21 +11,23 @@ describe(require('path').basename(__filename), function() {
         serverPassword: "abc",
         forceReboot: false,
         serverFilePath: "/home/onrack/bios.exe",
-        action: 'setBiosConfig'
+        action: 'setBiosConfig',
+        components: ["bios"]
     };
 
     var positiveSetParam = {
         serverUsername: ["1", "a"],
         serverPassword: ["ab", "+++_"],
         forceReboot: [false, true],
-        serverFilePath: 
-            ["/home/onrack/bios.exe", "/home/onrack/bmc.d7", 
+        serverFilePath:
+            ["/home/onrack/bios.exe", "/home/onrack/bmc.d7",
                 "\\\\share\\image\\bios.exe", "10.1.1.1:/ifs/rackhd/r730.xml"],
         action: [
             "setBiosConfig", "updateFirmware", "getBiosConfig",
             "getConfigCatalog", "enableIpmi", "disableIpmi",
             "disableVTx", "enableVTx"
-        ]
+        ],
+        components: [["bios"], ["idrac"], ["diag"], ["drvpack"], ["lcdata"]]
     };
 
     var negativeSetParam = {
@@ -33,7 +35,8 @@ describe(require('path').basename(__filename), function() {
         serverPassword: false,
         forceReboot: ["false", 123, null],
         serverFilePath: ["/home/onrack/bios", "home/onrack/bios.exe"],
-        action: 'anything'
+        action: 'anything',
+        components: 'anything'
     };
 
     var positiveUnsetParam = [
@@ -43,7 +46,8 @@ describe(require('path').basename(__filename), function() {
     ];
 
     var negativeUnsetParam = [
-        "action"
+        "action",
+        "components[0]"
     ];
 
     //var commonHelper = require('./linux-command-schema-ut-helper');
@@ -54,3 +58,4 @@ describe(require('path').basename(__filename), function() {
     new SchemaUtHelper(schemaFileName, partialCanonical).batchTest(
         positiveSetParam, negativeSetParam, positiveUnsetParam, negativeUnsetParam);
 });
+
