@@ -2,86 +2,14 @@
 
 'use strict';
 
-describe('Emc Ucs Catalog Job', function () {
+
+describe('Ucs Catalog Job', function () {
+    var sampleData = JSON.parse(require('../utils/job-utils/stdout-helper.js').ucsCatalogData);
     var uuid = require('node-uuid'),
         graphId = uuid.v4(),
         ucsJob,
         waterline = {},
-        sandbox = sinon.sandbox.create(),
-        rackmountInfo = {
-            body: [{
-                "admin_power": "policy",
-                "admin_state": "in-service",
-                "assigned_to_dn": "",
-                "association": "none",
-                "availability": "available",
-                "available_memory": "49152",
-                "check_point": "discovered",
-                "child_action": null,
-                "conn_path": "A,B",
-                "conn_status": "A,B",
-                "descr": "",
-                "discovery": "complete",
-                "discovery_status": "",
-                "dn": "sys/rack-unit-6",
-                "fan_speed_config_status": "",
-                "fan_speed_policy_fault": "no",
-                "flt_aggr": "2",
-                "fsm_descr": "",
-                "fsm_flags": "",
-                "fsm_prev": "DiscoverSuccess",
-                "fsm_progr": "100",
-                "fsm_rmt_inv_err_code": "none",
-                "fsm_rmt_inv_err_descr": "",
-                "fsm_rmt_inv_rslt": "",
-                "fsm_stage_descr": "",
-                "fsm_stamp": "2017-01-19T15:39:46.419",
-                "fsm_status": "nop",
-                "fsm_try": "0",
-                "id": "6",
-                "int_id": "63408",
-                "lc": "discovered",
-                "lc_ts": "1970-01-01T00:00:00.000",
-                "local_id": "",
-                "low_voltage_memory": "not-applicable",
-                "managing_inst": "A",
-                "memory_speed": "not-applicable",
-                "mfg_time": "not-applicable",
-                "model": "UCSC-C240-M4SX",
-                "name": "",
-                "num_of40_g_adaptors_with_old_fw": "0",
-                "num_of40_g_adaptors_with_unknown_fw": "0",
-                "num_of_adaptors": "3",
-                "num_of_cores": "12",
-                "num_of_cores_enabled": "12",
-                "num_of_cpus": "2",
-                "num_of_eth_host_ifs": "0",
-                "num_of_fc_host_ifs": "0",
-                "num_of_threads": "16",
-                "oper_power": "off",
-                "oper_pwr_trans_src": "unknown",
-                "oper_qualifier": "",
-                "oper_state": "unassociated",
-                "operability": "operable",
-                "original_uuid": "1b4e28ba-2fa1-11d2-e006-b9a761bde3fb",
-                "part_number": "",
-                "policy_level": "0",
-                "policy_owner": "local",
-                "presence": "equipped",
-                "revision": "0",
-                "rn": "rack-unit-6",
-                "sacl": null,
-                "serial": "RK37",
-                "server_id": "6",
-                "status": null,
-                "total_memory": "49152",
-                "usr_lbl": "",
-                "uuid": "1b4e28ba-2fa1-11d2-e006-b9a761bde3fb",
-                "vendor": "Cisco Systems Inc",
-                "version_holder": "no",
-                "vid": "0"
-            }]
-        };
+        sandbox = sinon.sandbox.create();
         var setup = sandbox.stub().resolves();
         var clientRequest = sandbox.stub();
         var node = {
@@ -91,7 +19,7 @@ describe('Emc Ucs Catalog Job', function () {
                 "00:00:FF:36:57:01",
                 "00:00:FF:36:57:02"
             ],
-            "name": "sys/rack-unit-5",
+            "name": "sys/rack-unit-2",
             "obm": [
                 {
                     "config": {
@@ -166,25 +94,64 @@ describe('Emc Ucs Catalog Job', function () {
             username:'user',
             password:'pass'
         }, {target:'abc'}, graphId);
-        ucsJob.node= "xyz";
         clientRequest.resetBehavior();
         clientRequest.reset();
         waterline.catalogs.create.reset();
     });
        
-    describe('run catalog ucs rackmount', function() {
-        it('should successfully catalog rackmount servers', function() {
-            clientRequest.onCall(0).resolves(rackmountInfo);
+    describe('run catalog ucs servers', function() {
+        it('should successfully catalog servers', function() {
+            clientRequest.withArgs('/catalog?identifier=sys/rack-unit-2')
+                        .resolves({ "body": sampleData.rackunit});
+            clientRequest.withArgs('/catalog?identifier=sys/rack-unit-2/board')
+                        .resolves({ "body": sampleData.board});
+            clientRequest.withArgs('/catalog?identifier=sys/rack-unit-2/board/memarray-1')
+                        .resolves({ "body": sampleData["memarray-1"]});
             return ucsJob._run()
             .then(function() {
-                expect(waterline.catalogs.create).to.be.calledOnce;
+                var ucsResult = _.cloneDeep(sampleData.rackunit[3]);
+                var boardResult = _.cloneDeep(sampleData.rackunit[2]);
+                var psuResult = [_.cloneDeep(sampleData.rackunit[0]), 
+                    _.cloneDeep(sampleData.rackunit[1])]; 
+                var disk = [_.cloneDeep(sampleData.board[0]),_.cloneDeep(sampleData.board[1])];
+                var storageFlexflash = _.cloneDeep(sampleData.board[3]);
+                var memarray = _.cloneDeep(sampleData.board[2]);
+                var memarrayChildren = _.cloneDeep(sampleData["memarray-1"]);
+                memarrayChildren.pop();
+                memarray.children = {"mem-collection": memarrayChildren};
+                var boardChildren = {};
+                boardChildren["disk-collection"] = disk;
+                boardChildren["storage-flexflash-collection"] = [storageFlexflash];
+                boardChildren["memarray-collection"] = [memarray];
+                boardResult.children = boardChildren;
+                expect(waterline.nodes.getNodeById).to.be.calledOnce;
+                expect(waterline.nodes.getNodeById).to.be.calledWith('abc');
+                expect(clientRequest).to.be.calledThrice;
+                expect(waterline.catalogs.create.getCall(0).args[0].node).to.equal('abc');
+                expect(waterline.catalogs.create.getCall(0).args[0].source)
+                    .to.equal('UCS:psu-collection');
+                expect(waterline.catalogs.create.getCall(0).args[0].data)
+                    .to.deep.equal(psuResult);
+                expect(waterline.catalogs.create.getCall(1).args[0].node).to.equal('abc');
+                expect(waterline.catalogs.create.getCall(1).args[0].source).to.equal('UCS:board');
+                expect(waterline.catalogs.create.getCall(1).args[0].data)
+                    .to.deep.equal(boardResult);
+                expect(waterline.catalogs.create.getCall(2).args[0].node).to.equal('abc');
+                expect(waterline.catalogs.create.getCall(2).args[0].source).to.equal('UCS');
+                expect(waterline.catalogs.create.getCall(2).args[0].data).to.deep.equal(ucsResult);
             });
         });
-    });
 
-    it('should fail to catalog rackmount', function() {
-        clientRequest.rejects('some error');
-        ucsJob._run();
-        return ucsJob._deferred.should.be.rejectedWith('some error');
+        it('should get rejective on ucs servers', function() {
+            waterline.nodes.getNodeById.rejects('Unkown error');
+            expect(ucsJob._run()).to.be.rejected;
+        });
+
+        it('should get nodeId on ucs servers', function() {
+            waterline.nodes.getNodeById.rejects('No Servers Members');
+            ucsJob.catalogServers('123').then(function(nodeId) {
+                expect(nodeId).to.equal('123');
+            });
+        });
     });
 });
