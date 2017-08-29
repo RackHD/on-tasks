@@ -94,6 +94,7 @@ describe('Ucs Catalog Job', function () {
             username:'user',
             password:'pass'
         }, {target:'abc'}, graphId);
+        sandbox.stub(ucsJob, "_done");
         clientRequest.resetBehavior();
         clientRequest.reset();
         waterline.catalogs.create.reset();
@@ -107,12 +108,14 @@ describe('Ucs Catalog Job', function () {
                         .resolves({ "body": sampleData.board});
             clientRequest.withArgs('/catalog?identifier=sys/rack-unit-2/board/memarray-1')
                         .resolves({ "body": sampleData["memarray-1"]});
+            clientRequest.withArgs('/catalog?identifier=sys/rack-unit-2/board/storage-flexflash-1')
+                        .resolves({ "body": sampleData["storage-flexflash-1"]});
             return ucsJob._run()
             .then(function() {
                 var ucsResult = _.cloneDeep(sampleData.rackunit[3]);
                 var boardResult = _.cloneDeep(sampleData.rackunit[2]);
-                var psuResult = [_.cloneDeep(sampleData.rackunit[0]), 
-                    _.cloneDeep(sampleData.rackunit[1])]; 
+                var psuResult = [_.cloneDeep(sampleData.rackunit[0]),
+                    _.cloneDeep(sampleData.rackunit[1])];
                 var disk = [_.cloneDeep(sampleData.board[0]),_.cloneDeep(sampleData.board[1])];
                 var storageFlexflash = _.cloneDeep(sampleData.board[3]);
                 var memarray = _.cloneDeep(sampleData.board[2]);
@@ -120,13 +123,14 @@ describe('Ucs Catalog Job', function () {
                 memarrayChildren.pop();
                 memarray.children = {"mem-collection": memarrayChildren};
                 var boardChildren = {};
+                storageFlexflash.children = {"disk-collection": sampleData["storage-flexflash-1"]};
                 boardChildren["disk-collection"] = disk;
                 boardChildren["storage-flexflash-collection"] = [storageFlexflash];
                 boardChildren["memarray-collection"] = [memarray];
                 boardResult.children = boardChildren;
                 expect(waterline.nodes.getNodeById).to.be.calledOnce;
                 expect(waterline.nodes.getNodeById).to.be.calledWith('abc');
-                expect(clientRequest).to.be.calledThrice;
+                expect(clientRequest.callCount).to.equal(4);
                 expect(waterline.catalogs.create.getCall(0).args[0].node).to.equal('abc');
                 expect(waterline.catalogs.create.getCall(0).args[0].source)
                     .to.equal('UCS:psu-collection');
@@ -144,7 +148,11 @@ describe('Ucs Catalog Job', function () {
 
         it('should get rejective on ucs servers', function() {
             waterline.nodes.getNodeById.rejects('Unkown error');
-            expect(ucsJob._run()).to.be.rejected;
+            return ucsJob._run()
+            .then(function(){
+                expect(ucsJob._done).to.be.calledOnce;
+                expect(ucsJob._done.getCall(0).args[0].message).to.equal('Unkown error');
+            });
         });
 
         it('should get nodeId on ucs servers', function() {

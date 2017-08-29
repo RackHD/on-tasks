@@ -1,4 +1,16 @@
 {
+  "storage-flexflash-1": [
+    {
+        "dn": "sys/rack-unit-2/board/storage-flexflash-1/disk-8",
+        "rn": "disk-8",
+        "serial": "RKDISK388"
+    },
+    {
+        "dn": "sys/rack-unit-2/board/storage-flexflash-1/disk-7",
+        "rn": "disk-7",
+        "serial": "RKDISK387"
+    }
+  ],
   "memarray-1": [
     {
       "width": "64",
