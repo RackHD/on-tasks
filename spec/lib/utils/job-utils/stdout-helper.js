@@ -3769,3 +3769,7 @@ module.exports.megaraidPhysicalDiskData = fs
 module.exports.diagApiData = fs
     .readFileSync(__dirname+"/samplefiles/diag-tool.txt")
     .toString();
+
+module.exports.ucsCatalogData = fs
+    .readFileSync(__dirname+"/samplefiles/ucs-catalog-sample.txt")
+    .toString();
