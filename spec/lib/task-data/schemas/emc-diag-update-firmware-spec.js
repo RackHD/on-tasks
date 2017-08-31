@@ -1,4 +1,4 @@
-// Copyright 2017, EMC, Inc.
+// Copyright 2017, Dell EMC, Inc.
 /* jshint node: true */
 
 'use strict';
@@ -9,8 +9,9 @@ describe(require('path').basename(__filename), function() {
     var canonical = {
         imageName: 'somefirmware.bin',
         imageMode: 'bios',
-        firmwareName: 'bios',
-        localImagePath: '/bios/bios.zip'
+        firmwareType: 'spi',
+        imageUrl: 'http://172.31.128.1:9080/somefirmware.bin',
+        skipReset: true
     };
 
     var positiveSetParam = {
@@ -18,23 +19,26 @@ describe(require('path').basename(__filename), function() {
             'serdes', '0', '1', '2', '3', '4', '5', 0, 1, 2, 3, 4, 5,
             "fullbmc", "bmcapp", "ssp", "bootblock", "adaptivecooling",
             "0x5f", "0x140", "0x142", "0x144", "0x145"
-        ]
+        ],
+        skipReset: [true, false],
+        imageUrl: ['172.31.128.1:9080/bios.bin', '192.168.129.3/fw_bmc.bin']
     };
 
     var negativeSetParam = {
-        imageName: 'somefirmware',
         imageMode: ['bmc', 6, '6', true],
-        firmwareName: ['post', 6, '6', true],
-        localImagePath: ['bios/bios.zip', '/bios/bios']
+        firmwareType: ['post', 6, '6', true],
+        skipReset: ['yes', 0, '1', 'ture'],
+        imageUrl: ['172.31.133.1:8080/test.txt', '192.168.129.3/fw_bmc']
     };
 
     var positiveUnsetParam = [
-        'localImagePath'
+        'skipReset'
     ];
 
     var negativeUnsetParam = [
+        'imageUrl',
         'imageName',
-        'firmwareName',
+        'firmwareType',
         'imageMode'
     ];
 
