@@ -313,7 +313,7 @@
         "VaultToken": {
             "type": "string",
             "description": "The token used for unwrapping a wrapped Vault response",
-            "pattern": "^[[:alnum:]]{8}-[[:alnum:]]{4}-[[:alnum:]]{4}-[[:alnum:]]{4}-[[:alnum:]]{12}$"
+            "minLength": 1
         },
         "GrubLinuxAppend": {
             "type": "string",
