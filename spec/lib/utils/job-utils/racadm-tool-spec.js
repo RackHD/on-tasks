@@ -320,9 +320,9 @@ describe("racadm-tool", function() {
         });
 
         describe('setBiosConfig', function(){
-            var runAsyncCommandsStub, getPathFilenameStub;
+            var runCommandStub, getPathFilenameStub;
             beforeEach('setBiosConfig before', function() {
-                runAsyncCommandsStub = this.sandbox.stub(instance, 'runAsyncCommands');
+                runCommandStub = this.sandbox.stub(instance, 'runCommand');
                 getPathFilenameStub = this.sandbox.stub(parser, 'getPathFilename');
                 this.cifsConfig = {
                     user: 'onrack',
@@ -351,10 +351,10 @@ describe("racadm-tool", function() {
                     command = "set -f bios.xml -t xml -u " +
                         "onrack -p onrack -l //192.168.188.113/share";
                 getPathFilenameStub.returns(self.fileInfo);
-                runAsyncCommandsStub.resolves();
+                runCommandStub.resolves();
                 return instance.setBiosConfig('192.168.188.113','admin', 'admin', self.cifsConfig)
                     .then(function(){
-                        expect(instance.runAsyncCommands).to.be.calledWith('192.168.188.113',
+                        expect(instance.runCommand).to.be.calledWith('192.168.188.113',
                             'admin', 'admin', command, 0, 1000);
                         expect(parser.getPathFilename).to.have.been.calledOnce;
                     });
@@ -366,11 +366,11 @@ describe("racadm-tool", function() {
                 self.fileInfo.path = '/home/share';
                 self.fileInfo.style = 'local';
                 getPathFilenameStub.returns(self.fileInfo);
-                runAsyncCommandsStub.resolves();
+                runCommandStub.resolves();
                 return instance.setBiosConfig('192.168.188.113','admin', 'admin',
                     {filePath: '/home/share/bios.xml'})
                     .then(function(){
-                        expect(instance.runAsyncCommands).to.be.calledWith('192.168.188.113',
+                        expect(instance.runCommand).to.be.calledWith('192.168.188.113',
                             'admin', 'admin', command, 0, 1000);
                         expect(parser.getPathFilename).to.have.been.calledOnce;
                     });
@@ -379,11 +379,25 @@ describe("racadm-tool", function() {
             it('should failed if get promise failure', function(){
                 var self = this;
                 getPathFilenameStub.returns(self.fileInfo);
-                runAsyncCommandsStub.rejects({error: "Error happend"});
+                runCommandStub.rejects({error: "Error happend"});
                 return instance.setBiosConfig('192.168.188.103','admin', 'admin', self.cifsConfig).
                     should.be.rejectedWith({error: "Error happend"});
             });
 
+            it('should run set bios without reboot if forcedReboot is false', function(){
+                var self = this,
+                    command = "set -f bios.xml -t xml -u " +
+                        "onrack -p onrack -l //192.168.188.113/share";
+                getPathFilenameStub.returns(self.fileInfo);
+                self.cifsConfig.forceReboot = false;
+                runCommandStub.resolves();
+                return instance.setBiosConfig('192.168.188.113','admin', 'admin', self.cifsConfig)
+                    .then(function(){
+                        expect(instance.runCommand).to.be.calledWith('192.168.188.113',
+                            'admin', 'admin', command, 0, 1000);
+                        expect(parser.getPathFilename).to.have.been.calledOnce;
+                    });
+             });
         });
 
         describe('updateFirmware', function(){
