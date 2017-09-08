@@ -142,6 +142,102 @@ describe('General Redfish Catalog Job', function () {
                 },
                 "UEFIDevicePath": "PciRoot(0x0)/Pci(0x11,0x4)"
             }
+        },
+        coolingRoot = {
+            body: {
+                "Id": "RootService",
+                "Name": "Root Service",
+                "RedfishVersion": "1.0.2",
+                "UUID": "92384634-2938-2342-8820-489239905423",
+                "Systems": {
+                },
+                "Chassis": {
+                },
+                "DCIMPower": {
+                },
+                "DCIMCooling": {
+                    "@odata.id": "/redfish/v1/DCIMCooling/default/CoolingTower"
+                },
+                "Managers": {
+                },
+                "Tasks": {
+                },
+                "SessionService": {
+                },
+                "AccountService": {
+                },
+                "EventService": {
+                },
+                "Links": {
+                },
+                "Oem": {},
+                "@odata.context": "/redfish/v1/$metadata#ServiceRoot",
+                "@odata.id": "/redfish/v1/",
+                "@odata.type": "#ServiceRoot.v1_0_2.ServiceRoot"
+            }
+        },
+        coolingList = {
+            body: {
+                "@odata.type": "#CoolingTowerollection.CoolingTowerCollection",
+                "Name": "Lab 1 Cooling Tower Collection",
+                "Members@odata.count": 1,
+                "Members": [
+                    {
+                        "@odata.id": "/redfish/v1/DCIMCooling/default/CoolingTower/0"
+                    }
+                ],
+                "@odata.context": "/redfish/v1/$metadata#DCIMCoolingCollection",
+                "@odata.id": "/redfish/v1/DCIMCooling/default/CoolingTower",
+                "@Redfish.Copyright": "Copyright 2014-2016 Distributed Management Task Force, Inc. (DMTF). For the full DMTF copyright policy, see http://www.dmtf.org/about/policies/copyright."            }
+        },
+        coolingData = {
+            body: {
+                "@odata.context": "/redfish/v1/$metadata#CoolingTower.CoolingTower",
+                "@odata.id": "/redfish/v1/DCIMCooling/default/CoolingTower/0",
+                "@odata.type": "#CoolingTower.v1_0_0.CoolingTower",
+                "ID": "CoolingTower0",
+                "Name": "CoolingTower0",
+                "FirmwareRevision": "1.0.0",
+                "DateOfManufacture": "01012017",
+                "Manufacturer": "Manufacturer",
+                "Model": "Model",
+                "SerialNumber": "SerialNum",
+                "PartNumber": "PartNum",
+                "AssetTag": "AssetTag",
+                "PhysicalLocation": "Location",
+                "OperatingLevelSwitch": "A",
+                "ColdWaterFlowSetPoint": 40,
+                "FanVFDModulation": 50,
+                "CoolingTowerEnabled": "True",
+                "FanStarted": "True",
+                "LeadLagPosition": "A",
+                "VibrationSwitchSetpoint": 0,
+                "FanHighSpeedSetting": 60,
+                "FanLowSpeedSetting": 40,
+                "CoolingTowerLeadLagPosition": "A",
+                "CoolingTowerAvailable": "True",
+                "RequestSignal": "A",
+                "UnitPoweredOn": "True",
+                "HighFanSpeedStatus": "True",
+                "FanPoweredOn": "True",
+                "LowFanSpeedStatus": "False",
+                "AlarmResetPoweredOn": "True",
+                "DrainValveProof": "A",
+                "FanFaultAlarmOn": "False",
+                "ColdWaterValveFailOpenAlarmOn": "False",
+                "ColdWaterValveFailCloseAlarmOn": "False",
+                "CoolingWaterValveFailOpenAlarmOn": "False",
+                "CoolingWaterValveFailCloseAlarmOn": "False",
+                "FanFailureToRunAlarmOn": "False",
+                "FanHighSpeedAlarmOn": "False",
+                "FanLowSpeedAlarmOn": "False",
+                "LowFanGearOilLevelAlarmOn": "False",
+                "SumpTankLowLevelAlarm": "False",
+                "SumpTankHighLevelAlarmOn": "False",
+                "VibrationSwitchAlarmOn": "False",
+                "Oem": {},
+                "Sensors": {}
+            }
         };
         var setup = sandbox.stub().resolves();
         var clientRequest = sandbox.stub();
@@ -151,7 +247,7 @@ describe('General Redfish Catalog Job', function () {
             this.setup = setup;
             this.clientRequest = clientRequest;
             this.settings = {
-                root: '/'
+                root: '/redfish/v1/'
             };
         }
         
@@ -182,9 +278,8 @@ describe('General Redfish Catalog Job', function () {
         clientRequest.reset();
         waterline.catalogs.create.reset();
     });
-       
-    describe('redfish fan / power endpoints', function() {
 
+    describe('redfish fan / power endpoints', function() {
         it('should successfully catalog elements', function() {
             clientRequest.onCall(0).resolves(systemData);
             clientRequest.onCall(1).resolves(powerData);
@@ -198,8 +293,8 @@ describe('General Redfish Catalog Job', function () {
         });
         it('should fail to catalog elements', function() {
             clientRequest.rejects('some error');
-            redfishJob._run();
-            return redfishJob._deferred.should.be.rejectedWith('some error');
+            return redfishJob.catalogEndpoints('xyz')
+                .should.be.rejectedWith('some error');
         });
 
     });
@@ -218,16 +313,58 @@ describe('General Redfish Catalog Job', function () {
         });
         it('should fail to catalog elements', function() {
             clientRequest.rejects('some error');
-            redfishJob._run();
-            return redfishJob._deferred.should.be.rejectedWith('some error');
+            return redfishJob.driveEndpoints('xyz')
+                .should.be.rejectedWith('some error');
         });
 
         it('should fail with no elements ', function() {
             clientRequest.onCall(0).rejects('Missing storage Resource');
-            redfishJob._run();
-            return redfishJob._deferred
+            return redfishJob.driveEndpoints('xyz')
                 .should.be.rejectedWith('Missing storage Resource');
         });
     });
 
+    describe('redfish all endpoints', function() {
+        it('should successfully catalog all endpints', function() {
+            clientRequest.onCall(0).resolves(coolingRoot);
+            clientRequest.onCall(1).resolves(coolingList);
+            clientRequest.onCall(2).resolves(coolingData);
+
+            return redfishJob.getAllCatalogs(['1234'])
+                .then(function(node) {
+                    expect(node).to.be.an('Array').with.length(1);
+                    expect(node[0]).to.equal('1234');
+                    expect(waterline.catalogs.create).to.be.calledThrice;
+                    expect(clientRequest).to.be.calledThrice;
+                });
+        });
+
+        it('should fail to catalog elements', function() {
+            clientRequest.rejects('some error');
+            return redfishJob.getAllCatalogs(['1234'])
+                .should.be.rejectedWith('some error');
+        });
+    });
+
+    describe('redfish catalogSystem', function() {
+        it('should successfully catalog System', function() {
+            clientRequest.onCall(0).resolves(coolingRoot);
+            clientRequest.onCall(1).resolves(coolingList);
+            clientRequest.onCall(2).resolves(coolingData);
+
+            return redfishJob.getSystemsCatalogs(['1234'])
+                .then(function(node) {
+                    expect(node).to.be.an('Array').with.length(1);
+                    expect(node[0]).to.equal('1234');
+                    expect(waterline.catalogs.create).to.be.calledThrice;
+                    expect(clientRequest).to.be.calledThrice;
+                });
+        });
+
+        it('should fail to catalog elements', function() {
+            clientRequest.rejects('some error');
+            return redfishJob.getAllCatalogs(['1234'])
+                .should.be.rejectedWith('some error');
+        });
+    });
 });
