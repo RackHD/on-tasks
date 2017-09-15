@@ -1,10 +1,10 @@
 {
     "copyright": "Copyright 2017, Dell EMC, Inc.",
     "definitions": {
-        "localImagePath": {
-            "description": "Image zip file path",
+        "imageUrl": {
+            "description": "Image URL in on-http",
             "type": "string",
-            "pattern": "^/.*\\.zip$"
+            "pattern": ".*\\.bin$"
         },
         "imageMode": {
             "description": "Update mode",
@@ -18,28 +18,34 @@
         },
         "imageName": {
             "description": "Image bin file name",
-            "type": "string",
-            "pattern": ".*.bin$"
+            "type": "string"
         },
-        "firmwareName": {
-            "description": "Name of firmware to be updated",
+        "firmwareType": {
+            "description": "Type of firmware to be updated",
             "type": "string",
-            "enum": ["bios", "bmc"]
+            "enum": ["spi", "bmc"]
+        },
+        "skipReset": {
+            "description": "Whether skip reset SP after firmware update",
+            "type": "boolean"
         }
     },
     "properties": {
         "imageName": {
             "$ref": "#/definitions/imageName"
         },
-        "localImagePath": {
-            "$ref": "#/definitions/localImagePath"
+        "imageUrl": {
+            "$ref": "#/definitions/imageUrl"
         },
         "imageMode": {
             "$ref": "#/definitions/imageMode"
         },
-        "firmwareName": {
-            "$ref": "#/definitions/firmwareName"
+        "firmwareType": {
+            "$ref": "#/definitions/firmwareType"
+        },
+        "skipReset": {
+            "$ref": "#/definitions/skipReset"
         }
     },
-    "required": ["imageName", "imageMode", "firmwareName"]
+    "required": ["imageUrl", "firmwareType", "imageName", "imageMode"]
 }

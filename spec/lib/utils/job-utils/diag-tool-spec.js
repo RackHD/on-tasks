@@ -10,8 +10,9 @@ describe('diag tools', function(){
     var diagTool;
     var DiagTool;
     var getDeviceInfoStub;
-    var nodeId =  uuid.v4();
+    var nodeId = uuid.v4();
     var server = 'http://10.1.1.1:8080';
+    var fileServer = 'http://10.31.128.1:9080/' ;
     var stdoutMocks = require('./stdout-helper');
     var dataSamples = JSON.parse(stdoutMocks.diagApiData);
     before(function(){
@@ -37,7 +38,7 @@ describe('diag tools', function(){
         diagTool.spChildren = {};
         diagTool.deviceMap = {
             bmcUpdate: "BMC_EMC_OEM",
-            biosUpdate: "SPIROM",
+            spiUpdate: "SPIROM",
             sp: "",
             platform: ""
         };
@@ -47,26 +48,58 @@ describe('diag tools', function(){
     describe('upload image api tests', function(){
         it('should run upload image api', function() {
             var file = __dirname + '/samplefiles/diag-tool.txt';
-            var uploadApi = '/api/upload';
+            var uploadApi = '/api/upload/file';
+            var testFile = 'diag-tool.txt';
+            var fileUrl = fileServer + testFile;
+            nock(fileServer)
+                .get('/' + testFile)
+                .replyWithFile(200, file);
             nock(server)
                 .post(uploadApi)
                 .reply(200, {'test': 'test'});
-            return diagTool.uploadImageFile(file, uploadApi)
+            return diagTool.uploadImageFile(fileUrl, uploadApi)
             .then(function(body){
                 expect(JSON.parse(body)).to.deep.equal({'test': 'test'});
             });
         });
 
-        it('should report image does not exist', function(done) {
-            var file = __dirname + '/samplefiles/diag-tool.tx';
-            return diagTool.uploadImageFile(file)
+        it('should report file server is inacciable', function(done) {
+            var uploadApi = '/api/upload/file';
+            var testFile = 'diag-tool.txt';
+            var fileUrl = fileServer + testFile;
+            nock(fileServer)
+                .get('/'+testFile)
+                .reply(404);
+            nock(server)
+                .post(uploadApi)
+                .reply(200, {'test': 'test'});
+            return diagTool.uploadImageFile(fileUrl, uploadApi)
             .then(function(){
                 done(new Error('Test should fail'));
             })
             .catch(function(err){
-                expect(err.message).to.equal(
-                    "ENOENT: no such file or directory, open '%s'".format(file)
-                );
+                expect(err.message).to.equal('404 - {"type":"Buffer","data":[]}');
+                done();
+            });
+        });
+
+        it('should report target server is inacciable', function(done) {
+            var uploadApi = '/api/upload/file';
+            var testFile = 'diag-tool.txt';
+            var fileUrl = fileServer + testFile;
+            var file = __dirname + '/samplefiles/diag-tool.txt';
+            nock(fileServer)
+                .get('/'+testFile)
+                .replyWithFile(200, file);
+            nock(server)
+                .post(uploadApi)
+                .reply(406);
+            return diagTool.uploadImageFile(fileUrl, uploadApi)
+            .then(function(){
+                done(new Error('Test should fail'));
+            })
+            .catch(function(err){
+                expect(err.message).to.equal('406 - {"type":"Buffer","data":[]}');
                 done();
             });
         });
@@ -175,7 +208,7 @@ describe('diag tools', function(){
                 .reply(200, dataSamples.updateSpiRom);
             return diagTool.getAllDevices()
             .then(function(){
-                return diagTool.updateFirmware('bios', imageName, '1');
+                return diagTool.updateFirmware('spi', imageName, '1');
             })
             .then(function(body){
                 expect(body).to.deep.equal(dataSamples.updateSpiRom);

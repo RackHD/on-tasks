@@ -10,9 +10,9 @@ describe('update firmware by diag', function(){
     var nodeId = uuid.v4();
     var context = {target: nodeId, nodeIp: "172.31.128.6"};
     var options = {
-        localImagePath: "/home/onrack/Oberon_EMC_test.zip",
+        imageUrl: "http://172.31.128.1:9080/emc_c_bios_oberon_5042.bin",
         imageName: "emc_c_bios_oberon_5042.bin",
-        firmwareName: 'bios'
+        firmwareType: 'spi'
     };
     var updateBiosResult = {
         "result": [
@@ -34,7 +34,28 @@ describe('update firmware by diag', function(){
             }
         ]
     };
-
+    var updateBiosFailResult = {
+        "result": [
+            {
+                "error": {
+                    "device_name": "SPIROM",
+                    "error_code": "1000000080020301",
+                    "error_detail": [
+                        "CoreId: 8",
+                        "Update firmware got an exception"
+                    ],
+                    "error_group": "Errors",
+                    "guid": "07dc05d4-6d87-11e7-89a1-0060166fb462",
+                    "timestamp": "2017-07-20 20:23:46.440809"
+                }
+            },
+            {
+               "atomic_test_end": {
+                    "timestamp": "2017-07-20 20:23:46.445271"
+                }
+            }
+        ]
+    };
     var sandbox = sinon.sandbox.create();
     var diagTool = {};
     function DiagTool() {return diagTool;}
@@ -84,7 +105,7 @@ describe('update firmware by diag', function(){
         });
 
         it('should run update bios job with integer mode and reset', function() {
-            var _options = _.defaults({firmwareName: 'bios', imageMode: 1}, options);
+            var _options = _.defaults({firmwareType: 'spi', imageMode: 1}, options);
             job = new UpdatefirmwareJob(_options, context, taskId);
             sandbox.spy(job, '_done');
             return job._run()
@@ -96,9 +117,9 @@ describe('update firmware by diag', function(){
                 expect(diagTool.warmReset).to.be.calledOnce;
                 expect(job._done).to.be.calledOnce;
                 expect(diagTool.retrySyncDiscovery).to.be.calledWith(5000, 6);
-                expect(diagTool.uploadImageFile).to.be.calledWith(options.localImagePath);
+                expect(diagTool.uploadImageFile).to.be.calledWith(options.imageUrl, options.imageName);
                 expect(diagTool.updateFirmware).to.be.calledWith(
-                    'bios',
+                    'spi',
                     options.imageName,
                     '1',
                     '/uploads'
@@ -108,13 +129,13 @@ describe('update firmware by diag', function(){
         });
 
         it('should run update bios job with mode name and without reset', function() {
-            var _options = _.defaults({imageMode: 'bios', skipReset: true}, options);
+            var _options = _.defaults({firmwareType: 'spi', imageMode: 'bios', skipReset: true}, options);
             job = new UpdatefirmwareJob(_options, context, taskId);
             sandbox.spy(job, '_done');
             return job._run()
             .then(function(){
                 expect(diagTool.updateFirmware).to.be.calledWith(
-                    'bios',
+                    'spi',
                     options.imageName,
                     '1',
                     '/uploads'
@@ -130,7 +151,22 @@ describe('update firmware by diag', function(){
             sandbox.stub(job, '_done').resolves();
             updateBiosResult.result[1].atomic_test_data.secure_firmware_update = '';
             diagTool.updateFirmware.reset();
-            diagTool.updateFirmware.resolves(updateBiosResult);
+            return job._run()
+            .then(function(){
+                expect(job._done).to.be.calledOnce;
+                expect(job._done.args[0][0].message).to.equal(
+                    'Failed to get reset flags from diag'
+                );
+            });
+        });
+
+        it('should throw firmware update error', function() {
+            var _options = _.defaults({imageMode: '1'}, options);
+            job = new UpdatefirmwareJob(_options, context, taskId);
+            sandbox.stub(job, '_done').resolves();
+            updateBiosResult.result[1].atomic_test_data.secure_firmware_update = '';
+            diagTool.updateFirmware.reset();
+            diagTool.updateFirmware.resolves(updateBiosFailResult);
             return job._run()
             .then(function(){
                 expect(job._done).to.be.calledOnce;
@@ -143,7 +179,7 @@ describe('update firmware by diag', function(){
 
     describe('bmc update', function(){
         it('should run update bmc firmware job', function() {
-            var _options = _.defaults({firmwareName: 'bmc', imageMode: '0x5f'}, options);
+            var _options = _.defaults({firmwareType: 'bmc', imageMode: '0x5f'}, options);
             job = new UpdatefirmwareJob(_options, context, taskId);
             sandbox.spy(job, '_done');
             return job._run()
@@ -155,7 +191,7 @@ describe('update firmware by diag', function(){
                 expect(diagTool.bmcReset).to.be.calledOnce;
                 expect(job._done).to.be.calledOnce;
                 expect(diagTool.retrySyncDiscovery).to.be.calledWith(5000, 6);
-                expect(diagTool.uploadImageFile).to.be.calledWith(options.localImagePath);
+                expect(diagTool.uploadImageFile).to.be.calledWith(options.imageUrl, options.imageName);
                 expect(diagTool.updateFirmware).to.be.calledWith(
                     'bmc',
                     options.imageName,
@@ -168,7 +204,7 @@ describe('update firmware by diag', function(){
 
         it('should run update bmc firmware job with mode name and without reset', function() {
             var _options = _.defaults(
-                {firmwareName: 'bmc', imageMode: 'fullbmc', skipReset: true},
+                {firmwareType: 'bmc', imageMode: 'fullbmc', skipReset: true},
                 options
             );
             job = new UpdatefirmwareJob(_options, context, taskId);
