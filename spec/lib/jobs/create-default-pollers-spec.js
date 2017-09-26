@@ -243,11 +243,17 @@ describe("Job.Pollers.CreateDefault", function () {
             );
 
             var arrayLength = pollers.length * nodeIds.length;
-            _.each(Array.from({length: arrayLength}, function(v, i){ return i; }),
+            _.forEach(Array.from({length: arrayLength}, function(v, i){ return i; }),
                 function(i) {
+                    var expectedNodeId = nodeIds[i % pollers.length];
+                    var expectedPoller = _.cloneDeep(pollers[parseInt(i / pollers.length)]);
+                    expectedPoller.node = expectedNodeId;
+
                     expect(waterline.workitems.findOrCreate.getCall(i).args[0])
-                        .to.have.been.deep.equal({node: nodeIds[i % pollers.length], 
-                            'config.command': pollers[parseInt(i/pollers.length)].config.command});
+                        .to.deep.equal({node: expectedNodeId, 
+                            'config.command': expectedPoller.config.command});
+                    expect(waterline.workitems.findOrCreate.getCall(i).args[1])
+                        .to.deep.equal(expectedPoller);
             });
         });
 
