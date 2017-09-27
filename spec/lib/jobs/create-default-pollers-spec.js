@@ -235,16 +235,25 @@ describe("Job.Pollers.CreateDefault", function () {
         .then(function() {
             expect(waterline.obms.findByNode).to.have.been.callCount(4);
             expect(waterline.workitems.findOrCreate).to.have.been.callCount(4);
-            _.forEach(nodeIds, function(nodeId){
-                expect(waterline.obms.findByNode).to.have.been.calledWith(
-                    nodeId, 'ucs-obm-service', true
-                );
-                expect(waterline.workitems.findOrCreate).to.have.been.calledWith(
-                    { node: nodeId, 'config.command': pollers[0].config.command }, pollers[0]
-                );
-                expect(waterline.workitems.findOrCreate).to.have.been.calledWith(
-                    { node: nodeId, 'config.command': pollers[1].config.command }, pollers[1]
-                );
+            expect(waterline.obms.findByNode).to.have.been.calledWith(
+                nodeIds[0], 'ucs-obm-service', true
+            );
+            expect(waterline.obms.findByNode).to.have.been.calledWith(
+                nodeIds[1], 'ucs-obm-service', true
+            );
+
+            var arrayLength = pollers.length * nodeIds.length;
+            _.forEach(Array.from({length: arrayLength}, function(v, i){ return i; }),
+                function(i) {
+                    var expectedNodeId = nodeIds[i % pollers.length];
+                    var expectedPoller = _.cloneDeep(pollers[parseInt(i / pollers.length)]);
+                    expectedPoller.node = expectedNodeId;
+
+                    expect(waterline.workitems.findOrCreate.getCall(i).args[0])
+                        .to.deep.equal({node: expectedNodeId, 
+                            'config.command': expectedPoller.config.command});
+                    expect(waterline.workitems.findOrCreate.getCall(i).args[1])
+                        .to.deep.equal(expectedPoller);
             });
         });
 
