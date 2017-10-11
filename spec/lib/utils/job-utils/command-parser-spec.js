@@ -847,14 +847,14 @@ describe("Task Parser", function () {
                 expect(result.data[1].Name).to.equal('');
                 expect(result.data[1].Callin).to.equal('true');
                 expect(result.data[1]['Link Auth']).to.equal('false');
-                expect(result.data[1]['IPMI Msg Channel']).to.equal('true');
-                expect(result.data[1]['Priv Limit']).to.equal('ADMINISTRATOR');
+                expect(result.data[1]['IPMI Msg']).to.equal('true');
+                expect(result.data[1]['Channel Priv Limit']).to.equal('ADMINISTRATOR');
                 expect(result.data[2].ID).to.equal('2');
                 expect(result.data[2].Name).to.equal('root');
                 expect(result.data[2].Callin).to.equal('false');
                 expect(result.data[2]['Link Auth']).to.equal('true');
-                expect(result.data[2]['IPMI Msg Channel']).to.equal('true');
-                expect(result.data[2]['Priv Limit']).to.equal('ADMINISTRATOR');
+                expect(result.data[2]['IPMI Msg']).to.equal('true');
+                expect(result.data[2]['Channel Priv Limit']).to.equal('ADMINISTRATOR');
             });
         });
 
