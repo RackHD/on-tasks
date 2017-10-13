@@ -38,7 +38,7 @@ describe(require('path').basename(__filename), function () {
         fs.readFile.reset();
     });
 
-    helper.after(function () {
+    after(function () {
         fs.readFile.restore();
     });
     describe('Base', function () {
