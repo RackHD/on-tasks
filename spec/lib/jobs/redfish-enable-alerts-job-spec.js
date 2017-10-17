@@ -6,7 +6,7 @@
 var nock = require('nock');
 var uuid = require('node-uuid');
 
-describe("REST-job", function(){
+describe("REST-redfish-job", function(){
     var RestJob;
     var waterline, configuration;
     var restJob;
@@ -91,10 +91,13 @@ describe("REST-job", function(){
         options.method = null;
 
         restJob = new RestJob(options, context, taskId);
-        var err = 'Nock: No match for request POST https://test.address.com:12345/get/good ' +
-            '{"Context":"context string","Description":"Event Subscription Details",' +
-            '"Destination":"https://11.111.11.111:8443/api/2.0/notification/alerts",' +
-            '"EventTypes":["StatusChange","Alert"],"Id":"id","Name":"name","Protocol":"Redfish"}';
+
+        var err = '{\n  "method": "POST",\n  "url": "https://test.address.com:12345/get/good",\n  ' +
+        '"headers": {\n    "content-length": 225,\n    "content-type": "application/json"\n  },\n  ' +
+        '"body": "{\\"Context\\":\\"context string\\",\\"Description\\":\\"Event Subscription Details\\",' +
+        '\\"Destination\\":\\"https://11.111.11.111:8443/api/2.0/notification/alerts\\",\\"EventTypes\\":[\\"StatusChange\\",' +
+        '\\"Alert\\"],\\"Id\\":\\"id\\",\\"Name\\":\\"name\\",\\"Protocol\\":\\"Redfish\\"}"\n}';
+
         return expect(restJob.run()).to.be.rejectedWith(err);
     });
 

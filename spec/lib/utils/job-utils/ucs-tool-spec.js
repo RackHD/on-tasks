@@ -42,7 +42,11 @@ describe('UcsTool', function(){
         nock("http://fake").get('/happy').reply(200, '{"Hello":"World"}');
         ucsTool.settings.protocol = 'http';
         ucsTool.settings.host = 'fake';
-        
+
+        ucsTool.settings.ucsHost = 'fake';
+        ucsTool.settings.ucsUser = 'user';
+        ucsTool.settings.ucsPassword = 'password';
+
         return ucsTool.clientRequest('/happy', 'GET', '')
         .then(function(res){
             expect(res).to.have.property('body').to.have.property('Hello').to.deep.equal('World');
