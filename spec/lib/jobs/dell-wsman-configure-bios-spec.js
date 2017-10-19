@@ -66,13 +66,13 @@ describe('Dell Wsman Set Bios Job', function(){
     it('Should init wsman job succesfully', function(){
         configuration.get.returns(configFile);
         expect(function(){
-            job._initJob()
+            job._initJob();
         }).to.not.throw('Dell SCP  web service is not defined in smiConfig.json.');
     });
     it('Should throw an error: Dell SCP  web service is not defined', function(){
         configuration.get.returns({});
         expect(function(){
-            job._initJob()
+            job._initJob();
         }).to.throw('Dell SCP  web service is not defined in smiConfig.json.');
     });
 
@@ -96,7 +96,7 @@ describe('Dell Wsman Set Bios Job', function(){
             }
         };
         expect(function(){
-            job._handleSyncResponse(response)
+            job._handleSyncResponse(response);
         }).to.throw('Failed to configure Bios');
     });
 
@@ -117,7 +117,7 @@ describe('Dell Wsman Set Bios Job', function(){
     it('Should throw an error: Invalid ServerIP', function(){
         validator.isIP.returns(false);
         expect(function(){
-            job.configureBios(obms)
+            job.configureBios(obms);
         }).to.throw('Invalid ServerIP');
     });
 
