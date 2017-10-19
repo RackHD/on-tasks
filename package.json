@@ -1,6 +1,8 @@
+
 {
+  "//": "Copyright 2017, Dell EMC, Inc.",
   "name": "on-tasks",
-  "version": "2.22.0",
+  "version": "2.27.0",
   "description": "Tasks repository (meant as a library of tasks) to be loaded and run by task graphs as needed.",
   "main": "index.js",
   "scripts": {
@@ -49,7 +51,7 @@
     "jsonlint": "^1.6.2",
     "lodash.unset": "^4.4.0",
     "mocha": "^2.1.0",
-    "nock": "^2.17.0",
+    "nock": "^9.0.21",
     "sinon": "^1.12.2",
     "sinon-as-promised": "^2.0.3",
     "sinon-chai": "^2.7.0",

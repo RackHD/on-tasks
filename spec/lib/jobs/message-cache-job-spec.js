@@ -29,6 +29,7 @@ describe("Message Cache Job", function () {
     before("Message Cache Job before", function() {
         var baseJob = helper.injector.get('Job.Base');
         sandbox.stub(baseJob.prototype, '_subscribeIpmiCommandResult');
+        sandbox.stub(baseJob.prototype, '_subscribeUcsCommandResult');
         sandbox.stub(baseJob.prototype, '_subscribeSnmpCommandResult');
         sandbox.stub(baseJob.prototype, '_subscribeRequestPollerCache');
         sandbox.stub(baseJob.prototype, '_subscribeRedfishCommandResult');
@@ -138,6 +139,23 @@ describe("Message Cache Job", function () {
                 expect(job.cacheGet('testid.' + command)[0])
                     .to.have.property('test').that.equals('data');
             });
+        });
+
+        it("should work for setting cache data on ucs results", function() {
+            _.forEach(['ucs.powerthermal', 'ucs.fan', 'ucs.psu', 'ucs.disk', 'ucs.led', 'ucs.sel'], 
+                function(command) {
+                    var testdata = { test: 'data' };
+                    var cb = job.createSetUcsCommandResultCallback(command);
+                    cb.call(job, testdata);
+                    expect(job.cacheGet('unknown.ucs.' + command)).to.have.length(1);
+                    expect(job.cacheGet('unknown.ucs.' + command)[0])
+                        .to.have.property('test').that.equals('data');
+                    testdata.workItemId = 'testid.' + command;
+                    cb.call(job, testdata);
+                    expect(job.cacheGet('testid.' + command)).to.have.length(1);
+                    expect(job.cacheGet('testid.' + command)[0])
+                        .to.have.property('test').that.equals('data');
+                });
         });
 
         it("should work for setting cache data on snmp results", function() {

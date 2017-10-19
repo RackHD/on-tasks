@@ -28,28 +28,26 @@ describe("Job.Pollers.CreateDefault", function () {
         CreateDefaultPollers = helper.injector.get('Job.Pollers.CreateDefault');
         Promise = helper.injector.get('Promise');
         uuid = helper.injector.get('uuid');
+        this.sandbox = sinon.sandbox.create();
     });
 
     beforeEach(function () {
         waterline.workitems = {
-            findOrCreate: sinon.stub().resolves()
+            findOrCreate: this.sandbox.stub().resolves()
         };
         waterline.catalogs = {
-            findMostRecent: sinon.stub().resolves({
+            findMostRecent: this.sandbox.stub().resolves({
                 id: 'bc7dab7e8fb7d6abf8e7d6a1'
             })
         };
         waterline.obms = {
-            findByNode: sinon.stub().resolves(
-                {
-                    service: 'redfish-obm-service',
-                    config: {}
-                }
-            )
+            findByNode: this.sandbox.stub().resolves({
+                service: 'redfish-obm-service',
+                config: {}
+            })
         };
-
-        taskProtocol.subscribeActiveTaskExists = sinon.stub().returns(Promise.resolve({
-            dispose: sinon.stub()
+        taskProtocol.subscribeActiveTaskExists = this.sandbox.stub().returns(Promise.resolve({
+            dispose: this.sandbox.stub()
         }));
         pollers = [
             {
@@ -60,6 +58,10 @@ describe("Job.Pollers.CreateDefault", function () {
                 }
             }
         ];
+    });
+
+    afterEach(function () {
+        this.sandbox.restore();
     });
 
     it('should create pollers for a job with options.nodeId', function () {
@@ -174,8 +176,7 @@ describe("Job.Pollers.CreateDefault", function () {
                 { node: nodeId, 'config.command': pollers[1].config.command }, pollers[1]);
         });
     });
-    
-    
+
     it('should fail on missing redfish service', function () {
         var nodeId = 'bc7dab7e8fb7d6abf8e7d6ad';
         pollers = [{
@@ -185,9 +186,9 @@ describe("Job.Pollers.CreateDefault", function () {
                 "command": "thermal"
             }
         }];
-        
+
         waterline.nodes = {
-            needByIdentifier: sinon.stub().resolves({
+            needByIdentifier: this.sandbox.stub().resolves({
                 obmSettings: []
             })
         };
@@ -202,9 +203,61 @@ describe("Job.Pollers.CreateDefault", function () {
         return expect(job.run())
             .to.be.rejectedWith('Required redfish-obm-service settings are missing.');
     });
-    
+
+    it('should create ucs pollers', function () {
+        var nodeIds = ['bc7dab7e8fb7d6abf8e7d6ad','bc7dab7e8fb7d6abf8e7d6ae'];
+        var taskId = uuid.v4();
+        var pollers = [
+            {
+                "type": "ucs",
+                "pollInterval": 60000,
+                "config": {
+                    "command": "psu"
+                }
+            },
+            {
+                "type": "ucs",
+                "pollInterval": 60000,
+                "config": {
+                    "command": "sel"
+                }
+            }
+        ];
+        waterline.obms.findByNode.resolves([{"service": "ucs-obm-service"}]);
+        waterline.workitems.findOrCreate.resolves({poller: 'test'});
+        var job = new CreateDefaultPollers(
+            { nodeId: null, pollers: pollers },
+            { graphId: uuid.v4(), physicalNodeList: nodeIds },
+            taskId
+        );
+
+        return job.run()
+        .then(function() {
+            expect(waterline.obms.findByNode).to.have.been.callCount(4);
+            expect(waterline.workitems.findOrCreate).to.have.been.callCount(4);
+            expect(waterline.obms.findByNode).to.have.been.calledWith(
+                nodeIds[0], 'ucs-obm-service', true
+            );
+            expect(waterline.obms.findByNode).to.have.been.calledWith(
+                nodeIds[1], 'ucs-obm-service', true
+            );
+
+            var arrayLength = pollers.length * nodeIds.length;
+            _.forEach(Array.from({length: arrayLength}, function(v, i){ return i; }),
+                function(i) {
+                    var expectedNodeId = nodeIds[i % pollers.length];
+                    var expectedPoller = _.cloneDeep(pollers[parseInt(i / pollers.length)]);
+                    expectedPoller.node = expectedNodeId;
+
+                    expect(waterline.workitems.findOrCreate.getCall(i).args[0])
+                        .to.deep.equal({node: expectedNodeId, 
+                            'config.command': expectedPoller.config.command});
+                    expect(waterline.workitems.findOrCreate.getCall(i).args[1])
+                        .to.deep.equal(expectedPoller);
+            });
+        });
+
+    });
+
 });
-
-
-
 

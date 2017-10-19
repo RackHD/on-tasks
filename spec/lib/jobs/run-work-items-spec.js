@@ -209,6 +209,30 @@ describe("Job.Catalog.RunWorkItem", function () {
         });
     });
 
+    it('should run a Ucs Poller work item', function(done) {
+        var workItem = {
+            id: 'bc7dab7e8fb7d6abf8e7d6ad',
+            name: 'Pollers.UCS',
+            config: {
+                command: 'ucs.fan'
+            }
+        };
+
+        var job = new RunWorkItems({}, { graphId: uuid.v4() }, uuid.v4());
+        waterline.workitems.startNextScheduled.onCall(0).resolves(workItem);
+        job._publishRunUcsCommand = sinon.stub().resolves();
+        
+        job.run();
+        setImmediate(function () {
+            try {
+                expect(job._publishRunUcsCommand).to.have.been.calledOnce;
+                job.cancel();
+                done();
+            } catch (e) {
+                done(e);
+            }
+        });
+    });
 
     it('should mark an unknown work item as failed', function(done) {
         var workItem = {
