@@ -109,9 +109,7 @@ describe('Dell Wsman Set Bios Job', function(){
             }
         };
         WsmanTool.prototype.clientRequest.resolves(response);
-        return job.configureBios(obms).then(function(){
-            expect(job.configureBios(obms)).to.be.fulfilled;
-        });
+        expect(job.configureBios(obms)).to.be.fulfilled;
     });
 
     it('Should throw an error: Invalid ServerIP', function(){
