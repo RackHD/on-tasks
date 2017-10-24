@@ -1,6 +1,20 @@
 {
     "copyright": "Copyright 2016, EMC, Inc.",
     "definitions": {
+        "ClearDisk": {
+            "description": "The disk(s) that will have their partition tables cleared by the ESXi installer",
+            "oneOf": [
+                {
+                    "type": "string",
+                    "description": "a disk path that the OS can recognize or 'alldrives' to clear the partition tables on every drive",
+                    "minLength": 1
+                },
+                {
+                    "type": "null",
+                    "description": "only clear the partition tables on the disk the OS is being installed to"
+                }
+            ]
+        },
         "PostInstallCommands": {
             "type": "array",
             "description": "A list of commands that will be run at the end of the post installation step, this can be used by the customer to tweak final system configuration",
@@ -102,6 +116,9 @@
         },
         "installDisk": {
             "$ref": "types-installos.json#/definitions/InstallDisk"
+        },
+        "clearDisk": {
+            "$ref": "#/definitions/ClearDisk"
         },
         "profile": {
             "$ref": "types-installos.json#/definitions/Profile"
