@@ -88,12 +88,12 @@ describe("Job.Obm.Node", function () {
             })
             .catch(function(e) {
                 try {
-                    expect(e).to.have.property('name').that.equals('AssertionError');
+                    expect(e).to.have.property('name').to.match(/AssertionError.*/);
                     expect(e).to.have.property('message').that.equals(
-                        'Node should exist to run OBM command');
+                        'No OBM service assigned to this node.');
                     done();
                 } catch (e) {
-                    done();
+                    done(e);
                 }
             });
         });
@@ -109,7 +109,7 @@ describe("Job.Obm.Node", function () {
             })
             .catch(function(e) {
                 try {
-                    expect(e).to.have.property('name').that.equals('AssertionError');
+                    expect(e).to.have.property('name').to.match(/AssertionError.*/);
                     expect(e).to.have.property('message').that.equals(
                         'No OBM service assigned to this node.');
                     done();
@@ -131,7 +131,7 @@ describe("Job.Obm.Node", function () {
             })
             .catch(function(e) {
                 try {
-                    expect(e).to.have.property('name').that.equals('AssertionError');
+                    expect(e).to.have.property('name').to.match(/AssertionError.*/);
                     expect(e).to.have.property('message').that.equals(
                         'OBM should have settings for service: bad-obm-service (object) is required'
                     );
