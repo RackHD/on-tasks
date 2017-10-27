@@ -81,26 +81,27 @@ describe(require('path').basename(__filename), function() {
 
         it('should handle the case of incorrect obm setting that ip address is undefined.', function() {
             wsmanBaseJob.prototype.checkOBM.resolves(obm);
-            wsmanBaseJob.prototype.getIpAddress.resolves(undefined);
             configuration.get.withArgs('dell').returns(dellConfigs);
+            wsmanBaseJob.prototype.getIpAddress.resolves(undefined);
             expect(wsmanInventoryJob._initJob()).to.be.rejectedWith('No target IP address.');
         });
 
         it('should handle the case of incorrect node type', function() {
             wsmanInventoryJob.nodeType = 'unknown';
             wsmanBaseJob.prototype.checkOBM.resolves(obm);
-            wsmanBaseJob.prototype.getIpAddress.resolves('172.31.128.73');
             configuration.get.withArgs('dell').returns(dellConfigs);
+            wsmanBaseJob.prototype.getIpAddress.resolves('172.31.128.73');
             expect(wsmanInventoryJob._initJob()).to.be.rejectedWith('Inventory collection for node type (unknown) is not implemented.');
         });
 
         it('should init job correctly', function() {
             wsmanInventoryJob.nodeType = 'compute';
             wsmanBaseJob.prototype.checkOBM.resolves(obm);
-            wsmanBaseJob.prototype.getIpAddress.resolves('172.31.128.73');
             configuration.get.withArgs('dell').returns(dellConfigs);
+            wsmanBaseJob.prototype.getIpAddress.resolves('172.31.128.73');
             return wsmanInventoryJob._initJob().then(function() {
-                expect(wsmanInventoryJob.retrys.length === 4);
+                expect(wsmanInventoryJob.inventories.length).to.equal(4);
+                expect(wsmanInventoryJob.inventories[0]).to.equal('hardware');
             });
         });
     });
@@ -149,31 +150,32 @@ describe(require('path').basename(__filename), function() {
         });
 
         it('should handle the case that no catalog created.', function() {
+            wsmanInventoryJob.retrys = [ 'software' ];
+            wsmanInventoryJob.inventories = [];
             return wsmanInventoryJob.handleAsyncResponse({}, 'software').then(function() {
+                expect(wsmanInventoryJob.inventories).to.include('software');
                 expect(loggerSpy).to.have.been.calledOnce;
             });
         });
 
         it('should handle the case that no catalog retrieved with retry.', function() {
-            wsmanInventoryJob.retrys = ['hardware', 'manager'];
+            wsmanInventoryJob.retrys = [];
+            wsmanInventoryJob.inventories = [];
             return wsmanInventoryJob.handleAsyncResponse({}, 'software').then(function() {
                 expect(loggerSpy).to.have.been.calledOnce;
+                expect(wsmanInventoryJob.inventories).to.not.include('software');
             });
         });
 
-        it('should create new inventory catalog.', function() {
-            wsmanInventoryJob.retrys = ['hardware', 'software', 'manager'];
+        it('should update existed inventory catalog', function() {
             mockWaterline.catalogs.findLatestCatalogOfSource.resolves(catalog);
-            mockWaterline.catalogs.updateByIdentifier.resolves();
             return wsmanInventoryJob.handleAsyncResponse(data, 'software').then(function() {
                 expect(mockWaterline.catalogs.updateByIdentifier).to.have.been.calledOnce;
             });
         });
 
-        it('should update existed inventory catalog.', function() {
-            wsmanInventoryJob.retrys = ['hardware', 'software', 'manager'];
+        it('should create new inventory catalog', function() {
             mockWaterline.catalogs.findLatestCatalogOfSource.resolves(undefined);
-            mockWaterline.catalogs.create.resolves();
             return wsmanInventoryJob.handleAsyncResponse(data, 'nics').then(function() {
                 expect(mockWaterline.catalogs.create).to.have.been.calledOnce;
             });
@@ -205,9 +207,9 @@ describe(require('path').basename(__filename), function() {
                     response: 'xxxxxx, Submitted: test, xxxxxx'
                 }
             });
-            wsmanBaseJob.prototype._subscribeHttpResponseUuid.resolves();
             return wsmanInventoryJob._handleAsyncRequest().then(function() {
                 expect(wsmanTool.prototype.clientRequest).to.have.been.calledOnce;
+                expect(loggerSpy).not.to.have.been.called;
             });
         });
 
@@ -224,9 +226,9 @@ describe(require('path').basename(__filename), function() {
                     response: 'xxxxxx, Submitted: test, xxxxxx'
                 }
             });
-            wsmanBaseJob.prototype._subscribeHttpResponseUuid.resolves();
             return wsmanInventoryJob._handleAsyncRequest().then(function() {
                 expect(wsmanTool.prototype.clientRequest).to.have.been.calledOnce;
+                expect(loggerSpy).not.to.have.been.called;
             });
         });
 
@@ -244,7 +246,6 @@ describe(require('path').basename(__filename), function() {
                     response: 'test'
                 }
             });
-            wsmanBaseJob.prototype._subscribeHttpResponseUuid.resolves();
             return wsmanInventoryJob._handleAsyncRequest().then(function() {
                 expect(loggerSpy).to.calledWith("NICS inventory request failed for node: 59c4720870bf1d7c172930db");
             });
@@ -260,7 +261,6 @@ describe(require('path').basename(__filename), function() {
                 recvTimeoutMs: 300000
             });
             wsmanTool.prototype.clientRequest.rejects();
-            wsmanBaseJob.prototype._subscribeHttpResponseUuid.resolves();
             return wsmanInventoryJob._handleAsyncRequest().then(function() {
                 expect(loggerSpy).to.calledWith("Inventory request error for node: 59c4720870bf1d7c172930db");
             });
