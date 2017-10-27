@@ -127,7 +127,7 @@ describe('Dell Wsman Get Bios Job', function(){
 
     describe('handle cases for _handleAsyncRequest function', function(){
         it('Should send request to smi service successfully', function(){
-            job.wsman = new WsmanTool();
+            job.wsman = new WsmanTool('http://127.0.0.1');
             job.inventories = ['bios', 'boot'];
             job.dellConfigs = {
                 "wsmanCallbackUri": "http://172.31.128.1:9988/api/2.0/wsmanCallback/_IDENTIFIER_",
@@ -147,7 +147,7 @@ describe('Dell Wsman Get Bios Job', function(){
         });
 
         it('Should fail to get respone from smi service', function(){
-            job.wsman = new WsmanTool();
+            job.wsman = new WsmanTool('http://127.0.0.1');
             job.inventories = ['bios', 'boot'];
             job.dellConfigs = {
                 "wsmanCallbackUri": "http://172.31.128.1:9988/api/2.0/wsmanCallback/_IDENTIFIER_",
