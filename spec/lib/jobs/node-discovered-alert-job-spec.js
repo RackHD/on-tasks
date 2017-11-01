@@ -25,6 +25,8 @@ describe("Job.Alert.Node.Discovered", function () {
         uuid = helper.injector.get('uuid');
 
         waterline.nodes = { needByIdentifier: function(){} };
+        waterline.catalogs = { findMostRecent: function(){} };
+
         eventsProtocol.publishNodeEvent = function(){};
     });
 
@@ -48,6 +50,7 @@ describe("Job.Alert.Node.Discovered", function () {
 
         it("should _run() pass without additional data", function() {
             this.sandbox.stub(waterline.nodes, 'needByIdentifier').resolves({ type: 'compute' });
+            this.sandbox.stub(waterline.catalogs, 'findMostRecent').resolves(Promise.resolve(false));
             this.sandbox.stub(eventsProtocol, 'publishNodeEvent').resolves();
             this.sandbox.stub(lookupService, 'findIpMacAddresses').resolves([
                 { ipAddress: '1.1.1.1', macAddress: "aa:bb:cc:dd" },
@@ -76,6 +79,7 @@ describe("Job.Alert.Node.Discovered", function () {
 
         it("should _run() pass with additional data", function() {
             this.sandbox.stub(waterline.nodes, 'needByIdentifier').resolves({ type: 'compute' });
+            this.sandbox.stub(waterline.catalogs, 'findMostRecent').resolves(Promise.resolve(false));
             this.sandbox.stub(eventsProtocol, 'publishNodeEvent').resolves();
             this.sandbox.stub(lookupService, 'findIpMacAddresses').resolves([
                 { ipAddress: '1.1.1.1', macAddress: "aa:bb:cc:dd" },
@@ -106,12 +110,53 @@ describe("Job.Alert.Node.Discovered", function () {
 
         it("should _run() assert error could be handled", function() {
             this.sandbox.stub(waterline.nodes, 'needByIdentifier').resolves({});
+            this.sandbox.stub(waterline.catalogs, 'findMostRecent').resolves(Promise.resolve(false));
             this.sandbox.stub(lookupService, 'findIpMacAddresses').resolves("asdfagagafgdgdgdg");
             return job._run()
             .then(function () {
                 expect(waterline.nodes.needByIdentifier).to.have.been.calledOnce;
                 expect(job._deferred).to.be.rejected;
             });
+        });
+
+        it("should _run() add system information when found", function() {
+            this.sandbox.stub(waterline.nodes, 'needByIdentifier').resolves({ type: 'compute' });
+            this.sandbox.stub(eventsProtocol, 'publishNodeEvent').resolves();
+            this.sandbox.stub(lookupService, 'findIpMacAddresses').resolves([
+                { ipAddress: '1.1.1.1', macAddress: "aa:bb:cc:dd" },
+                { ipAddress: undefined, macAddress: "ee:ff:gg:hh" }
+            ]);
+            this.sandbox.stub(waterline.catalogs, 'findMostRecent').resolves({
+                data: {
+                    'System Information': {
+                        'Serial Number': '64BMW52',
+                        'Product Name': 'PowerEdge C6320',
+                        'Manufacturer': 'Dell, Inc.'
+                    }
+                }
+            });
+
+            return job._run()
+                .then(function () {
+                    expect(waterline.nodes.needByIdentifier).to.have.been.calledOnce;
+                    expect(eventsProtocol.publishNodeEvent).to.have.been.calledOnce;
+                    expect(eventsProtocol.publishNodeEvent).to.have.been.calledWith(
+                        { type: 'compute' },
+                        'discovered',
+                        {
+                            serial: "64BMW52",
+                            product: "PowerEdge C6320",
+                            vendor: "Dell, Inc.",
+                            nodeId: "bc7dab7e8fb7d6abf8e7d6ab",
+                            ipMacAddresses: [
+                                { ipAddress: '1.1.1.1', macAddress: "aa:bb:cc:dd" },
+                                { ipAddress: undefined, macAddress: "ee:ff:gg:hh" }
+                            ]
+                        }
+
+                    );
+                    expect(lookupService.findIpMacAddresses).to.have.been.calledOnce;
+                });
         });
     });
 });
