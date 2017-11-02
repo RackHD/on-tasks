@@ -3,7 +3,7 @@
 
 'on-tasks' are the job code, libraries and definitions (meant as a library of tasks) to be loaded and run by task graphs as needed.
 
-Copyright 2015, EMC, Inc.
+Copyright 2015, Dell EMC, Inc.
 
 ## installation
 
