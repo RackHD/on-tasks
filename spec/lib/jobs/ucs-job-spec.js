@@ -7,7 +7,6 @@ var uuid = require('node-uuid'),
     encrypt = {},
     sandbox = sinon.sandbox.create(),
     ucsJob,
-    ucsTool,
     data = {
         config: {
             command: 'ucs.powerthermal'
@@ -54,6 +53,7 @@ describe('Job.Ucs', function() {
             helper.require('/spec/mocks/logger.js'),
             helper.requireGlob('/lib/services/*.js'),
             helper.require('/lib/jobs/base-job.js'),
+            helper.require('/lib/jobs/ucs-base-job.js'),
             helper.require('/lib/jobs/ucs-job.js'),
             helper.require('/lib/utils/job-utils/ucs-tool.js'),
             helper.di.simpleWrapper(encrypt, 'Services.Encryption'),
@@ -84,12 +84,7 @@ describe('Job.Ucs', function() {
                 graphId: graphId
             }, uuid.v4());
 
-            ucsTool = {
-                clientRequest: sandbox.stub().resolves({
-                    body: ucsResponseData
-                })
-            };
-            ucsJob._initUcsTool = sandbox.stub().returns(ucsTool);
+            ucsJob._collectUcsPollerData = sandbox.stub().resolves(ucsResponseData);
             ucsJob._publishUcsCommandResult = sandbox.stub().resolves();
         });
 
@@ -102,18 +97,18 @@ describe('Job.Ucs', function() {
             waterline.workitems.update = sandbox.stub().rejects(error);
             ucsJob._subscribeRunUcsCommand = sandbox.stub();
             return ucsJob._run()
-            .then(function() {
-                expect(ucsJob._subscribeRunUcsCommand).to.have.not.been.called;
-                expect(error).to.exist;
-            });
+                .then(function() {
+                    expect(ucsJob._subscribeRunUcsCommand).to.have.not.been.called;
+                    expect(error).to.exist;
+                });
         });
 
         it("should invoke ucsTool.clientRequest function to get ucs data.", function() {
             return ucsJob._subscribeUcsCallback(data)
                 .then(function() {
                     expect(waterline.obms.findByNode).to.have.been.calledOnce;
-                    expect(ucsTool.clientRequest).to.have.been.calledOnce;
                     expect(ucsJob._publishUcsCommandResult).to.have.been.calledOnce;
+                    expect(ucsJob._collectUcsPollerData).to.have.been.calledOnce;
                     expect(waterline.workitems.findOne).to.have.been.calledOnce;
                     expect(waterline.workitems.setSucceeded).to.have.been.calledOnce;
                 });
@@ -123,13 +118,49 @@ describe('Job.Ucs', function() {
             waterline.obms.findByNode.resolves();
             return ucsJob._subscribeUcsCallback(data)
                 .then(function() {
-                    expect(ucsTool.clientRequest).to.have.not.been.calledOnce;
+                    expect(ucsJob._collectUcsPollerData).to.have.not.been.calledOnce;
                 });
         });
 
+        it("should collect ucs poller data", function() {
+            var _ucsJob = new this.Jobclass({}, {
+                graphId: uuid.v4()
+            }, uuid.v4());
+            _ucsJob._ucsRequestAsync = sandbox.stub().resolves({
+                "body": "abc"
+            });
+            var url = 
+                "/pollers/async?identifier=chassis-1&classIds=equipmentPsuStats&taskId=%s"
+                .format(_ucsJob.taskId);
+            return _ucsJob._collectUcsPollerData({
+                    command: 'ucs.psu',
+                    obmSetting: {
+                        config: {
+                            dn: 'chassis-1'
+                        }
+                    }
+                })
+                .then(
+                    function() {
+                        expect(_ucsJob._ucsRequestAsync).to.have.been.calledOnce;
+                        expect(_ucsJob._ucsRequestAsync).to.be.calledWith(
+                            url, 
+                            {
+                                dn: 'chassis-1',
+                                ucsPassword: 'abc'
+                            },
+                            _ucsJob.taskId
+                        );
+                    }
+                );
+        });
+
         it("should log error if no class id is found.", function() {
-            waterline.obms.findByNode.resolves();
-            return ucsJob._collectUcsPollerData({
+            var _ucsJob = new this.Jobclass({}, {
+                graphId: uuid.v4()
+            }, uuid.v4());
+            _ucsJob._ucsRequestAsync = sandbox.spy();
+            return _ucsJob._collectUcsPollerData({
                     command: 'anything'
                 })
                 .then(
@@ -137,7 +168,7 @@ describe('Job.Ucs', function() {
                         throw new Error('Test should fail');
                     },
                     function(err) {
-                        expect(ucsTool.clientRequest).to.have.not.been.calledOnce;
+                        expect(_ucsJob._ucsRequestAsync).to.have.not.been.calledOnce;
                         expect(err.message).to.equal('No ucs classIds found for command anything');
                     }
                 );
@@ -164,6 +195,9 @@ describe('Job.Ucs', function() {
         });
 
         it("should not be allowed to exceed the concurrent of maximum limit.", function() {
+            var tempMaxConcurrent = ucsJob.maxConcurrent;
+            ucsJob.maxConcurrent = 1;
+
             expect(ucsJob.concurrentRequests('node', 'type')).to.be.false;
             ucsJob.addConcurrentRequest('node', 'type');
             ucsJob.addConcurrentRequest('node', 'type');
@@ -171,6 +205,8 @@ describe('Job.Ucs', function() {
             expect(ucsJob.concurrentRequests('node', 'type')).to.be.true;
             ucsJob.removeConcurrentRequest('node', 'type');
             expect(ucsJob.concurrent.node.type).to.equal(1);
+
+            ucsJob.maxConcurrent = tempMaxConcurrent;
         });
     });
 });
