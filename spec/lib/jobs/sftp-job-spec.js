@@ -9,6 +9,7 @@ describe('sftp-job', function() {
         mockEncryption = { decrypt: function() {} },
         SftpJob,
         sftpJob,
+        fs,
         sshSettings;
 
 
@@ -20,6 +21,13 @@ describe('sftp-job', function() {
         mockSsh.session.error = subError;
         mockSsh.session.fastPut = function(src, dest, callback) {
             callback(this.error);
+        };
+        mockSsh.session.createWriteStream = function() {
+            return {
+                on: function(){
+                    mockSsh.end();
+                    }
+            };
         };
         mockSsh.sftp = function(callback) {
             callback(this.error, this.session);
@@ -46,10 +54,12 @@ describe('sftp-job', function() {
             helper.di.simpleWrapper(mockEncryption, 'Services.Encryption'),
             helper.di.simpleWrapper({Client:function(){}}, 'ssh'),
             helper.require('/lib/jobs/base-job.js'),
-            helper.di.simpleWrapper(waterline, 'Services.Waterline')
+            helper.di.simpleWrapper(waterline, 'Services.Waterline'),
+            helper.di.simpleWrapper({createReadStream: function(){}}, 'fs')
         ]);
         this.sandbox = sinon.sandbox.create();
         SftpJob = helper.injector.get('Job.Sftp');
+        fs = helper.injector.get('fs');
     });
 
     describe('_run', function() {
@@ -199,6 +209,55 @@ describe('sftp-job', function() {
                     port: 22,
                     username: 'someUsername',
                     password: 'somePassword',
+
+                    algorithms: {
+                        kex: ['ecdh-sha2-nistp256', 'ecdh-sha2-nistp384',
+                            'ecdh-sha2-nistp521','diffie-hellman-group1-sha1'],
+                        serverHostKey: [ 'ssh-rsa', 'ssh-dss' ],
+                        cipher: ['aes256-cbc','aes192-cbc','aes128-cbc','3des-cbc']
+                    },
+                    privateKey: 'a pretty long, encrypted string',
+                    keepaliveInterval: 3000,
+                    keepaliveCountMax: 4,
+                    readyTimeout: 30000
+                });
+            });
+        });
+
+        it('should pass isPDU options to iPDU firmware update', function() {
+            var mockSsh = sshMockGet();
+            options = {
+                isPDU: 'true',
+                fileSource: 'testSource',
+                fileDestination: 'testDest',
+                keepaliveInterval: 3000,
+                keepaliveCountMax: 4,
+                timeout: 30000
+            };
+            sftpJob = new SftpJob(options, { target: 'someNodeId' }, uuid.v4());
+            this.sandbox.stub(fs, 'createReadStream').returns({pipe: function(){}});
+            this.sandbox.spy(mockSsh, 'connect');
+            mockEncryption.decrypt.restore();
+            this.sandbox.stub(
+                mockEncryption,
+                'decrypt',
+                function(string) { return string; }
+            );
+
+            return sftpJob.runSftp(sshSettings, mockSsh)
+            .then(function() {
+                expect(mockSsh.connect).to.be.calledWithExactly({
+                    host: 'the remote host',
+                    port: 22,
+                    username: 'someUsername',
+                    password: 'somePassword',
+
+                    algorithms: {
+                        kex: ['ecdh-sha2-nistp256', 'ecdh-sha2-nistp384',
+                            'ecdh-sha2-nistp521','diffie-hellman-group1-sha1'],
+                        serverHostKey: [ 'ssh-rsa', 'ssh-dss' ],
+                        cipher: ['aes256-cbc','aes192-cbc','aes128-cbc','3des-cbc']
+                    },
                     privateKey: 'a pretty long, encrypted string',
                     keepaliveInterval: 3000,
                     keepaliveCountMax: 4,
