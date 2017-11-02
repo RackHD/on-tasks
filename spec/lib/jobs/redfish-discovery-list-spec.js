@@ -20,6 +20,8 @@ describe('Redfish Discovery List Job', function () {
         getPowerData,
         listNetworkData,
         getNetworkData,
+        listManagersData,
+        getManagersData,
         waterline = {},
         Job,
         Error;
@@ -63,8 +65,66 @@ describe('Redfish Discovery List Job', function () {
             {
                 relationType: 'enclosedBy',
                 targets: ['/fake']
+            },
+            {
+                info: null,
+                relationType: "managedBy",
+                targets: [
+                    "5a09dadfcd6a2a01006f4f89"
+                ]
             }
         ]
+    };
+
+   var redfishNode = {
+        id: "5a09dadfcd6a2a01006f4f87",
+        identifiers: [
+            "System.Embedded.1",
+            "http://172.23.0.1:8000/redfish/v1/Systems/System.Embedded.1",
+            "NNRZST2-CN747517150043"
+        ],
+        name: "System",
+        obms: [
+            {
+                ref: "/api/2.0/obms/5a09dadfcd6a2a01006f4f88",
+                service: "redfish-obm-service"
+            }
+        ],
+        relations: [
+            {
+                info: null,
+                relationType: "managedBy",
+                targets: [
+                    "5a09dadfcd6a2a01006f4f89"
+                ]
+            }
+        ],
+        type: "redfish"
+    };
+
+    var redfishManager = {
+        id: "5a09dadfcd6a2a01006f4f89",
+        identifiers: [
+            "iDRAC.Embedded.1",
+            "http://172.23.0.1:8000/redfish/v1/Managers/iDRAC.Embedded.1"
+        ],
+        name: "Manager",
+        obms: [
+            {
+                ref: "/api/2.0/obms/5a09dadfcd6a2a01006f4f8a",
+                service: "redfish-obm-service"
+            }
+        ],
+        relations: [
+            {
+                info: null,
+                relationType: "manages",
+                targets: [
+                    "5a09dadfcd6a2a01006f4f87"
+                ]
+            }
+        ],
+        type: "redfishManager"
     };
 
     var settings = {
@@ -121,7 +181,8 @@ describe('Redfish Discovery List Job', function () {
                 Systems: {'@odata.id': '/redfish/v1/Systems'},
                 NetworkDevices: {'@odata.id': '/redfish/v1/NetworkDevices'},
                 DCIMCooling: {'@odata.id': '/redfish/v1/DCIMCooling'},
-                DCIMPower: {'@odata.id': '/redfish/v1/DCIMPower'}
+                DCIMPower: {'@odata.id': '/redfish/v1/DCIMPower'},
+                Managers: {'@odata.id': '/redfish/v1/Managers'}
             }
         };
         listChassisData = {
@@ -208,14 +269,35 @@ describe('Redfish Discovery List Job', function () {
                 Name: 'System'
             }
         };
+        listManagersData = {
+            body: {
+                Members: [
+                    {'@odata.id': '/redfish/v1/Managers/abc123'}
+                ]
+            }
+        };
+        getManagersData = {
+            body: {
+                Links: {
+                    ManagerForServer: [
+                        {'@odata.id': '/redfish/v1/Systems/abc123'}
+                    ],
+                    ManagerForChassis: [
+                        {'@odata.id': '/redfish/v1/Chassiss/abc123'}
+                    ]
+                },
+                Name: 'Manager'
+           }
+        };
     });
 
     describe('redfish discovery', function () {
         it('should successfully run job', function () {
-            sandbox.stub(Job.prototype, "createChassis");
-            sandbox.stub(Job.prototype, "createSystems");
+            sandbox.stub(Job.prototype, "createChassis").resolves([]);
+            sandbox.stub(Job.prototype, "createSystems").resolves([redfishNode]);
             sandbox.stub(Job.prototype, "createRedfishNode");
             sandbox.stub(Job.prototype, "createNetwork");
+            sandbox.stub(Job.prototype, "createManagers").resolves([redfishManager]);
             redfishJob.endpointList = endpointList;
             redfishTool.clientRequest.resolves(rootData);
             redfishJob._run();
@@ -237,6 +319,7 @@ describe('Redfish Discovery List Job', function () {
         it('should create chassis node', function () {
             redfishTool.clientRequest.onCall(0).resolves(listChassisData);
             redfishTool.clientRequest.onCall(1).resolves(getChassisData);
+            redfishTool.clientRequest.onCall(1).resolves(getSystemData);
             return redfishJob.createChassis(rootData.body)
                 .then(function () {
                     expect(waterline.nodes.updateOne).to.be.called.once;
@@ -369,6 +452,34 @@ describe('Redfish Discovery List Job', function () {
                 .to.be.rejectedWith('some error');
         });
     });
+
+    describe('redfish managers', function () {
+        it('should create manages node', function () {
+            redfishTool.clientRequest.onCall(0).resolves(listManagersData);
+            redfishTool.clientRequest.onCall(1).resolves(getManagersData);
+            return redfishJob.createManagers(rootData.body)
+                .then(function () {
+                    expect(waterline.nodes.updateOne).to.be.called.once;
+                });
+        });
+
+        it('should log no system members found warning', function () {
+            delete getManagersData.body.Links;
+            redfishTool.clientRequest.onCall(0).resolves(listManagersData);
+            redfishTool.clientRequest.onCall(1).resolves(getManagersData);
+            return redfishJob.createManagers(rootData.body)
+                .then(function () {
+                    expect(waterline.nodes.updateOne).to.be.called.once;
+                });
+        });
+
+        it('should fail to create Managers node', function () {
+            redfishTool.clientRequest.onCall(0).rejects('some error');
+            return expect(redfishJob.createManagers(rootData.body))
+                .to.be.rejectedWith('some error');
+        });
+    });
+
 
     describe('redfish discovery upserts', function () {
         it('should create new node', function () {
