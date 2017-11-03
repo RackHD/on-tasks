@@ -12,6 +12,7 @@ describe("Job.Pollers.CreateDefault", function () {
     var uuid;
     var souceQueryString = {or: [
         {source: {startsWith: 'bmc'}},
+        {source: 'UCS:boardController'},
         {source: 'rmm'}
     ]};
 
@@ -81,7 +82,7 @@ describe("Job.Pollers.CreateDefault", function () {
                 .to.be.deep.equals(queryString);
             expect(waterline.workitems.findOrCreate).to.have.been.calledOnce;
             expect(waterline.workitems.findOrCreate).to.have.been.calledWith(
-                { node: nodeId, 'config.command': pollers[0].config.command }, pollers[0]);
+                { node: nodeId, 'config.command': pollers[0].config.command });
         });
     });
 
@@ -102,13 +103,21 @@ describe("Job.Pollers.CreateDefault", function () {
                 .to.be.deep.equals(queryString);
             expect(waterline.workitems.findOrCreate).to.have.been.calledOnce;
             expect(waterline.workitems.findOrCreate).to.have.been.calledWith(
-                { node: nodeId, 'config.command': pollers[0].config.command }, pollers[0]);
+                { node: nodeId, 'config.command': pollers[0].config.command });
         });
     });
 
     it('should not create pollers when bmc catalog does not exist', function () {
         var nodeId = 'bc7dab7e8fb7d6abf8e7d6af';
         var queryString = _.merge({node: nodeId}, souceQueryString);
+
+        pollers.push({
+            "type": "snmp",
+            "pollInterval": 60000,
+            "config": {
+                "metric": "snmp-interface-bandwidth-utilization"
+            }
+        });
 
         waterline.catalogs.findMostRecent.resolves();
 
@@ -120,9 +129,11 @@ describe("Job.Pollers.CreateDefault", function () {
 
         return job.run()
         .then(function() {
-            expect(waterline.catalogs.findMostRecent).to.have.been.calledOnce;
+            expect(waterline.catalogs.findMostRecent).to.have.been.calledTwice;
             expect(waterline.catalogs.findMostRecent.firstCall.args[0])
                 .to.be.deep.equals(queryString);
+            expect(waterline.catalogs.findMostRecent.secondCall.args[0])
+                .to.be.deep.equals({"node": "bc7dab7e8fb7d6abf8e7d6af", "source": "snmp-1"});
             expect(waterline.workitems.findOrCreate).to.not.have.been.called;
         });
     });
@@ -171,9 +182,9 @@ describe("Job.Pollers.CreateDefault", function () {
                 .to.be.deep.equals(snmpQueryString);
             expect(waterline.workitems.findOrCreate).to.have.been.callCount(4);
             expect(waterline.workitems.findOrCreate).to.have.been.calledWith(
-                { node: nodeId, 'config.command': pollers[0].config.command }, pollers[0]);
+                { node: nodeId, 'config.command': pollers[0].config.command });
             expect(waterline.workitems.findOrCreate).to.have.been.calledWith(
-                { node: nodeId, 'config.command': pollers[1].config.command }, pollers[1]);
+                { node: nodeId, 'config.command': pollers[1].config.command });
         });
     });
 
@@ -250,7 +261,7 @@ describe("Job.Pollers.CreateDefault", function () {
                     expectedPoller.node = expectedNodeId;
 
                     expect(waterline.workitems.findOrCreate.getCall(i).args[0])
-                        .to.deep.equal({node: expectedNodeId, 
+                        .to.deep.equal({node: expectedNodeId,
                             'config.command': expectedPoller.config.command});
                     expect(waterline.workitems.findOrCreate.getCall(i).args[1])
                         .to.deep.equal(expectedPoller);
