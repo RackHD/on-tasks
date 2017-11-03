@@ -46,7 +46,7 @@ describe("REST-job", function(){
         restJob = new RestJob(options, context, taskId, taskName);
 
         return restJob.run().then(function(){
-            expect(context.restData.httpStatusCode).to.equal(201);
+            expect(context.outputs[taskName].restData.httpStatusCode).to.equal(201);
         });
     });
 
@@ -62,7 +62,7 @@ describe("REST-job", function(){
 
         restJob = new RestJob(options, context, taskId,taskName);
         return restJob.run().then(function(){
-            expect(context.restData.httpStatusCode).to.equal(404);
+            expect(context.outputs[taskName].restData.httpStatusCode).to.equal(404);
         });
     });
 
