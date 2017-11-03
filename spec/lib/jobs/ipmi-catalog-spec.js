@@ -59,7 +59,7 @@ describe('LocalIpmi Catalog Job', function () {
             })
             .catch(function(e) {
                 try {
-                    expect(e).to.have.property('name').that.equals('AssertionError');
+                    expect(e).to.have.property('name').to.match(/AssertionError.*/);
                     expect(e).to.have.property('message').that.equals(
                         'No OBM service available. (object) is required');
                     done();
@@ -81,7 +81,7 @@ describe('LocalIpmi Catalog Job', function () {
             })
             .catch(function(e) {
                 try {
-                    expect(e).to.have.property('name').that.equals('AssertionError');
+                    expect(e).to.have.property('name').to.match(/AssertionError.*/);
                     expect(e).to.have.property('message').that.equals(
                         'No OBM service config available.');
                     done();

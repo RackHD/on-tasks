@@ -62,7 +62,7 @@ describe('Job.Local.Catalog', function () {
             })
             .catch(function(e) {
                 try {
-                    expect(e).to.have.property('name').that.equals('AssertionError');
+                    expect(e).to.have.property('name').to.match(/AssertionError.*/);
                     expect(e).to.have.property('message').that.equals(
                         'No node for local catalog');
                     done();
