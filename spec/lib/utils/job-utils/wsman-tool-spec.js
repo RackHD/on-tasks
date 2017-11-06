@@ -24,7 +24,7 @@ describe('JobUtils.WsmanTool', function() {
     beforeEach(function() {
         runRequest = sandbox.stub(HttpTool.prototype, 'runRequest').resolves({
             httpStatusCode: 200,
-            body: '{"a":1,"b":2}'
+            body: {a:1,b:2}
         });
         setupRequest = sandbox.stub(HttpTool.prototype, 'setupRequest').resolves();
     });
