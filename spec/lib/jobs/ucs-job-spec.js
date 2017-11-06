@@ -129,9 +129,6 @@ describe('Job.Ucs', function() {
             _ucsJob._ucsRequestAsync = sandbox.stub().resolves({
                 "body": "abc"
             });
-            var url = 
-                "/pollers/async?identifier=chassis-1&classIds=equipmentPsuStats&taskId=%s"
-                .format(_ucsJob.taskId);
             return _ucsJob._collectUcsPollerData({
                     command: 'ucs.psu',
                     obmSetting: {
@@ -141,16 +138,9 @@ describe('Job.Ucs', function() {
                     }
                 })
                 .then(
-                    function() {
+                    function(result) {
                         expect(_ucsJob._ucsRequestAsync).to.have.been.calledOnce;
-                        expect(_ucsJob._ucsRequestAsync).to.be.calledWith(
-                            url, 
-                            {
-                                dn: 'chassis-1',
-                                ucsPassword: 'abc'
-                            },
-                            _ucsJob.taskId
-                        );
+                        expect(result).to.equal("abc");
                     }
                 );
         });
