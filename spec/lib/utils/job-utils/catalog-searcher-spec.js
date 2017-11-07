@@ -305,7 +305,7 @@ describe("Catalog Searcher", function () {
             waterline.catalogs.findMostRecent
                 .withArgs({ node: '5678', source: 'megaraid-physical-drives'})
                 .resolves({});
-            return catalogSearch.getDriveIdCatalogExt('5678', [], true)
+            catalogSearch.getDriveIdCatalogExt('5678', [], true)
                 .then(function () {
                     done(new Error("Test should fail"));
                 })

@@ -113,7 +113,7 @@ describe(require('path').basename(__filename), function () {
                 });
             };
 
-            return self.snmp._run()
+            self.snmp._run()
             .then(function() {
                 _.forEach(_.range(loopCount), function() {
                     testEmitter.emit('test-subscribe-snmp-command', {
@@ -171,7 +171,7 @@ describe(require('path').basename(__filename), function () {
                 });
             };
 
-            return self.snmp._run()
+            self.snmp._run()
             .then(function() {
                     testEmitter.emit('test-subscribe-snmp-command', {
                         host: 'test',

@@ -123,7 +123,7 @@ describe('OBM Service', function() {
                 type: 'enclosure'
             };
 
-            return ObmService.checkValidService(node, obmSettings)
+            ObmService.checkValidService(node, obmSettings)
             .then(function() {
                 done();
             })
@@ -146,7 +146,7 @@ describe('OBM Service', function() {
             };
 
             waterline.skus.findOne.resolves({ name: 'noop' });
-            return ObmService.checkValidService(node, obmSettings)
+            ObmService.checkValidService(node, obmSettings)
             .then(function() {
                 done();
             })
@@ -166,7 +166,7 @@ describe('OBM Service', function() {
                 id: '123',
             };
 
-            return ObmService.checkValidService(node, obmSettings)
+            ObmService.checkValidService(node, obmSettings)
             .then(function() {
                 done();
             })
@@ -189,7 +189,7 @@ describe('OBM Service', function() {
             };
 
             waterline.skus.findOne.rejects('No sku found');
-            return ObmService.checkValidService(node, obmSettings)
+            ObmService.checkValidService(node, obmSettings)
             .then(function() {
                 done(new Error('Expected invalid service'));
             })
@@ -220,7 +220,7 @@ describe('OBM Service', function() {
             };
 
             waterline.skus.findOne.resolves({ name: 'Test' });
-            return ObmService.checkValidService(node, obmSettings)
+            ObmService.checkValidService(node, obmSettings)
             .then(function() {
                 done(new Error('Expected invalid service'));
             })

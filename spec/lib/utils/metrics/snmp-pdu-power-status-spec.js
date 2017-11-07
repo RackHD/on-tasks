@@ -135,7 +135,7 @@ describe("SNMP PDU Power Metric", function () {
         metric._calculateSineticaPowerData = sandbox.stub().resolves(currentResult);
         metric.data = testData;
         metric.nodeType = 'sinetica';
-        return metric.calculatePowerData(testData)
+        metric.calculatePowerData(testData)
         .then(function(result) {
             expect(result).to.deep.equal(currentResult);
             expect(metric._calculateSineticaPowerData).to.have.been.calledOnce;

@@ -111,7 +111,7 @@ describe("racadm-tool", function() {
             it('should throw error if JID format is not correct', function(done){
                 runCommandStub.resolves("");
                 this.sandbox.stub(parser, "getJobStatus").returns({});
-                return instance.getLatestJobId('192.168.188.103', 'admin', 'admin')
+                instance.getLatestJobId('192.168.188.103', 'admin', 'admin')
                     .then(function(){
                         done(new Error("Expected getLatestJobId to fail"));
                     })
@@ -195,7 +195,7 @@ describe("racadm-tool", function() {
                 var self = this ;
                 self.jobStatus.status = 'Failed';
                 getJobStatusStub.resolves(self.jobStatus);
-                return instance.waitJobDone('192.168.188.103','admin', 'admin', self.jobId, 0, 100)
+                instance.waitJobDone('192.168.188.103','admin', 'admin', self.jobId, 0, 100)
                     .then(function() {
                         done(new Error("Expected waitJobDone to throw errors"));
                     })
@@ -237,7 +237,7 @@ describe("racadm-tool", function() {
                 var self = this ;
                 self.jobStatus.status = 'Running';
                 getJobStatusStub.resolves(self.jobStatus);
-                return instance.waitJobDone('192.168.188.103','admin', 'admin', self.jobId, 0, 0)
+                instance.waitJobDone('192.168.188.103','admin', 'admin', self.jobId, 0, 0)
                     .then(function() {
                         done(new Error("Expected waitJobDone to fail"));
                     })
@@ -265,7 +265,7 @@ describe("racadm-tool", function() {
             it('should throw getJobStatus failures if timeout', function(done) {
                 var self = this ;
                 getJobStatusStub.resolves(self.errorStatus);
-                return instance.waitJobDone('192.168.188.103','admin', 'admin', self.jobId, 0, 0)
+                instance.waitJobDone('192.168.188.103','admin', 'admin', self.jobId, 0, 0)
                     .then(function() {
                         done(new Error("Expected waitJobDone to fail"));
                     })
@@ -401,7 +401,7 @@ describe("racadm-tool", function() {
         });
 
         describe('updateFirmware', function(){
-            var runCommandStub, getPathFilenameStub, 
+            var runCommandStub, getPathFilenameStub,
                 getLatestJobIdStub, waitJobDoneStub;
             beforeEach('updateFirmware before', function() {
                 runCommandStub = this.sandbox.stub(instance, 'runCommand');
@@ -574,7 +574,7 @@ describe("racadm-tool", function() {
                 runAsyncCommandsStub.resolves();
                 return instance.getBiosConfig('192.168.188.103', 'admin', 'admin')
                     .then(function(){
--                   expect(instance.runAsyncCommands).to.be.calledWith('192.168.188.103', 
+-                   expect(instance.runAsyncCommands).to.be.calledWith('192.168.188.103',
                         'admin', 'admin', command, 0, 1000);
                     });
             });
@@ -628,7 +628,7 @@ describe("racadm-tool", function() {
                     });
             });
         });
-        
+
         describe('enableIpmi', function(){
             afterEach('enable IPMI after', function() {
                 this.sandbox.restore();
@@ -679,7 +679,7 @@ describe("racadm-tool", function() {
             it('should throw an error if BIOS fqdd does not exist', function(done) {
                 this.sandbox.stub(instance, 'getSoftwareList').resolves({data: "Anything"});
                 this.sandbox.stub(instance, 'runCommand').resolves("Anything");
-                return instance._configBiosAttr('any', 'any', 'any', 'any', 'any')
+                instance._configBiosAttr('any', 'any', 'any', 'any', 'any')
                     .then(function(){
                         done(new Error("Expected getLatestJobId to fail"));
                     })
@@ -704,7 +704,7 @@ describe("racadm-tool", function() {
                         expect(instance.getSoftwareList).to.have.been.calledOnce;
                         expect(instance.runCommand).to.have.been.calledTwice;
                         expect(instance.runCommand)
-                            .to.have.been.calledWith('any', 'any', 'any', command); 
+                            .to.have.been.calledWith('any', 'any', 'any', command);
                         expect(parser.getJobId).to.have.been.calledOnce;
                         expect(instance.waitJobDone).to.have.been.calledOnce;
                     });
@@ -722,7 +722,7 @@ describe("racadm-tool", function() {
                         expect(instance.getSoftwareList).to.have.been.calledOnce;
                         expect(instance.runCommand).to.have.been.calledTwice;
                         expect(instance.runCommand)
-                            .to.have.been.calledWith('any', 'any', 'any', 
+                            .to.have.been.calledWith('any', 'any', 'any',
                                                      'jobqueue create Any');
                         expect(parser.getJobId).to.have.been.calledOnce;
                     });
@@ -748,7 +748,7 @@ describe("racadm-tool", function() {
                     .then(function(){
                         expect(instance._configBiosAttr)
                             .to.have.been
-                            .calledWith('any', 'any', 'any', true, 
+                            .calledWith('any', 'any', 'any', true,
                                         "set BIOS.ProcSettings.ProcVirtualization Disabled");
                     });
             });
@@ -773,7 +773,7 @@ describe("racadm-tool", function() {
                     .then(function(){
                         expect(instance._configBiosAttr)
                             .to.have.been
-                            .calledWith('any', 'any', 'any', true, 
+                            .calledWith('any', 'any', 'any', true,
                                         "set BIOS.ProcSettings.ProcVirtualization Enabled");
                     });
             });
@@ -910,7 +910,7 @@ describe("racadm-tool", function() {
             });
 
             it('should fail the iDrac IP with the wrong IP format', function(done){
-                return instance.setIdracIP('0.0.0.0', 'user',
+                instance.setIdracIP('0.0.0.0', 'user',
                     'password', {ip : "0.0.0", netMask: "0.0.0.0", gateway: "0.0.0.0"})
                     .then(function(){
                         done(new Error('should NOT have send the command with and invalid IP'));
@@ -923,7 +923,7 @@ describe("racadm-tool", function() {
             });
 
             it('should fail the iDrac IP with the wrong netMask format', function(done){
-                return instance.setIdracIP('0.0.0.0', 'user',
+                instance.setIdracIP('0.0.0.0', 'user',
                     'password', {ip : "0.0.0", netMask: "0.0.0", gateway: "0.0.0.0"})
                     .then(function(){
                         done(new Error('should NOT have send the command with and invalid IP'));
@@ -937,7 +937,7 @@ describe("racadm-tool", function() {
 
 
             it('should fail the iDrac IP with the wrong gateway format', function(done){
-                return instance.setIdracIP('0.0.0.0', 'user',
+                instance.setIdracIP('0.0.0.0', 'user',
                     'password', {ip : "0.0.0.0", netMask: "0.0.0.0", gateway: "0.0.0"})
                     .then(function(){
                         done(new Error('should NOT have send the command with and invalid IP'));

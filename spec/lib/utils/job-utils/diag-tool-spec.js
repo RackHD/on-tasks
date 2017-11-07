@@ -73,7 +73,7 @@ describe('diag tools', function(){
             nock(server)
                 .post(uploadApi)
                 .reply(200, {'test': 'test'});
-            return diagTool.uploadImageFile(fileUrl, uploadApi)
+            diagTool.uploadImageFile(fileUrl, uploadApi)
             .then(function(){
                 done(new Error('Test should fail'));
             })
@@ -94,7 +94,7 @@ describe('diag tools', function(){
             nock(server)
                 .post(uploadApi)
                 .reply(406);
-            return diagTool.uploadImageFile(fileUrl, uploadApi)
+            diagTool.uploadImageFile(fileUrl, uploadApi)
             .then(function(){
                 done(new Error('Test should fail'));
             })
@@ -223,7 +223,7 @@ describe('diag tools', function(){
             nock(server)
                 .post('/api/devices/BMC_EMC_OEM/0_A/tests/update_firmware/sync/run', _payload)
                 .reply(200, dataSamples.updateBmc);
-            return diagTool.getAllDevices()
+            diagTool.getAllDevices()
             .then(function(){
                 return diagTool.updateFirmware('bmc', imageName, '0x140', _imagePath);
             })

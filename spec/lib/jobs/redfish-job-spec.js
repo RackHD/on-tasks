@@ -302,7 +302,7 @@ describe('Job.Redfish', function () {
             redfishJob.fabricDataCache = {
                 EndPoints: [{ EndPointName:'epName',  Available: false }]
             };
-            return redfishJob.fabricServiceDataAlert(redfishTool, fabricServData)
+            redfishJob.fabricServiceDataAlert(redfishTool, fabricServData)
             .then(function(data) {
                 expect(data).to.deep.equal(fabricServData);
                 done();
@@ -320,7 +320,7 @@ describe('Job.Redfish', function () {
             redfishJob.fabricDataCache = {
                 EndPoints: [{ EndPointName:'epName', Available: true }]
             };
-            return redfishJob.fabricServiceDataAlert(redfishTool, fabricServData)
+            redfishJob.fabricServiceDataAlert(redfishTool, fabricServData)
             .then(function(data) {
                 expect(data).to.deep.equal(fabricServData);
                 done();
@@ -336,7 +336,7 @@ describe('Job.Redfish', function () {
             };
             redfishJob.fabricDataCache = Object.assign({}, fabricServData);
             fabricServData.EndPoints = _.drop(fabricServData.EndPoints);
-            return redfishJob.fabricServiceDataAlert(redfishTool, fabricServData)
+            redfishJob.fabricServiceDataAlert(redfishTool, fabricServData)
             .then(function(data) {
                 expect(data).to.deep.equal(fabricServData);
                 done();
