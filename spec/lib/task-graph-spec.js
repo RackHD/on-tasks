@@ -130,6 +130,13 @@ describe('Task Graph', function () {
                 expect(graph).to.be.an.instanceof(TaskGraph);
             });
         });
+        it('should return ok if taskName with api path', function() {
+             definitions.graphDefinition.tasks[0].taskName = 'api/workflows/tasks/Task.test';
+             return TaskGraph.create('domain', { definition: definitions.graphDefinition })
+             .then(function(graph) {
+                 expect(graph).to.be.an.instanceof(TaskGraph);
+             });
+         });
 
         it('should fail on an invalid task definition', function() {
             this.sandbox.stub(TaskGraph.prototype, '_validateTaskDefinition')
