@@ -276,7 +276,7 @@ describe(require('path').basename(__filename), function () {
         it('Should throw error when failed to findOrCreate enclosure node', function(done) {
             this.sandbox.stub(mockWaterline.nodes,'findOrCreate').resolves();
 
-            return job.run()
+            job.run()
             .catch(function(e) {
                 try {
                     expect(e).to.equal('Could not create enclosure node');
@@ -336,7 +336,7 @@ describe(require('path').basename(__filename), function () {
             this.sandbox.stub(mockWaterline.nodes,'findOrCreate').resolves(encl);
             this.sandbox.stub(mockWaterline.nodes,'findByIdentifier').resolves();
             this.sandbox.stub(job,'addRelation').resolves(encl);
-            return job.run()
+            job.run()
             .then(function() {
                 done(new Error("Expected job to fail"));
             })

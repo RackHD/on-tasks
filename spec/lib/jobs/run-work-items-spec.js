@@ -21,10 +21,10 @@ describe("Job.Catalog.RunWorkItem", function () {
 
         RunWorkItems = helper.injector.get('Job.WorkItems.Run');
         uuid = helper.injector.get('uuid');
-        
+
         taskProtocol.publishRunIpmiCommand = sinon.stub().resolves();
         taskProtocol.publishRunSnmpCommand = sinon.stub().resolves();
-        
+
         waterline.workitems = {
             startNextScheduled: sinon.stub().resolves(),
             setSucceeded: sinon.stub(),
@@ -90,7 +90,7 @@ describe("Job.Catalog.RunWorkItem", function () {
             }
         });
 
-        return job._deferred;
+        job._deferred;
     });
 
     it('should run an IPMI Poller work item against a node', function(done) {
@@ -174,7 +174,7 @@ describe("Job.Catalog.RunWorkItem", function () {
             }
         });
     });
-    
+
     it('should run a Redfish Poller work item', function(done) {
         var workItem = {
             id: 'bc7dab7e8fb7d6abf8e7d6ad',
@@ -190,7 +190,7 @@ describe("Job.Catalog.RunWorkItem", function () {
         var job = new RunWorkItems({}, { graphId: uuid.v4() }, uuid.v4());
         waterline.workitems.startNextScheduled.onCall(0).resolves(workItem);
         job._publishRunRedfishCommand = sinon.stub().resolves();
-        
+
         job.run();
         setImmediate(function () {
             try {
@@ -221,7 +221,7 @@ describe("Job.Catalog.RunWorkItem", function () {
         var job = new RunWorkItems({}, { graphId: uuid.v4() }, uuid.v4());
         waterline.workitems.startNextScheduled.onCall(0).resolves(workItem);
         job._publishRunUcsCommand = sinon.stub().resolves();
-        
+
         job.run();
         setImmediate(function () {
             try {

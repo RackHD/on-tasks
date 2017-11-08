@@ -296,7 +296,7 @@ describe(require('path').basename(__filename), function () {
             var lookupHostStub = this.sandbox.stub(job,'lookupHost');
             mockWaterline.obms.findByNode.resolves(node);
             lookupHostStub.resolves(node.obmSettings[0].config);
-            return job.run()
+            job.run()
                 .then(function() {
                     done(new Error("Should not run into this piece of code!"));
                 }).catch(function() {

@@ -221,7 +221,7 @@ describe('SnmpTool', function() {
                 var self = this;
                 var queryMethods = ['walk', 'get', 'getnext', 'bulkget', 'bulkwalk'];
 
-                return Promise.map(queryMethods, function(queryType) {
+                Promise.map(queryMethods, function(queryType) {
                     self.sandbox.stub(instance, queryType).resolves(results);
                     return instance.collectHostSnmp(
                             ['test'],
