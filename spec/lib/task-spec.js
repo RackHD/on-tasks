@@ -620,7 +620,6 @@ describe("Task", function () {
     describe("timer", function() {
         it("should have a default timeout with null or unsupported values", function() {
             var definition = _.cloneDeep(noopDefinition);
-
             function testTimeout(val) {
                 definition.options._taskTimeout = val;
                 return Task.create(definition, {}, {})
@@ -632,10 +631,15 @@ describe("Task", function () {
             }
 
             return Promise.map([null, undefined, 'test', [], {}], function(val) {
+                var _task;
                 return testTimeout(val)
                 .then(function(task) {
                     expect(task).to.have.property('timer').that.is.an('object');
                     expect(task._taskTimeout).to.equal(24 * 60 * 60 * 1000);
+                    _task = task;
+                })
+                .finally(function(){
+                    clearTimeout(_task.timer);
                 });
             });
         });
