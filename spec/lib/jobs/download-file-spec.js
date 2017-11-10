@@ -4,7 +4,7 @@
 'use strict';
 
 describe("download-file", function () {
-    var instance, downloadFile, uuid;
+    var instance, downloadFile, uuid, fs;
 
     var mockChildProcessFactory = function () {
         function MockChildProcess(command, args, env) {
@@ -39,6 +39,7 @@ describe("download-file", function () {
         ]);
         downloadFile = helper.injector.get('Job.Download.File');
         uuid = helper.injector.get('uuid');
+        fs = helper.injector.get('fs');
     });
 
 
@@ -48,6 +49,10 @@ describe("download-file", function () {
     });
 
     describe('runCommand', function () {
+        var fsExist;
+        beforeEach('runCommand before', function() {
+            fsExist = this.sandbox.stub(fs, 'existsSync');
+        });
         afterEach('runCommand after', function () {
             this.sandbox.restore();
         });
@@ -55,9 +60,11 @@ describe("download-file", function () {
         it('should resolve on success', function () {
             this.sandbox.spy(instance, '_done');
             instance.options.filePath = 'http://somefile';
+            instance.options.serverFilePath = 'local/server/pathTo/somefile';
             return instance._run()
                 .then(function () {
                     expect(instance._run).to.be.resolved;
+                    expect(fs.existsSync).to.be.calledOnce;
                     expect(instance._done).to.be.calledWith();
                 });
         });
@@ -65,6 +72,7 @@ describe("download-file", function () {
         it('should error on failure', function () {
             this.sandbox.spy(instance, '_done');
             instance.options.filePath = 'http://badLocation';
+            instance.options.serverFilePath = 'local/server/pathTo/somefile';
             return instance._run()
                 .then(function () {
                     expect(instance._run).to.not.be.resolved;
