@@ -37,7 +37,10 @@ describe("Job.Catalog.CleanWorkItems", function () {
         }];
 
         var job = new CleanWorkItems({}, { graphId: uuid.v4() }, uuid.v4());
-
+        job.isPending = sinon.stub();
+        job.isPending.onCall(0).returns(true);
+        job.isPending.onCall(1).returns(false);
+        job.options.queuePollInterval = 0;
         waterline.workitems.findExpired.resolves(workItems);
 
         job.run();
@@ -51,5 +54,6 @@ describe("Job.Catalog.CleanWorkItems", function () {
                 done(e);
             }
         });
+
     });
 });

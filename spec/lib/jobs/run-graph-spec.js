@@ -62,7 +62,6 @@ describe("Job.Graph.Run", function () {
     it('should run a graph', function() {
         var job = new RunGraphJob(taskOptions, {}, uuid.v4());
         job._run();
-
         setImmediate(function() {
             job.finishWithState(Constants.Task.States.Succeeded);
         });
@@ -154,21 +153,45 @@ describe("Job.Graph.Run", function () {
     it('should fail on a failed graph', function() {
         var job = new RunGraphJob(taskOptions, {}, uuid.v4());
         job._run();
-
+        this.sandbox.spy(job, 'setSubgraphPoll');
+        this.sandbox.spy(job, '_done');
         setImmediate(function() {
             job.finishWithState(Constants.Task.States.Failed);
         });
-
-        return expect(job._deferred).to.be.rejectedWith(/Graph.*failed with status/);
+        return job._deferred
+        .then(function(){
+            throw new Error("Test should fail");
+        }, function(){
+            expect(job.setSubgraphPoll).to.be.calledOnce;
+            expect(taskGraphStore.findChildGraph).to.be.calledOnce;
+            expect(job._subscribeGraphFinished).to.be.calledOnce;
+            expect(job._done).to.be.calledOnce;
+            expect(job._done.args[0][0]).to.deep.equal(new Error(
+                "Graph undefined failed with status Failed"
+            ));
+        })
+        .finally(function(){
+            clearInterval(job.subgraphPoll);
+        });
     });
 
     it('should fail on internal errors with _run() code', function() {
         workflowTool.runGraph.rejects(new Error('test'));
 
         var job = new RunGraphJob(taskOptions, {}, uuid.v4());
+        this.sandbox.spy(job, '_done');
         job._run();
 
-        return expect(job._deferred).to.be.rejectedWith('test');
+        return job._deferred
+        .then(function(){
+            throw new Error("Test should fail");
+        }, function(){
+            expect(job._done).to.be.calledOnce;
+            expect(job._done.args[0][0]).to.deep.equal(new Error('test'));
+        })
+        .finally(function(){
+            clearInterval(job.subgraphPoll);
+        });
     });
 
     it('should subscribeGraphFinished before running a new graph', function() {
@@ -247,6 +270,7 @@ describe("Job.Graph.Run", function () {
         .catch(function() {
             expect(taskGraphProtocol.cancelTaskGraph).to.have.been.calledOnce;
             expect(taskGraphProtocol.cancelTaskGraph).to.have.been.calledWith(job.graphId);
+            clearInterval(job.subgraphPoll);
         });
     });
 });

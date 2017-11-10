@@ -172,8 +172,16 @@ describe("Job.Graph.RunSku", function () {
         setImmediate(function() {
             job.finishWithState(Constants.Task.States.Failed);
         });
-
-        return expect(job._deferred).to.be.rejectedWith(/Graph.*failed with status/);
+        
+        return job._deferred
+        .then(function(){
+            throw new Error("Test should fail");
+        }, function(err){
+            expect(err.message).to.match(/Graph [0-9a-z\-]{36} failed with status failed/);
+        })
+        .finally(function(){
+            clearInterval(job.subgraphPoll);
+        });
     });
 
     it('should noop if there is no sku discovery graph defined', function() {
@@ -181,40 +189,73 @@ describe("Job.Graph.RunSku", function () {
         waterline.skus.needOne.resolves(fakeSku);
         var job = new RunSkuGraphJob({ nodeId: fakeNode.id }, { target: fakeNode.id }, uuid.v4());
         job._run();
-
+        this.sandbox.spy(job, "_done");
         delete fakeSku.discoveryGraphName;
         delete fakeSku.discoveryGraphOptions;
 
         // The assertion here is that the job promise should just be resolved
         // without having to trigger the _subscribeGraphFinished callback.
-        return expect(job._deferred).to.be.fulfilled;
+        return job._deferred
+        .then(function(){
+            expect(job._done).to.be.calledOnce;
+        })
+        .finally(function(){
+            clearInterval(job.subgraphPoll);
+        });
     });
 
     it('should noop if there is no sku', function() {
         delete fakeNode.sku;
         waterline.nodes.findByIdentifier.resolves(fakeNode);
         var job = new RunSkuGraphJob({ nodeId: fakeNode.id }, { target: fakeNode.id }, uuid.v4());
+        this.sandbox.spy(job, "_done");
         job._run();
 
         // The assertion here is that the job promise should just be resolved
         // without having to trigger the _subscribeGraphFinished callback.
-        return expect(job._deferred).to.be.fulfilled;
+        return job._deferred
+        .then(function(){
+            expect(job._done).to.be.calledOnce;
+        })
+        .finally(function(){
+            clearInterval(job.subgraphPoll);
+        });
     });
 
     it('should fail if the sku does not exist', function() {
         waterline.nodes.findByIdentifier.resolves(fakeNode);
         waterline.skus.needOne.rejects(new Errors.NotFoundError('test'));
         var job = new RunSkuGraphJob({ nodeId: fakeNode.id }, { target: fakeNode.id }, uuid.v4());
+        this.sandbox.spy(job, "_done");
         job._run();
-
-        return expect(job._deferred).to.be.rejectedWith(Errors.NotFoundError);
+        
+        return job._deferred
+        .then(function(){
+            throw new Error("Test should fail");
+        }, function(){
+            expect(job._done).to.be.calledOnce;
+            expect(job._done.args[0][0]).to.deep.equal(new Errors.NotFoundError('test'));
+        })
+        .finally(function(){
+            clearInterval(job.subgraphPoll);
+        });
     });
 
     it('should fail on internal errors with _run() code', function() {
         waterline.nodes.findByIdentifier.rejects(new Error('test'));
         var job = new RunSkuGraphJob({ nodeId: fakeNode.id }, { target: fakeNode.id }, uuid.v4());
+        this.sandbox.spy(job, "_done");
         job._run();
 
-        return expect(job._deferred).to.be.rejectedWith('test');
+        return job._deferred
+        .then(function(){
+            throw new Error("Test should fail");
+        }, function(){
+            expect(job._done).to.be.calledOnce;
+            expect(job._done.args[0][0]).to.deep.equal(new Error('test'));
+        })
+        .finally(function(){
+            clearInterval(job.subgraphPoll);
+        });
     });
 });
