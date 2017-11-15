@@ -11,6 +11,7 @@ describe("REST-job", function(){
     var restJob;
     var testUrl = 'https://test.address.com:12345',
         taskId = uuid.v4(),
+        taskName = 'Task-label',
         options = {
             url: testUrl + '/full/put',
             method: 'PUT',
@@ -42,10 +43,10 @@ describe("REST-job", function(){
         .reply(201, 'You are good');
 
         context = {};
-        restJob = new RestJob(options, context, taskId);
+        restJob = new RestJob(options, context, taskId, taskName);
 
         return restJob.run().then(function(){
-            expect(context.restData.httpStatusCode).to.equal(201);
+            expect(context.outputs[taskName].restData.httpStatusCode).to.equal(201);
         });
     });
 
@@ -59,16 +60,16 @@ describe("REST-job", function(){
         options.url = testUrl + '/get/bad';
         options.method = 'GET';
 
-        restJob = new RestJob(options, context, taskId);
+        restJob = new RestJob(options, context, taskId,taskName);
         return restJob.run().then(function(){
-            expect(context.restData.httpStatusCode).to.equal(404);
+            expect(context.outputs[taskName].restData.httpStatusCode).to.equal(404);
         });
     });
 
     it('Should reject on missing url', function(){
         options.url = null;
 
-        restJob = new RestJob(options, context, taskId);
+        restJob = new RestJob(options, context, taskId, taskName);
         var errMsg = 'Please provide at least url and valid method to use HTTP tool!';
         return expect(restJob.run()).to.be.rejectedWith(errMsg);
     });
@@ -77,7 +78,7 @@ describe("REST-job", function(){
         options.url = testUrl + '/get/good';
         options.method = null;
 
-        restJob = new RestJob(options, context, taskId);
+        restJob = new RestJob(options, context, taskId, taskName);
         var err = 'Please provide at least url and valid method to use HTTP tool!';
         return expect(restJob.run()).to.be.rejectedWith(err);
     });
@@ -86,7 +87,7 @@ describe("REST-job", function(){
         options.url = testUrl + '/get/good';
         options.method = 'HAPPY';
 
-        restJob = new RestJob(options, context, taskId);
+        restJob = new RestJob(options, context, taskId, taskName);
         var err = 'Please provide at least url and valid method to use HTTP tool!';
 
         expect(restJob.run()).to.be.rejectedWith(err);
