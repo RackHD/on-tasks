@@ -469,7 +469,7 @@ describe("racadm-tool", function() {
                         expect(instance.getLatestJobId).to.have.been.calledWith('192.168.188.113',
                             'admin', 'admin');
                         expect(instance.waitJobDone).to.have.been.calledWith('192.168.188.113',
-                            'admin', 'admin', 'JID_xxxxxxxx', 0, 1000);
+                            'admin', 'admin', 'JID_xxxxxxxx', 0, 10000);
                     });
             });
 
