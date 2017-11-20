@@ -14,10 +14,10 @@ describe('Dell Wsman Delete Volume XML Job', function(){
         helper.setupInjector([
             helper.require('/spec/mocks/logger.js'),
             helper.require('/lib/jobs/base-job.js'),
-            helper.require('/lib/jobs/dell-wsman-delete-volume-xml.js'),
+            helper.require('/lib/jobs/dell-wsman-delete-volume-updateXml.js'),
             helper.require('/lib/utils/job-utils/smb2-client.js')
         ]);
-        WsmanJob = helper.injector.get('Job.Dell.Wsman.Delete.Volume.Xml');
+        WsmanJob = helper.injector.get('Job.Dell.Wsman.Delete.Volume.UpdateXml');
         uuid = helper.injector.get('uuid');
         configuration = helper.injector.get('Services.Configuration');
         Smb2Client = helper.injector.get('JobUtils.Smb2Client');
@@ -30,13 +30,13 @@ describe('Dell Wsman Delete Volume XML Job', function(){
                 "updateComponents": "",
                 "configureBios": "/api/1.0/server/configuration/configureBios"
             },
-            "shareFolder": {
-                "address": "10.62.59.223",
-                "shareName": "emc",
-                "username": "admin",
-                "password": "admin",
-                "shareType": 2
-            }
+        },
+        "shareFolder": {
+            "address": "191.162.10.13",
+            "shareName": "RAID",
+            "username": "admin",
+            "password": "123456",
+            "shareType": 2
         }
     };
 
@@ -65,16 +65,28 @@ describe('Dell Wsman Delete Volume XML Job', function(){
 
     it('Should init wsman wsmanDeleteVolumeXml job succesfully', function(){
         configuration.get.returns(configFile);
+        job.options.volumeId = "Disk.Virtual.0:RAID.Slot.1-1";
         expect(function(){
             job._run();
-        }).to.not.throw('Dell SCP  web service is not defined in smiConfig.json.');
+        }).to.not.throw('The shareFolder is not defined in smiConfig.json.');
+         expect(function(){
+            job._run();
+        }).to.not.throw('The volumeId can not be empty string.');
     });
 
     it('Should throw an error: Dell SCP  web service is not defined', function(){
         configuration.get.returns({});
         expect(function(){
             job._run();
-        }).to.throw('Dell SCP  web service is not defined in smiConfig.json.');
+        }).to.throw('The shareFolder is not defined in smiConfig.json.');
+    });
+
+    it('Should throw an error: The volumeId can not be empty string', function(){
+        configuration.get.returns(configFile);
+        job.options.volumeId = "";
+        expect(function(){
+            job._run();
+        }).to.throw('The volumeId can not be empty string.');
     });
 
     it('Should parse xml file for RAID operation successfully', function(){

@@ -10,6 +10,7 @@ describe('Dell Wsman RAID Job', function(){
     var configuration;
     var WsmanTool;
     var validator;
+    var Smb2Client;
 
     before(function(){
         helper.setupInjector([
@@ -18,12 +19,14 @@ describe('Dell Wsman RAID Job', function(){
             helper.require('/lib/jobs/dell-wsman-base-job.js'),
             helper.require('/lib/jobs/dell-wsman-RAID.js'),
             helper.require('/lib/utils/job-utils/wsman-tool.js'),
+            helper.require('/lib/utils/job-utils/smb2-client.js')
         ]);
         WsmanJob = helper.injector.get('Job.Dell.Wsman.RAID');
         uuid = helper.injector.get('uuid');
         configuration = helper.injector.get('Services.Configuration');
         WsmanTool = helper.injector.get('JobUtils.WsmanTool');
         validator = helper.injector.get('validator');
+        Smb2Client = helper.injector.get('JobUtils.Smb2Client');
     });
 
     var configFile = {
@@ -33,13 +36,13 @@ describe('Dell Wsman RAID Job', function(){
                 "updateComponents": "",
                 "configureBios": "/api/1.0/server/configuration/configureBios"
             },
-            "shareFolder": {
-                "address": "10.62.59.223",
-                "shareName": "emc",
-                "username": "admin",
-                "password": "admin",
-                "shareType": 2
-            }
+        },
+        "shareFolder": {
+            "shareAddress": "192.128.10.23",
+            "shareName": "RAID",
+            "sharePassword": "123456",
+            "shareType": 2,
+            "shareUsername": "admin"
         },
         "gateway": "http://localhost:46011"
     };
@@ -49,7 +52,7 @@ describe('Dell Wsman RAID Job', function(){
         "config" : {
             "user" : "admin",
             "password" : "admin",
-            "host" : "192.168.188.13"
+            "host" : "190.121.18.13"
         },
         "node" : "59db1dc1423ad2cc0650f8bc"
     };
@@ -59,6 +62,7 @@ describe('Dell Wsman RAID Job', function(){
         sandbox.stub(configuration, 'get');
         sandbox.stub(validator, 'isIP');
         sandbox.stub(WsmanTool.prototype, 'clientRequest');
+        sandbox.stub(Smb2Client.prototype, 'deleteFile');
     });
 
     afterEach(function(){

@@ -6,7 +6,7 @@
             "type": "string"
         },
         "shutdownType": {
-            "description": "Specify the type of system shutdown: Graceful(0), Forced(1)",
+            "description": "Specify the type of system shutdown: Graceful(0), Forced(1), default value is 0",
             "type": "integer",
             "enum": [0,1]
         }

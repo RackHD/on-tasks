@@ -2,25 +2,17 @@
     "copyright": "Copyright © 2017 Dell Inc. or its subsidiaries. All Rights Reserved.",
     "definitions": {
         "verifySSL": {
-            "description": "Specify if SSL certificate is enabled",
+            "description": "Specify if SSL certificate is enabled. It's default value is false",
             "type": "boolean"
         },
-        "_taskTimeout": {
-            "description": "Specify the max value of task timeout",
-            "type": "integer",
-            "maximum": 900000
-        },
         "domain": {
-            "description": "Specify domain name",
+            "description": "Specify domain name. It's default is domain",
             "type": "string"
         }
     },
     "properties": {
         "verifySSL": {
             "$ref": "#/definitions/verifySSL"
-        },
-        "_taskTimeout": {
-            "$ref": "#/definitions/_taskTimeout"
         },
         "domain": {
             "$ref": "#/definitions/domain"

@@ -1,30 +1,28 @@
-// Copyright © 2017 Dell Inc. or its subsidiaries. All  Rights Reserved.
+// Copyright © 2017 Dell Inc. or its subsidiaries. All Rights Reserved.
 /* jshint node: true */
 
 'use strict';
 
 describe(require('path').basename(__filename), function() {
-    var schemaFileName = 'dell-wsman-getInventory.json';
+    var schemaFileName = 'dell-wsman-RAID.json';
 
     var canonical = {
-        verifySSL: false,
-        domain: 'domain'
+        shutdownType: 0,
+        removeXmlFile: true
     };
 
     var positiveSetParam = {
-        verifySSL: [true, false],
-        domain: ['domain', 'name']
+        shutdownType: [0,1],
+        removeXmlFile: [true, false]
     };
 
     var negativeSetParam = {
-        verifySSL: ['true', null],
-        domain: [false, null]
-
+        shutdownType: [10, 20],
+        removeXmlFile: ['true', 'false']
     };
 
     var positiveUnsetParam = [
-        'verifySSL',
-        'domain'
+        'shutdownType','removeXmlFile'
     ];
 
     var negativeUnsetParam = [
