@@ -29,7 +29,9 @@
     "temp": "~0.8.3",
     "request": "^2.81.0",
     "request-promise": "^4.2.1",
-    "node-uuid": "^1.4.2"
+    "node-uuid": "^1.4.2",
+    "smb2": "0.2.7",
+    "xmldom": "0.1.27"
   },
   "devDependencies": {
     "chai": "^2.0.0",

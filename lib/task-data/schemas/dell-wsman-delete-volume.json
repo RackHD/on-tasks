@@ -1,0 +1,23 @@
+{
+    "copyright": "Copyright © 2017 Dell Inc. or its subsidiaries. All Rights Reserved.",
+    "definitions": {
+        "volumeId": {
+            "description": "Specify volumeId for deleting volume",
+            "type": "string"
+        },
+        "shutdownType": {
+            "description": "Specify the type of system shutdown: Graceful(0), Forced(1), default value is 0",
+            "type": "integer",
+            "enum": [0,1]
+        }
+    },
+    "properties": {
+        "volumeId": {
+            "$ref": "#/definitions/volumeId"
+        },
+        "shutdownType": {
+            "$ref": "#/definitions/shutdownType"
+        }
+    },
+    "required": ["volumeId"]
+}
