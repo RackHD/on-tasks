@@ -10,6 +10,7 @@ describe('Dell Wsman GetComponent Job', function(){
     var configuration;
     var WsmanTool;
     var validator;
+    var NfsClient;
 
     before(function(){
         helper.setupInjector([
@@ -18,12 +19,14 @@ describe('Dell Wsman GetComponent Job', function(){
             helper.require('/lib/jobs/dell-wsman-base-job.js'),
             helper.require('/lib/jobs/dell-wsman-getXml.js'),
             helper.require('/lib/utils/job-utils/wsman-tool.js'),
+            helper.require('/lib/utils/job-utils/nfs-client.js')
         ]);
         WsmanJob = helper.injector.get('Job.Dell.Wsman.GetXml');
         uuid = helper.injector.get('uuid');
         configuration = helper.injector.get('Services.Configuration');
         WsmanTool = helper.injector.get('JobUtils.WsmanTool');
         validator = helper.injector.get('validator');
+        NfsClient = helper.injector.get('JobUtils.NfsClient');
     });
 
     var configFile = {
@@ -39,7 +42,7 @@ describe('Dell Wsman GetComponent Job', function(){
             "shareName": "test",
             "username": "admin",
             "password": "123456",
-            "shareType": 2
+            "shareType": "0"
         },
         "gateway": "http://localhost:46011"
     };
@@ -59,6 +62,7 @@ describe('Dell Wsman GetComponent Job', function(){
         sandbox.stub(configuration, 'get');
         sandbox.stub(validator, 'isIP');
         sandbox.stub(WsmanTool.prototype, 'clientRequest');
+        sandbox.stub(NfsClient.prototype, 'mount');
     });
 
     afterEach(function(){
