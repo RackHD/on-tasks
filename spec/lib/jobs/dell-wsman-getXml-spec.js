@@ -72,12 +72,8 @@ describe('Dell Wsman GetComponent Job', function(){
 
     it('Should init wsman getComponent job succesfully', function(){
         configuration.get.returns(configFile);
-        expect(function(){
-            job._initJob();
-        }).to.not.throw('Dell SCP  web service is not defined in smiConfig.json.');
-         expect(function(){
-            job._initJob();
-        }).to.not.throw('The shareFolder is not defined in smiConfig.json.');
+        NfsClient.prototype.mount.resolves({});
+        expect(job._initJob()).to.be.fulfilled;
     });
 
     it('Should throw an error: Dell SCP  web service is not defined', function(){
