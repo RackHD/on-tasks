@@ -11,6 +11,7 @@ describe('Dell Wsman RAID Job', function(){
     var WsmanTool;
     var validator;
     var Smb2Client;
+    var NfsClient;
 
     before(function(){
         helper.setupInjector([
@@ -19,7 +20,8 @@ describe('Dell Wsman RAID Job', function(){
             helper.require('/lib/jobs/dell-wsman-base-job.js'),
             helper.require('/lib/jobs/dell-wsman-RAID.js'),
             helper.require('/lib/utils/job-utils/wsman-tool.js'),
-            helper.require('/lib/utils/job-utils/smb2-client.js')
+            helper.require('/lib/utils/job-utils/smb2-client.js'),
+            helper.require('/lib/utils/job-utils/nfs-client.js')
         ]);
         WsmanJob = helper.injector.get('Job.Dell.Wsman.RAID');
         uuid = helper.injector.get('uuid');
@@ -27,6 +29,7 @@ describe('Dell Wsman RAID Job', function(){
         WsmanTool = helper.injector.get('JobUtils.WsmanTool');
         validator = helper.injector.get('validator');
         Smb2Client = helper.injector.get('JobUtils.Smb2Client');
+        NfsClient = helper.injector.get('JobUtils.NfsClient');
     });
 
     var configFile = {
@@ -63,12 +66,13 @@ describe('Dell Wsman RAID Job', function(){
         sandbox.stub(validator, 'isIP');
         sandbox.stub(WsmanTool.prototype, 'clientRequest');
         sandbox.stub(Smb2Client.prototype, 'deleteFile');
+        sandbox.stub(NfsClient.prototype, 'deleteFile');
+        sandbox.stub(NfsClient.prototype, 'umount');
     });
 
     afterEach(function(){
         sandbox.restore();
     });
-
 
     it('Should init wsman RAID job succesfully', function(){
         configuration.get.returns(configFile);
@@ -83,21 +87,58 @@ describe('Dell Wsman RAID Job', function(){
         }).to.throw('Dell SCP  web service is not defined in smiConfig.json.');
     });
 
-    it('Should return reponse successfully', function(){
-        var response = {
-            "body": '{"status":"OK"}'
-        };
-        var result = job._handleSyncResponse(response);
-        expect(result).to.equal(response);
-    });
 
-    it('Should throw an error: Failed to do RAID operation', function(){
-        var response = {
-            "body": '{"status":"fail"}'
-        };
-        expect(function(){
-            job._handleSyncResponse(response);
-        }).to.throw('Failed to do RAID operations');
+    describe('handleSyncResponse function cases', function(){
+        it('Should delete cifs file succesfully', function(){
+            var response = {
+                "body": '{"status":"OK"}'
+            };
+            job.options.removeXmlFile = true;
+            job.dell = {
+                "shareFolder": {
+                    "shareAddress": "192.128.10.23",
+                    "shareName": "RAID",
+                    "sharePassword": "123456",
+                    "shareType": 2,
+                    "shareUsername": "admin"
+                }
+            };
+            Smb2Client.prototype.deleteFile.resolves({});
+            expect(job._handleSyncResponse(response)).to.be.fulfilled;
+        });
+
+        it('Should delete nfs file and umount directory successfully', function(){
+            var response = {
+                "body": '{"status":"OK"}'
+            };
+            job.options.removeXmlFile = true;
+            job.dell = {
+                "shareFolder": {
+                    "shareAddress": "192.128.10.23",
+                    "shareName": "RAID",
+                    "shareType": 0
+                }
+            };
+            NfsClient.prototype.deleteFile.resolves({});
+            expect(job._handleSyncResponse(response)).to.be.fulfilled;
+        });
+
+        it('Should not delete file', function(){
+            var response = {
+                "body": '{"status":"OK"}'
+            };
+            job.options.removeXmlFile = false;
+            expect(job._handleSyncResponse(response)).to.equal(response);
+        });
+
+        it('Should throw an error: Failed to do RAID operation', function(){
+            var response = {
+                "body": '{"status":"fail"}'
+            };
+            expect(function(){
+                job._handleSyncResponse(response);
+            }).to.throw('Failed to do RAID operations');
+        });
     });
 
     it('Should send RAID request succesfully', function(){

@@ -9,18 +9,21 @@ describe('Dell Wsman Delete Volume XML Job', function(){
     var sandbox = sinon.sandbox.create();
     var configuration;
     var Smb2Client;
+    var NfsClient;
 
     before(function(){
         helper.setupInjector([
             helper.require('/spec/mocks/logger.js'),
             helper.require('/lib/jobs/base-job.js'),
             helper.require('/lib/jobs/dell-wsman-delete-volume-updateXml.js'),
-            helper.require('/lib/utils/job-utils/smb2-client.js')
+            helper.require('/lib/utils/job-utils/smb2-client.js'),
+            helper.require('/lib/utils/job-utils/nfs-client.js')
         ]);
         WsmanJob = helper.injector.get('Job.Dell.Wsman.Delete.Volume.UpdateXml');
         uuid = helper.injector.get('uuid');
         configuration = helper.injector.get('Services.Configuration');
         Smb2Client = helper.injector.get('JobUtils.Smb2Client');
+        NfsClient = helper.injector.get('JobUtils.NfsClient');
     });
 
     var configFile = {
@@ -62,7 +65,6 @@ describe('Dell Wsman Delete Volume XML Job', function(){
         sandbox.restore();
     });
 
-
     it('Should init wsman wsmanDeleteVolumeXml job succesfully', function(){
         configuration.get.returns(configFile);
         job.options.volumeId = "Disk.Virtual.0:RAID.Slot.1-1";
@@ -89,7 +91,7 @@ describe('Dell Wsman Delete Volume XML Job', function(){
         }).to.throw('The volumeId can not be empty string.');
     });
 
-    it('Should parse xml file for RAID operation successfully', function(){
+    it('Should parse xml file for cifs successfully', function(){
         sandbox.restore();
         sandbox.stub(Smb2Client.prototype, 'readFile');
         sandbox.stub(Smb2Client.prototype, 'writeFile');
@@ -100,4 +102,20 @@ describe('Dell Wsman Delete Volume XML Job', function(){
         expect(job.parseXmlFileForRAID()).to.be.fulfilled;
     });
 
+    it('Should parse xml file for nfs successfully', function(){
+        sandbox.restore();
+        sandbox.stub(NfsClient.prototype, 'readFile');
+        sandbox.stub(NfsClient.prototype, 'writeFile');
+        job.dell = {
+            "shareFolder": {
+                "address": "191.162.10.13",
+                "shareName": "RAID",
+                "shareType": 0
+            }
+        };
+        job.context.graphName = 'parseXmlFileForRAID';
+        job.options.volumeId = 'Disk.Virtual.0:RAID.Slot.1-1';
+        NfsClient.prototype.readFile.resolves(fileData);
+        expect(job.parseXmlFileForRAID()).to.be.fulfilled;
+    });
 });
