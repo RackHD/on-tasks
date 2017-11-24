@@ -44,7 +44,7 @@ describe('Dell Wsman RAID Job', function(){
             "shareAddress": "192.128.10.23",
             "shareName": "RAID",
             "sharePassword": "123456",
-            "shareType": "2",
+            "shareType": 2,
             "shareUsername": "admin"
         },
         "gateway": "http://localhost:46011"
@@ -99,7 +99,7 @@ describe('Dell Wsman RAID Job', function(){
                     "shareAddress": "192.128.10.23",
                     "shareName": "RAID",
                     "sharePassword": "123456",
-                    "shareType": "2",
+                    "shareType": 2,
                     "shareUsername": "admin"
                 }
             };
@@ -116,7 +116,7 @@ describe('Dell Wsman RAID Job', function(){
                 "shareFolder": {
                     "shareAddress": "192.128.10.23",
                     "shareName": "RAID",
-                    "shareType": "0"
+                    "shareType": 0
                 }
             };
             NfsClient.prototype.deleteFile.resolves({});

@@ -42,7 +42,7 @@ describe('Dell Wsman GetComponent Job', function(){
             "shareName": "test",
             "username": "admin",
             "password": "123456",
-            "shareType": "0"
+            "shareType": 0
         },
         "gateway": "http://localhost:46011"
     };

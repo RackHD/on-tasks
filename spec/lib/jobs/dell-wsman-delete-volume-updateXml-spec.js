@@ -39,7 +39,7 @@ describe('Dell Wsman Delete Volume XML Job', function(){
             "shareName": "RAID",
             "username": "admin",
             "password": "123456",
-            "shareType": "2"
+            "shareType": 2
         }
     };
 
@@ -110,7 +110,7 @@ describe('Dell Wsman Delete Volume XML Job', function(){
             "shareFolder": {
                 "address": "191.162.10.13",
                 "shareName": "RAID",
-                "shareType": "0"
+                "shareType": 0
             }
         };
         job.context.graphName = 'parseXmlFileForRAID';
