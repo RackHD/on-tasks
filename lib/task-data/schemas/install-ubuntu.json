@@ -68,6 +68,12 @@
         },
         "progressMilestones": {
             "$ref": "types-installos.json#/definitions/ProgressMilestones"
+        },
+        "timezone": {
+            "$ref": "types-installos.json#/definitions/Timezone"
+        },
+        "ntp": {
+            "$ref": "types-installos.json#/definitions/Ntp"
         }
     },
     "required": ["osType", "version", "repo", "profile", "installScript",
