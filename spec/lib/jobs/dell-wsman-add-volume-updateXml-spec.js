@@ -109,7 +109,7 @@ describe('Dell Wsman Add Volume Update XML Job', function(){
         job.dell = configFile;
         job.options = options;
         Smb2Client.prototype.readFile.resolves(fileData);
-        expect(job.parseXmlFileForRAID()).to.be.fulfilled;
+        return expect(job.parseXmlFileForRAID()).to.be.fulfilled;
     });
 
     it('Should parse xml file for nfs successfully', function(){
@@ -125,6 +125,6 @@ describe('Dell Wsman Add Volume Update XML Job', function(){
         };
         job.options = options;
         NfsClient.prototype.readFile.resolves(fileData);
-        expect(job.parseXmlFileForRAID()).to.be.fulfilled;
+        return expect(job.parseXmlFileForRAID()).to.be.fulfilled;
     });
 });

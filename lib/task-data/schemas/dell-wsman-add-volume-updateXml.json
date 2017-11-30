@@ -10,9 +10,9 @@
             "type": "string"
         },
         "raidLevel": {
-            "description": "Specify raidLevel for adding volume. default value: RAID 0",
-            "type": "string",
-            "enum": ["RAID 0","RAID 1", "RAID 5", "RAID 6", "RAID 10"]
+            "description": "Specify raidLevel for adding volume. default value: 0",
+            "type": "integer",
+            "enum": [0,1,5,6,10]
         },
         "stripeSize": {
             "description": "Specify stripeSize for adding volume, default value: 128",
@@ -36,6 +36,9 @@
         },
         "stripeSize": {
             "$ref": "#/definitions/stripeSize"
+        },
+        "writePolicy": {
+            "$ref": "#/definitions/writePolicy"
         }
     },
     "required": ["drivers","name"]
