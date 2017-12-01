@@ -143,14 +143,18 @@ describe('', function() {
                 type: 'compute'
             });
             findByNode.resolves({
-                host: '127.0.0.1'
+                config: {
+                    host: '127.0.0.1'
+                }
             });
             return job.checkOBM('MockJob')
             .then(function(obm) {
                 expect(findByIdentifier).to.be.calledOnce;
                 expect(findByNode).to.be.calledOnce;
                 expect(obm).to.deep.equal({
-                    host: '127.0.0.1'
+                    config: {
+                        host: '127.0.0.1'
+                    }
                 });
             });
         });
