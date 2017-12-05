@@ -61,8 +61,7 @@ describe(require('path').basename(__filename), function() {
         'repo',
         'networkDevices[0].device',
         'networkDevices[0].ipv4.ipAddr',
-        'networkDevices[0].ipv4.netmask',
-        'networkDevices[0].ipv4.gateway'
+        'networkDevices[0].ipv4.netmask'
     ];
 
     var SchemaUtHelper = require('./schema-ut-helper');

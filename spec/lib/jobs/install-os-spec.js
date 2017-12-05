@@ -194,6 +194,116 @@ describe('Install OS Job', function () {
         expect(jobWithKVM.options.kvm).to.equal(true);
     });
 
+    it("should preserve packages information", function() {
+        var jobWithPackages = new InstallOsJob(
+            {
+                profile: 'testprofile',
+                version: '7.0',
+                repo: 'http://127.0.0.1:8080/myrepo/7.0/x86_64',
+                rootPassword: 'rackhd',
+                rootSshKey: 'testkey',
+                kvm: null,
+                dnsServers: null,
+                packages: [
+                    "@base",
+                    "^@infrastructure-server"
+                ]
+            },
+            {
+                target: 'testid'
+            },
+            uuid.v4()
+        );
+        expect(jobWithPackages.options).to.have.property('packages');
+        expect(jobWithPackages.options.packages.length).to.equal(2);
+    });
+
+    it("should preserve enableServices information", function() {
+         var jobWithServices = new InstallOsJob(
+             {
+                 profile: 'testprofile',
+                 version: '7.0',
+                 repo: 'http://127.0.0.1:8080/myrepo/7.0/x86_64',
+                 rootPassword: 'rackhd',
+                 rootSshKey: 'testkey',
+                 kvm: null,
+                 dnsServers: null,
+                 enableServices: [
+                     "service1",
+                     "service2"
+                 ]
+             },
+             {
+                 target: 'testid'
+             },
+             uuid.v4()
+         );
+         expect(jobWithServices.options).to.have.property('enableServices');
+         expect(jobWithServices.options.enableServices.length).to.equal(2);
+     });
+
+     it("should preserve disableServices information", function() {
+          var jobWithServices = new InstallOsJob(
+              {
+                  profile: 'testprofile',
+                  version: '7.0',
+                  repo: 'http://127.0.0.1:8080/myrepo/7.0/x86_64',
+                  rootPassword: 'rackhd',
+                  rootSshKey: 'testkey',
+                  kvm: null,
+                  dnsServers: null,
+                  disableServices: [
+                      "service1",
+                      "service2"
+                  ]
+              },
+              {
+                  target: 'testid'
+              },
+              uuid.v4()
+          );
+          expect(jobWithServices.options).to.have.property('disableServices');
+          expect(jobWithServices.options.disableServices.length).to.equal(2);
+      });
+
+    it("should preserve bonded interface information", function() {
+        var jobWithBondInterface = new InstallOsJob(
+            {
+                profile: 'testprofile',
+                version: '7.0',
+                repo: 'http://127.0.0.1:8080/myrepo/7.0/x86_64',
+                rootPassword: 'rackhd',
+                rootSshKey: 'testkey',
+                kvm: null,
+                dnsServers: null,
+                packages: [
+                    "@base",
+                    "^@infrastructure-server"
+                ],
+                bonds: [
+                    {
+                        name: "bond0",
+                        nics: [
+                            "nic1",
+                            "nic2"
+                        ],
+                        ipv4:{
+                            ipAddr: '1.1.1.1',
+                            gateway: "1.1.1.1",
+                            netmask: "255.255.255.0"
+                        }
+                    }
+                ]
+            },
+            {
+                target: 'testid'
+            },
+            uuid.v4()
+        );
+        expect(jobWithBondInterface.options).to.have.property('bonds');
+        expect(jobWithBondInterface.options.bonds.length).to.equal(1);
+    });
+
     it("should set up message subscribers", function() {
         var cb;
         waterline.catalogs.findMostRecent = sinon.stub().resolves({});
@@ -487,6 +597,35 @@ describe('Install OS Job', function () {
             ];
             expect(function() { job._validateOptions(); })
                 .to.throw(Error, 'Invalid ipv6 netmask.');
+        });
+
+        it('should allow configuration without gateway', function () {
+            job.options.networkDevices = [
+                {
+                    device: "eth0",
+                    ipv4:{
+                        ipAddr: "1.1.1.1",
+                        netmask: "255.255.255.0"
+                    }
+                }
+            ];
+            job._validateOptions();
+            expect(job.options.networkDevices.length).to.equal(1);
+        });
+
+        it('should allow mtu configuration', function () {
+            job.options.networkDevices = [
+                {
+                    device: "eth0",
+                    ipv4:{
+                        ipAddr: "1.1.1.1",
+                        netmask: "255.255.255.0",
+                        mtu: 9000
+                    }
+                }
+            ];
+            job._validateOptions();
+            expect(job.options.networkDevices.length).to.equal(1);
         });
 
         it('should throw error when size is not a number string and not "auto"', function() {

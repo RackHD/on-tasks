@@ -107,9 +107,15 @@
                         "$ref": "#/definitions/VlanId"
                     },
                     "uniqueItems": true
+                },
+                "mtu": {
+                    "description": "The ipv4 MTU",
+                    "type": "integer",
+                    "minimum": 1500,
+                    "maximum": 9026
                 }
             },
-            "required": ["ipAddr", "netmask", "gateway"],
+            "required": ["ipAddr", "netmask"],
             "additionalProperties": false
         },
         "Ipv6Configuration": {
@@ -165,12 +171,53 @@
             "required": ["device"],
             "additionalProperties": true
         },
+        "Nics": {
+            "description": "List of NICs",
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "uniqueItems": true
+        },
+        "BondConfig": {
+            "description": "Bond Interface configuration",
+            "type": "object",
+            "properties": {
+                "name": {
+                    "description": "The bond interface name.",
+                    "type": "string"
+                },
+                "nics": {
+                    "description": "list of interfaces that needs to included in bond configuration",
+                    "$ref": "#/definitions/Nics"
+                },
+                "ipv4": {
+                    "description": "the ipv4 configuration for this bonded interface",
+                    "$ref": "#/definitions/Ipv4Configuration"
+                },
+                "ipv6": {
+                    "description": "the ipv6 configuration for this bonded interface",
+                    "$ref": "#/definitions/Ipv6Configuration"
+                }
+            },
+            "required": ["name"],
+            "additionalProperties": true
+        },
         "NetworkDeviceArray": {
             "description": "The network configuration for each NIC",
             "type": "array",
             "minItems": 1,
             "items": {
                 "$ref": "#/definitions/NetworkConfig"
+            },
+            "uniqueItems": true
+        },
+        "BondsArray": {
+            "description": "Bond Interface configuration definition",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "$ref": "#/definitions/BondConfig"
             },
             "uniqueItems": true
         },
@@ -319,6 +366,30 @@
             "type": "string",
             "description": "Extra (persistent) kernel boot parameters",
             "minLength": 1
+        },
+        "PackagesArray": {
+            "description": "specify additional packages to install",
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "uniqueItems": true
+        },
+        "EnableServices": {
+            "description": "List of services that needs to be enabled explicitly during post-installation phase",
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "uniqueItems": true
+        },
+        "DisableServices": {
+            "description": "List of services that needs to be disabled during post-installation phase",
+            "type": "array",
+            "items": {
+                "type": "string"
+            },
+            "uniqueItems": true
         }
     }
 }

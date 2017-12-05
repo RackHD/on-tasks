@@ -50,6 +50,9 @@
         "networkDevices": {
             "$ref": "types-installos.json#/definitions/NetworkDeviceArray"
         },
+        "bonds": {
+            "$ref": "types-installos.json#/definitions/BondsArray"
+        },
         "kvm": {
             "$ref": "types-installos.json#/definitions/Kvm"
         },
@@ -61,6 +64,15 @@
         },
         "progressMilestones": {
             "$ref": "types-installos.json#/definitions/ProgressMilestones"
+        },
+        "packages": {
+            "$ref": "types-installos.json#/definitions/PackagesArray"
+        },
+        "disableServices": {
+            "$ref": "types-installos.json#/definitions/DisableServices"
+        },
+        "enableServices": {
+            "$ref": "types-installos.json#/definitions/EnableServices"
         }
     },
     "required": ["osType", "version", "repo", "profile", "installScript",
