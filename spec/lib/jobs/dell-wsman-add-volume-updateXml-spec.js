@@ -61,7 +61,7 @@ describe('Dell Wsman Add Volume Update XML Job', function(){
     "</SystemConfiguration>";
     var fileData = Buffer.from(file, 'utf-8');
     var options = {
-        'drivers': 'Disk.Bay.0:Enclosure.Internal.0-0:RAID.Slot.1-1,Disk.Bay.1:Enclosure.Internal.0-0:RAID.Slot.1-1',
+        'drives': 'Disk.Bay.0:Enclosure.Internal.0-0:RAID.Slot.1-1,Disk.Bay.1:Enclosure.Internal.0-0:RAID.Slot.1-1',
         'raidLevel': 'RAID 0',
         'name': 'test-raid',
         'stripeSize': 128,
@@ -94,12 +94,12 @@ describe('Dell Wsman Add Volume Update XML Job', function(){
         }).to.throw('The shareFolder is not defined in smiConfig.json.');
     });
 
-    it('Should throw an error: the drivers can not be empty string', function(){
+    it('Should throw an error: the drives can not be empty string', function(){
         configuration.get.returns(configFile);
-        job.options.drivers = '';
+        job.options.drives = '';
         expect(function(){
             job._run();
-        }).to.throw('The drivers can not be empty string.');
+        }).to.throw('The drives can not be empty string.');
     });
 
     it('Should parse xml file for cifs successfully', function(){

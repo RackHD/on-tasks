@@ -132,7 +132,7 @@ describe('Dell Wsman GetComponent Job', function(){
 
         it('Should send getComponent request succesfully with drives is defined', function(){
             validator.isIP.returns(true);
-            job.options.drivers = "Disk.Bay.0:Enclosure.Internal.0-0:RAID.Slot.1-1,"
+            job.options.drives = "Disk.Bay.0:Enclosure.Internal.0-0:RAID.Slot.1-1,"
                 +"Disk.Bay.1:Enclosure.Internal.0-0:RAID.Slot.1-1";
             job.dell = configFile;
             var response = {

@@ -9,6 +9,18 @@
         "removeXmlFile": {
             "description": "Specify if the xml file is deleted. It's default value is true",
             "type": "boolean"
+        },
+        "ipAddress": {
+            "description": "Specify ipAddress for obm setting",
+            "type": "string"
+        },
+        "username": {
+            "description": "Specify username for obm setting",
+            "type": "string"
+        },
+        "password": {
+            "description": "Specify password for obm setting",
+            "type": "string"
         }
     },
     "properties": {
@@ -17,6 +29,15 @@
         },
         "removeXmlFile": {
             "$ref": "#/definitions/removeXmlFile"
+        },
+        "ipAddress": {
+            "$ref": "#/definitions/ipAddress"
+        },
+        "username": {
+            "$ref": "#/definitions/username"
+        },
+        "password": {
+            "$ref": "#/definitions/password"
         }
     }
 }

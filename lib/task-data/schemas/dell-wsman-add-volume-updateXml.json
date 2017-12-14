@@ -1,8 +1,8 @@
 {
     "copyright": "Copyright © 2017 Dell Inc. or its subsidiaries. All Rights Reserved.",
     "definitions": {
-        "drivers": {
-            "description": "Specify drivers for adding volume",
+        "drives": {
+            "description": "Specify drives for adding volume",
             "type": "string"
         },
         "name": {
@@ -12,7 +12,7 @@
         "raidLevel": {
             "description": "Specify raidLevel for adding volume. default value: 0",
             "type": "integer",
-            "enum": [0,1,5,6,10]
+            "enum": [0,1,5,6,10,50]
         },
         "stripeSize": {
             "description": "Specify stripeSize for adding volume, default value: 128",
@@ -25,8 +25,8 @@
         }
     },
     "properties": {
-        "drivers": {
-            "$ref": "#/definitions/drivers"
+        "drives": {
+            "$ref": "#/definitions/drives"
         },
         "name": {
             "$ref": "#/definitions/name"
@@ -41,5 +41,5 @@
             "$ref": "#/definitions/writePolicy"
         }
     },
-    "required": ["drivers","name"]
+    "required": ["drives","name"]
 }

@@ -7,26 +7,35 @@ describe(require('path').basename(__filename), function() {
     var schemaFileName = 'dell-wsman-add-volume-getXml.json';
 
     var canonical = {
-        drivers: 'Disk.Virtual.0:RAID.Slot.1-1,Disk.Virtual.1:RAID.Slot.1-1',
-        shutdownType: 0
+        drives: 'Disk.Virtual.0:RAID.Slot.1-1,Disk.Virtual.1:RAID.Slot.1-1',
+        shutdownType: 0,
+        ipAddress: '191.112.41.31',
+        username: 'admin',
+        password: 'admin'
     };
 
     var positiveSetParam = {
-        drivers: ['Disk.Virtual.0:RAID.Slot.1-1', 'Disk.Virtual.0:RAID.Slot.1-1,Disk.Virtual.1:RAID.Slot.1-1'],
-        shutdownType: [0,1]
+        drives: ['Disk.Virtual.0:RAID.Slot.1-1', 'Disk.Virtual.0:RAID.Slot.1-1,Disk.Virtual.1:RAID.Slot.1-1'],
+        shutdownType: [0,1],
+        ipAddress: ['10.21.19.90', '11.65.23.70'],
+        username: ['user01', 'user-01'],
+        password: ['123456', 'asfewe']
     };
 
     var negativeSetParam = {
-        drivers: [null,false],
-        shutdownType: [10, 20]
+        drives: [null,false],
+        shutdownType: [10, 20],
+        ipAddress: [1, 2],
+        username: [null, true],
+        password: [null, 123456]
     };
 
     var positiveUnsetParam = [
-        'shutdownType'
+        'shutdownType', 'ipAddress', 'username', 'password'
     ];
 
     var negativeUnsetParam = [
-        'drivers'
+        'drives'
     ];
 
     var SchemaUtHelper = require('./schema-ut-helper');

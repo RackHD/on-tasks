@@ -7,7 +7,7 @@ describe(require('path').basename(__filename), function() {
     var schemaFileName = 'dell-wsman-add-volume-updateXml.json';
 
     var canonical = {
-        drivers: 'Disk.Virtual.0:RAID.Slot.1-1,Disk.Virtual.1:RAID.Slot.1-1',
+        drives: 'Disk.Virtual.0:RAID.Slot.1-1,Disk.Virtual.1:RAID.Slot.1-1',
         name: 'test1',
         raidLevel: 0,
         stripeSize: 128,
@@ -15,7 +15,7 @@ describe(require('path').basename(__filename), function() {
     };
 
     var positiveSetParam = {
-        drivers: ['Disk.Virtual.0:RAID.Slot.1-1', 'Disk.Virtual.0:RAID.Slot.2-1'],
+        drives: ['Disk.Virtual.0:RAID.Slot.1-1', 'Disk.Virtual.0:RAID.Slot.2-1'],
         name: ['test01', 'test02'],
         raidLevel: [0, 1, 5],
         stripeSize: [128, 256],
@@ -23,7 +23,7 @@ describe(require('path').basename(__filename), function() {
     };
 
     var negativeSetParam = {
-        drivers: [null, true],
+        drives: [null, true],
         name: [false, 123],
         raidLevel: ['0', null],
         stripeSize: ['128', null],
@@ -35,7 +35,7 @@ describe(require('path').basename(__filename), function() {
     ];
 
     var negativeUnsetParam = [
-        'drivers', 'name'
+        'drives', 'name'
     ];
 
     var SchemaUtHelper = require('./schema-ut-helper');
