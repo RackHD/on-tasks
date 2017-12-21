@@ -91,7 +91,9 @@ describe('Dell Wsman RAID Job', function(){
     describe('handleSyncResponse function cases', function(){
         it('Should delete cifs file succesfully', function(){
             var response = {
-                "body": '{"status":"OK"}'
+                "body": {
+                    "status": "OK"
+                }
             };
             job.options.removeXmlFile = true;
             job.dell = {
@@ -109,7 +111,9 @@ describe('Dell Wsman RAID Job', function(){
 
         it('Should delete nfs file and umount directory successfully', function(){
             var response = {
-                "body": '{"status":"OK"}'
+                "body": {
+                    "status": "OK"
+                }
             };
             job.options.removeXmlFile = true;
             job.dell = {
@@ -125,7 +129,9 @@ describe('Dell Wsman RAID Job', function(){
 
         it('Should not delete file', function(){
             var response = {
-                "body": '{"status":"OK"}'
+                "body": {
+                    "status": "OK"
+                }
             };
             job.options.removeXmlFile = false;
             expect(job._handleSyncResponse(response)).to.equal(response);
@@ -133,7 +139,9 @@ describe('Dell Wsman RAID Job', function(){
 
         it('Should throw an error: Failed to do RAID operation', function(){
             var response = {
-                "body": '{"status":"fail"}'
+                "body": {
+                    "status": "fail"
+                }
             };
             expect(function(){
                 job._handleSyncResponse(response);

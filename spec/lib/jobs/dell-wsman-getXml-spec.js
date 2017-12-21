@@ -101,7 +101,9 @@ describe('Dell Wsman GetComponent Job', function(){
 
     it('Should return reponse successfully', function(){
         var response = {
-            "body": '{"status":"OK"}'
+            "body": {
+                "status": "OK"
+            }
         };
         var result = job._handleSyncResponse(response);
         expect(result).to.equal(response);
@@ -109,7 +111,9 @@ describe('Dell Wsman GetComponent Job', function(){
 
     it('Should throw an error: Failed to getXml from smi service', function(){
         var response = {
-            "body": '{"status":"fail"}'
+            "body": {
+                "status": "fail"
+            }
         };
         expect(function(){
             job._handleSyncResponse(response);
