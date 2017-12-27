@@ -12,7 +12,7 @@
         "raidLevel": {
             "description": "Specify raidLevel for adding volume. default value: 0",
             "type": "integer",
-            "enum": [0,1,5,6,10,50]
+            "enum": [0,1,5,10,50]
         },
         "stripeSize": {
             "description": "Specify stripeSize for adding volume, default value: 128",
