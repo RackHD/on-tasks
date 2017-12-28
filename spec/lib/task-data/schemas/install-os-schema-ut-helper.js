@@ -67,7 +67,7 @@ var canonical = {
 };
 
 var positiveSetParam = {
-    version: ["trusty", "6", "6.5", "6_8", "LATEST", "0.*"],
+    version: ["stretch", "6", "6.5", "6_8", "LATEST", "0.*"],
     installDisk: ["sda", "naa.123", "/dev/sdb", 0, 1, null],
     "networkDevices[0].ipv4.vlanIds[0]": [0, 1009, 4095]
 };

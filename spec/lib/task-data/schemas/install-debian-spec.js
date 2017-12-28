@@ -1,13 +1,14 @@
-// Copyright 2016, EMC, Inc.
+// Copyright 2017, Dell EMC, Inc.
 /* jshint node: true */
 
 'use strict';
 
 describe(require('path').basename(__filename), function() {
-    var schemaFileName = 'install-ubuntu.json';
+    var schemaFileName = 'install-debian.json';
 
     var partialCanonical = {
-        "baseUrl": "ubuntu.baseUrl",
+        "baseUrl": "debian.baseUrl",
+        "osName": "debian"	
     };
 
     var positiveSetParam = {

@@ -1,5 +1,5 @@
 {
-    "copyright": "Copyright 2016, EMC, Inc.",
+    "copyright": "Copyright 2017, Dell EMC, Inc.",
     "definitions": {
         "BaseUrl": {
             "type": "string",
@@ -14,6 +14,9 @@
         "osType": {
             "$ref": "types-installos.json#/definitions/OsType",
             "readonly": true
+        },
+	"osName": {
+            "$ref": "types-installos.json#/definitions/OsName"
         },
         "version": {
             "$ref": "types-installos.json#/definitions/Version"
@@ -68,8 +71,14 @@
         },
         "progressMilestones": {
             "$ref": "types-installos.json#/definitions/ProgressMilestones"
+        },
+        "timezone": {
+           "$ref": "types-installos.json#/definitions/Timezone"
+        },
+        "ntp": {
+            "$ref": "types-installos.json#/definitions/Ntp"
         }
     },
-    "required": ["osType", "version", "repo", "profile", "installScript",
+    "required": ["osType", "osName", "version", "repo", "profile", "installScript",
         "installScriptUri", "comport", "rootPassword", "hostname", "baseUrl"]
 }

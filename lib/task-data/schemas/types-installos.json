@@ -5,6 +5,10 @@
             "description": "The type of OS which is used by code internally",
             "enum": [ "esx", "linux", "windows" ]
         },
+        "OsName": {
+            "description": "The name of Linux OS based on LSB Distributor ID (debian, ubuntu)",
+            "enum": [ "debian", "ubuntu" ]
+        },
         "UserName": {
             "description": "The user account name",
             "type": "string",
@@ -365,6 +369,16 @@
         "GrubLinuxAppend": {
             "type": "string",
             "description": "Extra (persistent) kernel boot parameters",
+            "minLength": 1
+        },
+        "Timezone": {
+            "description": "The Timezone based on $TZ (https://en.wikipedia.org/wiki/List_of_tz_database_time_zones)",
+            "type": "string",
+            "minLength": 1
+        },
+        "Ntp": {
+            "description": "The NTP server address",
+            "type": "string",
             "minLength": 1
         },
         "PackagesArray": {

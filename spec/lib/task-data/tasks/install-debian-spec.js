@@ -1,4 +1,4 @@
-// Copyright 2015, EMC, Inc.
+// Copyright 2017, Dell EMC, Inc.
 /* jshint node:true */
 
 'use strict';
@@ -7,7 +7,7 @@ describe(require('path').basename(__filename), function () {
     var base = require('./base-tasks-spec');
 
     base.before(function (context) {
-        context.taskdefinition = helper.require('/lib/task-data/tasks/install-ubuntu.js');
+        context.taskdefinition = helper.require('/lib/task-data/tasks/install-debian.js');
     });
 
     describe('task-data', function () {
@@ -15,3 +15,4 @@ describe(require('path').basename(__filename), function () {
     });
 
 });
+
