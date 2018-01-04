@@ -183,6 +183,26 @@
             },
             "uniqueItems": true
         },
+        "BondVlanInterface": {
+            "description": "Bonded VLAN Interface Configuration",
+            "type": "object",
+            "properties": {
+                "vlanid": {
+                    "description": "Bonded VLAN sub-interface",
+                    "$ref": "#/definitions/VlanId"
+                },
+                "ipv4": {
+                    "description": "the ipv4 configuration for this interface",
+                    "$ref": "#/definitions/Ipv4Configuration"
+                },
+                "ipv6": {
+                    "description": "the ipv6 configuration for this interface",
+                    "$ref": "#/definitions/Ipv6Configuration"
+                }
+            },
+            "required": ["vlanid"],
+            "additionalProperties": true
+        },
         "BondConfig": {
             "description": "Bond Interface configuration",
             "type": "object",
@@ -202,6 +222,13 @@
                 "ipv6": {
                     "description": "the ipv6 configuration for this bonded interface",
                     "$ref": "#/definitions/Ipv6Configuration"
+                },
+                "bondvlaninterfaces": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/BondVlanInterface"
+                    },
+                    "uniqueItems": true
                 }
             },
             "required": ["name"],
