@@ -238,6 +238,38 @@ describe('General Redfish Catalog Job', function () {
                 "Oem": {},
                 "Sensors": {}
             }
+        },
+    redfishNode =     {
+        autoDiscover: false,
+        catalogs: "/api/2.0/nodes/5a09dadfcd6a2a01006f4f87/catalogs",
+        ibms: [],
+        id: "5a09dadfcd6a2a01006f4f87",
+        identifiers: [
+            "System.Embedded.1",
+            "http://172.23.0.1:8000/redfish/v1/Systems/System.Embedded.1",
+            "NNRZST2-CN747517150043"
+        ],
+        name: "System",
+        obms: [
+            {
+                "ref": "/api/2.0/obms/5a09dadfcd6a2a01006f4f88",
+                "service": "redfish-obm-service"
+            }
+        ],
+        pollers: "/api/2.0/nodes/5a09dadfcd6a2a01006f4f87/pollers",
+        relations: [
+            {
+                info: null,
+                relationType: "managedBy",
+                targets: [
+                    "5a09dadfcd6a2a01006f4f89"
+                ]
+            }
+        ],
+        tags: "/api/2.0/nodes/5a09dadfcd6a2a01006f4f87/tags",
+        type: "redfish",
+        workflows: "/api/2.0/nodes/5a09dadfcd6a2a01006f4f87/workflows"
+
         };
         var setup = sandbox.stub().resolves();
         var clientRequest = sandbox.stub();
@@ -259,8 +291,14 @@ describe('General Redfish Catalog Job', function () {
             helper.di.simpleWrapper(RedfishTool,'JobUtils.RedfishTool')
         ]);
         waterline.catalogs = {
-            create: sandbox.stub().resolves()
+            create: sandbox.stub().resolves(),
+            count: sandbox.stub().resolves(0),
+            update: sandbox.stub().resolves({})
         };
+        waterline.nodes = {
+            getNodeById: sandbox.stub().resolves(redfishNode)
+        };
+
     });
     
     afterEach(function() {
