@@ -106,7 +106,7 @@
             "$ref": "#/definitions/password"
         },
         "isoFileShare": {
-            "$ref": "#/definitions/passisoFileShare"
+            "$ref": "#/definitions/isoFileShare" 
         }   
     }
   }
