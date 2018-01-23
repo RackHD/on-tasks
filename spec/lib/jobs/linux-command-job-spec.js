@@ -144,7 +144,7 @@ describe('Linux Command Job', function () {
             testData = {stdout: 'test data', cmd: 'test command'};
             commandUtil.buildCommands = this.sandbox.stub().returns([]);
             commandUtil.handleRemoteFailure = this.sandbox.stub().resolves([testData]);
-            commandUtil.parseResponse = this.sandbox.stub().resolves([
+            commandUtil.parseUnknownTasks = this.sandbox.stub().resolves([
                 {data: 'parsed test data', source: 'test command'}
             ]);
             commandUtil.catalogParsedTasks = this.sandbox.stub().resolves([]);
@@ -160,7 +160,7 @@ describe('Linux Command Job', function () {
             this.sandbox.restore();
         });
 
-        it('should delegate responses to commandUtil.parseResponse() and finish',
+        it('should delegate responses to commandUtil.parseUnknownTasks() and finish',
         function(done) {
 
             this.sandbox.stub(job, '_done', function(err) {
@@ -169,7 +169,7 @@ describe('Linux Command Job', function () {
                     return;
                 }
                 try {
-                    expect(commandUtil.parseResponse).to.have.been.calledOnce
+                    expect(commandUtil.parseUnknownTasks).to.have.been.calledOnce
                         .and.calledWith([testData]);
                     done();
                 } catch (e) {

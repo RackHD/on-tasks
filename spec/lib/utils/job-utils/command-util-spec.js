@@ -49,18 +49,12 @@ describe('Command Util', function() {
         this.sandbox = sinon.sandbox.create();
     });
 
-    describe('parseResponse', function() {
-        function getParsedTask() {
-            return { store: true, source: 'test', data: 'parsedData' };
-        }
-
+    describe('parseUnknownTasks', function() {
         beforeEach(function() {
             commandUtil = new CmdUtil('fakeNodeId');
             this.sandbox.stub(commandUtil, 'catalogParsedTasks');
 
-            parser.parseTasks = this.sandbox.stub().resolves();
             parser.parseUnknownTasks = this.sandbox.stub().resolves();
-
         });
 
         afterEach(function() {
@@ -73,10 +67,8 @@ describe('Command Util', function() {
                 {stdout: 'data', cmd: 'remoteCommand', catalog: true},
                 {stdout: 'data', cmd: 'remoteCommand', catalog: true}
             ];
-            parser.parseTasks.resolves(new Array(3).map(getParsedTask));
-            return commandUtil.parseResponse(tasks)
+            return commandUtil.parseUnknownTasks(tasks)
             .then(function() {
-                expect(parser.parseTasks).to.have.been.calledTwice;
                 expect(parser.parseUnknownTasks).to.have.been.calledOnce;
             });
         });
@@ -87,8 +79,8 @@ describe('Command Util', function() {
                 {stdout: 'data', cmd: 'remoteCommand', catalog: true},
                 {stdout: 'data', cmd: 'remoteCommand', catalog: true}
             ];
-            parser.parseTasks.rejects(new Error('parsing error'));
-            return expect(commandUtil.parseResponse(tasks)).to.be.rejectedWith(/parsing error/);
+            parser.parseUnknownTasks.rejects(new Error('parsing error'));
+            return expect(commandUtil.parseUnknownTasks(tasks)).to.be.rejectedWith(/parsing error/);
         });
 
         it('should only parse tasks marked for cataloging', function() {
@@ -97,37 +89,10 @@ describe('Command Util', function() {
                 {stdout: 'data', catalog: true, cmd: 'test'}
             ];
 
-            return commandUtil.parseResponse(tasks)
+            return commandUtil.parseUnknownTasks(tasks)
             .then(function() {
-                expect(parser.parseTasks.args[0][0]).to.include(tasks[1]);
-                expect(parser.parseTasks.args[0][0]).to.not.include(tasks[0]);
+                expect(parser.parseUnknownTasks).to.have.been.calledWithExactly([tasks[1]]);
             });
-        });
-
-        it('should call parseUnknownTasks for tasks with a "format" key and '+
-        'call parseTasks otherwise', function() {
-            var tasks = [
-                {stdout: 'json', catalog: true, cmd: 'getSomeJson', format: 'json'},
-                {stdout: 'data', catalog: true, cmd: 'getSomeData'}
-            ];
-
-            return commandUtil.parseResponse(tasks)
-            .then(function() {
-                expect(parser.parseTasks).to.have.been.calledWithExactly([tasks[1]]);
-                expect(parser.parseUnknownTasks).to.have.been.calledWithExactly([tasks[0]]);
-            });
-        });
-
-        it('should call parseTasks for new Tasks with no catalog object'+
-            ' and need to build a catalog', function() {
-            var tasks = [
-                {stdout: 'data', cmd: 'getSomeData'}
-            ];
-
-            return commandUtil.parseResponse(tasks)
-                .then(function() {
-                    expect(parser.parseTasks).to.have.been.calledWithExactly([tasks[0]]);
-                });
         });
     });
 
