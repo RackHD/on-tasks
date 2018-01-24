@@ -85,7 +85,6 @@
                  }
           }
     },
-
     "properties": {
         "action": {
             "$ref": "#/definitions/action"
@@ -110,8 +109,3 @@
         }   
     }
   }
-
-
-	  
-
-

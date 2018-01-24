@@ -34,8 +34,6 @@
             "type": "string"
         }
     },
-
-
     "properties": {
         "action": {
             "$ref": "#/definitions/action"
@@ -61,7 +59,5 @@
         "sourceDir": {
             "$ref": "#/definitions/sourceDir"
         }
-
     }
-   
 }
