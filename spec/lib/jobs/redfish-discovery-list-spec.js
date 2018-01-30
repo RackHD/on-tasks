@@ -24,6 +24,7 @@ describe('Redfish Discovery List Job', function () {
         getManagersData,
         waterline = {},
         Job,
+        eventsProtocol = {},
         Error;
 
 
@@ -166,6 +167,8 @@ describe('Redfish Discovery List Job', function () {
 
     beforeEach(function () {
         Job = helper.injector.get('Job.Redfish.Discovery.List');
+        eventsProtocol = helper.injector.get('Protocol.Events');
+        sandbox.stub(eventsProtocol, 'publishNodeEvent').resolves();
         redfishJob = new Job({
             uri: 'https://1.1.1.1/redfish/v1',
             username: 'user',
