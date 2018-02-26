@@ -11,6 +11,8 @@ describe('Redfish IP range discovery Job', function () {
         HttpTool,
         Error;
 
+    var request = require('requestretry');
+
     var badResponse = {
         "httpVersion": "1.0",
         "httpStatusCode": 207,
@@ -63,12 +65,12 @@ describe('Redfish IP range discovery Job', function () {
             }]
         }, {}, graphId);
 
-        sandbox.stub(HttpTool.prototype, "runRequest");
+        sandbox.stub(request, "get");
     });
 
     describe('IP range', function () {
         it('should return a list of Redfish endpoint objects', function () {
-            HttpTool.prototype.runRequest.resolves(response);
+            request.get.resolves(response);
             redfishJob._run();
             return redfishJob._deferred
                 .then(function () {
@@ -77,7 +79,7 @@ describe('Redfish IP range discovery Job', function () {
         });
 
         it('should return an empty array if response is bad', function () {
-            HttpTool.prototype.runRequest.resolves(badResponse);
+           request.get.resolves(badResponse);
             redfishJob._run();
             return redfishJob._deferred
                 .then(function () {

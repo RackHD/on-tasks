@@ -2,6 +2,8 @@
 'use strict';
 
 describe('General Redfish Catalog Job', function () {
+
+
     var uuid = require('node-uuid'),
         graphId = uuid.v4(),
         redfishJob,
@@ -253,7 +255,13 @@ describe('General Redfish Catalog Job', function () {
         obms: [
             {
                 "ref": "/api/2.0/obms/5a09dadfcd6a2a01006f4f88",
-                "service": "redfish-obm-service"
+                "service": "redfish-obm-service",
+                "config":  {
+                    root: '/redfish/v1/',
+                    protocol: 'http',
+                    host: '0.0.0.0',
+                    port: 8000
+                }
             }
         ],
         pollers: "/api/2.0/nodes/5a09dadfcd6a2a01006f4f87/pollers",
@@ -272,16 +280,20 @@ describe('General Redfish Catalog Job', function () {
 
         };
         var setup = sandbox.stub().resolves();
-        var clientRequest = sandbox.stub();
+        var request = require('requestretry');
+        var eventsProtocol = {};
     
-    before(function() { 
+    before(function() {
         function RedfishTool() {
             this.setup = setup;
-            this.clientRequest = clientRequest;
             this.settings = {
-                root: '/redfish/v1/'
+                root: '/redfish/v1/',
+                protocol: 'http',
+                host: '0.0.0.0',
+                port: 8000
             };
         }
+
         
         helper.setupInjector([
             helper.require('/lib/jobs/base-job.js'),
@@ -290,6 +302,7 @@ describe('General Redfish Catalog Job', function () {
             helper.di.simpleWrapper(waterline,'Services.Waterline'),
             helper.di.simpleWrapper(RedfishTool,'JobUtils.RedfishTool')
         ]);
+        eventsProtocol = helper.injector.get('Protocol.Events');
         waterline.catalogs = {
             create: sandbox.stub().resolves(),
             count: sandbox.stub().resolves(0),
@@ -297,6 +310,9 @@ describe('General Redfish Catalog Job', function () {
         };
         waterline.nodes = {
             getNodeById: sandbox.stub().resolves(redfishNode)
+        };
+        waterline.obms = {
+            findByNode: sandbox.stub().resolves(redfishNode.obms[0])
         };
 
     });
@@ -312,16 +328,17 @@ describe('General Redfish Catalog Job', function () {
             username:'user',
             password:'pass'
         }, {}, graphId);
-        clientRequest.resetBehavior();
-        clientRequest.reset();
+        sandbox.stub(request, "get").resolves();
+        sandbox.stub(eventsProtocol, 'publishNodeEvent').resolves();
+
         waterline.catalogs.create.reset();
     });
 
     describe('redfish fan / power endpoints', function() {
         it('should successfully catalog elements', function() {
-            clientRequest.onCall(0).resolves(systemData);
-            clientRequest.onCall(1).resolves(powerData);
-            clientRequest.onCall(2).resolves(fanData);
+            request.get.onCall(0).resolves(systemData);
+            request.get.onCall(1).resolves(powerData);
+            request.get.onCall(2).resolves(fanData);
 
             return redfishJob.catalogEndpoints('xyz')
             .then(function(node) {
@@ -330,7 +347,7 @@ describe('General Redfish Catalog Job', function () {
             });
         });
         it('should fail to catalog elements', function() {
-            clientRequest.rejects('some error');
+            request.get.rejects('some error');
             return redfishJob.catalogEndpoints('xyz')
                 .should.be.rejectedWith('some error');
         });
@@ -339,9 +356,9 @@ describe('General Redfish Catalog Job', function () {
 
     describe('redfish disk endpoints', function() {
         it('should successfully catalog elements', function() {
-            clientRequest.onCall(0).resolves(systemData);
-            clientRequest.onCall(1).resolves(simpleStorageMembers);
-            clientRequest.onCall(2).resolves(drivesData);
+            request.get.onCall(0).resolves(systemData);
+            request.get.onCall(1).resolves(simpleStorageMembers);
+            request.get.onCall(2).resolves(drivesData);
 
             return redfishJob.driveEndpoints('xyz')
                 .then(function(node) {
@@ -350,13 +367,13 @@ describe('General Redfish Catalog Job', function () {
                 });
         });
         it('should fail to catalog elements', function() {
-            clientRequest.rejects('some error');
+            request.get.rejects('some error');
             return redfishJob.driveEndpoints('xyz')
                 .should.be.rejectedWith('some error');
         });
 
         it('should fail with no elements ', function() {
-            clientRequest.onCall(0).rejects('Missing storage Resource');
+            request.get.onCall(0).rejects('Missing storage Resource');
             return redfishJob.driveEndpoints('xyz')
                 .should.be.rejectedWith('Missing storage Resource');
         });
@@ -364,45 +381,35 @@ describe('General Redfish Catalog Job', function () {
 
     describe('redfish all endpoints', function() {
         it('should successfully catalog all endpints', function() {
-            clientRequest.onCall(0).resolves(coolingRoot);
-            clientRequest.onCall(1).resolves(coolingList);
-            clientRequest.onCall(2).resolves(coolingData);
+            request.get.onCall(0).resolves(coolingRoot);
+            request.get.onCall(1).resolves(coolingList);
+            request.get.onCall(2).resolves(coolingData);
 
             return redfishJob.getAllCatalogs(['1234'])
                 .then(function(node) {
                     expect(node).to.be.an('Array').with.length(1);
                     expect(node[0]).to.equal('1234');
                     expect(waterline.catalogs.create).to.be.calledThrice;
-                    expect(clientRequest).to.be.calledThrice;
+                    expect(request.get).to.be.calledThrice;
                 });
         });
 
-        it('should fail to catalog elements', function() {
-            clientRequest.rejects('some error');
-            return redfishJob.getAllCatalogs(['1234'])
-                .should.be.rejectedWith('some error');
-        });
     });
 
     describe('redfish catalogSystem', function() {
         it('should successfully catalog System', function() {
-            clientRequest.onCall(0).resolves(coolingRoot);
-            clientRequest.onCall(1).resolves(coolingList);
-            clientRequest.onCall(2).resolves(coolingData);
+            request.get.onCall(0).resolves(coolingRoot);
+            request.get.onCall(1).resolves(coolingList);
+            request.get.onCall(2).resolves(coolingData);
 
             return redfishJob.getSystemsCatalogs(['1234'])
                 .then(function(node) {
                     expect(node).to.be.an('Array').with.length(1);
                     expect(node[0]).to.equal('1234');
                     expect(waterline.catalogs.create).to.be.calledThrice;
-                    expect(clientRequest).to.be.calledThrice;
+                    expect(request.get).to.be.calledThrice;
                 });
         });
 
-        it('should fail to catalog elements', function() {
-            clientRequest.rejects('some error');
-            return redfishJob.getAllCatalogs(['1234'])
-                .should.be.rejectedWith('some error');
-        });
     });
 });
