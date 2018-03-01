@@ -25,7 +25,8 @@ describe('Redfish Discovery List Job', function () {
         waterline = {},
         Job,
         eventsProtocol = {},
-        Error;
+        Error,
+        request = require('requestretry');
 
 
     var endpointListSingle = [
@@ -174,8 +175,8 @@ describe('Redfish Discovery List Job', function () {
             username: 'user',
             password: 'pass'
         }, {}, graphId);
-        sandbox.stub(redfishJob.redfish);
-        redfishTool = redfishJob.redfish;
+        sandbox.stub(request, "get");
+        redfishTool = {"settings": {}};
         redfishJob.settings = settings;
         redfishTool.settings = settings;
         rootData = {
@@ -302,7 +303,7 @@ describe('Redfish Discovery List Job', function () {
             sandbox.stub(Job.prototype, "createNetwork");
             sandbox.stub(Job.prototype, "createManagers").resolves([redfishManager]);
             redfishJob.endpointList = endpointList;
-            redfishTool.clientRequest.resolves(rootData);
+            request.get.resolves(rootData);
             redfishJob._run();
             return redfishJob._deferred
                 .then(function () {
@@ -310,20 +311,14 @@ describe('Redfish Discovery List Job', function () {
                 });
         });
 
-        it('should fail to run job', function () {
-            redfishJob.endpointList = endpointListSingle;
-            redfishTool.clientRequest.rejects('some error');
-            redfishJob._run();
-            return redfishJob._deferred.should.be.rejectedWith('some error');
-        });
     });
 
     describe('redfish chassis', function () {
         it('should create chassis node', function () {
-            redfishTool.clientRequest.onCall(0).resolves(listChassisData);
-            redfishTool.clientRequest.onCall(1).resolves(getChassisData);
-            redfishTool.clientRequest.onCall(1).resolves(getSystemData);
-            return redfishJob.createChassis(rootData.body)
+            request.get.onCall(0).resolves(listChassisData);
+            request.get.onCall(1).resolves(getChassisData);
+            request.get.onCall(1).resolves(getSystemData);
+            return redfishJob.createChassis(rootData.body, redfishTool)
                 .then(function () {
                     expect(waterline.nodes.updateOne).to.be.called.once;
                 });
@@ -331,16 +326,16 @@ describe('Redfish Discovery List Job', function () {
 
         it('should log no system members found warning', function () {
             delete getChassisData.body.Links;
-            redfishTool.clientRequest.onCall(0).resolves(listChassisData);
-            redfishTool.clientRequest.onCall(1).resolves(getChassisData);
-            return redfishJob.createChassis(rootData.body)
+            request.get.onCall(0).resolves(listChassisData);
+            request.get.onCall(1).resolves(getChassisData);
+            return redfishJob.createChassis(rootData.body, redfishTool)
                 .then(function () {
                     expect(waterline.nodes.updateOne).to.be.called.once;
                 });
         });
 
         it('should fail to create chassis node', function () {
-            return expect(redfishJob.createChassis.bind(redfishJob, {}))
+            return expect(redfishJob.createChassis.bind(redfishJob, redfishTool, {}))
                 .to.throw('No Chassis Members Found');
         });
     });
@@ -350,14 +345,14 @@ describe('Redfish Discovery List Job', function () {
             ethernetInterfaces.body.Members = [
                 {'@odata.id': '/redfish/v1/Systems/abc123/EthernetInterfaces'}
             ];
-            redfishTool.clientRequest.onCall(0).resolves(listSystemData);
-            redfishTool.clientRequest.onCall(1).resolves(getSystemData);
-            redfishTool.clientRequest.onCall(2).resolves(getSystemData);
-            redfishTool.clientRequest.onCall(3).resolves(ethernetInterfaces);
-            redfishTool.clientRequest.onCall(4).resolves({
+            request.get.onCall(0).resolves(listSystemData);
+            request.get.onCall(1).resolves(getSystemData);
+            request.get.onCall(2).resolves(getSystemData);
+            request.get.onCall(3).resolves(ethernetInterfaces);
+            request.get.onCall(4).resolves({
                 body: {'MACAddress': '00:01:02:03:04:05'}
             });
-            return redfishJob.createSystems(rootData.body)
+            return redfishJob.createSystems(rootData.body, redfishTool)
                 .then(function () {
                     expect(waterline.nodes.updateOne).to.be.called.once;
                 });
@@ -365,11 +360,11 @@ describe('Redfish Discovery List Job', function () {
 
         it('should log no chassis members found warning', function () {
             delete getSystemData.body.Links;
-            redfishTool.clientRequest.onCall(0).resolves(listSystemData);
-            redfishTool.clientRequest.onCall(1).resolves(getSystemData);
-            redfishTool.clientRequest.onCall(2).resolves(getSystemData);
-            redfishTool.clientRequest.onCall(3).resolves(ethernetInterfaces);
-            return redfishJob.createSystems(rootData.body)
+            request.get.onCall(0).resolves(listSystemData);
+            request.get.onCall(1).resolves(getSystemData);
+            request.get.onCall(2).resolves(getSystemData);
+            request.get.onCall(3).resolves(ethernetInterfaces);
+            return redfishJob.createSystems(rootData.body, redfishTool)
                 .then(function () {
                     expect(waterline.nodes.updateOne).to.be.called.once;
                 });
@@ -380,27 +375,27 @@ describe('Redfish Discovery List Job', function () {
         });
 
         it('should fail to create system node', function () {
-            redfishTool.clientRequest.onCall(0).rejects('some error');
-            return expect(redfishJob.createSystems(rootData.body))
+            request.get.onCall(0).rejects('some error');
+            return expect(redfishJob.createSystems(rootData.body, redfishTool))
                 .to.be.rejectedWith('some error');
         });
     });
 
     describe('redfish cooling', function () {
         it('should create cooling node', function () {
-            redfishTool.clientRequest.onCall(0).resolves(listCoolingData);
-            redfishTool.clientRequest.onCall(1).resolves(getCoolingData);
+            request.get.onCall(0).resolves(listCoolingData);
+            request.get.onCall(1).resolves(getCoolingData);
             return redfishJob.createRedfishNode(rootData.body,
                 'DCIMCooling',
                 ['CRAH', 'CRAC', 'AirHandlingUnit', 'Chiller', 'CoolingTower'],
-                'cooling')
+                'cooling', redfishTool)
                 .then(function () {
                     expect(waterline.nodes.updateOne).to.be.called.once;
                 });
         });
 
         it('should fail to create cooling node', function () {
-            return redfishJob.createRedfishNode()
+            return redfishJob.createRedfishNode(null, null, null, null, redfishTool)
                 .then(function (out) {
                     expect(out).to.be.an('Array').with.length(0);
                 });
@@ -409,20 +404,20 @@ describe('Redfish Discovery List Job', function () {
 
     describe('redfish power', function () {
         it('should create power node', function () {
-            redfishTool.clientRequest.onCall(0).resolves(listPowerData);
-            redfishTool.clientRequest.onCall(1).resolves(getPowerData);
+            request.get.onCall(0).resolves(listPowerData);
+            request.get.onCall(1).resolves(getPowerData);
             return redfishJob.createRedfishNode(rootData.body,
                 'DCIMPower',
                 ['Generator', 'TransferSwitch', 'PDU', 'Rectifier',
                     'UPS', 'RackPDU', 'Transformer', 'Switchgear', 'VFD'],
-                'power')
+                'power', redfishTool)
                 .then(function () {
                     expect(waterline.nodes.updateOne).to.be.called.once;
                 });
         });
 
         it('should fail to create cooling node', function () {
-            return redfishJob.createRedfishNode()
+            return redfishJob.createRedfishNode(null, null, null, null, redfishTool)
                 .then(function (out) {
                     expect(out).to.be.an('Array').with.length(0);
                 });
@@ -431,9 +426,9 @@ describe('Redfish Discovery List Job', function () {
 
     describe('redfish network', function () {
         it('should create switch node', function () {
-            redfishTool.clientRequest.onCall(0).resolves(listNetworkData);
-            redfishTool.clientRequest.onCall(1).resolves(getNetworkData);
-            return redfishJob.createNetwork(rootData.body)
+            request.get.onCall(0).resolves(listNetworkData);
+            request.get.onCall(1).resolves(getNetworkData);
+            return redfishJob.createNetwork(rootData.body, redfishTool)
                 .then(function () {
                     expect(waterline.nodes.updateOne).to.be.called.once;
                 });
@@ -441,26 +436,26 @@ describe('Redfish Discovery List Job', function () {
 
         it('should log no system members found warning', function () {
             delete getNetworkData.body.Links;
-            redfishTool.clientRequest.onCall(0).resolves(listNetworkData);
-            redfishTool.clientRequest.onCall(1).resolves(getNetworkData);
-            return redfishJob.createNetwork(rootData.body)
+            request.get.onCall(0).resolves(listNetworkData);
+            request.get.onCall(1).resolves(getNetworkData);
+            return redfishJob.createNetwork(rootData.body, redfishTool)
                 .then(function () {
                     expect(waterline.nodes.updateOne).to.be.called.once;
                 });
         });
 
         it('should fail to create network node', function () {
-            redfishTool.clientRequest.onCall(0).rejects('some error');
-            return expect(redfishJob.createNetwork(rootData.body))
+            request.get.onCall(0).rejects('some error');
+            return expect(redfishJob.createNetwork(rootData.body, redfishTool))
                 .to.be.rejectedWith('some error');
         });
     });
 
     describe('redfish managers', function () {
         it('should create manages node', function () {
-            redfishTool.clientRequest.onCall(0).resolves(listManagersData);
-            redfishTool.clientRequest.onCall(1).resolves(getManagersData);
-            return redfishJob.createManagers(rootData.body)
+            request.get.onCall(0).resolves(listManagersData);
+            request.get.onCall(1).resolves(getManagersData);
+            return redfishJob.createManagers(rootData.body, redfishTool)
                 .then(function () {
                     expect(waterline.nodes.updateOne).to.be.called.once;
                 });
@@ -468,17 +463,17 @@ describe('Redfish Discovery List Job', function () {
 
         it('should log no system members found warning', function () {
             delete getManagersData.body.Links;
-            redfishTool.clientRequest.onCall(0).resolves(listManagersData);
-            redfishTool.clientRequest.onCall(1).resolves(getManagersData);
-            return redfishJob.createManagers(rootData.body)
+            request.get.onCall(0).resolves(listManagersData);
+            request.get.onCall(1).resolves(getManagersData);
+            return redfishJob.createManagers(rootData.body, redfishTool)
                 .then(function () {
                     expect(waterline.nodes.updateOne).to.be.called.once;
                 });
         });
 
         it('should fail to create Managers node', function () {
-            redfishTool.clientRequest.onCall(0).rejects('some error');
-            return expect(redfishJob.createManagers(rootData.body))
+            request.get.onCall(0).rejects('some error');
+            return expect(redfishJob.createManagers(rootData.body, redfishTool))
                 .to.be.rejectedWith('some error');
         });
     });
