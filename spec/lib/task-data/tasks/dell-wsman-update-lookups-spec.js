@@ -6,7 +6,7 @@ describe(require('path').basename(__filename), function () {
     var base = require('./base-tasks-spec');
 
     base.before(function (context) {
-        context.taskdefinition = helper.require('/lib/task-data/tasks/wsman-update-lookups.js');
+        context.taskdefinition = helper.require('/lib/task-data/tasks/dell-wsman-update-lookups.js');
     });
 
     describe('task-data', function () {

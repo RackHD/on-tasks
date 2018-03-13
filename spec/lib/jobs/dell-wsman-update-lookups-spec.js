@@ -42,7 +42,7 @@ describe('wsman-update-lookups-job', function() {
         this.sandbox.restore();
     });
 
-    it('should update lookups from cataloged snmp data', function() {
+    it('should update lookups from inventory catalog', function() {
         return job._run()
         .then(function() {
             expect(waterline.lookups.upsertNodeToMacAddress).to.be.calledOnce;
@@ -61,7 +61,7 @@ describe('wsman-update-lookups-job', function() {
         });
     });
 
-    it('should fail if wsman manager data is unavailable', function() {
+    it('should fail if manager data is unavailable in catalog', function() {
         waterline.catalogs.findLatestCatalogOfSource.resolves(undefined);
         this.sandbox.stub(job, '_done').resolves();
         return job._run()
