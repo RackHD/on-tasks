@@ -55,7 +55,7 @@ describe(require('path').basename(__filename), function() {
             configuration.get.withArgs('dell').returns({});
             return expect(function() {
                 wsmanConfigJob._initJob();
-            }).to.throw('Config server path for Dell web service is not defined in wsmanConfig.json.');
+            }).to.throw('Config server path for Dell web service is not defined in smiConfig.json.');
         });
     });
 

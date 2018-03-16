@@ -30,8 +30,8 @@ describe(require('path').basename(__filename), function() {
         gateway: 'http://localhost:46010',
         services: {
             firmware: {
-                dupUpdater: 'http://localhost:46010/api/1.0/server/firmware/updater/dup',
-                updaterStatusApi: 'http://localhost:46010/api/1.0/server/firmware/updater/status'
+                updaterDup: 'http://localhost:46010/api/1.0/server/firmware/updater/dup',
+                updaterStatus: 'http://localhost:46010/api/1.0/server/firmware/updater/status'
             }
         }
     };
@@ -109,7 +109,7 @@ describe(require('path').basename(__filename), function() {
                 gateway: 'http://localhost:46011',
                 services: {
                     firmware: {
-                        dupUpdater: ''
+                        updaterDup: ''
                     }
                 }
             };
@@ -123,8 +123,8 @@ describe(require('path').basename(__filename), function() {
                 gateway: 'http://localhost:46011',
                 services: {
                     firmware: {
-                        dupUpdater: 'http://localhost:46010/api/1.0/server/firmware/updater/dup',
-                        updaterStatusApi: ''
+                        updaterDup: 'http://localhost:46010/api/1.0/server/firmware/updater/dup',
+                        updaterStatus: ''
                     }
                 }
             };
@@ -138,7 +138,7 @@ describe(require('path').basename(__filename), function() {
             wsmanBaseJob.prototype.checkOBM.resolves(obm);
             return simpleUpdateFirmwareJob._initJob().then(function() {
                 expect(simpleUpdateFirmwareJob.targetConfig.username).to.equal('admin');
-                expect(simpleUpdateFirmwareJob.firmwareConfigs.dupUpdater).to
+                expect(simpleUpdateFirmwareJob.firmwareConfigs.updaterDup).to
                     .equal('http://localhost:46010/api/1.0/server/firmware/updater/dup');
             });
         });
@@ -224,7 +224,7 @@ describe(require('path').basename(__filename), function() {
         beforeEach(function() {
             simpleUpdateFirmwareJob.jobSucceed = false;
             simpleUpdateFirmwareJob.firmwareConfigs = {
-                dupUpdater: 'http://localhost:46010/api/1.0/server/firmware/updater/dup'
+                updaterDup: 'http://localhost:46010/api/1.0/server/firmware/updater/dup'
             };
             this.sandbox.stub(SimpleUpdateFirmwareJob.prototype, 'SendClientRequest');
         });
@@ -414,7 +414,7 @@ describe(require('path').basename(__filename), function() {
     describe('PollJobStatus', function() {
         beforeEach(function() {
             simpleUpdateFirmwareJob.firmwareConfigs = {
-                updaterStatusApi: 'http://localhost:46010/api/1.0/server/firmware/updater/dup'
+                updaterStatus: 'http://localhost:46010/api/1.0/server/firmware/updater/status'
             };
             simpleUpdateFirmwareJob.apiServer = '1.1.1.1';
         });

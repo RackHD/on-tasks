@@ -76,7 +76,7 @@ describe(require('path').basename(__filename), function() {
         it('should handle the case of lacking dell configuration.', function() {
             wsmanBaseJob.prototype.checkOBM.resolves(obm);
             configuration.get.withArgs('dell').returns(undefined);
-            expect(wsmanInventoryJob._initJob()).to.be.rejectedWith('Dell Inventory web service is not defined in wsmanConfig.json.');
+            expect(wsmanInventoryJob._initJob()).to.be.rejectedWith('Dell Inventory web service is not defined in smiConfig.json.');
         });
 
         it('should handle the case of incorrect obm setting that ip address is undefined.', function() {

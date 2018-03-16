@@ -295,7 +295,7 @@ describe(require('path').basename(__filename), function () {
             configuration.get.returns(dellConfigurations);
             return expect(function() {
                 discoveryJob._initJob();
-            }).to.throw('Dell Discovery web service is not defined in wsmanConfig.json.');
+            }).to.throw('Dell Discovery web service is not defined in smiConfig.json.');
         });
 
         it('should init job successfully', function() {
