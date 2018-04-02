@@ -387,7 +387,7 @@ describe('Install OS Job', function () {
         });
     });
 
-    it('should finish job if task notification received', function() {
+    it('should finish job if task notification received without error', function() {
         subscribeNodeNotification.restore();
         subscribeNodeNotification = sinon.stub(
             InstallOsJob.prototype, '_subscribeNodeNotification', function(_nodeId, callback) {
@@ -404,6 +404,37 @@ describe('Install OS Job', function () {
             expect(job._done).to.have.callCount(1);
             expect(job._done.firstCall.args[0]).to.equal(undefined);
         });
+    });
+
+    it('should fail job if task notification received with failure', function() {
+        subscribeNodeNotification.restore();
+        subscribeNodeNotification = sinon.stub(
+            InstallOsJob.prototype, '_subscribeNodeNotification', function(_nodeId, callback) {
+                callback({
+                    nodeId: _nodeId,
+                    nodeIp: '1.1.1.1',
+                    status: 'fail'
+                });
+            });
+
+        waterline.graphobjects.findOne = sinon.stub().resolves(graph);
+        return expect(job.run()).to.be.rejectedWith('install os fail');
+    });
+
+    it('should fail job if task notification received with failure info', function() {
+        subscribeNodeNotification.restore();
+        subscribeNodeNotification = sinon.stub(
+            InstallOsJob.prototype, '_subscribeNodeNotification', function(_nodeId, callback) {
+                callback({
+                    nodeId: _nodeId,
+                    nodeIp: '1.1.1.1',
+                    status: 'fail',
+                    error: 'test fail info'
+                });
+            });
+
+        waterline.graphobjects.findOne = sinon.stub().resolves(graph);
+        return expect(job.run()).to.be.rejectedWith('test fail info');
     });
 
     it('should provide the given user credentials to the context', function() {
