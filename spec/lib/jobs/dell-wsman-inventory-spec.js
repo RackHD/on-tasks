@@ -100,7 +100,7 @@ describe(require('path').basename(__filename), function() {
             configuration.get.withArgs('dell').returns(dellConfigs);
             wsmanBaseJob.prototype.getIpAddress.resolves('172.31.128.73');
             return wsmanInventoryJob._initJob().then(function() {
-                expect(wsmanInventoryJob.inventories.length).to.equal(4);
+                expect(wsmanInventoryJob.inventories.length).to.equal(5);
                 expect(wsmanInventoryJob.inventories[0]).to.equal('hardware');
             });
         });
