@@ -1,3 +1,5 @@
+// Copyright 2015-2018, Dell EMC, Inc.
+
 module.exports.amiOutput = '+---------------------------------------------------------------------------+\n' +
                            '|                *** ******** ****** *******  ********                      |\n' +
                            '|      ********* ******* ******** ********** **** *** ****** *********      |\n' +
@@ -3477,8 +3479,7 @@ module.exports.ipmiSelOutput = '1,05/27/2014,21:20:43,Event Logging Disabled #0x
                                    '8,05/27/2014,21:23:25,Power Unit #0x02,Non-Redundant: Sufficient from Redundant,Asserted';
 
 
-module.exports.ipmiUserListOutput = 'ID,Name,Callin,Link Auth,IPMI Msg Channel,Priv Limit\n' +
-                                    '1,,true,false,true,ADMINISTRATOR\n' +
+module.exports.ipmiUserListOutput = '1,,true,false,true,ADMINISTRATOR\n' +
                                     '2,root,false,true,true,ADMINISTRATOR\n';
 
 module.exports.ipmiUserSummaryOutput = 'Maximum IDs	    : 15\n' +
