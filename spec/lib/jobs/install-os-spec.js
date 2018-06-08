@@ -607,27 +607,12 @@ describe('Install OS Job', function () {
                     ipv6:{
                         ipAddr: "10ec0::6ab4:0:5efe:157.60.14.21",
                         gateway: "fe80::5efe:131.107.25.1",
-                        netmask: "ffff.ffff.ffff.ffff.0.0.1.0"
+                        prefixlen: 64
                     }
                 }
             ];
             expect(function() { job._validateOptions(); })
                 .to.throw(Error.AssertionError, 'Violated isIP constraint');
-        });
-
-        it('should throw netmask AssertionError', function () {
-            job.options.networkDevices = [
-                {
-                    device: "eth0",
-                    ipv6:{
-                        ipAddr: "fec0::6ab4:0:5efe:157.60.14.21",
-                        gateway: "fe80::5efe:131.107.25.1",
-                        netmask: "ffff.ffff.ffff.ffff.0.0.1.0"
-                    }
-                }
-            ];
-            expect(function() { job._validateOptions(); })
-                .to.throw(Error, 'Invalid ipv6 netmask.');
         });
 
         it('should allow configuration without gateway', function () {
