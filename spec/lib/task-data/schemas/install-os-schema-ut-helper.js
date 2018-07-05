@@ -34,7 +34,7 @@ var canonical = {
             "ipv6": {
                 "ipAddr": "fec0::6ab4:0:5efe:157.60.14.21",
                 "gateway": "fe80::5efe:131.107.25.1",
-                "netmask": "ffff.ffff.ffff.ffff.0.0.0.0",
+                "prefixlen": 64,
                 "vlanIds": [
                     101,
                     106
@@ -54,7 +54,7 @@ var canonical = {
             "ipv6": {
                 "ipAddr": "fec0::6ab4:0:5efe:157.60.14.21",
                 "gateway": "fe80::5efe:131.107.25.1",
-                "netmask": "ffff.ffff.ffff.ffff.0.0.0.0"
+                "prefixlen": 64
             }
         },
     ],
@@ -116,7 +116,7 @@ var negativeUnsetParam = [
     "rootPassword",
     "networkDevices[0].device",
     "networkDevices[1].ipv4.ipAddr",
-    "networkDevices[2].ipv6.netmask",
+    "networkDevices[2].ipv6.prefixlen",
     "progressMilestones.m1.value"
 ];
 

@@ -130,10 +130,6 @@
                     "type": "string",
                     "format": "ipv6"
                 },
-                "netmask": {
-                    "description": "The ipv6 netmask",
-                    "type": "string"
-                },
                 "gateway": {
                     "description": "The ipv6 gateway",
                     "type": "string",
@@ -145,9 +141,15 @@
                         "$ref": "#/definitions/VlanId"
                     },
                     "uniqueItems": true
+                },
+                "prefixlen": {
+                    "description": "The ipv6 prefixlen/netmask",
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 128
                 }
             },
-            "required": ["ipAddr", "netmask", "gateway"],
+            "required": ["ipAddr", "prefixlen", "gateway"],
             "additionalProperties": false
         },
         "NetworkConfig": {
