@@ -15,6 +15,11 @@
             "type": "string",
             "minLength": 1
         },
+        "Script": {
+            "description": "The script name",
+            "type": "string",
+            "minLength": 0
+        },
         "RaidOption": {
             "description": "The RAID options",
             "properties": {
